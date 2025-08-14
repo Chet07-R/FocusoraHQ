@@ -1,18 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FocusoraHQ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .underline-anim {
+            position: relative;
+            display: inline-block;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .underline-anim::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -4px;
+            width: 0;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .underline-anim:hover {
+            transform: scale(1.05);
+        }
+
+        .underline-anim:hover::after {
+            left: 0;
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    <nav class="flex justify-between p-5 pr-10 pl-10 bg-black text-white">
-        <a href=""><img src="Pictures/new logo nav.png" alt=""></a>
-        <h4 class="relative inline-block text-xl font-semibold text-white after:absolute after:bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:bg-current after:-translate-x-1/2 after:transition-all after:duration-500 hover:after:w-full"><a href="">Your Space</a></h4>
-        <h4 class="relative inline-block text-xl font-semibold text-white after:absolute after:bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:bg-current after:-translate-x-1/2 after:transition-all after:duration-500 hover:after:w-full"><a href="">Study Room</a></h4>
-        <h4 class="relative inline-block text-xl font-semibold text-white after:absolute after:bottom-0 after:left-1/2 after:h-[2px] after:w-0 after:bg-current after:-translate-x-1/2 after:transition-all after:duration-500 hover:after:w-full"><a href="">Blogs</a></h4>
-        <a href="" class=""><img src="Pictures/Profile_img.png" alt="" class="bg-white rounded-full w-8 "></a>
+    <nav class="bg-black h-16 flex text-white justify-between items-center sticky px-6">
+        
+        <div class="flex items-center gap-2 cursor-pointer">
+            <img src="Pictures/new logo nav.png" class="w-8 h-8" alt="Logo">
+            <p class="font-bold text-xl">FocusoraHQ</p>
+        </div>
+
+        <div class="flex gap-12 items-center font-bold text-lg">
+            <div class="flex items-center gap-2 cursor-pointer">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
+                </svg>
+                <p class="underline-anim">Your Space</p>
+            </div>
+
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+                <p class="underline-anim glow-hover">Study Room</p>
+            </div>
+
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9m1.5-2-1.5 1.5-1.5-1.5M21 15l-3-3h3l-3 3">
+                    </path>
+                </svg>
+                <p class="underline-anim glow-hover">Blogs</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <button>
+                <svg class="w-5 h-5 hover:scale-125 transition-transform duration-300 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                    </path>
+                </svg>
+            </button>
+            <img src="Pictures/Profile_img.png" class="cursor-pointer bg-white rounded-full w-9 h-9 hover:scale-110 transition-transform duration-300 border-2 border-pink-400" alt="">
+        </div>
     </nav>
 </body>
 </html>
