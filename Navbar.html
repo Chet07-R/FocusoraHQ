@@ -37,12 +37,49 @@
             left: 0;
             width: 100%;
         }
+
+        .toggle {
+            position: relative;
+            width: 46px;
+            height: 24px;
+            background: #ddd;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle::before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        #dark-toggle:checked+.toggle {
+            background: linear-gradient(135deg, #000000, #414141);
+        }
+
+        #dark-toggle:checked+.toggle::before {
+            transform: translateX(22px);
+            background: white;
+            box-shadow: 0 0 8px white;
+        }
+
+        #dark-toggle {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <nav class="bg-black h-16 flex text-white justify-between items-center sticky px-6">
-        
+
         <div class="flex items-center gap-2 cursor-pointer">
             <img src="Pictures/new logo nav.png" class="w-8 h-8" alt="Logo">
             <p class="font-bold text-xl">FocusoraHQ</p>
@@ -50,7 +87,8 @@
 
         <div class="flex gap-12 items-center font-bold text-lg">
             <div class="flex items-center gap-2 cursor-pointer">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-pink-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
@@ -59,7 +97,8 @@
             </div>
 
             <div class="flex items-center gap-2 group cursor-pointer">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-purple-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                     </path>
@@ -68,7 +107,8 @@
             </div>
 
             <div class="flex items-center gap-2 group cursor-pointer">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 text-blue-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9m1.5-2-1.5 1.5-1.5-1.5M21 15l-3-3h3l-3 3">
                     </path>
@@ -79,14 +119,59 @@
 
         <div class="flex items-center gap-8">
             <button>
-                <svg class="w-5 h-5 hover:scale-125 transition-transform duration-300 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 hover:scale-125 transition-transform duration-300 text-yellow-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
                     </path>
                 </svg>
             </button>
-            <img src="Pictures/Profile_img.png" class="cursor-pointer bg-white rounded-full w-9 h-9 hover:scale-110 transition-transform duration-300 border-2 border-pink-400" alt="">
+            <img src="Pictures/Profile_img.png"
+                class="cursor-pointer bg-white rounded-full w-9 h-9 hover:scale-110 transition-transform duration-300 border-2 border-pink-400"
+                alt="">
         </div>
     </nav>
+    <div class="flex justify-end m-4">
+        <div class="relative">
+            <div
+                class="w-64 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+                <div class="flex p-3 items-center gap-5 bg-gray-200">
+                    <img src="Pictures/Profile_img.png" class="w-8 h-8 rounded-full border-2 border-black shadow"
+                        alt="Profile">
+                    <p class="font-bold text-lg text-gray-800">Name</p>
+                </div>
+
+                <hr class="border-gray-200">
+
+
+                <div class="p-2 space-y-1">
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition">
+                        <img src="Pictures/Profile_Icon.png" class="w-6">
+                        <span class="text-gray-700 font-medium">Edit Profile</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition">
+                        <img src="Pictures/Settings_Icon.png" class="w-5">
+                        <span class="text-gray-700 font-medium">Settings</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition">
+                        <img src="Pictures/Logout_Icon.png" class="w-5">
+                        <span class="text-gray-700 font-medium">Logout</span>
+                    </a>
+                </div>
+
+                <hr class="border-gray-200">
+
+
+                <div class="flex items-center justify-between px-5 py-4 bg-gray-200">
+                    <span class="text-gray-700 font-medium">Dark Mode</span>
+                    <input type="checkbox" id="dark-toggle">
+                    <label for="dark-toggle" class="toggle"></label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </body>
+
 </html>
