@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusoraHQ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* CSS styles for the underline animation on hover */
+        .underline-anim {
+            position: relative;
+            display: inline-block;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .underline-anim::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -4px;
+            width: 0;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .underline-anim:hover {
+            transform: scale(1.05);
+        }
+
+        .underline-anim:hover::after {
+            left: 0;
+            width: 100%;
+        }
+
+        /* CSS styles for the dark mode toggle switch */
+        .toggle {
+            position: relative;
+            width: 46px;
+            height: 24px;
+            background: #ddd;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle::before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        #dark-toggle:checked+.toggle {
+            background: linear-gradient(135deg, #000000, #414141);
+        }
+
+        #dark-toggle:checked+.toggle::before {
+            transform: translateX(22px);
+            background: white;
+            box-shadow: 0 0 8px white;
+        }
+
+        #dark-toggle {
+            display: none;
+        }
+
+        /* Additional CSS to hide and show the profile box */
+        .profile-box {
+            display: none;
+        }
+
+        .profile-box.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="bg-black h-16 flex text-white justify-between items-center sticky px-6">
+        <div class="flex items-center gap-2 cursor-pointer">
+            <img src="Pictures/org-dark-mode.png" class="w-10 h-10" alt="Logo">
+            <p class="font-bold text-xl">FocusoraHQ</p>
+        </div>
+        <div class="flex gap-12 items-center font-bold text-lg">
+            <a href="">
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <svg class="w-5 h-5 hover:scale-110 text-pink-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
+                    </svg>
+                    <p class="underline-anim">Your Space</p>
+                </div>
+            </a>
+            <a href="">
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <svg class="w-5 h-5 hover:scale-110 text-purple-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                    <p class="underline-anim">Study Room</p>
+                </div>
+            </a>
+            <a href="">
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <svg class="w-5 h-5 hover:scale-110 text-blue-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9m1.5-2-1.5 1.5-1.5-1.5M21 15l-3-3h3l-3 3">
+                        </path>
+                    </svg>
+                    <p class="underline-anim">Blogs</p>
+                </div>
+            </a>
+        </div>
+        <div class="flex items-center gap-8">
+            <button>
+                <svg class="w-5 h-5 hover:scale-125 text-yellow-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                    </path>
+                </svg>
+            </button>
+            <img src="Pictures/Profile_img.png" id="profile-icon"
+                class="cursor-pointer bg-white rounded-full w-9 h-9 hover:scale-110 border-2 border-pink-400">
+        </div>
+    </nav>
+    <div class="flex justify-end m-4">
+        <div class="relative profile-box" id="profile-box">
+            <div
+                class="w-64 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl">
+                <div class="flex p-3 items-center gap-5 bg-gray-200">
+                    <img src="Pictures/Profile_img.png" class="w-8 h-8 rounded-full border-2 border-black shadow"
+                        alt="Profile">
+                    <p class="font-bold text-lg text-gray-800">Name</p>
+                </div>
+                <hr class="border-gray-200">
+                <div class="p-2 space-y-1">
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
+                        <img src="Pictures/Profile_Icon.png" class="w-6">
+                        <span class="text-gray-700 font-medium">Edit Profile</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
+                        <img src="Pictures/Settings_Icon.png" class="w-5">
+                        <span class="text-gray-700 font-medium">Settings</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
+                        <img src="Pictures/Logout_Icon.png" class="w-5">
+                        <span class="text-gray-700 font-medium">Logout</span>
+                    </a>
+                </div>
+                <hr class="border-gray-200">
+                <div class="flex items-center justify-between px-5 py-4 bg-gray-200">
+                    <span class="text-gray-700 font-medium">Dark Mode</span>
+                    <input type="checkbox" id="dark-toggle">
+                    <label for="dark-toggle" class="toggle"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const profileIcon = document.getElementById('profile-icon');
+        const profileBox = document.getElementById('profile-box');
+
+        profileIcon.addEventListener('click', () => {
+            profileBox.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!profileBox.contains(event.target) && !profileIcon.contains(event.target)) {
+                profileBox.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
