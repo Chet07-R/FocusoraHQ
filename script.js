@@ -7,7 +7,6 @@ fetch('./navbar.html')
     const parser = new DOMParser();   // this is is the file we are including also has a javacript included in it
     const doc = parser.parseFromString(data, 'text/html');  // this will accept two parameters and text/html - type of content we need
     eval(doc.querySelector('script').textContent)  // eval will execute if the content is js 
-
 })
 
 fetch('./footer.html')
@@ -17,5 +16,4 @@ fetch('./footer.html')
     const parser = new DOMParser();
     const doc = parser.parseFromString(data, 'text/html');  
     eval(doc.querySelector('script').textContent)  
-
 })
