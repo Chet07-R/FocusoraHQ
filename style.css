@@ -12,20 +12,3 @@
 .animate-bounce-down {
   animation: bounce-down 1.5s infinite;
 }
-
-/* In style.css */
-.bg-with-noise {
-  position: relative; /* Needed for the ::after element */
-}
-
-.bg-with-noise::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('https://www.transparenttextures.com/patterns/noise-lines.png');
-  opacity: 0.05; /* Adjust this for more or less texture */
-  z-index: 0;
-}
