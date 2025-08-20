@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>FocusoraHQ-Your Space</title>
 </head>
+
 <body>
-    
+    <nav class="navbar">
+
+    </nav>
+
+    <main class="flex">
+        <!-- To do list -->
+        <div class="m-20 ml-5 h-96 bg-gradient-to-b from-blue-300 to-blue-200 w-[25%] p-5 pt-3 overflow-auto rounded-xl">
+            <div class="flex justify-center items-center p-3">
+                <p class="text-3xl font-bold shadow-sm">📝</p>
+                <p class="text-3xl font-bold p-1 shadow-sm">To-Do List</p>
+            </div>
+            <hr>
+            <div class="pt-3">
+                <input type="text" id="input-task" class="mr-1 p-1 pl-4 rounded-xl border hover:border-blue-500 w-60"
+                    placeholder="Add a new task...">
+                <button class="border border-white p-1 rounded-xl bg-blue-700 text-white hover:bg-blue-800 hover:shadow-xl hover:scale-105 font-semibold "
+                onclick="addtask()">Add Task</button>
+            </div>
+            <div class="p-3 flex justify-center">
+                <ul id="task-list"></ul>
+            </div>
+        </div>
+
+        <!-- Notion -->
+
+
+        <!-- Pomodoro -->
+
+
+        <!-- Spotify -->
+
+        
+    </main>
+
+    <script src="your_space.js"></script>
+    <script src="script.js"></script>
+
 </body>
 </html>
