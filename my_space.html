@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>FocusoraHQ-Your Space</title>
+    <link rel="shortcut icon" href="Pictures/org-dark-mode.png" type="image/x-icon">
+</head>
+
+<body id="main-body" class="h-screen w-screen" style="background-image: url(https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg);">
+    <nav class="navbar">
+
+    </nav>
+
+    <div class="flex justify-between">
+
+        <!-- Pomodoro -->
+        <div>
+            <div class="m-10 ml-3 h-96 bg-gradient-to-b from-blue-300 to-blue-200 w-96 p-5 pt-3 overflow-auto rounded-xl transition-500 hover:scale-105">
+                <div class="flex justify-center items-center p-3">
+                    <p class="text-3xl font-bold shadow-sm">⏱️</p>
+                    <p class="text-3xl font-bold p-1 shadow-sm">Pomodoro</p>
+                </div>
+                <hr>
+                <div class="flex flex-col items-center mt-4">
+                    <div id="timer" class="text-5xl font-mono font-bold text-blue-900 mb-4">25:00</div>
+                    <div class="flex space-x-2 mb-3">
+                        <button id="startBtn"
+                            class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Start</button>
+                        <button id="pauseBtn"
+                            class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Pause</button>
+                        <button id="resetBtn"
+                            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Reset</button>
+                    </div>
+                    <div class="mb-2">
+                        <span id="sessionType"
+                            class="text-sm font-medium bg-blue-100 px-3 py-1 rounded-full shadow-sm">Work
+                            Session</span>
+                    </div>
+                    <div class="text-sm">
+                        Sessions: <span id="sessionCounter" class="font-bold">0</span>
+                    </div>
+                    <div class="mt-3 flex flex-col items-center space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <label class="text-xs font-medium">Work:</label>
+                            <input id="workInput" type="number" min="1" max="60" value="25"
+                                class="w-12 bg-white rounded text-sm px-2 py-1 border border-blue-200">
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-xs font-medium">Break:</label>
+                            <select id="breakSelect" class="bg-white rounded text-sm px-2 py-1 border border-blue-200">
+                                <option value="5">Short (5 min)</option>
+                                <option value="15">Long (15 min)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex w-96 ml-3 gap-3 p-5 items-center h-20 bg-gradient-to-b from-blue-300 to-blue-200 rounded-xl transition-500 hover:scale-105">
+                <p class="font-semibold text-xl">Select Theme: </p>   
+                <select onchange="changeBackground(value)" class="h-9 cursor-pointer border border-black rounded-lg p-1">
+                    <option class="bg-blue-100">--Select Background--</option>
+                    <option value="https://wallpapers.com/images/featured/nature-2ygv7ssy2k0lxlzu.jpg" class="bg-blue-100">Nature</option>
+                    <option value="https://img.freepik.com/free-vector/gradient-mountain-landscape_23-2149159772.jpg?semt=ais_hybrid&w=740&q=80" class="bg-blue-100">Mountains</option>
+                    <option value="https://thumbs.dreamstime.com/b/landscape-mountains-trees-river-front-30280444.jpg" class="bg-blue-100">River</option>
+                    <option value="https://cdn.magicdecor.in/com/2023/02/29215216/image-1684845434-1308-710x488.jpg " class="bg-blue-100">Beach</option>
+                </select> 
+            </div>
+        </div>
+
+
+
+        <!-- Notion -->
+
+
+        <!-- To do list -->
+
+        <div
+            class="m-10 mr-3 h-96 bg-gradient-to-b from-blue-300 to-blue-200 w-[25%] p-5 pt-3 overflow-auto rounded-xl transition-500 hover:scale-105">
+            <div class="flex justify-center items-center p-3">
+                <p class="text-3xl font-bold shadow-sm">📝</p>
+                <p class="text-3xl font-bold p-1 shadow-sm">To-Do List</p>
+            </div>
+            <hr>
+            <div class="pt-3">
+                <input type="text" id="input-task" class="mr-1 p-1 pl-4 rounded-xl border hover:border-blue-500 w-60"
+                    placeholder="Add a new task...">
+                <button
+                    class="border border-white p-1 rounded-xl bg-blue-700 text-white hover:bg-blue-800 hover:shadow-xl hover:scale-105 font-semibold "
+                    onclick="addtask()">Add Task</button>
+            </div>
+            <div class="p-3 flex justify-center">
+                <ul id="task-list"></ul>
+            </div>
+        </div>
+
+
+
+
+        <!-- Spotify -->
+
+    </div>
+
+
+    <script src="my_space.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
