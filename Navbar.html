@@ -6,187 +6,218 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FocusoraHQ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
 
     <style>
-        /* CSS styles for the underline animation on hover */
-        .underline-anim {
-            position: relative;
-            display: inline-block;
-            background: white;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: transform 0.3s ease;
-        }
-
-        .underline-anim::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: -4px;
-            width: 0;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .underline-anim:hover {
-            transform: scale(1.05);
-        }
-
-        .underline-anim:hover::after {
-            left: 0;
-            width: 100%;
-        }
-
-        /* CSS styles for the dark mode toggle switch */
-        .toggle {
-            position: relative;
-            width: 46px;
-            height: 24px;
-            background: #ddd;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .toggle::before {
-            content: "";
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        #dark-toggle:checked+.toggle {
-            background: linear-gradient(135deg, #000000, #414141);
-        }
-
-        #dark-toggle:checked+.toggle::before {
-            transform: translateX(22px);
-            background: white;
-            box-shadow: 0 0 8px white;
-        }
-
-        #dark-toggle {
-            display: none;
-        }
-
         .profile-box {
             display: none;
-            z-index: 1000;
         }
 
         .profile-box.active {
             display: block;
         }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .hamburger-line-1,
+        .hamburger-line-2,
+        .hamburger-line-3 {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+
+        /* Active state - transform to X */
+        #mobile-menu-btn.active .hamburger-line-1 {
+            d: path("M6 6L18 18");
+        }
+
+        #mobile-menu-btn.active .hamburger-line-2 {
+            opacity: 0;
+        }
+
+        #mobile-menu-btn.active .hamburger-line-3 {
+            d: path("M18 6L6 18");
+        }
     </style>
+
 </head>
 
-<body class="">
-    <nav class="w-full bg-black h-16 flex text-white justify-between items-center px-6 fixed z-50">
-        <a href="index.html">
-            <div class="flex items-center gap-2 cursor-pointer">
-                <img src="Pictures/org-dark-mode.png" class="w-10 h-10" alt="Logo">
-                <p class="font-bold text-xl">FocusoraHQ</p>
-            </div>
+<body>
+    <nav
+        class="w-full bg-black/80 backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50 border-b border-gray-800">
+        <!-- Logo Section -->
+        <a href="index.html"
+            class="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300">
+            <img src="Pictures/transparent.png" class="w-10 h-10" alt="FocusoraHQ Logo">
+            <span class="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">
+                FocusoraHQ
+            </span>
         </a>
-        <div class="flex gap-12 items-center font-bold text-lg">
-            <a href="your_space.html">
-                <div class="flex items-center gap-2 cursor-pointer">
-                    <svg class="w-5 h-5 hover:scale-110 text-pink-400" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
-                    </svg>
-                    <p class="underline-anim">Your Space</p>
-                </div>
-            </a>
-            <a href="">
-                <div class="flex items-center gap-2 cursor-pointer">
-                    <svg class="w-5 h-5 hover:scale-110 text-purple-400" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                        </path>
-                    </svg>
-                    <p class="underline-anim">Study Room</p>
-                </div>
-            </a>
-            <a href="">
-                <div class="flex items-center gap-2 cursor-pointer">
-                    <svg class="w-5 h-5 hover:scale-110 text-blue-400" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9m1.5-2-1.5 1.5-1.5-1.5M21 15l-3-3h3l-3 3">
-                        </path>
-                    </svg>
-                    <p class="underline-anim">Blogs</p>
-                </div>
-            </a>
-        </div>
-        <div class="flex items-center gap-8">
-            <button>
-                <svg class="w-5 h-5 hover:scale-125 text-yellow-400" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                <svg class="w-5 h-5 hover:scale-125 text-yellow-400" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
+
+        <!-- Navigation Links -->
+        <div class="hidden lg:flex gap-8 items-center font-semibold text-base">
+            <a href="your_space.html" class="flex items-center gap-2 cursor-pointer group">
+                <svg class="w-5 h-5 group-hover:scale-110 text-pink-400 transition-transform duration-300" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
+                </svg>
+                <span
+                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Your
+                    Space</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-2 cursor-pointer group">
+                <svg class="w-5 h-5 group-hover:scale-110 text-purple-400 transition-transform duration-300" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
                     </path>
                 </svg>
-            </button>
-            <img src="Pictures/Profile_img.png" id="profile-icon"
-                class="cursor-pointer bg-white rounded-full w-9 h-9 hover:scale-110 border-2 border-pink-400">
+                <span
+                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Study
+                    Room</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-2 cursor-pointer group">
+                <svg class="w-5 h-5 group-hover:scale-110 text-blue-400 transition-transform duration-300" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+                <span
+                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Blogs</span>
+            </a>
         </div>
-    </nav>
-    <div class="flex items-center gap-8 relative">
-        <button>
-            <svg class="w-5 h-5 hover:scale-125 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                </path>
-            </svg>
-        </button>
 
-        <img src="Pictures/Profile_img.png" id="profile-icon"
-            class="cursor-pointer bg-white rounded-full w-9 h-9 hover:scale-110 border-2 border-pink-400">
+        <!-- Right Side Controls -->
+        <div class="flex items-center gap-4">
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn"
+                class="lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300"
+                aria-label="Toggle menu">
+                <svg class="w-6 h-6 text-white transition-all duration-300" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path class="hamburger-line-1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12h18"></path>
+                    <path class="hamburger-line-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 6h18"></path>
+                    <path class="hamburger-line-3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 18h18"></path>
+                </svg>
+            </button>
 
-        <div class="absolute right-0 top-12 hidden profile-box p-5" id="profile-box">
-            <div class="w-64 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl">
-                <div class="flex p-3 items-center gap-5 bg-gray-200">
-                    <img src="Pictures/Profile_img.png" class="w-8 h-8 rounded-full border-2 border-black shadow"
-                        alt="Profile">
-                    <p class="font-bold text-lg text-gray-800">Name</p>
-                </div>
-                <hr class="border-gray-200">
-                <div class="p-2 space-y-1">
-                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
-                        <img src="Pictures/Profile_Icon.png" class="w-6">
-                        <span class="text-gray-700 font-medium">Edit Profile</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
-                        <img src="Pictures/Settings_Icon.png" class="w-5">
-                        <span class="text-gray-700 font-medium">Settings</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
-                        <img src="Pictures/Logout_Icon.png" class="w-5">
-                        <span class="text-gray-700 font-medium">Logout</span>
-                    </a>
-                </div>
-                <hr class="border-gray-200">
-                <div class="flex items-center justify-between px-5 py-4 bg-gray-200">
-                    <span class="text-gray-700 font-medium">Dark Mode</span>
-                    <input type="checkbox" id="dark-toggle">
-                    <label for="dark-toggle" class="toggle"></label>
+            <!-- Profile Dropdown -->
+            <div class="relative">
+                <img src="Pictures/Profile_Icon.png" id="profile-icon"
+                    class="cursor-pointer rounded-full w-9 h-9 hover:scale-110 border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 object-cover"
+                    alt="Profile">
+
+                <!-- Profile Dropdown Menu -->
+                <div class="absolute right-0 top-12 hidden profile-box p-5 z-50" id="profile-box">
+                    <div class="w-64 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                        <!-- Profile Header -->
+                        <div class="flex p-4 items-center gap-3 bg-gradient-to-r from-gray-50 to-gray-100">
+                            <img src="Pictures/Profile_img.png"
+                                class="w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm" alt="Profile">
+                            <div>
+                                <p class="font-semibold text-gray-800">John Doe</p>
+                                <p class="text-sm text-gray-500">john.doe@email.com</p>
+                            </div>
+                        </div>
+
+                        <!-- Menu Items -->
+                        <div class="p-2 space-y-1">
+                            <a href="#"
+                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-300 group">
+                                <img src="Pictures/Profile_Icon.png"
+                                    class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                                    alt="Profile">
+                                <span class="text-gray-700 font-medium">Edit Profile</span>
+                            </a>
+                            <a href="#"
+                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-300 group">
+                                <img src="Pictures/Settings_Icon.png"
+                                    class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                                    alt="Settings">
+                                <span class="text-gray-700 font-medium">Settings</span>
+                            </a>
+                        </div>
+
+                        <div class="border-t border-gray-100"></div>
+
+                        <!-- Dark Mode Toggle -->
+                        <div class="flex items-center justify-between px-4 py-3 bg-gray-50">
+                            <span class="text-gray-700 font-medium">Dark Mode</span>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="dark-toggle" class="sr-only peer">
+                                <label for="dark-toggle"
+                                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-gray-800 peer-checked:to-gray-600 cursor-pointer"></label>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-100"></div>
+
+                        <!-- Logout -->
+                        <div class="p-2">
+                            <a href="#"
+                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 text-red-600 transition-colors duration-300 group">
+                                <img src="Pictures/Logout_Icon.png"
+                                    class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                                    alt="Logout">
+                                <span class="font-medium">Logout</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+        class="hidden lg:hidden fixed top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300">
+        <div class="px-4 py-6 space-y-4">
+            <a href="your_space.html"
+                class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
+                </svg>
+                <span class="text-white font-semibold">Your Space</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+                <span class="text-white font-semibold">Study Room</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+                <span class="text-white font-semibold">Blogs</span>
+            </a>
         </div>
     </div>
 
