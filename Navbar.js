@@ -51,4 +51,29 @@ function initNavbar() {
             }
         });
     }
+
+    // Dark mode functionality
+    const darkToggle = document.getElementById('dark-toggle');
+    
+    // Check for saved theme preference or default to light mode
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.documentElement.classList.add('dark');
+        if (darkToggle) darkToggle.checked = true;
+    }
+    
+    // Toggle dark mode
+    if (darkToggle) {
+        darkToggle.addEventListener('change', function() {
+            if (this.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
 }
