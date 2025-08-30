@@ -18,3 +18,8 @@ fetch('./footer.html')
     const doc = parser.parseFromString(data, 'text/html');  
     eval(doc.querySelector('script').textContent)  
 })
+
+function toggleSpotifyPlayer() {
+  const expanded = document.getElementById("spotify-expanded");
+  expanded.classList.toggle("hidden");
+}

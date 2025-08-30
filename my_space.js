@@ -1,3 +1,5 @@
+// To do list
+
 function addtask(){
     const newTask = document.createElement('li')
     const taskList = document.getElementById('task-list')
@@ -163,11 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 // for background
 
-function changeBackground(imageUrl) {
-  let body = document.getElementById("main-body");
-  body.style.backgroundImage = `url('${imageUrl}')`;
+function changeBackground(img) {
+  const body = document.getElementById("main-body");
+  body.style.backgroundImage = `url('${img}')`;
   body.style.backgroundSize = "cover";
   body.style.backgroundRepeat = "no-repeat";
 }
