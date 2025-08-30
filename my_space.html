@@ -22,14 +22,14 @@
 
         <div>
             <div
-                class="m-10 ml-3 h-96 bg-gradient-to-b from-blue-300 to-blue-200 w-96 p-5 pt-3 overflow-auto rounded-xl transition-500 hover:scale-105">
+                class="m-10 ml-3 h-96  w-96 p-5 pt-3 overflow-auto rounded-xl transition-500 hover:scale-105 backdrop-blur-2xl">
                 <div class="flex justify-center items-center p-3">
                     <p class="text-3xl font-bold shadow-sm">⏱️</p>
-                    <p class="text-3xl font-bold p-1 shadow-sm">Pomodoro</p>
+                    <p class="text-3xl font-bold p-1 shadow-sm text-white">Pomodoro</p>
                 </div>
                 <hr>
                 <div class="flex flex-col items-center mt-4">
-                    <div id="timer" class="text-5xl font-mono font-bold text-blue-900 mb-4">25:00</div>
+                    <div id="timer" class="text-5xl font-mono font-bold text-blue-900 mb-4 text-white">25:00</div>
                     <div class="flex space-x-2 mb-3">
                         <button id="startBtn"
                             class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Start</button>
@@ -42,17 +42,17 @@
                         <span id="sessionType"
                             class="text-sm font-medium bg-blue-100 px-3 py-1 rounded-full shadow-sm">Work Session</span>
                     </div>
-                    <div class="text-sm">
+                    <div class="text-sm text-white">
                         Sessions: <span id="sessionCounter" class="font-bold">0</span>
                     </div>
                     <div class="mt-3 flex flex-col items-center space-y-2">
                         <div class="flex items-center space-x-2">
-                            <label class="text-xs font-medium">Work:</label>
+                            <label class="text-xs font-medium text-white">Work:</label>
                             <input id="workInput" type="number" min="1" max="60" value="25"
                                 class="w-12 bg-white rounded text-sm px-2 py-1 border border-blue-200">
                         </div>
                         <div class="flex items-center space-x-2">
-                            <label class="text-xs font-medium">Break:</label>
+                            <label class="text-xs font-medium text-white">Break:</label>
                             <select id="breakSelect" class="bg-white rounded text-sm px-2 py-1 border border-blue-200">
                                 <option value="5">Short (5 min)</option>
                                 <option value="15">Long (15 min)</option>
@@ -65,8 +65,8 @@
             <!-- Background change -->
 
             <div
-                class="flex w-96 ml-3 gap-3 p-5 items-center h-20 bg-gradient-to-b from-blue-300 to-blue-200 rounded-xl transition-500 hover:scale-105">
-                <p class="font-semibold text-xl">Select Theme: </p>
+                class="flex w-96 ml-3 gap-3 p-5 items-center h-20 backdrop-blur-2xl rounded-xl transition-500 hover:scale-105">
+                <p class="font-semibold text-xl text-white">Select Theme: </p>
                 <select onchange="changeBackground(value)"
                     class="h-9 cursor-pointer border border-black rounded-lg p-1">
                     <option class="bg-blue-100">--Select Background--</option>
@@ -84,17 +84,33 @@
         </div>
 
 
+        <!-- Notes -->
 
-        <!-- Notion -->
+        <div
+            class="m-10 pb-10 h-[96] w-[40%] p-5 pt-4 overflow-hidden rounded-2xl transition-500 hover:scale-105 backdrop-blur-xl">
+
+            <div class="flex items-center justify-center mb-4">
+                <div class="flex items-center space-x-2 justify-center">
+                    <h2 class="text-3xl font-bold p-1 shadow-sm text-white items-center">📝 Notes</h2>
+                </div>
+            </div>
+            <hr class="mb-4">
+
+            <div class="h-[90%]">
+                <textarea id="notes"
+                    class="w-full h-full rounded-xl p-5 text-gray-800 font-medium border-2 border-transparent transition duration-300 placeholder-gray-400"
+                    placeholder="✍️ Start writing your thoughts or ideas here..."></textarea>
+            </div>
+        </div>
 
 
         <!-- To do list -->
 
         <div
-            class="m-10 mr-3 h-96 bg-gradient-to-b from-blue-300 to-blue-200 w-[25%] p-5 pt-3 overflow-auto rounded-xl transition-500 hover:scale-105">
+            class="m-10 mr-3 h-96 w-[25%] p-5 pt-3 overflow-auto rounded-xl transition-500 hover:scale-105 backdrop-blur-xl">
             <div class="flex justify-center items-center p-3">
                 <p class="text-3xl font-bold shadow-sm">📝</p>
-                <p class="text-3xl font-bold p-1 shadow-sm">To-Do List</p>
+                <p class="text-3xl font-bold p-1 shadow-sm text-white">To-Do List</p>
             </div>
             <hr>
             <div class="pt-3">
@@ -114,7 +130,7 @@
 
         <!-- Spotify -->
 
-        <div class="fixed bottom-0 left-0 w-full flex justify-center items-center p-2">
+        <div class="fixed bottom-0 left-0 w-full flex justify-center items-center p-2 backdrop-blur-2xl">
             <iframe data-testid="embed-iframe" style="border-radius:12px"
                 src="https://open.spotify.com/embed/artist/2CDApyOON0pYv8fWwC9U7i?utm_source=generator" width="100%"
                 height="80" frameBorder="0" allowfullscreen=""

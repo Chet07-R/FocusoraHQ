@@ -174,3 +174,16 @@ function changeBackground(img) {
   body.style.backgroundSize = "cover";
   body.style.backgroundRepeat = "no-repeat";
 }
+
+
+// for notes
+
+const notesArea = document.getElementById("notes");
+
+// Load saved notes
+notesArea.value = localStorage.getItem("focusoraNotes") || "";
+
+// Auto-save while typing
+notesArea.addEventListener("input", () => {
+  localStorage.setItem("focusoraNotes", notesArea.value);
+});
