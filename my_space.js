@@ -1,16 +1,25 @@
 // To do list
 
-function addtask(){
-    const newTask = document.createElement('li')
-    const taskList = document.getElementById('task-list')
+function addtask() {
+    const taskInput = document.getElementById('input-task');
+    const taskText = taskInput.value.trim(); // remove spaces
 
-    taskList.appendChild(newTask)
-    newTask.textContent = document.getElementById('input-task').value
+    if (taskText === "") {
+        return; // stop if empty
+    }
 
-    newTask.className = 'flex items-center justify-between bg-blue-100 p-2 my-2 rounded-lg shadow-sm w-80' 
+    const newTask = document.createElement('li');
+    const taskList = document.getElementById('task-list');
 
-    deletetask(newTask)
+    newTask.textContent = taskText;
+    newTask.className = 'flex items-center justify-between bg-blue-100 p-2 my-2 rounded-lg shadow-sm w-80';
+
+    taskList.appendChild(newTask);
+    deletetask(newTask);
+
+    taskInput.value = ""; // clear input after adding
 }
+
 
 function deletetask(newtask){
     const deletebtn = document.createElement('button')
