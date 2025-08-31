@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — FocusoraHQ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="Pictures/org-dark-mode.png" type="image/x-icon">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <nav class="navbar"></nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 pt-20 pb-16 relative overflow-hidden">
+        <!-- Background decorations -->
+        <div class="absolute top-20 right-20 w-32 h-32 bg-blue-500 rounded-full opacity-20 blur-2xl"></div>
+        <div class="absolute bottom-20 left-20 w-24 h-24 bg-cyan-400 rounded-full opacity-20 blur-xl"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center justify-between">
+                <div class="lg:w-1/2 text-left lg:pr-12">
+                    <h1 class="text-6xl lg:text-7xl font-extrabold text-blue-900 dark:text-white mb-6 tracking-tight leading-tight">
+                        Productivity Blog
+                    </h1>
+                    <p class="text-2xl lg:text-3xl text-blue-800 dark:text-gray-300 font-medium mb-8">
+                        Focus. Study. Thrive.
+                    </p>
+                    <p class="text-blue-700 dark:text-gray-400 text-lg leading-relaxed mb-8">
+                        Your ultimate resource for productivity insights, focus strategies, and actionable tips to transform your work and life.
+                    </p>
+                    <a href="#featured" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-4 px-10 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                        Explore Articles
+                    </a>
+                </div>
+                <div class="lg:w-1/2 flex justify-center lg:justify-end mt-8 lg:mt-0">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                             alt="Productive workspace with laptop and notebook" 
+                             class="w-96 h-96 object-cover rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-blue-600 opacity-20 rounded-3xl"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Article Section -->
+    <section id="featured" class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Featured Article</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400">Our most impactful productivity insights</p>
+            </div>
+            
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-gradient-to-r from-indigo-50 to-cyan-50 dark:from-gray-700 dark:to-gray-600 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
+                    <div class="md:flex">
+                        <div class="md:w-1/2">
+                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                                 alt="Deep work and focus strategies" 
+                                 class="w-full h-64 md:h-full object-cover">
+                        </div>
+                        <div class="md:w-1/2 p-8 md:p-12">
+                            <div class="inline-block bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide mb-4">
+                                Featured
+                            </div>
+                            <h3 class="text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">
+                                The Ultimate Guide to Deep Work: Transform Your Productivity in 30 Days
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
+                                Master the art of sustained focus with proven strategies from top performers. Learn how to eliminate distractions, create optimal work environments, and achieve breakthrough results.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">15 min read • Dec 2024</span>
+                                <a href="#" class="inline-flex items-center bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 transform">
+                                    Read Article
+                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Articles Grid -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Latest Articles</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400">Fresh insights to supercharge your productivity</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Article 1: Focus & Concentration -->
+                <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Focus and concentration techniques" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                                Focus
+                            </span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">5 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                            7 Science-Backed Methods to Eliminate Distractions
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                            Discover proven techniques to maintain laser focus in our hyper-connected world and boost your productivity by 300%.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 2: Time Management -->
+                <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Time management and planning" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-cyan-100 dark:bg-cyan-900 text-cyan-600 dark:text-cyan-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                                Time Management
+                            </span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">8 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                            The 2-Minute Rule That Will Transform Your Day
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                            Learn how this simple principle can help you tackle procrastination and build momentum for your biggest goals.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 3: Email Organization -->
+                <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Email management and organization" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                                Organization
+                            </span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">10 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                            Inbox Zero: Master Email in 15 Minutes Daily
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                            A step-by-step system to conquer email overload and reclaim hours of productive time every week.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 4: Goal Setting -->
+                <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Goal setting and task management" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                                Goals
+                            </span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">12 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                            From Overwhelmed to Organized: The Ultimate System
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                            Transform chaos into clarity with this proven framework for managing tasks, projects, and long-term goals.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 5: Morning Routines -->
+                <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Morning routine and healthy habits" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-sky-100 dark:bg-sky-900 text-sky-600 dark:text-sky-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                                Habits
+                            </span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">7 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                            Morning Rituals of High Performers
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                            Design the perfect morning routine to set yourself up for peak performance and achievement all day long.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 6: Energy Management -->
+                <article class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                         alt="Energy management and wellness" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                                Energy
+                            </span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">9 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                            Energy Management: The Key to Sustainable Success
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                            Learn to work with your natural energy cycles and maintain peak performance without burning out.
+                        </p>
+                        <a href="#" class="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
+                            Read More
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-12">
+                <button class="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 transform shadow-lg">
+                    Load More Articles
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Articles Section -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Most Popular</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400">Reader favorites that deliver real results</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto space-y-6">
+                <!-- Popular Article 1 -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-start space-x-6">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80" 
+                             alt="Workplace productivity tips" 
+                             class="w-24 h-24 rounded-xl object-cover flex-shrink-0"
+                             crossorigin="anonymous">
+                        <div class="flex-1">
+                            <span class="inline-block bg-blue-700 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase">Trending</span>
+                            <h3 class="mt-3 text-xl font-bold text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                                How to Eliminate Distractions and Double Your Focus in 2025
+                            </h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-400">Master the art of deep work with these proven concentration techniques that top performers use daily...</p>
+                            <div class="mt-3 text-sm text-gray-500 dark:text-gray-400">8 min read • 50,000 views</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Article 2 -->
+                <div class="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-start space-x-6">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80" 
+                             alt="Productive workspace setup" 
+                             class="w-24 h-24 rounded-xl object-cover flex-shrink-0"
+                             crossorigin="anonymous">
+                        <div class="flex-1">
+                            <span class="inline-block bg-cyan-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase">Popular</span>
+                            <h3 class="mt-3 text-xl font-bold text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                                The 90-Minute Work Block Method: Get More Done in Less Time
+                            </h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-400">Discover the optimal work rhythm that maximizes your mental energy and output throughout the day...</p>
+                            <div class="mt-3 text-sm text-gray-500 dark:text-gray-400">12 min read • 42,000 views</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Article 3 -->
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-start space-x-6">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80" 
+                             alt="Digital tools and technology" 
+                             class="w-24 h-24 rounded-xl object-cover flex-shrink-0"
+                             crossorigin="anonymous">
+                        <div class="flex-1">
+                            <span class="inline-block bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase">Essential</span>
+                            <h3 class="mt-3 text-xl font-bold text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
+                                Digital Minimalism: Declutter Your Workspace for Peak Performance
+                            </h3>
+                            <p class="mt-2 text-gray-600 dark:text-gray-400">Create a distraction-free digital environment that supports sustained focus and creative thinking...</p>
+                            <div class="mt-3 text-sm text-gray-500 dark:text-gray-400">15 min read • 38,000 views</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-16 bg-gradient-to-r from-indigo-50 to-cyan-50 dark:from-gray-700 dark:to-gray-600">
+        <div class="container mx-auto px-6 text-center">
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-8">
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" 
+                         alt="Newsletter and communication" 
+                         class="w-24 h-24 rounded-full mx-auto mb-6 object-cover border-4 border-white dark:border-gray-600 shadow-lg">
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    Get Weekly Productivity Tips
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                    Join 50,000+ professionals who receive actionable insights to boost their productivity and achieve their goals faster.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                    <input type="email" 
+                           placeholder="Enter your email address"
+                           class="flex-1 px-6 py-4 border border-gray-300 dark:border-gray-500 rounded-full text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg">
+                    <button class="px-8 py-4 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-full transition-all duration-300 hover:scale-105 transform text-lg shadow-lg">
+                        Subscribe Free
+                    </button>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                    No spam. Unsubscribe anytime. 5-minute weekly reads.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-indigo-700 dark:bg-gray-900 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-4">Ready to Transform Your Productivity?</h2>
+            <p class="text-xl mb-8 text-indigo-200 dark:text-gray-400 max-w-2xl mx-auto">
+                Join thousands who've transformed their work and life with our proven systems and strategies.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="my_space.html" class="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                    Start Your Journey
+                </a>
+                <a href="#" class="inline-block bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-indigo-700 transform hover:scale-105 transition-all duration-300">
+                    Browse All Articles
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer"></footer>
+    <script src="script.js"></script>
+    <script src="Navbar.js"></script>
+</body>
+</html>
