@@ -54,13 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const breakSelect = document.getElementById('breakSelect');
     const sessionCounterEl = document.getElementById('sessionCounter');
     
-    // Update document title with timer
-    function updateDocumentTitle() {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      const timeString = `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-    }
-
     // Update durations when inputs change
     workInput.addEventListener('change', () => {
       const minutes = parseInt(workInput.value, 10);
