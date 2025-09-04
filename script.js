@@ -23,3 +23,16 @@ function toggleSpotifyPlayer() {
   const expanded = document.getElementById("spotify-expanded");
   expanded.classList.toggle("hidden");
 }
+
+    function sendMail() {
+        let parms = {
+            user_email: document.getElementById("email").value
+        };
+
+        emailjs.send("service_mj850sc", "template_xz8bp6i", parms)
+        .then(function(response) {
+            alert("✅ Subscription successful! Check your email.");
+        }, function(error) {
+            alert("❌ Failed to send email.");
+        });
+    }
