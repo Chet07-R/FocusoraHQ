@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusoraHQ - Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="Pictures/org-dark-mode.png" type="image/x-icon">
+</head>
+
+<body class="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800">
+    
+    <nav class="navbar"></nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-900 dark:text-white mb-4">
+                🏆 Leaderboard
+            </h1>
+            <p class="text-lg text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                Track your progress and compete with focused learners worldwide
+            </p>
+        </div>
+    </section>
+
+    <!-- Platform Stats -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">Platform Statistics</h2>
+                <p class="text-gray-600 dark:text-gray-400">See how our global community is performing</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-4xl mb-4">👥</div>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2 counter" data-target="2847">0</div>
+                    <div class="text-gray-600 dark:text-gray-400">Active Users</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2 counter" data-target="156" data-suffix="K">0</div>
+                    <div class="text-gray-600 dark:text-gray-400">Points Today</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-4xl mb-4">🍅</div>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2 counter" data-target="8392">0</div>
+                    <div class="text-gray-600 dark:text-gray-400">Focus Sessions</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2 counter" data-target="94" data-suffix="%">0</div>
+                    <div class="text-gray-600 dark:text-gray-400">Goal Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top 3 Podium -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-blue-900 dark:text-white mb-4">🏆 Hall of Champions</h2>
+                <p class="text-gray-600 dark:text-gray-400">This month's top performers</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center items-end gap-8 max-w-6xl mx-auto mb-16">
+                
+                <!-- 2nd Place -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center w-full md:w-80 transform hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl mb-6">🥈</div>
+                    <img src="Pictures/People/4.jpg" 
+                         alt="Tanish Mehta" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-gray-400 object-cover">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Tanish Mehta</h3>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">8,245</div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">127 sessions • 89h focus</p>
+                    <div class="flex justify-center space-x-2">
+                        <span class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-xs">🔥 12 day streak</span>
+                    </div>
+                </div>
+
+                <!-- 1st Place -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border-4 border-blue-700 p-10 rounded-xl shadow-2xl text-center w-full md:w-96 transform hover:scale-105 transition-transform duration-300">
+                    <div class="text-7xl mb-6">👑</div>
+                    <img src="Pictures/People/5.jpg" 
+                         alt="Chetan Ajmani" class="w-28 h-28 rounded-full mx-auto mb-4 border-4 border-blue-700 object-cover">
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Chetan Ajmani</h3>
+                    <div class="text-4xl font-bold text-blue-700 dark:text-blue-400 mb-2">9,876</div>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">156 sessions • 142h focus</p>
+                    <div class="flex justify-center space-x-2">
+                        <span class="bg-blue-700 text-white px-3 py-1 rounded-full text-sm font-semibold">👑 Champion</span>
+                        <span class="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded text-xs">🔥 25 day streak</span>
+                    </div>
+                </div>
+
+                <!-- 3rd Place -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg text-center w-full md:w-80 transform hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl mb-6">🥉</div>
+                    <img src="Pictures/People/6.jpg" 
+                         alt="Vansh Thakur" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-orange-400 object-cover">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Vansh Thakur</h3>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">7,892</div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">98 sessions • 76h focus</p>
+                    <div class="flex justify-center space-x-2">
+                        <span class="bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded text-xs">🔥 8 day streak</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Rankings -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                <div class="px-8 py-6 bg-blue-700">
+                    <h3 class="text-2xl font-bold text-white">Complete Rankings</h3>
+                    <p class="text-blue-100">Track your progress among all users</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Rank</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">User</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Points</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Sessions</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Focus Time</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Streak</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Badge</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">4</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/7.jpg" 
+                                             alt="Aryan Garg" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Aryan Garg</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">🇺🇸 San Francisco</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">6,543</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+245 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">84</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">67h 23m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-orange-500 font-semibold">🔥 12 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                                        🔥 Hot Streak
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">5</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/8.png" 
+                                             alt="Pratham Gupta" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Pratham Gupta</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">🇬🇧 London</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">5,987</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+189 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">72</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">58h 15m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-orange-500 font-semibold">🔥 8 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                                        📚 Bookworm
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">6</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/9.enc" 
+                                             alt="Pratibha" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Pratibha</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">🇨🇦 Toronto</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">5,234</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+156 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">65</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">52h 8m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-orange-500 font-semibold">🔥 5 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100">
+                                        ⚡ Speed Demon
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">7</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/10.jpg" 
+                                             alt="Vaibhav Garg" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Vaibhav Garg</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">🇸🇬 Singapore</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">4,892</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+134 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">61</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">48h 32m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-orange-500 font-semibold">🔥 15 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100">
+                                        🔥 Consistent
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">11</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/11.enc" 
+                                             alt="Ishween" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Ishween</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">🇧🇷 São Paulo</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">3,770</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+67 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">48</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">32h 15m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-orange-500 font-semibold">🔥 2 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                        💪 Steady
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <!-- User's Row (Highlighted) -->
+                            <tr class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/30">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-lg font-bold text-blue-700 dark:text-blue-300">12</span>
+                                        <span class="text-xs bg-blue-600 text-white px-2 py-1 rounded-full font-semibold">YOU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/13.enc" 
+                                             alt="You" class="w-12 h-12 rounded-full border-2 border-blue-400 object-cover">
+                                        <div>
+                                            <p class="font-bold text-blue-900 dark:text-blue-200">Arnav</p>
+                                            <p class="text-sm text-blue-600 dark:text-blue-400">🇺🇸 Your Location</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-700 dark:text-blue-300">3,247</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+89 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-blue-900 dark:text-blue-200 font-medium">45</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-blue-900 dark:text-blue-200 font-medium">28h 45m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-orange-500 font-semibold">🔥 3 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                                        🌱 Rising Star
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">13</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/14.enc" 
+                                             alt="Akaash Grover" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Akaash Grover</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">🇰🇷 Seoul</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">3,156</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+78 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">41</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">25h 12m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-gray-400 font-semibold">❄️ 0 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                        🆕 Newcomer
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-bold text-gray-800 dark:text-white">13</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="Pictures/People/12.enc" 
+                                             alt="Bhavya Kaushal" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Bhavya Kaushal</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">ᴇɴɢ Manchester</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-blue-600 dark:text-blue-400">3,120</div>
+                                    <div class="text-sm text-green-600 dark:text-green-400">+78 today</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">41</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white font-medium">25h 12m</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-gray-400 font-semibold">🔥 3 days</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                        🆕 Newcomer
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="px-8 py-6 text-center border-t border-gray-200 dark:border-gray-700">
+                    <button class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 hover:scale-105">
+                        Load More Rankings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Points System Explanation -->
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-blue-900 dark:text-white mb-4">How to Earn Points</h2>
+                <p class="text-gray-600 dark:text-gray-400">Understanding the point system to climb the leaderboard</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-5xl mb-4">🍅</div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">Focus Sessions</h3>
+                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p><span class="font-bold text-green-600">+10 points</span> per 25min session</p>
+                        <p><span class="font-bold text-green-600">+15 points</span> per 50min session</p>
+                        <p><span class="font-bold text-blue-600">+50 bonus</span> for 4 sessions/day</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-5xl mb-4">✅</div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">Task Completion</h3>
+                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p><span class="font-bold text-green-600">+5 points</span> per completed task</p>
+                        <p><span class="font-bold text-blue-600">+20 points</span> daily goal achieved</p>
+                        <p><span class="font-bold text-purple-600">+100 bonus</span> weekly goals met</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                    <div class="text-5xl mb-4">🔥</div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">Streaks</h3>
+                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p><span class="font-bold text-orange-600">+25 points</span> daily streak bonus</p>
+                        <p><span class="font-bold text-red-600">+100 points</span> for 7-day streaks</p>
+                        <p><span class="font-bold text-purple-600">+500 bonus</span> for 30-day streaks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer"></div>
+
+    <script>
+        // Counter Animation Function
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const suffix = element.getAttribute('data-suffix') || '';
+            const duration = 2000; // 2 seconds
+            const increment = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                // Format the number
+                let displayValue = Math.floor(current);
+                
+                // Add comma formatting for large numbers
+                if (displayValue >= 1000 && !suffix) {
+                    displayValue = displayValue.toLocaleString();
+                }
+                
+                element.textContent = displayValue + suffix;
+            }, 16);
+        }
+
+        // Intersection Observer for triggering animation when visible
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                    entry.target.classList.add('animated');
+                    animateCounter(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Start observing counter elements when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                observer.observe(counter);
+            });
+        });
+    </script>
+    <script src="script.js"></script>
+    <script src="Navbar.js"></script>
+</body>
+</html>
