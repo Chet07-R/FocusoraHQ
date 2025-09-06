@@ -12,7 +12,7 @@ function addtask() {
     const taskList = document.getElementById('task-list');
 
     newTask.textContent = taskText;
-    newTask.className = 'flex items-center justify-between bg-blue-100 p-2 my-2 rounded-lg shadow-sm w-80';
+    newTask.className = 'flex items-center justify-between bg-blue-100 p-2 my-2 rounded-lg shadow-sm w-80 dark:text-black';
 
     taskList.appendChild(newTask);
     deletetask(newTask);
