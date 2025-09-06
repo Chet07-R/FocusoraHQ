@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusoraHQ - Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="shortcut icon" href="Pictures/org-dark-mode.png" type="image/x-icon">
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-black min-h-screen flex flex-col justify-between">
+
+  <nav class="navbar"></nav>
+
+  <main class="flex items-center justify-center px-4 py-16 mt-2">
+    <div class="border-2 border-gray-200 dark:border-gray-700 flex-col p-10 pb-4 pt-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md">
+      
+      <div class="items-center flex justify-center flex-col">
+        <img src="Pictures/org-dark-mode.png" alt="Logo" class="w-12 h-12 mb-4">
+        <p class="font-bold text-3xl text-gray-900 dark:text-white">Create Account</p>
+        <p class="text-gray-700 dark:text-gray-400">Join FocusoraHQ and Boost your Productivity</p>
+      </div>
+
+      <div class="pt-5 space-y-4">
+        <div>
+          <p class="pb-1 pl-1 text-gray-700 dark:text-gray-300">Full Name</p>
+          <input type="text" placeholder="Enter your Full Name"
+            class="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 w-full rounded-lg p-2 text-gray-900 dark:text-white">
+        </div>
+        <div>
+          <p class="pb-1 pl-1 text-gray-700 dark:text-gray-300">Email</p>
+          <input type="email" placeholder="Enter your Email"
+            class="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 w-full rounded-lg p-2 text-gray-900 dark:text-white">
+        </div>
+        <div>
+          <p class="pb-1 pl-1 text-gray-700 dark:text-gray-300">Password</p>
+          <input type="password" placeholder="Enter your Password"
+            class="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 w-full rounded-lg p-2 text-gray-900 dark:text-white">
+        </div>
+        <div>
+          <p class="pb-1 pl-1 text-gray-700 dark:text-gray-300">Confirm Password</p>
+          <input type="password" placeholder="Re-enter your Password"
+            class="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 w-full rounded-lg p-2 text-gray-900 dark:text-white">
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-4">
+        <input type="checkbox" id="terms" class="rounded border-gray-400 dark:border-gray-600">
+        <label for="terms" class="text-gray-700 dark:text-gray-300">
+          I agree to the <a href="#" class="text-cyan-600 dark:text-cyan-400 hover:underline">Terms & Conditions</a>
+        </label>
+      </div>
+
+      <div>
+        <button class="w-full mt-4 py-2 bg-gradient-to-r from-pink-500 to-cyan-500 text-white font-semibold rounded-lg shadow-md hover:from-pink-600 hover:to-cyan-600 transition-all">
+          Sign Up
+        </button>
+      </div>
+
+      <div class="flex justify-center mt-3">
+        <p class="text-gray-700 dark:text-gray-300">Already have an account?
+          <a href="signin.html" class="text-cyan-600 dark:text-cyan-400 hover:underline">Sign In</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+
+  <script src="Navbar.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
