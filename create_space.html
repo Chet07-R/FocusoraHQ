@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusoraHQ - Create Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="shortcut icon" href="Pictures/org-dark-mode.png" type="image/x-icon">
+</head>
+
+<body
+    class="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen flex flex-col">
+
+    <nav class="navbar"></nav>
+
+    <main class="flex flex-col items-center justify-center flex-grow px-4 py-10 relative overflow-hidden pt-20">
+        <div class="max-w-xl w-full text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 dark:text-white mb-4">
+                Create Your Space
+            </h1>
+            <p class="text-lg md:text-xl text-blue-800 dark:text-blue-200">
+                Customize your private or group study room
+            </p>
+        </div>
+
+        <section class="max-w-2xl w-full bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-lg p-8">
+            <form class="flex flex-col gap-5">
+                <div>
+                    <label class="block text-blue-900 dark:text-blue-200 font-semibold mb-2">Space Name</label>
+                    <input type="text" placeholder="e.g. Math Study Group" class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <div>
+                    <label class="block text-blue-900 dark:text-blue-200 font-semibold mb-2">Description</label>
+                    <textarea placeholder="Write a short description..." class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-blue-900 dark:text-blue-200 font-semibold mb-4 text-lg">
+                        Privacy
+                    </label>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="group cursor-pointer">
+                            <input type="radio" name="privacy" value="public" class="hidden peer" checked>
+                            <div class="flex flex-col items-center gap-2 border-2 border-gray-300 dark:border-gray-600 rounded-xl p-6 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 transition-all">
+                                <span class="text-3xl">🌐</span>
+                                <span class="font-semibold text-blue-900 dark:text-blue-200">Public</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                                    Anyone can join your space
+                                </span>
+                            </div>
+                        </label>
+
+                        <label class="group cursor-pointer">
+                            <input type="radio" name="privacy" value="private" class="hidden peer">
+                            <div class="flex flex-col items-center gap-2 border-2 border-gray-300 dark:border-gray-600 rounded-xl p-6 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 transition-all">
+                                <span class="text-3xl">🔒</span>
+                                <span class="font-semibold text-blue-900 dark:text-blue-200">Private</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                                    Only invited users can join
+                                </span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+
+                <div>
+                    <label class="block text-blue-900 dark:text-blue-200 font-semibold mb-2">Max Participants</label>
+                    <input type="number" min="1" max="50" placeholder="e.g. 10" class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-xl shadow-lg font-semibold transition-transform transform hover:scale-105">
+                    ➕ Create Space
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer"></footer>
+
+    <script src="Navbar.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
