@@ -29,7 +29,7 @@ function toggleSpotifyPlayer() {
             user_email: document.getElementById("email").value
         };
 
-        emailjs.send("service_mj850sc", "template_xz8bp6i", parms)
+        emailjs.send(service_id, template_id, parms)
         .then(function(response) {
             alert("✅ Subscription successful! Check your email.");
         }, function(error) {
