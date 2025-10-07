@@ -11,15 +11,55 @@ function addtask() {
     const newTask = document.createElement('li');
     const taskList = document.getElementById('task-list');
 
-    newTask.textContent = taskText;
-    newTask.className = 'flex items-center justify-between bg-blue-100 p-2 my-2 rounded-lg shadow-sm w-80 dark:text-black';
+    // Create task container
+    newTask.innerHTML = `
+        <div class="task-item flex items-center justify-between p-4 rounded-xl shadow-lg transition-all duration-300">
+            <div class="flex items-center space-x-3 flex-1">
+                <input type="checkbox" class="w-5 h-5 text-indigo-600 bg-white/80 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2 transition-all duration-200" onchange="toggleTask(this)">
+                <span class="text-gray-800 font-medium flex-1">${taskText}</span>
+            </div>
+            <button class="delete-btn ml-4 px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-sm font-semibold rounded-lg shadow-md transition-all duration-200" onclick="deleteTask(this)">
+                🗑️ Remove
+            </button>
+        </div>
+    `;
 
     taskList.appendChild(newTask);
-    deletetask(newTask);
-
     taskInput.value = ""; // clear input after adding
+    updateEmptyState();
 }
 
+function toggleTask(checkbox) {
+    const taskText = checkbox.nextElementSibling;
+    if (checkbox.checked) {
+        taskText.classList.add('line-through', 'text-gray-500');
+        taskText.style.opacity = '0.6';
+    } else {
+        taskText.classList.remove('line-through', 'text-gray-500');
+        taskText.style.opacity = '1';
+    }
+}
+
+function deleteTask(button) {
+    const taskItem = button.closest('li');
+    taskItem.style.transform = 'translateX(100%)';
+    taskItem.style.opacity = '0';
+    setTimeout(() => {
+        taskItem.remove();
+        updateEmptyState();
+    }, 300);
+}
+
+function updateEmptyState() {
+    const taskList = document.getElementById('task-list');
+    const emptyState = document.getElementById('empty-state');
+    
+    if (taskList.children.length === 0) {
+        emptyState.style.display = 'block';
+    } else {
+        emptyState.style.display = 'none';
+    }
+}
 
 function deletetask(newtask){
     const deletebtn = document.createElement('button')
@@ -36,6 +76,9 @@ function deletetask(newtask){
 
 // Pomodoro Timer Script
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize empty state for todo list
+    updateEmptyState();
+    
     // Pomodoro settings in seconds (default)
     let workDuration = 25 * 60;
     let breakDuration = 5 * 60;
