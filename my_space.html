@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <title>FocusoraHQ - My Space</title>
   <link rel="shortcut icon" href="Pictures/org-dark-mode.png" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
   <script>
     tailwind.config = {
       darkMode: 'class'
@@ -15,132 +16,232 @@
 </head>
 
 <body id="main-body"
-  class="min-h-screen w-screen bg-cover bg-center dark:bg-gray-900 dark:text-gray-100"
+  class="min-h-screen w-screen bg-cover bg-center bg-fixed dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden pb-24"
   style="background-image: url(https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg);">
 
   <nav class="navbar"></nav>
 
-  <div class="flex flex-col lg:flex-row justify-between pt-16 gap-5">
+  <!-- Main Content Container -->
+  <div class="container mx-auto px-4 py-8 pt-20 pb-32">
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 max-w-7xl mx-auto">
 
-    <div class="w-full lg:w-1/3 flex flex-col">
-
-      <!-- Pomodoro -->
-      
-      <div
-        class="m-3 mb-1 h-[28rem] w-full p-5 pt-3 overflow-auto rounded-xl transition-transform duration-500 ease-in-out hover:scale-105 backdrop-blur-2xl lg:w-96 bg-white/20 dark:bg-gray-800/70 dark:border dark:border-gray-700">
-        <div class="flex justify-center items-center p-3">
-          <p class="text-3xl font-bold shadow-sm">⏱️</p>
-          <p class="text-3xl font-bold p-1 shadow-sm text-white dark:text-white">Pomodoro</p>
-        </div>
-        <hr class="border-gray-300 dark:border-gray-600">
-        <div class="flex flex-col items-center mt-4">
-          <div id="timer" class="text-5xl font-mono font-bold text-blue-900 mb-4 text-white dark:text-cyan-400">25:00</div>
-          <div class="flex space-x-2 mb-3">
-            <button id="startBtn"
-              class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Start</button>
-            <button id="pauseBtn"
-              class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Pause</button>
-            <button id="resetBtn"
-              class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">Reset</button>
-          </div>
-          <div class="mb-2">
-            <span id="sessionType"
-              class="text-sm font-medium bg-blue-100 px-3 py-1 rounded-full shadow-sm dark:bg-gray-700 dark:text-gray-200">Work
-              Session</span>
-          </div>
-          <div class="text-sm text-white dark:text-gray-200">
-            Sessions: <span id="sessionCounter" class="font-bold">0</span>
-          </div>
-          <div class="mt-3 flex flex-col items-center space-y-2">
-            <div class="flex items-center space-x-2">
-              <label class="text-xs font-medium text-white dark:text-gray-200">Work:</label>
-              <input id="workInput" type="number" min="1" max="60" value="25"
-                class="w-12 bg-white rounded text-sm px-2 py-1 border border-blue-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+      <!-- Left Column: Pomodoro & Theme Selector -->
+      <div class="xl:col-span-3 space-y-6">
+        
+        <!-- Pomodoro Timer Card -->
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300">
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative p-6">
+            <!-- Header -->
+            <div class="flex items-center justify-center mb-6">
+              <div class="flex items-center space-x-3">
+                <span class="text-4xl animate-pulse">⏱️</span>
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                  Pomodoro
+                </h2>
+              </div>
             </div>
-            <div class="flex items-center space-x-2">
-              <label class="text-xs font-medium text-white dark:text-gray-200">Break:</label>
-              <select id="breakSelect"
-                class="bg-white rounded text-sm px-2 py-1 border border-blue-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <option value="5">Short (5 min)</option>
-                <option value="15">Long (15 min)</option>
+            
+            <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
+            
+            <!-- Timer Display -->
+            <div class="flex flex-col items-center space-y-6">
+              <div class="relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 blur-xl rounded-full"></div>
+                <div id="timer" class="relative text-6xl font-mono font-bold text-white drop-shadow-lg">25:00</div>
+              </div>
+              
+              <!-- Control Buttons -->
+              <div class="flex space-x-3">
+                <button id="startBtn" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200">
+                  Start
+                </button>
+                <button id="pauseBtn" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200">
+                  Pause
+                </button>
+                <button id="resetBtn" class="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200">
+                  Reset
+                </button>
+              </div>
+              
+              <!-- Session Info -->
+              <div class="text-center space-y-3">
+                <span id="sessionType" class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm text-white font-medium rounded-full border border-white/30">
+                  Work Session
+                </span>
+                <div class="text-white/90">
+                  Sessions Completed: <span id="sessionCounter" class="font-bold text-cyan-400">0</span>
+                </div>
+              </div>
+              
+              <!-- Settings -->
+              <div class="grid grid-cols-2 gap-4 w-full max-w-xs">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-white/90">Work Duration</label>
+                  <div class="relative">
+                    <input id="workInput" type="number" min="1" max="60" value="25" 
+                           class="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white placeholder-white/50 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all">
+                    <span class="absolute right-3 top-2 text-white/60 text-sm">min</span>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-white/90">Break Type</label>
+                  <select id="breakSelect" class="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all">
+                    <option value="5" class="bg-gray-800">Short (5 min)</option>
+                    <option value="15" class="bg-gray-800">Long (15 min)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        <!-- Background Theme Selector -->
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300">
+          <div class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative p-6">
+            <div class="flex items-center space-x-3 mb-4">
+              <span class="text-2xl">🎨</span>
+              <h3 class="text-xl font-bold bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">
+                Select Theme
+              </h3>
+            </div>
+            
+            <div class="relative">
+              <select onchange="changeBackground(value)" 
+                      class="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white font-medium focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 transition-all appearance-none cursor-pointer">
+                <option value="" class="bg-gray-800 text-white">Choose Your Ambiance</option>
+                <option value="https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg" class="bg-gray-800 text-white">🌿 Serene Garden</option>
+                <option value="https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg" class="bg-gray-800 text-white">🏔️ Majestic Mountains</option>
+                <option value="https://images.pexels.com/photos/2150347/pexels-photo-2150347.jpeg" class="bg-gray-800 text-white">💧 Peaceful Waterfall</option>
+                <option value="https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg" class="bg-gray-800 text-white">🏖️ Tranquil Beach</option>
+                <option value="https://images.pexels.com/photos/761517/pexels-photo-761517.jpeg" class="bg-gray-800 text-white">🌊 Calm Lake</option>
               </select>
+              <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Background change -->
-      
-      <div
-        class="flex w-full m-3 gap-3 p-5 mt-1 items-center lg:w-96 h-20 backdrop-blur-2xl rounded-xl transition-transform duration-500 ease-in-out hover:scale-105 bg-white/20 dark:bg-gray-800/70 dark:border dark:border-gray-700">
-        <p class="font-semibold text-xl text-white dark:text-white">Select Theme: </p>
-        <select onchange="changeBackground(value)"
-          class="h-9 cursor-pointer border border-black rounded-lg p-1 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-          <option class="bg-blue-100 dark:bg-gray-700">--Select Background--</option>
-          <option
-            value="https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg"
-            class="bg-blue-100 dark:bg-gray-700">Nature</option>
-          <option value="https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg"
-            class="bg-blue-100 dark:bg-gray-700">Mountains</option>
-          <option value="https://images.pexels.com/photos/2150347/pexels-photo-2150347.jpeg"
-            class="bg-blue-100 dark:bg-gray-700">Waterfall</option>
-          <option value="https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg"
-            class="bg-blue-100 dark:bg-gray-700">Beach</option>
-          <option value="https://images.pexels.com/photos/761517/pexels-photo-761517.jpeg"
-            class="bg-blue-100 dark:bg-gray-700">Lake</option>
-        </select>
-      </div>
-    </div>
+      <!-- Center Column: Notes -->
+      <div class="xl:col-span-6">
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px]">
+          <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative p-6 h-full flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-center mb-6">
+              <div class="flex items-center space-x-3">
+                <span class="text-4xl">✍️</span>
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-white to-emerald-100 bg-clip-text text-transparent">
+                  Notes
+                </h2>
+              </div>
+            </div>
+            
+            <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
+            
+            <!-- Notes Textarea -->
+            <div class="flex-1">
+              <textarea id="notes"
+                class="w-full h-full rounded-xl p-6 text-gray-800 bg-white/70 backdrop-blur-sm border border-white/30 font-medium placeholder-gray-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all duration-300 resize-none shadow-inner"
+                placeholder="✨ Capture your brilliant ideas, thoughts, and inspirations here...
 
-    <!-- Notes -->
+📝 Quick tips:
+• Jot down key insights from your study sessions
+• Track your progress and achievements  
+• Note down important deadlines or reminders
+• Brainstorm new project ideas
 
-    <div
-      class="m-3 pb-10 p-5 pt-12 overflow-hidden rounded-2xl transition-transform duration-500 ease-in-out hover:scale-105 backdrop-blur-xl min-h-[24rem] w-full lg:w-2/5 bg-white/20 dark:bg-gray-800/70 dark:border dark:border-gray-700">
-      <div class="flex items-center justify-center mb-4">
-        <div class="flex items-center space-x-2 justify-center">
-          <h2 class="text-3xl font-bold p-1 shadow-sm text-white items-center dark:text-white">✍️ Notes</h2>
+Let your creativity flow! 🚀"></textarea>
+            </div>
+          </div>
         </div>
       </div>
-      <hr class="mb-4 border-gray-300 dark:border-gray-600">
-      <div class="h-[90%] pb-2">
-        <textarea id="notes"
-          class="w-full h-full rounded-xl p-5 text-gray-800 font-medium border-2 border-transparent transition duration-300 placeholder-gray-400 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
-          placeholder="✍️ Start writing your thoughts or ideas here..."></textarea>
-      </div>
-    </div>
 
-    <!-- To-do list -->
-    
-    <div
-      class="m-3 h-[28rem] w-full p-5 pt-10 rounded-xl transition-transform duration-500 ease-in-out hover:scale-105 backdrop-blur-xl lg:w-1/4 flex flex-col bg-white/20 dark:bg-gray-800/70 dark:border dark:border-gray-700">
-      <div class="flex justify-center items-center p-3">
-        <p class="text-3xl font-bold shadow-sm">📝</p>
-        <p class="text-3xl font-bold p-1 shadow-sm text-white dark:text-white">To-Do List</p>
-      </div>
-      <hr class="border-gray-300 dark:border-gray-600">
-      <div class="pt-3 flex-shrink-0">
-        <input type="text" id="input-task"
-          class="mr-1 p-1 pl-4 rounded-xl border hover:border-blue-500 w-60 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          placeholder="Add a new task...">
-        <button
-          class="border border-white p-1 rounded-xl bg-blue-700 text-white hover:bg-blue-800 hover:shadow-xl hover:scale-105 font-semibold"
-          onclick="addtask()">Add Task</button>
-      </div>
-      <div class="p-3 flex-1 overflow-y-auto">
-        <ul id="task-list" class="space-y-2"></ul>
+      <!-- Right Column: To-Do List -->
+      <div class="xl:col-span-3">
+        <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px]">
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative p-6 h-full flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-center mb-6">
+              <div class="flex items-center space-x-3">
+                <span class="text-4xl">📝</span>
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-white to-indigo-100 bg-clip-text text-transparent">
+                  To-Do List
+                </h2>
+              </div>
+            </div>
+            
+            <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
+            
+            <!-- Add Task Input -->
+            <div class="mb-6 space-y-3">
+              <div class="relative">
+                <input type="text" id="input-task"
+                  class="w-full px-4 py-3 bg-white/90 backdrop-blur-sm border border-white/30 rounded-xl text-gray-800 placeholder-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30 transition-all duration-300 pr-12"
+                  placeholder="✨ Add a new task or goal...">
+                <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <span class="text-indigo-400">📌</span>
+                </div>
+              </div>
+              <button onclick="addtask()"
+                class="w-full px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200">
+                ➕ Add Task
+              </button>
+            </div>
+            
+            <!-- Task List -->
+            <div class="flex-1 overflow-y-auto space-y-3 custom-scrollbar">
+              <ul id="task-list" class="space-y-3"></ul>
+              
+              <!-- Empty State -->
+              <div id="empty-state" class="text-center py-8 opacity-60">
+                <div class="text-6xl mb-3">📋</div>
+                <p class="text-white/80 font-medium">No tasks yet!</p>
+                <p class="text-white/60 text-sm">Add your first task above to get started</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Spotify -->
-  
-  <div
-    class="fixed bottom-0 left-0 w-full flex justify-center items-center p-2 backdrop-blur-2xl bg-white/20 dark:bg-gray-900/50">
-    <iframe data-testid="embed-iframe" style="border-radius:12px"
-      src="https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0FDzS8?utm_source=generator" width="100%" height="80"
-      frameBorder="0" allowfullscreen=""
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-    </iframe>
+  <!-- Enhanced Spotify Player -->
+  <div class="fixed bottom-0 left-0 right-0 z-50">
+    <div class="bg-gradient-to-r from-black/60 via-gray-900/80 to-black/60 backdrop-blur-xl border-t border-white/20">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl">🎵</span>
+            <span class="text-white font-medium">Focus Playlist</span>
+          </div>
+          <div class="text-xs text-white/60">
+            Powered by Spotify
+          </div>
+        </div>
+        <iframe data-testid="embed-iframe" 
+          style="border-radius:12px"
+          src="https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0FDzS8?utm_source=generator" 
+          width="100%" 
+          height="80"
+          frameBorder="0" 
+          allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
   </div>
 
   <script src="my_space.js"></script>
