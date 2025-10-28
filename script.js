@@ -19,10 +19,20 @@ fetch('./footer.html')
     eval(doc.querySelector('script').textContent)  
 })
 
+
+
+
+// Spotify
+
 function toggleSpotifyPlayer() {
   const expanded = document.getElementById("spotify-expanded");
   expanded.classList.toggle("hidden");
 }
+
+
+
+
+// Email JS
 
     function sendMail() {
         let parms = {

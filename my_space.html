@@ -21,19 +21,16 @@
 
   <nav class="navbar"></nav>
 
-  <!-- Main Content Container -->
   <div class="container mx-auto px-4 py-8 pt-20 pb-32">
     <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 max-w-7xl mx-auto">
 
-      <!-- Left Column: Pomodoro & Theme Selector -->
+      <!-- Pomodoro -->
       <div class="xl:col-span-3 space-y-6">
         
-        <!-- Pomodoro Timer Card -->
         <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300">
           <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
           <div class="relative p-6">
-            <!-- Header -->
             <div class="flex items-center justify-center mb-6">
               <div class="flex items-center space-x-3">
                 <span class="text-4xl animate-pulse">⏱️</span>
@@ -45,14 +42,12 @@
             
             <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
             
-            <!-- Timer Display -->
             <div class="flex flex-col items-center space-y-6">
               <div class="relative">
                 <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 blur-xl rounded-full"></div>
                 <div id="timer" class="relative text-6xl font-mono font-bold text-white drop-shadow-lg">25:00</div>
               </div>
               
-              <!-- Control Buttons -->
               <div class="flex space-x-3">
                 <button id="startBtn" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200">
                   Start
@@ -65,7 +60,6 @@
                 </button>
               </div>
               
-              <!-- Session Info -->
               <div class="text-center space-y-3">
                 <span id="sessionType" class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm text-white font-medium rounded-full border border-white/30">
                   Work Session
@@ -75,7 +69,6 @@
                 </div>
               </div>
               
-              <!-- Settings -->
               <div class="grid grid-cols-2 gap-4 w-full max-w-xs">
                 <div class="space-y-2">
                   <label class="block text-sm font-medium text-white/90">Work Duration</label>
@@ -130,13 +123,13 @@
         </div>
       </div>
 
-      <!-- Center Column: Notes -->
+      <!-- Notes -->
       <div class="xl:col-span-6">
         <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px]">
           <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
           <div class="relative p-6 h-full flex flex-col">
-            <!-- Header -->
+            
             <div class="flex items-center justify-center mb-6">
               <div class="flex items-center space-x-3">
                 <span class="text-4xl">✍️</span>
@@ -148,7 +141,7 @@
             
             <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
             
-            <!-- Notes Textarea -->
+            
             <div class="flex-1">
               <textarea id="notes"
                 class="w-full h-full rounded-xl p-6 text-gray-800 bg-white/70 backdrop-blur-sm border border-white/30 font-medium placeholder-gray-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all duration-300 resize-none shadow-inner"
@@ -166,13 +159,12 @@ Let your creativity flow! 🚀"></textarea>
         </div>
       </div>
 
-      <!-- Right Column: To-Do List -->
+      <!-- To-Do List -->
       <div class="xl:col-span-3">
         <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px]">
           <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
           <div class="relative p-6 h-full flex flex-col">
-            <!-- Header -->
             <div class="flex items-center justify-center mb-6">
               <div class="flex items-center space-x-3">
                 <span class="text-4xl">📝</span>
@@ -184,7 +176,6 @@ Let your creativity flow! 🚀"></textarea>
             
             <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
             
-            <!-- Add Task Input -->
             <div class="mb-6 space-y-3">
               <div class="relative">
                 <input type="text" id="input-task"
@@ -200,11 +191,9 @@ Let your creativity flow! 🚀"></textarea>
               </button>
             </div>
             
-            <!-- Task List -->
             <div class="flex-1 overflow-y-auto space-y-3 custom-scrollbar">
               <ul id="task-list" class="space-y-3"></ul>
               
-              <!-- Empty State -->
               <div id="empty-state" class="text-center py-8 opacity-60">
                 <div class="text-6xl mb-3">📋</div>
                 <p class="text-white/80 font-medium">No tasks yet!</p>
@@ -217,7 +206,7 @@ Let your creativity flow! 🚀"></textarea>
     </div>
   </div>
 
-  <!-- Enhanced Spotify Player -->
+  <!-- Spotify Player -->
   <div class="fixed bottom-0 left-0 right-0 z-50">
     <div class="bg-gradient-to-r from-black/60 via-gray-900/80 to-black/60 backdrop-blur-xl border-t border-white/20">
       <div class="container mx-auto px-4 py-3">

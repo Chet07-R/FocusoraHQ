@@ -1,5 +1,4 @@
 // To do list
-
 function addtask() {
     const taskInput = document.getElementById('input-task');
     const taskText = taskInput.value.trim(); // remove spaces
@@ -74,7 +73,14 @@ function deletetask(newtask){
     }
 }
 
-// Pomodoro Timer Script
+
+
+
+
+
+
+
+// Pomodoro 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize empty state for todo list
     updateEmptyState();
@@ -211,8 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// for background
 
+
+
+
+
+// for background
 function changeBackground(img) {
   const body = document.getElementById("main-body");
   body.style.backgroundImage = `url('${img}')`;
@@ -221,14 +231,15 @@ function changeBackground(img) {
 }
 
 
+
+
+
+
+
+
 // for notes
-
 const notesArea = document.getElementById("notes");
-
-// Load saved notes
 notesArea.value = localStorage.getItem("focusoraNotes") || "";
-
-// Auto-save while typing
 notesArea.addEventListener("input", () => {
   localStorage.setItem("focusoraNotes", notesArea.value);
 });

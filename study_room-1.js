@@ -13,13 +13,7 @@ function uploadNotesFile() {
   const li = document.createElement('li');
   li.className = "hover:text-blue-700 cursor-pointer truncate";
   li.textContent = file.name;
-
-//   Optional: If you want download link for demo purposes
-//   const url = URL.createObjectURL(file);
-//   li.innerHTML = `<a href="${url}" download>${file.name}</a>`;
-
   list.appendChild(li);
-
   // Clear input
   fileInput.value = '';
 }
