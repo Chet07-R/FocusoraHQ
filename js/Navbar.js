@@ -76,4 +76,27 @@ function initNavbar() {
             }
         });
     }
+
+    // Active link highlight (keeps underline on current page)
+    try {
+        // Get current file name without extension (e.g., my_space, Blog, leaderboard)
+        const path = window.location.pathname;
+        let page = path.split('/').pop() || '';
+        if (page.endsWith('.html')) {
+            page = page.slice(0, -5);
+        }
+
+        // Treat blog detail pages as Blog
+        const isBlogDetail = /^Blog(-\d+)?$/i.test(page);
+
+        document.querySelectorAll('.nav-link').forEach((link) => {
+            const name = link.getAttribute('data-page');
+            if (!name) return;
+            if (page === name || (isBlogDetail && name.toLowerCase() === 'blog')) {
+                link.classList.add('active');
+            }
+        });
+    } catch (e) {
+        // No-op if navbar not yet injected
+    }
 }

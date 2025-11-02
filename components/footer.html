@@ -41,17 +41,23 @@
 </head>
 
 <body class="bg-gray-900">
-    <footer class="bg-gradient-to-b from-gray-900 to-black w-full">
-        <div class="container mx-auto px-6 py-12">
+    <footer class="bg-gradient-to-b from-black via-gray-900 to-gray-950 w-full relative overflow-hidden">
+        <!-- Subtle background glow -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
+            <div class="absolute bottom-1/4 right-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 py-12 relative z-10">
             <!-- Main Footer Content -->
-            <div class="grid grid-cols-1 lg:grid-cols-6 gap-8 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 mb-8 justify-items-start">
                 <!-- Brand Section -->
-                <div class="lg:col-span-2">
+                <div class="sm:col-span-2 md:col-span-3 lg:col-span-2">
                     <div class="flex items-center mb-4">
-                        <img src="Pictures/transparent.png" alt="FocusoraHQ Logo" class="h-12 w-12 rounded-full">
-                        <span class="ml-3 font-bold text-2xl text-white">FocusoraHQ</span>
+                        <img src="../images/transparent.png" alt="FocusoraHQ Logo" class="h-12 w-12 rounded-full">
+                        <span class="ml-3 font-bold text-2xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">FocusoraHQ</span>
                     </div>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6 max-w-md">
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6 md:max-w-md">
                         The all-in-one platform for focused work. Minimize digital noise and maximize your potential,
                         whether you're working alone or with a team.
                     </p>
@@ -137,19 +143,22 @@
             </div>
 
             <!-- Newsletter Section -->
-            <div class="bg-gray-800 rounded-lg p-6 mb-8">
+            <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300">
                 <div class="flex flex-col md:flex-row items-center justify-between">
                     <div class="mb-4 md:mb-0">
-                        <h3 class="text-white font-semibold text-lg mb-2">Stay Updated</h3>
+                        <h3 class="text-white font-semibold text-lg mb-2 flex items-center gap-2">
+                            <span class="text-2xl">📬</span>
+                            Stay Updated
+                        </h3>
                         <p class="text-gray-300 text-sm">Get the latest updates and productivity tips straight to your
                             inbox.</p>
                     </div>
                     <div class="flex w-full md:w-auto">
                         <input type="email" placeholder="Enter your email"
-                            class="px-4 py-2 w-full md:w-64 rounded-l-lg bg-gray-700 text-white placeholder-gray-400 border border-gray-600 outline-none "
+                            class="px-4 py-2 w-full md:w-64 rounded-l-lg bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 outline-none focus:border-cyan-500 focus:bg-gray-700 transition-all"
                             aria-label="Email address" id="email">
                         <button
-                            class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-r-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                            class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-semibold rounded-r-lg hover:from-cyan-600 hover:to-pink-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:shadow-lg hover:shadow-cyan-500/50"
                             onclick="sendMail()">
                             Subscribe
                         </button>
@@ -159,18 +168,18 @@
 
             <!-- Divider -->
             <div>
-                <hr class="m-2 border-gray-700" />
+                <hr class="m-2 border-gray-700/50" />
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-between p-2">
-                <p class="text-gray-100 text-sm">
-                    © 2025 FocusoraHQ<br>
-                    Made with ❤️ by students.<br>
+                <p class="text-gray-300 text-sm">
+                    © 2025 <span class="font-semibold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">FocusoraHQ</span><br>
+                    Made with <span class="text-pink-500 animate-pulse">❤️</span> by students.<br>
                     All rights reserved.
                 </p>
 
-                <div class="flex items-center gap-6 md:gap-10 mt-4 sm:mt-0 ml-auto">
-                    <a href="#" class="text-gray-400 hover:text-blue-700 transition-colors ">
+                <div class="flex items-center gap-6 md:gap-10 mt-4 sm:mt-0 ml-0 sm:ml-auto flex-wrap justify-center sm:justify-end">
+                    <a href="#" aria-label="Discord" class="text-gray-400 hover:text-[#5865F2] transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_#5865F2]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50"
                             style="fill:currentcolor">
                             <path
@@ -178,21 +187,21 @@
                             </path>
                         </svg>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-[#1DA1F2] transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_#1DA1F2]">
                         <svg width="30" height="30" fill="currentColor" viewBox="0 0 50 50">
                             <path
                                 d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z">
                             </path>
                         </svg>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors">
+                    <a href="#" aria-label="LinkedIn" class="text-gray-400 hover:text-[#0A66C2] transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_#0A66C2]">
                         <svg width="30" height="30" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z">
                             </path>
                         </svg>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-gray-100 transition-colors">
+                    <a href="#" aria-label="GitHub" class="text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
                         <svg width="30" height="30" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z">
@@ -218,6 +227,21 @@
                     alert("❌ Failed to send email.");
                 });
         }
+        
+        // Fix paths based on current location
+        (function() {
+            const isInPages = window.location.pathname.includes('/pages/');
+            
+            if (!isInPages) {
+                // We're in root, update all paths to remove ../ prefix
+                document.querySelectorAll('footer a[href^="../"]').forEach(link => {
+                    link.href = link.getAttribute('href').replace('../', '');
+                });
+                document.querySelectorAll('footer img[src^="../"]').forEach(img => {
+                    img.src = img.getAttribute('src').replace('../', '');
+                });
+            }
+        })();
     </script>
 
 </body>

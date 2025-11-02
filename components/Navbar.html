@@ -67,7 +67,7 @@
 
         <!-- Navigation Links -->
         <div class="hidden lg:flex gap-8 items-center font-semibold text-base">
-            <a href="../pages/my_space.html" class="flex items-center gap-2 cursor-pointer group">
+                <a href="../pages/my_space.html" data-page="my_space" class="nav-link flex items-center gap-2 cursor-pointer group">
                 <svg class="w-5 h-5 group-hover:scale-110 text-pink-400 transition-transform duration-300" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -75,11 +75,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
                 </svg>
                 <span
-                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">My
+                        class="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">My
                     Space</span>
             </a>
 
-            <a href="study_room.html" class="flex items-center gap-2 cursor-pointer group">
+                <a href="study_room.html" data-page="study_room" class="nav-link flex items-center gap-2 cursor-pointer group">
                 <svg class="w-5 h-5 group-hover:scale-110 text-purple-400 transition-transform duration-300" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -87,11 +87,11 @@
                     </path>
                 </svg>
                 <span
-                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Study
+                        class="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Study
                     Room</span>
             </a>
 
-            <a href="../pages/Blog.html" class="flex items-center gap-2 cursor-pointer group">
+                <a href="../pages/Blog.html" data-page="Blog" class="nav-link flex items-center gap-2 cursor-pointer group">
                 <svg class="w-5 h-5 group-hover:scale-110 text-blue-400 transition-transform duration-300" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -99,16 +99,16 @@
                     </path>
                 </svg>
                 <span
-                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Blogs</span>
+                        class="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Blogs</span>
             </a>
 
-            <a href="../pages/leaderboard.html" class="flex items-center gap-2 cursor-pointer group">
+                <a href="../pages/leaderboard.html" data-page="leaderboard" class="nav-link flex items-center gap-2 cursor-pointer group">
                 <svg class="w-5 h-5 group-hover:scale-110 text-yellow-400 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                     <path d="M8 21V16L5.5 13.5H10.5L12 16V21H8Z" fill="currentColor" opacity="0.7"/>
                 </svg>
                 <span
-                    class="relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Leaderboard</span>
+                        class="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Leaderboard</span>
             </a>
         </div>
 
@@ -200,8 +200,8 @@
     <div id="mobile-menu"
         class="hidden lg:hidden fixed top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300">
         <div class="px-4 py-6 space-y-4">
-            <a href="../pages/my_space.html"
-                class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <a href="../pages/my_space.html" data-page="my_space"
+                    class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
                 <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
@@ -210,7 +210,7 @@
                 <span class="text-white font-semibold">My Space</span>
             </a>
 
-            <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <a href="study_room.html" data-page="study_room" class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
                 <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -219,7 +219,7 @@
                 <span class="text-white font-semibold">Study Room</span>
             </a>
 
-            <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <a href="../pages/Blog.html" data-page="Blog" class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
                 <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -228,7 +228,7 @@
                 <span class="text-white font-semibold">Blogs</span>
             </a>
 
-            <a href="../pages/leaderboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                <a href="../pages/leaderboard.html" data-page="leaderboard" class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
                 <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                     <path d="M8 21V16L5.5 13.5H10.5L12 16V21H8Z" fill="currentColor" opacity="0.7"/>
@@ -237,6 +237,22 @@
             </a>
         </div>
     </div>
+
+    <style>
+        /* Active state styles */
+        .nav-link.active .nav-text {
+            color: #06b6d4; /* cyan-400 */
+        }
+    
+        .nav-link.active .nav-text::after {
+            width: 100% !important;
+        }
+    
+        /* Mobile menu active state */
+        .nav-link.active {
+            background-color: rgba(31, 41, 55, 0.5); /* gray-800/50 */
+        }
+    </style>
 
 <script>
 // Fix paths based on current location
@@ -252,6 +268,17 @@
             img.src = img.getAttribute('src').replace('../', '');
         });
     }
+    
+        // Set active state for current page
+        const currentPath = window.location.pathname;
+        const currentPage = currentPath.split('/').pop().replace('.html', '');
+    
+        document.querySelectorAll('.nav-link').forEach(link => {
+            const pageName = link.getAttribute('data-page');
+            if (currentPage === pageName) {
+                link.classList.add('active');
+            }
+        });
 })();
 </script>
 
