@@ -12,7 +12,7 @@
         }
     </script>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="shortcut icon" href="../images/org-dark-mode.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/logo-shrinked.png" type="image/x-icon">
 </head>
 
 <body class="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800">
@@ -138,7 +138,7 @@
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600 dark:text-gray-300">Badge</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="rankingList">
                             
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -449,7 +449,7 @@
                 </div>
 
                 <div class="px-8 py-6 text-center border-t border-gray-200 dark:border-gray-700">
-                    <button class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 hover:scale-105">
+                    <button id="loadMoreBtn" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 hover:scale-105">
                         Load More Rankings
                     </button>
                 </div>
@@ -501,59 +501,9 @@
 
     <div class="footer"></div>
 
-    <script>
-        // Counter Animation Function
-        function animateCounter(element) {
-            const target = parseInt(element.getAttribute('data-target'));
-            const suffix = element.getAttribute('data-suffix') || '';
-            const duration = 2000; // 2 seconds
-            const increment = target / (duration / 16); // 60fps
-            let current = 0;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                
-                // Format the number
-                let displayValue = Math.floor(current);
-                
-                // Add comma formatting for large numbers
-                if (displayValue >= 1000 && !suffix) {
-                    displayValue = displayValue.toLocaleString();
-                }
-                
-                element.textContent = displayValue + suffix;
-            }, 16);
-        }
-
-        // Intersection Observer for triggering animation when visible
-        const observerOptions = {
-            threshold: 0.5,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
-                    entry.target.classList.add('animated');
-                    animateCounter(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Start observing counter elements when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            const counters = document.querySelectorAll('.counter');
-            counters.forEach(counter => {
-                observer.observe(counter);
-            });
-        });
-    </script>
     <script src="../js/script.js"></script>
     <script src="../js/Navbar.js"></script>
+    <script src="../js/leaderboard.js"></script>
 </body>
 </html>
 
