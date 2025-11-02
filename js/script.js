@@ -1,6 +1,11 @@
 const nav = document.querySelector('.navbar')
-const bottom = document.querySelector('.footer')    
-fetch('./navbar.html')
+const bottom = document.querySelector('.footer')
+
+// Detect if we're in a subfolder (pages) or root
+const isInPages = window.location.pathname.includes('/pages/');
+const basePath = isInPages ? '../' : './';
+
+fetch(`${basePath}components/Navbar.html`)
 .then(res => res.text())
 .then(data =>{
     nav.innerHTML = data
@@ -10,7 +15,7 @@ fetch('./navbar.html')
     eval(doc.querySelector('script').textContent)  // eval will execute if the content is js 
 })
 
-fetch('./footer.html')
+fetch(`${basePath}components/footer.html`)
 .then(res => res.text())
 .then(data =>{
     bottom.innerHTML = data
