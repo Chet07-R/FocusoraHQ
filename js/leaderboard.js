@@ -18,24 +18,26 @@ originalCards.forEach(card => {
 
 loadMoreBtn.addEventListener("click", function () {
     originalCards.forEach((card) => {
+        // Only skip cards containing the YOU highlight
+        const youBadge = card.querySelector('span.bg-blue-600');
+        if (youBadge && youBadge.textContent.includes('YOU')) {
+            return; // SKIP card with YOU badge
+        }
         const clone = card.cloneNode(true);
-        
+
         // Increment rank counter for next available number
         totalRanks += 1;
-        
-        // Find and update the rank number element
+
+        // Update ranking number
         const rankNum = clone.querySelector("span");
         if (rankNum) {
             rankNum.textContent = totalRanks;
         }
-        
-        // Keep original names without modification
-        // (Remove the name modification code completely)
-        
-        // Append clone to the list
+
         rankingList.appendChild(clone);
     });
 });
+
 
 
 
