@@ -30,7 +30,7 @@
                     <p class="text-blue-700 dark:text-gray-400 text-lg mb-8">
                         Your ultimate resource for productivity insights, focus strategies, and actionable tips to transform your work and life.
                     </p>
-                    <a href="#" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-4 px-10 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-gray-100">
+                    <a href="#" class="inline-flex items-center bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 transform">
                         Explore Articles
                     </a>
                 </div>
@@ -88,7 +88,7 @@
 </section>
 
     <!-- Latest Articles Grid -->
-    <section class="py-16 bg-gray-50 dark:bg-gray-900">
+    <section class="py-16 bg-gray-50 dark:bg-gray-900" id="latest-articles">
         <div class="cursor-pointer container mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Latest Articles</h2>
@@ -339,22 +339,28 @@
             </div>
         </div>
     </section>
-
-
-    <section class="py-16 bg-indigo-700 dark:bg-gray-900 text-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-4">Ready to Transform Your Productivity?</h2>
-            <p class="text-xl mb-8 text-indigo-200 dark:text-gray-400 max-w-2xl mx-auto">
+        <section class="bg-gradient-to-r from-gray-900 via-gray-800 to-black dark:bg-gray-900 relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 py-20 text-center relative z-10">
+            <h2 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
+                Ready to Transform Your Productivity?
+            </h2>
+            <p class="mt-4 text-lg text-gray-300 dark:text-gray-400 max-w-2xl mx-auto mb-4">
                 Join thousands who've transformed their work and life with our proven systems and strategies.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="signup.html" class="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg">
-                    Start Your Journey
-                </a>
-                <a href="#" class="inline-block bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-indigo-700 transform hover:scale-105 transition-all duration-300">
-                    Browse All Articles
-                </a>
-            </div>
+            <a href="../pages/signup.html"
+                class="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg m-3">
+                Start Your Journey
+            </a>
+            <a href="#latest-articles"
+                class="inline-block bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-indigo-700 transform hover:scale-105 transition-all duration-300 m-3">
+                Browse All Articles
+            </a>
         </div>
     </section>
 
