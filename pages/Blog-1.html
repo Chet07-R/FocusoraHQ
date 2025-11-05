@@ -10,6 +10,41 @@
             darkMode: 'class'
         }
     </script>
+    <style>
+        /* Smooth scrolling with offset */
+html {
+    scroll-padding-top: 100px;
+    scroll-behavior: smooth;
+}
+
+/* Active state using :target pseudo-class */
+:target {
+    scroll-margin-top: 100px;
+}
+
+/* Keep focus style on clicked links */
+.toc-link:focus {
+    outline: none;
+    color: #60a5fa !important;
+    background-color: rgba(96, 165, 250, 0.1) !important;
+    border-left: 3px solid #60a5fa !important;
+}
+
+/* Active link based on URL hash */
+.toc-link[href="#introduction"]:target,
+.toc-link[href="#the-problem"]:target,
+.toc-link[href="#the-science"]:target,
+.toc-link[href="#benefits-impact"]:target,
+.toc-link[href="#common-challenges"]:target,
+.toc-link[href="#action-plan"]:target,
+.toc-link[href="#proven-techniques"]:target,
+.toc-link[href="#progress-tracking"]:target {
+    color: #60a5fa;
+    background-color: rgba(96, 165, 250, 0.1);
+    border-left: 3px solid #60a5fa;
+}
+
+    </style>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="shortcut icon" href="../images/logo-shrinked.png" type="image/x-icon">
 </head>
@@ -93,25 +128,25 @@
                         Table of Contents
                     </h3>
                     <nav class="space-y-2 sm:space-y-3">
-                        <a href="#introduction" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#introduction" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             What is Deep Work?
                         </a>
-                        <a href="#science" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#science" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             The Science Behind Deep Work
                         </a>
-                        <a href="#benefits" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#benefits" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             Benefits & Impact
                         </a>
-                        <a href="#challenges" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#challenges" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             Common Challenges
                         </a>
-                        <a href="#day-plan" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#day-plan" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             30-Day Action Plan
                         </a>
-                        <a href="#techniques" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#techniques" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             Proven Techniques
                         </a>
-                        <a href="#tracking" class="block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
+                        <a href="#tracking" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
                             Progress Tracking
                         </a>
                     </nav>
