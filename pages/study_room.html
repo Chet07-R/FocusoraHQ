@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,44 +10,145 @@
             darkMode: 'class'
         }
     </script>
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="shortcut icon" href="../images/logo-shrinked.png" type="image/x-icon">
 </head>
-<body>
+<body class="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800">
     <nav class="navbar"></nav>
 
+    <!-- Hero Section -->
+    <main class="min-h-screen relative overflow-hidden">
+        <div class="container mx-auto px-4 py-20">
+            <!-- Header -->
+            <div class="max-w-3xl mx-auto text-center mb-16 pt-12">
+                <div class="flex items-center justify-center gap-3 mb-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-xl">
+                        <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-extrabold text-blue-900 dark:text-white">
+                        Study Rooms
+                    </h1>
+                </div>
+                <p class="text-xl md:text-2xl text-blue-800 dark:text-blue-200 leading-relaxed">
+                    Join a public room or create your own private focus space. Collaborate, compete, or just vibe with focused learners worldwide!
+                </p>
+            </div>
 
-    <main class="flex flex-col items-center justify-center min-h-[80vh] px-4 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen relative overflow-hidden">
-        <div class="max-w-xl w-full text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 dark:text-white mb-4">
-                Study Rooms
-            </h1>
-            <p class="text-lg md:text-xl text-blue-800 dark:text-blue-200 mb-6">
-                Join a public room or create your own private focus space. Collaborate, compete, or just vibe with others!
-            </p>
-        </div>
-        <!-- Join or Create -->
-        <div class="flex flex-col md:flex-row gap-8 w-full max-w-2xl justify-center items-center">
-            <a href="create_space.html">
-            <button class="flex-1 flex flex-col items-center gap-2 bg-white/80 dark:bg-gray-800/80 border-2 border-blue-700 dark:border-blue-400 rounded-2xl px-8 py-6 shadow-lg hover:scale-105 transition-transform duration-200">
-                <span class="text-3xl">➕</span>
-                <span class="font-semibold text-blue-900 dark:text-blue-200 text-lg">Create Space</span>
-                <span class="text-sm text-blue-700 dark:text-blue-300">Start a private or group study room</span>
-            </button>
-            </a>
-            <a href="join_space.html">
-            <button class="flex-1 flex flex-col items-center gap-2 bg-white/80 dark:bg-gray-800/80 border-2 border-cyan-700 dark:border-cyan-400 rounded-2xl px-8 py-6 shadow-lg hover:scale-105 transition-transform duration-200">
-                <span class="text-3xl">🌐</span>
-                <span class="font-semibold text-cyan-900 dark:text-cyan-200 text-lg">Join Space</span>
-                <span class="text-sm text-cyan-700 dark:text-cyan-300">Browse and join study rooms</span>
-            </button>
-            </a>
-        </div>
-        <!-- Image -->
-        <div class="mt-12 flex justify-center">
-            <img src="../images/study_room.png"
-                 alt="Study Room Illustration"
-                 class="w-72 md:w-96 rounded-xl shadow-xl border-2 border-blue-100 dark:border-gray-700 bg-white/60 dark:bg-gray-800/60" 
-                 loading="lazy">
+            <!-- Main Action Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
+                <!-- Create Space Card -->
+                <a href="create_space.html" class="group">
+                    <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border-2 border-transparent hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 h-full">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 opacity-50"></div>
+                        <div class="relative p-8">
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                                    <svg class="w-11 h-11 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="text-2xl font-bold text-blue-900 dark:text-white mb-3 text-center group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                Create Space
+                            </h2>
+                            <p class="text-blue-700 dark:text-blue-300 text-center mb-6 leading-relaxed">
+                                Start a private or group study room with custom settings and invite your friends
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Customize room settings</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Invite team members</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Set focus goals together</span>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex items-center justify-center">
+                                <span class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold group-hover:gap-3 transition-all duration-300">
+                                    Get Started
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Join Space Card -->
+                <a href="join_space.html" class="group">
+                    <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border-2 border-transparent hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300 h-full">
+                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 opacity-50"></div>
+                        <div class="relative p-8">
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                                    <svg class="w-11 h-11 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="text-2xl font-bold text-cyan-900 dark:text-white mb-3 text-center group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-300">
+                                Join Space
+                            </h2>
+                            <p class="text-cyan-700 dark:text-cyan-300 text-center mb-6 leading-relaxed">
+                                Browse and join active study rooms from learners around the world
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Find active study rooms</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Connect with learners</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                                    <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Boost productivity together</span>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex items-center justify-center">
+                                <span class="inline-flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-semibold group-hover:gap-3 transition-all duration-300">
+                                    Browse Rooms
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Feature Image -->
+            <div class="flex justify-center">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
+                    <img src="../images/study_room.png"
+                         alt="Study Room Illustration"
+                         class="relative w-80 md:w-[32rem] rounded-2xl shadow-2xl border-4 border-white dark:border-gray-700 bg-white/80 dark:bg-gray-800/80" 
+                         loading="lazy">
+                </div>
+            </div>
         </div>
     </main>
 
