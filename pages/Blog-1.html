@@ -10,41 +10,7 @@
             darkMode: 'class'
         }
     </script>
-    <style>
-        /* Smooth scrolling with offset */
-html {
-    scroll-padding-top: 100px;
-    scroll-behavior: smooth;
-}
 
-/* Active state using :target pseudo-class */
-:target {
-    scroll-margin-top: 100px;
-}
-
-/* Keep focus style on clicked links */
-.toc-link:focus {
-    outline: none;
-    color: #60a5fa !important;
-    background-color: rgba(96, 165, 250, 0.1) !important;
-    border-left: 3px solid #60a5fa !important;
-}
-
-/* Active link based on URL hash */
-.toc-link[href="#introduction"]:target,
-.toc-link[href="#the-problem"]:target,
-.toc-link[href="#the-science"]:target,
-.toc-link[href="#benefits-impact"]:target,
-.toc-link[href="#common-challenges"]:target,
-.toc-link[href="#action-plan"]:target,
-.toc-link[href="#proven-techniques"]:target,
-.toc-link[href="#progress-tracking"]:target {
-    color: #60a5fa;
-    background-color: rgba(96, 165, 250, 0.1);
-    border-left: 3px solid #60a5fa;
-}
-
-    </style>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="shortcut icon" href="../images/logo-shrinked.png" type="image/x-icon">
 </head>
@@ -625,48 +591,95 @@ html {
         </div>
     </div>
 
-    <!-- Related Articles -->
-    <section class="bg-gray-100 dark:bg-gray-800/50 py-12 sm:py-16">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-gray-900 dark:text-white">Related Articles</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                    <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                         alt="Focus and concentration techniques" 
-                         class="w-full h-48 object-cover">
-                        <div class="p-4 sm:p-6">
-                            <h3 class="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 dark:text-white">7 Science-Backed Methods to Eliminate Distractions</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 text-sm sm:text-base">Discover how to enter and maintain peak performance states for maximum productivity.</p>
-                            <a href="#" class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 text-sm sm:text-base">Read More →</a>
+<!-- Related Articles -->
+<section class="bg-gray-100 dark:bg-gray-800/50 py-12 sm:py-16">
+    <div class="container mx-auto px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-gray-900 dark:text-white">
+                Related Articles
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Article 1 -->
+                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
+                    <a href="Blog-2.html" class="block h-full">
+                        <div class="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                             alt="Focus and concentration techniques" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                    </article>
+                        <div class="p-4 sm:p-6 flex flex-col h-full">
+                            <h3 class="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                7 Science-Backed Methods to Eliminate Distractions
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base flex-grow">
+                                Discover how to enter and maintain peak performance states for maximum productivity.
+                            </p>
+                            <span class="text-blue-600 dark:text-blue-400 font-semibold group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors duration-300 text-sm sm:text-base inline-flex items-center gap-2">
+                                Read More 
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </article>
 
-                    <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                        <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                         alt="Time management and planning" 
-                         class="w-full h-48 object-cover">
-                        <div class="p-4 sm:p-6">
-                            <h3 class="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 dark:text-white">The 2-Minute Rule That Will Transform Your Day</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 text-sm sm:text-base">Learn how to optimize your mental resources for better focus and learning.</p>
-                            <a href="#" class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 text-sm sm:text-base">Read More →</a>
+                <!-- Article 2 -->
+                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
+                    <a href="Blog-2.html" class="block h-full">
+                        <div class="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
+                            <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                             alt="Time management and planning" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                    </article>
+                        <div class="p-4 sm:p-6 flex flex-col h-full">
+                            <h3 class="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                The 2-Minute Rule That Will Transform Your Day
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base flex-grow">
+                                Learn how to optimize your mental resources for better focus and learning.
+                            </p>
+                            <span class="text-blue-600 dark:text-blue-400 font-semibold group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors duration-300 text-sm sm:text-base inline-flex items-center gap-2">
+                                Read More 
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </article>
 
-                    <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
-                        <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
-                         alt="Email management and organization" 
-                         class="w-full h-48 object-cover">
-                        <div class="p-4 sm:p-6">
-                            <h3 class="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 dark:text-white">Inbox Zero: Master Email in 15 Minutes Daily</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 text-sm sm:text-base">Create boundaries with technology to reclaim your attention and focus.</p>
-                            <a href="#" class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 text-sm sm:text-base">Read More →</a>
+                <!-- Article 3 -->
+                <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2 md:col-span-2 lg:col-span-1">
+                    <a href="Blog-2.html" class="block h-full">
+                        <div class="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
+                            <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
+                             alt="Email management and organization" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                    </article>
-                </div>
+                        <div class="p-4 sm:p-6 flex flex-col h-full">
+                            <h3 class="font-bold text-lg sm:text-xl mb-2 sm:mb-3 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                Inbox Zero: Master Email in 15 Minutes Daily
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base flex-grow">
+                                Create boundaries with technology to reclaim your attention and focus.
+                            </p>
+                            <span class="text-blue-600 dark:text-blue-400 font-semibold group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors duration-300 text-sm sm:text-base inline-flex items-center gap-2">
+                                Read More 
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </article>
             </div>
         </div>
-    </section>
+    </div>
+</section>
     
     <footer class="footer"></footer>
     <script src="../js/script.js"></script>

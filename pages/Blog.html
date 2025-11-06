@@ -45,43 +45,47 @@
         </div>
     </section>
 
-   <!-- Featured Article Section -->
+<!-- Featured Article Section -->
 <section id="featured" class="py-16 bg-white dark:bg-gray-900">
-    <div class="container mx-auto px-6">
+    <div class="container mx-auto px-4 sm:px-6">
         <div class="text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Featured Article</h2>
             <p class="text-lg text-gray-600 dark:text-gray-400">Our most impactful productivity insights</p>
         </div>
         
         <div class="max-w-5xl mx-auto">
-            <div class="bg-gradient-to-r from-indigo-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300">
-                <div class="md:flex">
-                    <div class="md:w-1/2">
+            <div class="group bg-gradient-to-r from-indigo-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 rounded-3xl overflow-hidden shadow-lg dark:shadow-xl hover:shadow-2xl dark:hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <div class="md:flex h-full">
+                    <!-- Image Container -->
+                    <div class="md:w-1/2 overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
                              alt="Deep work and focus strategies" 
-                             class="w-full h-64 md:h-full object-cover">
+                             class="w-full h-64 md:h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     </div>
                     
-                    <div class="cursor-pointer md:w-1/2 p-8 md:p-12">
-                        <a href="Blog-1.html" >
-                        <div class="inline-block bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide mb-4">
-                            Featured
-                        </div>
-                        <h3 class="text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">
-                            The Ultimate Guide to Deep Work: Transform Your Productivity in 30 Days
-                        </h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
-                            Master the art of sustained focus with proven strategies from top performers. Learn how to eliminate distractions, create optimal work environments, and achieve breakthrough results.
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-gray-500 dark:text-gray-400">15 min read • Dec 2024</span>
-                            <span class="inline-flex items-center bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 transform">
-                                Read Article
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </span>
-                        </div>
+                    <!-- Content Container -->
+                    <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
+                        <a href="Blog-1.html" class="block h-full">
+                            <div class="inline-block bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide mb-4 group-hover:bg-blue-800 dark:group-hover:bg-blue-700 transition-colors duration-300">
+                                Featured
+                            </div>
+                            <h3 class="text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                The Ultimate Guide to Deep Work: Transform Your Productivity in 30 Days
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors duration-300">
+                                Master the art of sustained focus with proven strategies from top performers. Learn how to eliminate distractions, create optimal work environments, and achieve breakthrough results.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors duration-300">
+                                    15 min read • Dec 2024
+                                </span>
+                                <span class="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 transform group-hover:shadow-lg">
+                                    Read Article
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -89,6 +93,7 @@
         </div>
     </div>
 </section>
+
 
     <!-- Latest Articles Grid -->
     <section class="py-16 bg-gray-50 dark:bg-gray-900" id="latest-articles">
