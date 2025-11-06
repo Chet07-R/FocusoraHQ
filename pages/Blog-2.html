@@ -24,31 +24,39 @@
             <!-- Sidebar -->
             <div class=" lg:col-span-1 order-2 lg:order-1">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-2xl p-4 sm:p-6 lg:sticky lg:top-24 border border-gray-200 dark:border-gray-700">
-                    <h3 class="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-800 dark:text-white flex items-center">
+                    <h3 class="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-800 dark:text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
                         Table of Contents
                     </h3>
-                    <nav class="space-y-2 sm:space-y-3">
-                        <a href="#what-is" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            What Is The 2-Minute Rule?
-                        </a>
-                        <a href="#why-works" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            Why It Works
-                        </a>
-                        <a href="#benefits" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            Key Benefits
-                        </a>
-                        <a href="#how-implement" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            How to Implement
-                        </a>
-                        <a href="#examples" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            Real Examples
-                        </a>
-                        <a href="#challenges" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            Overcoming Challenges
-                        </a>
-                        <a href="#conclusion" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm">
-                            Conclusion
-                        </a>
+                    <nav class="relative">
+                        <!-- Slider Indicator -->
+                        <div class="toc-indicator absolute left-0 w-1 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out" style="height: 36px; top: 0;"></div>
+                        
+                        <div class="space-y-1 relative pl-4">
+                            <a href="#what-is" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                What Is The 2-Minute Rule?
+                            </a>
+                            <a href="#why-works" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                Why It Works
+                            </a>
+                            <a href="#benefits" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                Key Benefits
+                            </a>
+                            <a href="#how-implement" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                How to Implement
+                            </a>
+                            <a href="#examples" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                Real Examples
+                            </a>
+                            <a href="#challenges" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                Overcoming Challenges
+                            </a>
+                            <a href="#conclusion" class="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
+                                Conclusion
+                            </a>
+                        </div>
                     </nav>
                 </div>
             </div>
