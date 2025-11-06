@@ -1,0 +1,9 @@
+  .toc-link.active-toc {
+    background-color: rgb(219 234 254) !important;
+    color: rgb(37 99 235) !important;
+  }
+
+  .dark .toc-link.active-toc {
+    background-color: rgba(30, 58, 138, 0.3) !important;
+    color: rgb(96 165 250) !important;
+  }
