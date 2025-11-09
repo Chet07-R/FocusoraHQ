@@ -1,65 +1,6 @@
 
 
-// To do list
-function addtask() {
-    const taskInput = document.getElementById('input-task');
-    const taskText = taskInput.value.trim();
-
-    if (taskText === "") {
-        return;
-    }
-
-    const newTask = document.createElement('li');
-    const taskList = document.getElementById('task-list');
-
-    newTask.innerHTML = `
-        <div class="task-item flex items-center justify-between p-4 rounded-xl shadow-lg transition-all duration-300">
-            <div class="flex items-center space-x-3 flex-1">
-                <input type="checkbox" class="w-5 h-5 text-indigo-600 bg-white/80 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2 transition-all duration-200" onchange="toggleTask(this)">
-                <span class="text-gray-800 font-medium flex-1">${taskText}</span>
-            </div>
-            <button class="delete-btn ml-4 px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white text-sm font-semibold rounded-lg shadow-md transition-all duration-200" onclick="deleteTask(this)">
-                🗑️ Remove
-            </button>
-        </div>
-    `;
-
-    taskList.appendChild(newTask);
-    taskInput.value = "";
-    updateEmptyState();
-}
-
-function toggleTask(checkbox) {
-    const taskText = checkbox.nextElementSibling;
-    if (checkbox.checked) {
-        taskText.classList.add('line-through', 'text-gray-500');
-        taskText.style.opacity = '0.6';
-    } else {
-        taskText.classList.remove('line-through', 'text-gray-500');
-        taskText.style.opacity = '1';
-    }
-}
-
-function deleteTask(button) {
-    const taskItem = button.closest('li');
-    taskItem.style.transform = 'translateX(100%)';
-    taskItem.style.opacity = '0';
-    setTimeout(() => {
-        taskItem.remove();
-        updateEmptyState();
-    }, 300);
-}
-
-function updateEmptyState() {
-    const taskList = document.getElementById('task-list');
-    const emptyState = document.getElementById('empty-state');
-    
-    if (taskList.children.length === 0) {
-        emptyState.style.display = 'block';
-    } else {
-        emptyState.style.display = 'none';
-    }
-}
+// Note: To-Do is handled by study_room-1.js (taskInput/taskList/taskCount). Legacy todo functions removed.
 
 
 
@@ -73,7 +14,6 @@ function updateEmptyState() {
 
 // Pomodoro Timer with SIMPLE Audio notification
 document.addEventListener('DOMContentLoaded', () => {
-    updateEmptyState();
     
     let workDuration = 25 * 60;
     let breakDuration = 5 * 60;
@@ -234,9 +174,4 @@ function changeBackground(img) {
 
 
 
-// Notes
-const notesArea = document.getElementById("notes");
-notesArea.value = localStorage.getItem("focusoraNotes") || "";
-notesArea.addEventListener("input", () => {
-  localStorage.setItem("focusoraNotes", notesArea.value);
-});
+// Notes: managed by study_room-1.js (notesArea contenteditable). Removed legacy textarea code to avoid conflicts.

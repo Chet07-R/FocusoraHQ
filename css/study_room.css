@@ -82,3 +82,72 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.3);
     }
+
+    #notesArea ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+#notesArea li {
+  display: list-item !important;
+}
+button[data-format].active-format {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+#notesArea:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+html.dark #notesArea {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html:not(.dark) #notesArea {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+#notification {
+  transition: transform 0.5s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+#notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+#musicPanel, #bgSelectorPanel {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  will-change: opacity, transform;
+}
+.notes-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  padding: 0.25rem;
+}
+html.dark .item-blur {
+  background: linear-gradient(to bottom right, rgba(0,0,0,0.06), rgba(0,0,0,0.03));
+}
+
+html:not(.dark) .item-blur {
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+}
+
+#voiceInputBtn.bg-emerald-500\/40,
+#voiceOutputBtn.bg-indigo-500\/40 {
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
