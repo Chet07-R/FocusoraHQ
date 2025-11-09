@@ -1,0 +1,313 @@
+<!-- Sidebar Fragment (No Dark Mode Version) -->
+<style>
+  .app-side-wrapper {
+    backdrop-filter: blur(18px);
+    transition: width 0.3s ease;
+  }
+  .link-base {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: 0.18s;
+    color: #ffffff;
+    position: relative;
+    white-space: nowrap;
+  }
+  .link-base:hover {
+    color: #06b6d4;
+  }
+  .link-base svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.95;
+    flex-shrink: 0;
+  }
+  .link-base .emoji-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .link-base::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #00bfff, #ff00ff);
+    transition: width 0.3s ease;
+  }
+  .link-base:hover::after,
+  .link-base.active::after,
+  .link-base.sidebar-active::after {
+    width: 90%;
+  }
+  .link-base.active,
+  .link-base.sidebar-active {
+    color: #06b6d4;
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
+  }
+  
+  /* Highlight effect for sections */
+  .section-highlight {
+    animation: highlightPulse 1.5s ease-out;
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
+    border-color: rgba(6, 182, 212, 0.5) !important;
+  }
+  
+  @keyframes highlightPulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7), 0 0 0 rgba(6, 182, 212, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(6, 182, 212, 0.2), 0 0 30px rgba(6, 182, 212, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
+    }
+  }
+  .gradient-text {
+    background: linear-gradient(90deg, #00bfff, #c084fc, #ff00ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom Scrollbar */
+  #sidebar-container nav::-webkit-scrollbar {
+    width: 6px;
+  }
+  #sidebar-container nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #sidebar-container nav::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #94a3b8, #cbd5e1);
+    border-radius: 10px;
+  }
+  #sidebar-container nav::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #cbd5e1, #e2e8f0);
+  }
+  #sidebar-container nav {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 transparent;
+  }
+
+  /* Collapsed Sidebar */
+  #sidebar-container.collapsed {
+    width: 4.5rem;
+  }
+  #sidebar-container.collapsed .sidebar-text {
+    display: none;
+  }
+  #sidebar-container.collapsed .link-base {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+  #sidebar-container.collapsed .sidebar-brand-text,
+  #sidebar-container.collapsed .user-info {
+    display: none;
+  }
+  #sidebar-container.collapsed .theme-selector-wrapper select {
+    display: none;
+  }
+  #sidebar-container.collapsed .theme-selector-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  #sidebar-container.collapsed .sidebar-brand-logo {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto;
+  }
+  #sidebar-container.collapsed #user-panel {
+    justify-content: center;
+    padding: 0.5rem;
+    gap: 0;
+  }
+  #sidebar-container.collapsed .profile-img-wrapper {
+    margin: 0;
+    padding: 0.125rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #sidebar-container.collapsed .profile-img-wrapper img {
+    width: 2rem;
+    height: 2rem;
+    border-width: 1px;
+  }
+
+  /* Responsive Sidebar */
+  @media (max-width: 767px) {
+    .sidebar-collapsible {
+      transform: translateX(-100%);
+    }
+    .sidebar-open {
+      transform: translateX(0);
+    }
+    #sidebar-container.collapsed {
+      width: 16rem;
+    }
+    #sidebar-container.collapsed .sidebar-text {
+      display: inline;
+    }
+  }
+</style>
+
+<div id="sidebar-container"
+  class="h-screen w-64 fixed left-0 top-0 z-[60] bg-black/80 backdrop-blur-md app-side-wrapper border-r border-gray-800 flex flex-col sidebar-collapsible md:translate-x-0 transition-all duration-300 text-gray-200">
+
+  <!-- Expand/Collapse Button -->
+  <button id="sidebar-expand-btn"
+    class="absolute -right-3 top-6 w-6 h-6 bg-gradient-to-r from-cyan-400 to-pink-400 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg z-10 hidden md:flex"
+    title="Expand Sidebar">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+  </button>
+
+  <!-- Logo / Brand -->
+  <div class="px-6 pt-6 pb-4 border-b border-gray-800 flex justify-center">
+    <a href="../index.html" class="flex flex-col items-center group select-none">
+      <div class="flex items-center gap-2">
+        <img src="../images/transparent.png"
+          class="w-10 h-10 group-hover:scale-110 transition-transform sidebar-brand-logo flex-shrink-0" alt="Logo" />
+        <span
+          class="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent sidebar-brand-text">
+          FocusoraHQ
+        </span>
+      </div>
+      <p class="text-xs text-gray-300/80 mt-1 sidebar-brand-text">Productivity Dashboard</p>
+    </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+    <div class="space-y-1" id="main-links">
+      <a href="#pomodoro" class="link-base" data-section="pomodoro">
+        <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="sidebar-text">Pomodoro</span>
+      </a>
+
+      <a href="#notes" class="link-base" data-section="notes">
+        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        <span class="sidebar-text">Notes</span>
+      </a>
+
+      <a href="#todo" class="link-base" data-section="todo">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+        <span class="sidebar-text">To-Do List</span>
+      </a>
+
+      <div class="link-base theme-selector-wrapper cursor-default">
+        <svg class="w-5 h-5 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+        <select onchange="changeBackground(this.value)" id="theme-selector"
+                class="flex-1 bg-transparent border-none outline-none text-white sidebar-text cursor-pointer appearance-none pr-6"
+                style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7z%22%20fill%3D%22%23ffffff%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1rem;">
+          <option value="" class="bg-gray-800 text-white">Select Theme</option>
+          <option value="https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg" class="bg-gray-800 text-white">🌿 Garden</option>
+          <option value="https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg" class="bg-gray-800 text-white">🏔️ Mountains</option>
+          <option value="https://images.pexels.com/photos/2150347/pexels-photo-2150347.jpeg" class="bg-gray-800 text-white">💧 Waterfall</option>
+          <option value="https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg" class="bg-gray-800 text-white">🏖️ Beach</option>
+          <option value="https://images.pexels.com/photos/761517/pexels-photo-761517.jpeg" class="bg-gray-800 text-white">🌊 Lake</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 pt-4 space-y-1" id="secondary-links">
+      <a href="../pages/my_space.html" class="link-base" data-page="my_space">
+        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span class="sidebar-text">My Space</span>
+      </a>
+
+      <a href="../pages/study_room.html" class="link-base" data-page="study_room">
+        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span class="sidebar-text">Study Room</span>
+      </a>
+
+      <a href="../pages/Blog.html" class="link-base" data-page="Blog">
+        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        </svg>
+        <span class="sidebar-text">Blogs</span>
+      </a>
+
+      <a href="../pages/leaderboard.html" class="link-base" data-page="leaderboard">
+        <svg class="w-5 h-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          fill="currentColor">
+          <path d="M12 2.5l2.9 5.9 6.6.9-4.8 4.7 1.1 6.6L12 17.8l-5.8 3.1 1.1-6.6-4.8-4.7 6.6-.9L12 2.5z" />
+        </svg>
+        <span class="sidebar-text">Leaderboard</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- User Section -->
+  <div class="px-4 pb-5 border-t border-gray-800 space-y-3">
+    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition group cursor-pointer"
+      id="user-panel">
+      <div class="p-0.5 rounded-full bg-gradient-to-tr from-cyan-400 to-pink-500 profile-img-wrapper flex-shrink-0">
+        <img src="../images/Profile_Icon.png" onerror="this.src='../images/Profile_Icon.png'"
+          class="w-10 h-10 rounded-full object-cover border-2 border-gray-800" alt="Profile" />
+      </div>
+      <div class="flex-1 min-w-0 user-info">
+        <p class="text-sm font-semibold text-white truncate">John Doe</p>
+        <p class="text-xs text-gray-400/80">Online</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile toggle -->
+<button id="sidebar-toggle"
+  class="md:hidden fixed top-4 left-4 z-50 p-3 bg-gray-800/90 backdrop-blur-xl border border-gray-700 rounded-xl text-white hover:bg-gray-700/95 transition">
+  ☰
+</button>
+<div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-40"></div>
+
+<script>
+  // Normalize relative paths if included from root
+  (function () {
+    const isInPages = window.location.pathname.includes('/pages/');
+    if (!isInPages) {
+      document.querySelectorAll('a[href^="../"]').forEach(a => {
+        a.href = a.getAttribute('href').replace('../', '');
+      });
+      document.querySelectorAll('img[src^="../"]').forEach(img => {
+        img.src = img.getAttribute('src').replace('../', '');
+      });
+    }
+  })();
+</script>
+  <footer class="footer"></footer>
+
+  <script src="../js/script.js"></script>
+  <script src="../js/Navbar.js"></script>
