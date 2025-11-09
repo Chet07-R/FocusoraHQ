@@ -14,48 +14,318 @@
 
 
     <style>
+        /* ===== ANIMATIONS ===== */
+        @keyframes gradientRotate {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(6,182,212,0.4), 0 0 40px rgba(236,72,153,0.3), 0 0 60px rgba(192,132,252,0.2);
+                filter: brightness(1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(6,182,212,0.6), 0 0 60px rgba(236,72,153,0.5), 0 0 90px rgba(192,132,252,0.4);
+                filter: brightness(1.2);
+            }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== NAVBAR STYLING ===== */
+        nav {
+            background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(17,24,39,0.95) 100%);
+            position: relative;
+        }
+        
+        nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(6,182,212,0.3) 20%,
+                rgba(192,132,252,0.4) 50%,
+                rgba(236,72,153,0.3) 80%,
+                transparent 100%
+            );
+        }
+        
+        .dark nav {
+            background: linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(15,23,42,0.98) 100%);
+        }
+
+        /* ===== PROFILE DROPDOWN ANIMATION ===== */
         .profile-box {
-            display: none;
+            opacity: 0;
+            transform: translateY(12px) scale(0.95);
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
         .profile-box.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        
+        /* ===== ANIMATED GRADIENT RING ===== */
+        .profile-ring {
+            background: linear-gradient(135deg, #06b6d4 0%, #c084fc 50%, #ec4899 100%);
+            padding: 3px;
+            border-radius: 9999px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.1), 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .profile-ring:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px rgba(6,182,212,0.3), 0 6px 20px rgba(236,72,153,0.4);
+        }
+        
+        .profile-ring img {
             display: block;
+            border-radius: 9999px;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .dark .profile-ring img {
+            border-color: rgba(255,255,255,0.1);
         }
 
-        .mobile-menu {
-            display: none;
+        /* ===== PREMIUM GLASSMORPHISM PANEL ===== */
+        .profile-panel {
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.95) 0%, 
+                rgba(248,250,252,0.9) 50%,
+                rgba(255,255,255,0.85) 100%
+            );
+            backdrop-filter: blur(24px) saturate(180%);
+            box-shadow: 
+                0 20px 60px -15px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.5) inset,
+                0 4px 12px rgba(6,182,212,0.15);
         }
-
-        .mobile-menu.active {
-            display: block;
+        
+        .dark .profile-panel {
+            background: linear-gradient(145deg, 
+                rgba(17,24,39,0.95) 0%, 
+                rgba(31,41,55,0.9) 50%,
+                rgba(15,23,42,0.95) 100%
+            );
+            box-shadow: 
+                0 20px 60px -15px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(255,255,255,0.08) inset,
+                0 4px 12px rgba(192,132,252,0.2);
         }
-
+        
+        /* ===== GRADIENT HEADER ===== */
+        .profile-gradient-header {
+            background: linear-gradient(135deg,
+                rgba(6,182,212,0.08) 0%,
+                rgba(192,132,252,0.08) 50%,
+                rgba(236,72,153,0.08) 100%
+            );
+            position: relative;
+        }
+        
+        .profile-gradient-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(6,182,212,0.5), transparent);
+        }
+        
+        /* ===== DIVIDERS ===== */
+        .dropdown-divider { 
+            height: 1px; 
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                rgba(203,213,225,0.8) 50%, 
+                transparent 100%
+            );
+        }
+        .dark .dropdown-divider { 
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                rgba(71,85,105,0.6) 50%, 
+                transparent 100%
+            );
+        }
+        
+        /* ===== MENU ITEMS WITH SLIDE ANIMATION ===== */
+        .menu-item {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, 
+                rgba(6,182,212,0) 0%,
+                rgba(6,182,212,0.12) 50%,
+                rgba(236,72,153,0.08) 100%
+            );
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .menu-item:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .menu-item:hover {
+            transform: translateX(4px);
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.5) 0%, 
+                rgba(255,255,255,0.3) 100%
+            );
+        }
+        
+        .dark .menu-item:hover {
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.12) 0%, 
+                rgba(255,255,255,0.06) 100%
+            );
+        }
+        
+        .menu-item svg, .menu-item img { 
+            flex-shrink: 0; 
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover svg,
+        .menu-item:hover img {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .menu-item:focus-visible { 
+            outline: 2px solid #06b6d4; 
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(6,182,212,0.2);
+        }
+        
+        /* ===== ANIMATED THEME TOGGLE ===== */
+        #dark-toggle + label { 
+            box-shadow: 
+                inset 0 0 0 2px rgba(203,213,225,0.5),
+                0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .dark #dark-toggle + label { 
+            box-shadow: 
+                inset 0 0 0 2px rgba(71,85,105,0.5),
+                0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        #dark-toggle:checked + label {
+            box-shadow: 
+                0 0 12px rgba(6,182,212,0.3),
+                0 0 20px rgba(236,72,153,0.2),
+                inset 0 0 0 1px rgba(255,255,255,0.2);
+        }
+        
+        #dark-toggle + label::after {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        #dark-toggle:checked + label::after {
+            box-shadow: 
+                0 0 12px rgba(255,255,255,0.8),
+                0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* ===== LOGOUT BUTTON PREMIUM STYLING ===== */
+        .menu-item.logout-btn {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .menu-item.logout-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(239,68,68,0.15) 0%, 
+                rgba(220,38,38,0.1) 100%
+            );
+            transform: translateX(4px) scale(1.02);
+            box-shadow: 0 4px 20px rgba(239,68,68,0.25);
+        }
+        
+        .dark .menu-item.logout-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(239,68,68,0.2) 0%, 
+                rgba(220,38,38,0.15) 100%
+            );
+            box-shadow: 0 4px 20px rgba(239,68,68,0.35);
+        }
+        
+        /* ===== NAV LINK HOVER EFFECTS ===== */
+        .nav-link .nav-text::after {
+            background: linear-gradient(90deg, 
+                #06b6d4 0%, 
+                #c084fc 50%, 
+                #ec4899 100%
+            );
+            box-shadow: 0 0 8px currentColor;
+        }
+        
+        .nav-link:hover .nav-text {
+            text-shadow: 0 0 20px rgba(6,182,212,0.5);
+        }
+        
+        .nav-link.active .nav-text {
+            background: linear-gradient(135deg, #06b6d4 0%, #c084fc 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 12px rgba(6,182,212,0.6));
+        }
+    </style>
+    <!-- Secondary style block (previously unwrapped) -->
+    <style>
+        .mobile-menu { display: none; }
+        .mobile-menu.active { display: block; }
         .hamburger-line-1,
         .hamburger-line-2,
-        .hamburger-line-3 {
-            transition: all 0.3s ease;
-            transform-origin: center;
-        }
-
+        .hamburger-line-3 { transition: all 0.3s ease; transform-origin: center; }
         /* Active state - transform to X */
-        #mobile-menu-btn.active .hamburger-line-1 {
-            d: path("M6 6L18 18");
-        }
-
-        #mobile-menu-btn.active .hamburger-line-2 {
-            opacity: 0;
-        }
-
-        #mobile-menu-btn.active .hamburger-line-3 {
-            d: path("M18 6L6 18");
-        }
+        #mobile-menu-btn.active .hamburger-line-1 { d: path("M6 6L18 18"); }
+        #mobile-menu-btn.active .hamburger-line-2 { opacity: 0; }
+        #mobile-menu-btn.active .hamburger-line-3 { d: path("M18 6L6 18"); }
     </style>
 
 </head>
 
 <body>
     <nav
-        class="w-full bg-black/80 backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50 border-b border-gray-800">
+        class="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50">
         <!-- Logo Section -->
         <a href="../index.html"
             class="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300">
@@ -94,12 +364,10 @@
             </a>
 
             <a href="../pages/Blog.html" data-page="Blog" class="nav-link flex items-center gap-2 cursor-pointer group">
-                <svg class="w-5 h-5 group-hover:scale-110 text-blue-400 transition-transform duration-300" fill="none"
-                    stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                    </path>
-                </svg>
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        </svg>
                 <span
                     class="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">Blogs</span>
             </a>
@@ -135,70 +403,65 @@
 
             <!-- Profile Dropdown -->
             <div class="relative">
-                <img src="../images/Profile_Icon.png" id="profile-icon"
-                    class="cursor-pointer rounded-full w-9 h-9 hover:scale-110 border-2 border-pink-400 hover:border-cyan-400 transition-all duration-300 object-cover"
-                    alt="Profile">
+                <div id="profile-icon" class="profile-ring cursor-pointer w-10 h-10">
+                    <img src="../images/Profile_Icon.png" alt="Profile" class="w-full h-full object-cover" />
+                </div>
 
                 <!-- Profile Dropdown Menu -->
-                <div class="absolute right-0 top-12 hidden profile-box p-5 z-50" id="profile-box">
-                    <div class="w-64 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                <div class="absolute right-0 top-12 profile-box z-50" id="profile-box" aria-hidden="true">
+                    <div class="w-[18rem] rounded-2xl shadow-2xl border border-white/30 dark:border-white/10 profile-panel overflow-hidden ring-1 ring-black/5 dark:ring-white/10">
                         <!-- Profile Header -->
-                        <div class="flex p-4 items-center gap-3 bg-gradient-to-r from-gray-50 to-gray-100">
-                            <img src="../images/Profile_img.png"
-                                class="w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm" alt="Profile">
-                            <div>
-                                <p class="font-semibold text-gray-800">John Doe</p>
-                                <p class="text-sm text-gray-500">john.doe@email.com</p>
+                        <div class="flex p-4 items-center gap-3 profile-gradient-header">
+                            <div class="profile-ring w-11 h-11 p-1">
+                                <img src="../images/Profile_img.png" class="w-full h-full object-cover rounded-full" alt="Profile" />
+                            </div>
+                            <div class="min-w-0">
+                                <p class="font-semibold text-gray-800 dark:text-gray-100 truncate">John Doe</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">john.doe@email.com</p>
                             </div>
                         </div>
-
+                        <div class="dropdown-divider"></div>
                         <!-- Menu Items -->
-                        <div class="p-2 space-y-1">
-                            <a href="../pages/profile.html"
-                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-300 group">
-                                <img src="../images/Profile_Icon.png"
-                                    class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-                                    alt="Profile">
-                                <span class="text-gray-700 font-medium">Profile</span>
-                            </a>
-                            <a href="../pages/community.html"
-                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-300 group">
-                                <!-- community-group.svg -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
-                                    fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-                                    stroke-linejoin="round" aria-hidden="false" role="img" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300 text-gray-700">
-                                    <path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z" />
-                                    <path d="M8 11c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3z" />
-                                    <path d="M2 20c0-2.21 1.79-4 4-4h12c2.21 0 4 1.79 4 4" />
-                                    <path d="M6 16c0-1.65 1.35-3 3-3h6c1.65 0 3 1.35 3 3" />
+                        <div class="py-2 px-2 space-y-1">
+                            <a href="../pages/profile.html" class="menu-item flex items-center gap-3 p-3 rounded-xl hover:bg-white/40 dark:hover:bg-white/10 transition-all group focus:outline-none" tabindex="0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300 text-gray-700 dark:text-gray-300">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
                                 </svg>
-
-                                <span class="text-gray-700 font-medium">Community</span>
+                                <span class="text-gray-700 dark:text-gray-200 font-medium">Profile</span>
+                                <svg class="w-4 h-4 ml-auto text-gray-400 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="../pages/community.html" class="menu-item flex items-center gap-3 p-3 rounded-xl hover:bg-white/40 dark:hover:bg-white/10 transition-all group focus:outline-none" tabindex="0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300 text-gray-700 dark:text-gray-300">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                                <span class="text-gray-700 dark:text-gray-200 font-medium">Community</span>
+                                <svg class="w-4 h-4 ml-auto text-gray-400 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
                         </div>
-
-                        <div class="border-t border-gray-100"></div>
-
+                        <div class="dropdown-divider"></div>
                         <!-- Dark Mode Toggle -->
-                        <div class="flex items-center justify-between px-4 py-3 bg-gray-50">
-                            <span class="text-gray-700 font-medium">Dark Mode</span>
+                        <div class="flex items-center justify-between px-4 py-3">
+                            <span class="text-gray-700 dark:text-gray-200 font-medium">Theme</span>
                             <div class="flex items-center">
-                                <input type="checkbox" id="dark-toggle" class="sr-only peer">
-                                <label for="dark-toggle"
-                                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-gray-800 peer-checked:to-gray-600 cursor-pointer"></label>
+                                <input type="checkbox" id="dark-toggle" class="sr-only peer" />
+                                <label for="dark-toggle" class="relative w-12 h-7 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer transition-colors peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-400 shadow-inner after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:w-6 after:h-6 after:bg-white after:rounded-full after:shadow-md after:transition-all peer-checked:after:translate-x-5 peer-checked:bg-gradient-to-r peer-checked:from-cyan-500 peer-checked:to-pink-500"></label>
                             </div>
                         </div>
-
-                        <div class="border-t border-gray-100"></div>
-
+                        <div class="dropdown-divider"></div>
                         <!-- Logout -->
                         <div class="p-2">
-                            <a href="#"
-                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 text-red-600 transition-colors duration-300 group">
-                                <img src="../images/Logout_Icon.png"
-                                    class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-                                    alt="Logout">
+                            <a href="#" class="menu-item logout-btn flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-600 dark:text-red-400 transition-all group focus:outline-none" tabindex="0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                    <polyline points="16 17 21 12 16 7" />
+                                    <line x1="21" y1="12" x2="9" y2="12" />
+                                </svg>
                                 <span class="font-medium">Logout</span>
+                                <svg class="w-4 h-4 ml-auto text-red-400 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
                             </a>
                         </div>
                     </div>

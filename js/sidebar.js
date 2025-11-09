@@ -16,50 +16,52 @@
 })();
 
 function initSidebarEnhancements(){
+  // Themes dropdown logic (moved from Sidebar.html)
+  const themesLink = document.getElementById('themes-link');
+  const themesDropdown = document.getElementById('themes-dropdown');
+  if (themesLink && themesDropdown) {
+    themesLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      themesDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', function (e) {
+      if (!themesDropdown.contains(e.target) && !themesLink.contains(e.target)) {
+        themesDropdown.classList.add('hidden');
+      }
+    });
+    // Hide dropdown after click
+    themesDropdown.querySelectorAll('.theme-thumb').forEach(img => {
+      img.addEventListener('click', function () {
+        themesDropdown.classList.add('hidden');
+        try {
+          const bgSrc = this.getAttribute('src');
+          if (bgSrc) {
+            // persist choice
+            localStorage.setItem('focusora:bg', bgSrc);
+          }
+        } catch(e){}
+      });
+    });
+  }
+
+  // Apply persisted background (if any)
+  try {
+    const savedBg = localStorage.getItem('focusora:bg');
+    if (savedBg) {
+      const body = document.getElementById('main-body') || document.body;
+      body.style.backgroundImage = `url('${savedBg}')`;
+      body.style.backgroundSize = 'cover';
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundPosition = 'center';
+    }
+  } catch(e){}
   const links = Array.from(document.querySelectorAll('.link-base[href^="#"]'));
   const sectionMap = new Map();
   links.forEach(l=>{
     const id = l.getAttribute('href').replace('#','');
     const el = document.getElementById(id);
     if(el) sectionMap.set(id,{link:l,el});
-  });
-
-  // Add click handler for section highlighting
-  links.forEach(link => {
-    link.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        e.preventDefault();
-        const targetId = href.replace('#', '');
-        const targetSection = document.getElementById(targetId);
-        
-        if (targetSection) {
-          // Update active state
-          links.forEach(a => a.classList.remove('sidebar-active'));
-          this.classList.add('sidebar-active');
-          
-          // Get the actual card element (the div with rounded-2xl class inside the section)
-          const card = targetSection.querySelector('.rounded-2xl');
-          const elementToHighlight = card || targetSection;
-          
-          // Remove existing highlights
-          document.querySelectorAll('.section-highlight').forEach(el => {
-            el.classList.remove('section-highlight');
-          });
-          
-          // Add highlight to the target
-          elementToHighlight.classList.add('section-highlight');
-          
-          // Scroll to section with smooth behavior
-          targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          
-          // Remove highlight after animation completes
-          setTimeout(() => {
-            elementToHighlight.classList.remove('section-highlight');
-          }, 2000);
-        }
-      }
-    });
   });
 
   // Intersection Observer for active highlight (only when scrolling)
@@ -187,19 +189,4 @@ function initSidebarEnhancements(){
       }
     }
   }, 100);
-
-  // Handle theme selector when sidebar is collapsed
-  const themeSelector = document.querySelector('.theme-selector-wrapper');
-  const themeSvg = themeSelector?.querySelector('svg');
-  const themeSelect = document.getElementById('theme-selector');
-  
-  if (themeSvg && themeSelect) {
-    themeSvg.addEventListener('click', function(e) {
-      const sidebarContainer = document.getElementById('sidebar-container');
-      if (sidebarContainer?.classList.contains('collapsed')) {
-        e.stopPropagation();
-        themeSelect.click();
-      }
-    });
-  }
 }

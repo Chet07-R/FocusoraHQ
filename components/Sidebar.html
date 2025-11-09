@@ -48,26 +48,6 @@
   .link-base.active,
   .link-base.sidebar-active {
     color: #06b6d4;
-    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
-  }
-  
-  /* Highlight effect for sections */
-  .section-highlight {
-    animation: highlightPulse 1.5s ease-out;
-    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
-    border-color: rgba(6, 182, 212, 0.5) !important;
-  }
-  
-  @keyframes highlightPulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7), 0 0 0 rgba(6, 182, 212, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(6, 182, 212, 0.2), 0 0 30px rgba(6, 182, 212, 0.3);
-    }
-    100% {
-      box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
-    }
   }
   .gradient-text {
     background: linear-gradient(90deg, #00bfff, #c084fc, #ff00ff);
@@ -113,13 +93,6 @@
   #sidebar-container.collapsed .sidebar-brand-text,
   #sidebar-container.collapsed .user-info {
     display: none;
-  }
-  #sidebar-container.collapsed .theme-selector-wrapper select {
-    display: none;
-  }
-  #sidebar-container.collapsed .theme-selector-wrapper {
-    display: flex;
-    justify-content: center;
   }
   #sidebar-container.collapsed .sidebar-brand-logo {
     width: 2rem;
@@ -217,21 +190,29 @@
         <span class="sidebar-text">To-Do List</span>
       </a>
 
-      <div class="link-base theme-selector-wrapper cursor-default">
-        <svg class="w-5 h-5 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-        </svg>
-        <select onchange="changeBackground(this.value)" id="theme-selector"
-                class="flex-1 bg-transparent border-none outline-none text-white sidebar-text cursor-pointer appearance-none pr-6"
-                style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7z%22%20fill%3D%22%23ffffff%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1rem;">
-          <option value="" class="bg-gray-800 text-white">Select Theme</option>
-          <option value="https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg" class="bg-gray-800 text-white">🌿 Garden</option>
-          <option value="https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg" class="bg-gray-800 text-white">🏔️ Mountains</option>
-          <option value="https://images.pexels.com/photos/2150347/pexels-photo-2150347.jpeg" class="bg-gray-800 text-white">💧 Waterfall</option>
-          <option value="https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg" class="bg-gray-800 text-white">🏖️ Beach</option>
-          <option value="https://images.pexels.com/photos/761517/pexels-photo-761517.jpeg" class="bg-gray-800 text-white">🌊 Lake</option>
-        </select>
+      <!-- Themes Option with Dropdown -->
+      <div class="relative" id="themes-dropdown-wrapper">
+  <a href="#themes" class="link-base" id="themes-link" data-section="themes" onclick="event.stopPropagation();">
+          <svg class="w-5 h-5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3C7.03 3 3 7.03 3 12c0 3.87 3.13 7 7 7h1a1 1 0 001-1v-1a1 1 0 011-1h1a5 5 0 005-5c0-4.97-4.03-9-9-9z" />
+            <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
+            <circle cx="15.5" cy="10.5" r="1.5" fill="currentColor" />
+            <circle cx="12" cy="14" r="1.5" fill="currentColor" />
+          </svg>
+          <span class="sidebar-text">Themes</span>
+          <svg class="w-4 h-4 ml-auto sidebar-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-left:auto;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </a>
+        <div id="themes-dropdown" class="hidden absolute left-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50 p-3 flex flex-wrap gap-2">
+          <!-- Local bg images -->
+          <img src="../images/bg/bg1.jpg" alt="Theme 1" class="theme-thumb w-12 h-12 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-cyan-400 transition" onclick="if(typeof changeBackground==='function'){changeBackground('../images/bg/bg1.jpg');}else{document.body.style.backgroundImage='url(../images/bg/bg1.jpg)';document.body.style.backgroundSize='cover';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundPosition='center';}">
+          <img src="../images/bg/bg2.jpg" alt="Theme 2" class="theme-thumb w-12 h-12 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-cyan-400 transition" onclick="if(typeof changeBackground==='function'){changeBackground('../images/bg/bg2.jpg');}else{document.body.style.backgroundImage='url(../images/bg/bg2.jpg)';document.body.style.backgroundSize='cover';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundPosition='center';}">
+          <img src="../images/bg/bg3.jpg" alt="Theme 3" class="theme-thumb w-12 h-12 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-cyan-400 transition" onclick="if(typeof changeBackground==='function'){changeBackground('../images/bg/bg3.jpg');}else{document.body.style.backgroundImage='url(../images/bg/bg3.jpg)';document.body.style.backgroundSize='cover';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundPosition='center';}">
+          <img src="../images/bg/bg4.jpg" alt="Theme 4" class="theme-thumb w-12 h-12 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-cyan-400 transition" onclick="if(typeof changeBackground==='function'){changeBackground('../images/bg/bg4.jpg');}else{document.body.style.backgroundImage='url(../images/bg/bg4.jpg)';document.body.style.backgroundSize='cover';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundPosition='center';}">
+          <img src="../images/bg/bg5.jpg" alt="Theme 5" class="theme-thumb w-12 h-12 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-cyan-400 transition" onclick="if(typeof changeBackground==='function'){changeBackground('../images/bg/bg5.jpg');}else{document.body.style.backgroundImage='url(../images/bg/bg5.jpg)';document.body.style.backgroundSize='cover';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundPosition='center';}">
+          <img src="../images/bg/bg6.jpg" alt="Theme 6" class="theme-thumb w-12 h-12 rounded-lg cursor-pointer object-cover border-2 border-transparent hover:border-cyan-400 transition" onclick="if(typeof changeBackground==='function'){changeBackground('../images/bg/bg6.jpg');}else{document.body.style.backgroundImage='url(../images/bg/bg6.jpg)';document.body.style.backgroundSize='cover';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundPosition='center';}">
+        </div>
       </div>
     </div>
 
@@ -306,6 +287,30 @@
       });
     }
   })();
+
+  // Themes dropdown logic
+  document.addEventListener('DOMContentLoaded', function () {
+    const themesLink = document.getElementById('themes-link');
+    const themesDropdown = document.getElementById('themes-dropdown');
+    if (themesLink && themesDropdown) {
+      themesLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        themesDropdown.classList.toggle('hidden');
+      });
+      document.addEventListener('click', function (e) {
+        if (!themesDropdown.contains(e.target) && !themesLink.contains(e.target)) {
+          themesDropdown.classList.add('hidden');
+        }
+      });
+      // Hide dropdown after click
+      themesDropdown.querySelectorAll('.theme-thumb').forEach(img => {
+        img.addEventListener('click', function () {
+          themesDropdown.classList.add('hidden');
+        });
+      });
+    }
+  });
 </script>
   <footer class="footer"></footer>
 

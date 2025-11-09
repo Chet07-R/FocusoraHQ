@@ -6,15 +6,23 @@ function initNavbar() {
 
     // Profile Dropdown Toggle
     if (profileIcon && profileBox) {
+        const closeDropdown = () => { profileBox.classList.remove('active'); profileBox.setAttribute('aria-hidden','true'); };
+        const openDropdown = () => { profileBox.classList.add('active'); profileBox.setAttribute('aria-hidden','false'); };
+        const toggleDropdown = () => { profileBox.classList.contains('active') ? closeDropdown() : openDropdown(); };
+
         profileIcon.addEventListener('click', (e) => {
             e.stopPropagation(); // Prevent immediate close
-            profileBox.classList.toggle('active');
+            toggleDropdown();
         });
 
         document.addEventListener('click', (event) => {
             if (!profileBox.contains(event.target) && !profileIcon.contains(event.target)) {
-                profileBox.classList.remove('active');
+                closeDropdown();
             }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDropdown();
         });
     }
 
