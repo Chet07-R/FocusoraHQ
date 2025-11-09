@@ -1,166 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FocusoraHQ</title>
+  <title>FocusoraHQ – Study Room</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class'
+    tailwind.config = { 
+      darkMode: 'class' 
     }
   </script>
-  <link rel="icon" type="image/png" sizes="32x32" href="../images/transparent.png">
-  <link rel="shortcut icon" href="../images/transparent.png" type="image/png">
+  <link rel="shortcut icon" href="../images/logo-shrinked.png" type="image/x-icon">
+  <link rel="stylesheet" href="../css/study_room.css">
+
 </head>
 
-<body
-  class="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen flex flex-col">
-
+<body id="mainBody"
+  class="min-h-screen bg-cover bg-center bg-fixed dark:bg-gray-900 dark:text-gray-100 transition-all duration-500 overflow-x-hidden">
   <nav class="navbar"></nav>
 
-  <main class="flex flex-col md:flex-row flex-grow gap-6 px-4 py-8 pt-24 max-w-7xl mx-auto w-full">
-    <div class="md:w-1/4 bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-lg p-5 flex flex-col animate-fadeIn h-[38rem]">
-  <!-- Participants -->
-  <h2 class="text-xl font-bold text-blue-900 dark:text-blue-200 mb-4">Participants</h2>
-  <ul class="space-y-3 overflow-auto flex-1">
-    <li class="flex items-center gap-3">
-      <span class="w-3 h-3 bg-green-500 rounded-full animate-pulseGlow"></span>
-      <span class="dark:text-gray-200">Chetan Ajmani</span>
-    </li>
-    <li class="flex items-center gap-3">
-      <span class="w-3 h-3 bg-green-500 rounded-full animate-pulseGlow"></span>
-      <span class="dark:text-gray-200">Tanish Mehta</span>
-    </li>
-    <li class="flex items-center gap-3">
-      <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
-      <span class="dark:text-gray-200">Vansh Thakur</span>
-    </li>
-  </ul>
-  <button
-    class="mt-3 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl shadow-lg font-semibold transition-transform hover:scale-105">
-    Invite
-  </button>
+  <!-- Background layer: holds the page background image and is the target for blur/brightness
+       effects so UI elements stay sharp. Positioned behind content. -->
+  <div id="bgLayer" class="fixed inset-0 bg-cover bg-center bg-fixed pointer-events-none transition-all duration-500"
+    style="background-image: url('https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg'); z-index:0; filter: blur(0px) brightness(100%);"></div>
 
-  <!-- Upload Notes -->
-<div class="mt-6 flex flex-col flex-1 overflow-y-auto border-t border-gray-300 dark:border-gray-700 pt-3 gap-3">
-  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Upload Notes:</label>
-  <div class="flex flex-col gap-3 w-full">
-    <input type="file" id="uploadNotes" accept=".pdf,.doc,.docx,.jpg,.png"
-      class="w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-700 file:text-white hover:file:bg-blue-800 cursor-pointer">
-    <button
-      onclick="uploadNotesFile()"
-      class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-lg shadow-md transition-transform hover:scale-105 w-full">
-      Upload
-    </button>
-  </div>
-
-  <ul id="uploaded-notes-list" class="space-y-2 mt-2 overflow-y-auto text-sm text-gray-700 dark:text-gray-300">
-    <!-- Uploaded notes will appear here -->
-  </ul>
-</div>
-
-</div>
-
-
-
-<section class="flex-1 bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-lg flex flex-col animate-fadeIn h-[38rem]">
-  <div class="p-6 border-b border-gray-300 dark:border-gray-700 flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-blue-900 dark:text-white">Math Study Group</h1>
-      <p class="text-sm text-gray-600 dark:text-gray-400">Topic: Calculus Revision</p>
-    </div>
-    <button
-      class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow-md transition-transform hover:scale-105">Leave</button>
-  </div>
-
-  <div
-    class="p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-    <div>
-      <p class="text-sm text-gray-700 dark:text-gray-300">
-        <strong>Room ID:</strong> <span id="room-id" class="font-mono">#ABCD1234</span>
-      </p>
-      <p class="text-sm text-gray-700 dark:text-gray-300">
-        <strong>Created:</strong> 20 Sept 2025, 7:00 PM
-      </p>
-    </div>
-    <button onclick="copyRoomId()"
-      class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-lg shadow transition-transform hover:scale-105">
-      Copy Room ID
-    </button>
-  </div>
-
-  <div class="flex items-center justify-center flex p-7">
-    <div
-      class="w-full max-w-md h-[24rem] my-auto p-5 pt-6 rounded-xl backdrop-blur-xl flex flex-col bg-white/20 dark:bg-gray-800/70 dark:border dark:border-gray-700">
-      <div class="flex justify-center items-center p-3">
-        <p class="text-3xl font-bold shadow-sm">📝</p>
-        <p class="text-3xl font-bold p-1 shadow-sm text-gray-800 dark:text-white">Tasks</p>
+  <!-- Main Container -->
+  <main id="mainContainer" class="transition-transform duration-500 ease-in-out pt-24 px-6 max-w-7xl mx-auto w-full flex flex-col gap-6 pb-8">
+    <!-- Study Room Info (inserted below navbar) -->
+    <div id="roomInfo" class="item-blur w-full relative overflow-hidden flex items-center justify-between gap-4 p-6 rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl text-white">
+      <div class="item-overlay"></div>
+      <div class="relative flex items-center gap-4">
+        <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-cyan-400 rounded-lg flex items-center justify-center text-xl font-bold">🔖</div>
+        <div>
+          <div class="text-sm text-white/70">Room ID</div>
+          <div id="roomId" class="font-semibold text-lg">--</div>
+        </div>
+        <div class="ml-6">
+          <div class="text-sm text-white/70">Room Name</div>
+          <div id="roomName" class="font-semibold">-- Study Room</div>
+        </div>
+        <div class="ml-6">
+          <div class="text-sm text-white/70">Created By</div>
+          <div id="roomCreator" class="font-semibold">--</div>
+        </div>
       </div>
-      <hr class="border-gray-300 dark:border-gray-600 mb-3">
-
-      <div class="flex gap-2 pb-3">
-        <input type="text" id="input-task"
-          class="flex-1 p-2 rounded-xl border hover:border-blue-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          placeholder="Add a new task...">
-        <button
-          class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl shadow-md w-20 transition-transform hover:scale-105"
-          onclick="addtask()">Add</button>
-      </div>
-
-      <div class="flex-1 overflow-y-auto">
-        <ul id="task-list" class="space-y-2"></ul>
+      <div class="flex items-center gap-3">
+        <div class="text-right mr-2">
+          <div class="text-sm text-white/70">Members</div>
+          <div id="roomMembers" class="font-semibold">0</div>
+        </div>
+        <button onclick="copyRoomId()" class="px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm">Copy ID</button>
+        <button id="invite" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 rounded-lg text-white">Invite</button>
       </div>
     </div>
-  </div>
 
-  <!-- Notes
-  <div class="p-4 border-t border-gray-300 dark:border-gray-700">
-    <textarea
-      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      rows="2" placeholder="Add a note..."></textarea>
-    <button
-      class="mt-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all w-full hover:scale-105">Post</button>
-  </div> -->
-</section>
+  <!-- Main Content Row -->
+  <div class="flex flex-col md:flex-row gap-6">
+      
+      <!-- To-Do List -->
+      <section
+        class="item-blur md:w-1/3 group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 p-6 flex flex-col hover:shadow-2xl min-h-[55vh]">
+        <div class="item-overlay"></div>
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
+        <div class="relative flex items-center justify-between mb-5">
+          <div class="flex items-center">
+            <span class="text-3xl mr-2">📝</span>
+            <h2 class="text-2xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+              To-Do List
+            </h2>
+          </div>
+          <span id="taskCount" class="text-white/60 text-sm">0 tasks</span>
+        </div>
 
-    <div class="md:w-1/4 bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-lg flex flex-col animate-fadeIn h-[38rem]">
-      <div class="p-5 border-b border-gray-300 dark:border-gray-700">
-        <h2 class="text-xl font-bold text-blue-900 dark:text-blue-200">Live Chat</h2>
-      </div>
-      <div class="flex-1 p-4 overflow-auto space-y-3">
-        <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
-          <p class="text-sm text-gray-800 dark:text-gray-200"><strong>Sarah:</strong> Let’s start with integrals!</p>
+        <div class="mb-4 flex gap-2">
+          <input id="taskInput" type="text" placeholder="Add a new task..." 
+            onkeypress="if(event.key==='Enter') addTask()"
+            class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30 transition-all">
+          <button onclick="addTask()"
+            class="px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl shadow-md transition-all transform hover:scale-105">
+            Add
+          </button>
         </div>
-        <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg self-end">
-          <p class="text-sm text-blue-800 dark:text-blue-200"><strong>You:</strong> Sure, I’ll share examples.</p>
+
+        <ul id="taskList" class="flex-1 overflow-y-auto space-y-3 text-white custom-scrollbar"></ul>
+      </section>
+
+      <!-- Notes Area -->
+      <section
+        class="item-blur flex-1 group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 p-6 flex flex-col hover:shadow-2xl min-h-[55vh]">
+        <div class="item-overlay"></div>
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <div class="relative flex items-center justify-between mb-5">
+          <div class="flex items-center">
+            <span class="text-3xl mr-2">✍️</span>
+            <h2 class="text-2xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
+              Notes
+            </h2>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="saveNotes()" class="text-xs px-3 py-1 bg-emerald-500/30 hover:bg-emerald-500/50 text-white rounded-lg transition">
+              💾 Save
+            </button>
+            <button onclick="downloadNotes()" class="text-xs px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg transition">
+              📥 Download
+            </button>
+          </div>
         </div>
-        <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
-          <p class="text-sm text-gray-800 dark:text-gray-200"><strong>Mike:</strong> I found a great video on partial
-            fractions.</p>
+
+        <div class="flex gap-2 mb-3">
+          <button onclick="formatText('bold')" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm transition">
+            <strong>B</strong>
+          </button>
+          <button onclick="formatText('italic')" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm transition">
+            <em>I</em>
+          </button>
+          <button onclick="formatText('underline')" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm transition">
+            <u>U</u>
+          </button>
+          <button onclick="insertBullet()" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm transition">
+            • List
+          </button>
+          <span id="charCount" class="ml-auto text-white/60 text-xs self-center">0 characters</span>
         </div>
-        <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg self-end">
-          <p class="text-sm text-blue-800 dark:text-blue-200"><strong>You:</strong> Post the link here!</p>
+
+        <!-- Use a contenteditable div so formatting buttons (bold/italic/underline/list) apply visually -->
+        <div id="notesArea" contenteditable="true" role="textbox" aria-multiline="true"
+          class="flex-1 w-full p-5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30 transition-all resize-none custom-scrollbar"
+          data-placeholder="✨ Capture your ideas and study notes here..."></div>
+
+        <!-- Upload Notes -->
+        <div class="mt-5 p-4 bg-white/10 border border-white/20 rounded-xl backdrop-blur-sm">
+          <label class="block text-white/90 mb-2 font-medium">📤 Upload Notes</label>
+          <div class="flex gap-2">
+            <input type="file" id="uploadNotes" accept=".pdf,.doc,.docx,.txt,.jpg,.png"
+              class="flex-1 text-sm text-white file:bg-emerald-600 file:text-white file:rounded-md file:px-3 file:py-2 file:border-0 hover:file:bg-emerald-700 cursor-pointer transition">
+            <button onclick="uploadFile()"
+              class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-lg transition-all transform hover:scale-105">
+              Upload
+            </button>
+          </div>
+          <ul id="uploadedNotes" class="mt-3 space-y-2 text-sm text-white/80"></ul>
         </div>
-      </div>
-      <div class="p-4 border-t border-gray-300 dark:border-gray-700">
-        <input type="text" placeholder="Type a message..."
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
-        <button
-          class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl shadow-md w-full transition-transform hover:scale-105">Send</button>
-      </div>
+      </section>
     </div>
   </main>
 
+  <footer class="w-full">
+    <div class="bg-gradient-to-r from-black/60 via-gray-900/80 to-black/60 backdrop-blur-xl border-t border-white/20 shadow-lg text-white">
+      <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🎵</span>
+            <span class="font-semibold">Focus Playlist</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="toggleMusicPanel()" class="text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition ml-2">
+              🎧 Change Music
+            </button>
+              <button onclick="toggleBgSelector()" class="text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition ml-2">🌈 Choose Ambience</button>
+              <span class="text-sm text-white/70">Powered by Spotify</span>
+          </div>
+        </div>
+        <iframe id="spotifyPlayer" style="border-radius:12px" class="mb-8"
+          src="https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0FDzS8?utm_source=generator"
+          width="100%" height="80" frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Music Selector Panel -->
+  <div id="musicPanel"
+    class="item-blur fixed bottom-36 left-1/2 transform -translate-x-1/2 w-96 max-w-[90vw] rounded-2xl bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-5 opacity-0 translate-y-6 pointer-events-none transition-all duration-500 z-50">
+    <div class="item-overlay"></div>
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-semibold text-white flex items-center gap-2">
+        <span class="text-xl">🎵</span> Choose Your Vibe
+      </h3>
+      <button onclick="toggleMusicPanel()" class="text-white text-lg hover:text-red-400 transition">✖</button>
+    </div>
+    <div class="space-y-2">
+      <button onclick="changeMusic('37i9dQZF1DZ06evO0FDzS8')"
+        class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+        🎹 <span>Deep Focus</span>
+      </button>
+      <button onclick="changeMusic('37i9dQZF1DWZeKCadgRdKQ')"
+        class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+        🎻 <span>Classical Study</span>
+      </button>
+      <button onclick="changeMusic('37i9dQZF1DX3Kdv0IChEm9')"
+        class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+        🎧 <span>Lofi Beats</span>
+      </button>
+      <button onclick="changeMusic('37i9dQZF1DWXe9gFZP0gtP')"
+        class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+        🌧️ <span>Ambient Rain</span>
+      </button>
+      <button onclick="changeMusic('37i9dQZF1DX1s9knjP51Oa')"
+        class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+        🎸 <span>Acoustic Focus</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Collapsible Background Selector Modal (trigger removed from floating button; opened from player) -->
+  <div id="bgSelectorPanel"
+    class="fixed bottom-36 left-1/2 transform -translate-x-1/2 w-96 max-w-[90vw] max-h-[80vh] rounded-2xl bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-5 opacity-0 translate-y-6 pointer-events-none transition-all duration-500 z-50 overflow-hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-white flex items-center gap-2">
+          <span class="text-xl">🎨</span> Choose Ambience
+        </h3>
+        <button onclick="toggleBgSelector()" class="text-white text-lg hover:text-red-400 transition">✖</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-3 max-h-[36vh] pr-1">
+        <button onclick="changeBackground('https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🌿 <span>Serene Garden</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🏔️ <span>Majestic Mountains</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/2150347/pexels-photo-2150347.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          💧 <span>Peaceful Waterfall</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🏖️ <span>Tranquil Beach</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/761517/pexels-photo-761517.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🌊 <span>Calm Lake</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/1166644/pexels-photo-1166644.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🌲 <span>Forest Path</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🌆 <span>City Sunset</span>
+        </button>
+        <button onclick="changeBackground('https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg')"
+          class="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white transition flex items-center gap-2">
+          🌌 <span>Starry Night</span>
+        </button>
+      </div>
+    </div>
+
+  <!-- RIGHT FLOATING BUTTONS -->
+  <div class="fixed top-1/3 right-0 flex flex-col gap-4 z-40">
+    <button onclick="openPanel('participantsPanel')"
+      class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-5 py-2 rounded-l-2xl shadow-md hover:from-blue-700 hover:to-indigo-800 font-semibold transition-all transform hover:scale-105">
+      👥 Participants
+    </button>
+    <button onclick="openPanel('chatPanel')"
+      class="bg-gradient-to-r from-green-600 to-emerald-700 text-white px-5 py-2 rounded-l-2xl shadow-md hover:from-green-700 hover:to-emerald-800 font-semibold transition-all transform hover:scale-105">
+      💬 Chat
+    </button>
+  </div>
+
+  <!-- PARTICIPANTS PANEL -->
+  <aside id="participantsPanel"
+    class="item-blur fixed right-0 top-0 h-full w-80 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-2xl border-l border-white/20 shadow-xl transform translate-x-full transition-transform duration-500 ease-in-out z-50">
+    <div class="item-overlay"></div>
+    <div class="p-5 flex justify-between items-center border-b border-white/20">
+      <h2 class="text-xl font-bold text-white">👥 Participants</h2>
+      <button onclick="closePanels()" class="text-white text-2xl hover:text-red-400 transition">✖</button>
+    </div>
+    <div class="p-5">
+      <div class="mb-4 bg-white/10 rounded-xl p-3 border border-white/20">
+        <div class="text-white/70 text-sm mb-1">Room Status</div>
+        <div class="text-white font-semibold">🟢 Active • 3 Members</div>
+      </div>
+      <ul class="space-y-3">
+        <li class="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between hover:bg-white/20 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-lg font-bold">C</span>
+            <div>
+              <div class="font-semibold text-white">Chetan Ajmani</div>
+              <div class="text-xs text-white/60">Host • Active</div>
+            </div>
+          </div>
+          <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+        </li>
+        <li class="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between hover:bg-white/20 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-lg font-bold">T</span>
+            <div>
+              <div class="font-semibold text-white">Tanish Mehta</div>
+              <div class="text-xs text-white/60">Active</div>
+            </div>
+          </div>
+          <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+        </li>
+        <li class="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between hover:bg-white/20 transition">
+          <div class="flex items-center gap-3">
+            <span class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-lg font-bold">V</span>
+            <div>
+              <div class="font-semibold text-white">Vansh Thakur</div>
+              <div class="text-xs text-white/60">Idle</div>
+            </div>
+          </div>
+          <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CHAT PANEL -->
+  <aside id="chatPanel"
+    class="fixed right-0 top-0 h-full w-80 bg-gradient-to-br from-black/70 via-gray-900/80 to-black/70 backdrop-blur-xl border-l border-white/10 shadow-xl transform translate-x-full transition-transform duration-500 ease-in-out z-50 text-white">
+    <div class="p-5 flex justify-between items-center border-b border-white/10">
+      <h2 class="text-xl font-bold">💬 Chat</h2>
+      <button onclick="closePanels()" class="text-white text-2xl hover:text-red-400 transition">✖</button>
+    </div>
+    <div class="flex flex-col h-[calc(100%-5rem)] p-4">
+      <div id="chatBox" class="flex-1 overflow-y-auto space-y-3 bg-white/10 rounded-lg p-3 custom-scrollbar">
+        <div class="bg-white/10 p-3 rounded-lg">
+          <div class="text-xs text-white/60 mb-1">Sarah • 10:30 AM</div>
+          <div>Ready to start the study session?</div>
+        </div>
+        <div class="bg-emerald-500/20 p-3 rounded-lg text-right">
+          <div class="text-xs text-white/60 mb-1">You • 10:31 AM</div>
+          <div>Yes, let's do this! 💪</div>
+        </div>
+      </div>
+      <div class="mt-3 flex gap-2">
+        <input id="chatInput" type="text" placeholder="Type a message..."
+          onkeypress="if(event.key==='Enter') sendChat()"
+          class="flex-1 p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:ring-2 focus:ring-emerald-400/30">
+        <button onclick="sendChat()" 
+          class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
+          Send
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Notification Toast -->
+  <div id="notification"
+    class="fixed top-24 right-6 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-4 shadow-xl transform translate-x-[200%] transition-transform duration-500 z-50 max-w-sm">
+    <div class="flex items-center gap-3">
+      <span id="notifIcon" class="text-2xl">✅</span>
+      <div class="flex-1">
+        <div id="notifTitle" class="text-white font-semibold">Success</div>
+        <div id="notifMessage" class="text-white/80 text-sm">Action completed</div>
+      </div>
+      <button onclick="hideNotification()" class="text-white/60 hover:text-white transition">✖</button>
+    </div>
+  </div>
+
   <footer class="footer"></footer>
+
+  <script>
+    
+  </script>
 
   <script src="../js/Navbar.js"></script>
   <script src="../js/script.js"></script>
-  <script src="../js/my_space.js"></script>
   <script src="../js/study_room-1.js"></script>
 </body>
 </html>
-
-

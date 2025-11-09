@@ -1,0 +1,84 @@
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Smooth transition when applying blur to selected UI items */
+  .item-blur {
+    transition: filter 180ms ease;
+  }
+
+  /* Frosted overlay inside items: sits behind content and blurs the backdrop only */
+  .item-blur {
+    --ui-blur: 0px;
+  }
+  .item-blur > * {
+    position: relative;
+    z-index: 1;
+  }
+  .item-blur .item-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(0,0,0,0.35); /* subtle dark tint to improve contrast */
+    backdrop-filter: blur(var(--ui-blur));
+    -webkit-backdrop-filter: blur(var(--ui-blur));
+    transition: backdrop-filter 180ms ease, background-color 180ms ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Placeholder for contenteditable notes area */
+  #notesArea:empty:before {
+    content: attr(data-placeholder);
+    color: rgba(255,255,255,0.6);
+    pointer-events: none;
+    display: block;
+  }
+
+  main, section, #taskInput, #notesArea {
+    position: relative;
+    z-index: 20;
+  }
+
+  /* Footer should sit above main content but below notifications */
+  footer {
+    z-index: 40;
+  }
+
+  /* Ensure the background/theme selector and music panel float above most UI
+     but remain below global notifications (which are z-index:9999) */
+  #bgToggleWrapper,
+  #musicPanel,
+  #bgSelectorPanel {
+    z-index: 9998;
+  }
+
+  #notification {
+    z-index: 9999 !important;
+  }
+  
+      .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
