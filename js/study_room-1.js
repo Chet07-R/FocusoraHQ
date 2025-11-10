@@ -505,14 +505,27 @@ document.getElementById('chatInput').addEventListener('keydown', (e) => {
 
 // ============ BACKGROUND ============
 function changeBackground(url) {
-  if (url) {
-    document.getElementById('bgLayer').style.backgroundImage = `url(${url})`;
-    localStorage.setItem('focusora_bg', url);
-    showNotification('🎨', 'Background Changed', 'New ambiance applied');
-    // Close the background selector panel after choosing (mirror music behavior)
-    const panel = document.getElementById('bgSelectorPanel');
-    if (panel && panel.classList.contains('opacity-100')) toggleBgSelector();
+  if (!url) return;
+
+  const bgLayer = document.getElementById('bgLayer');
+  if (bgLayer) {
+    bgLayer.style.backgroundImage = `url(${url})`;
+  } else {
+    // fallback to page background (some pages don't include #bgLayer)
+    const body = document.getElementById('main-body') || document.body;
+    if (body) {
+      body.style.backgroundImage = `url(${url})`;
+      body.style.backgroundSize = 'cover';
+      body.style.backgroundRepeat = 'no-repeat';
+      body.style.backgroundPosition = 'center';
+    }
   }
+
+  try { localStorage.setItem('focusora_bg', url); } catch (e) {}
+  showNotification('🎨', 'Background Changed', 'New ambiance applied');
+  // Close the background selector panel after choosing (mirror music behavior)
+  const panel = document.getElementById('bgSelectorPanel');
+  if (panel && panel.classList.contains('opacity-100')) toggleBgSelector();
 }
 
 function toggleBgSelector() {
@@ -659,7 +672,18 @@ window.onload = function () {
 
   const savedBg = localStorage.getItem('focusora_bg');
   if (savedBg) {
-    document.getElementById('bgLayer').style.backgroundImage = `url(${savedBg})`;
+    const bgLayer = document.getElementById('bgLayer');
+    if (bgLayer) {
+      bgLayer.style.backgroundImage = `url(${savedBg})`;
+    } else {
+      const body = document.getElementById('main-body') || document.body;
+      if (body) {
+        body.style.backgroundImage = `url(${savedBg})`;
+        body.style.backgroundSize = 'cover';
+        body.style.backgroundRepeat = 'no-repeat';
+        body.style.backgroundPosition = 'center';
+      }
+    }
   }
   // restore dark mode preference
   const savedDark = localStorage.getItem('focusora_dark');

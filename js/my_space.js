@@ -175,3 +175,226 @@ function changeBackground(img) {
 
 
 // Notes: managed by study_room-1.js (notesArea contenteditable). Removed legacy textarea code to avoid conflicts.
+
+
+// ====== Persistent Notes and To-Do ======
+
+// NOTES - Save & Load
+document.addEventListener('DOMContentLoaded', () => {
+  const notesArea = document.getElementById('notesArea');
+  if (notesArea) {
+    // Load saved notes
+    const savedNotes = localStorage.getItem('userNotes');
+    if (savedNotes) notesArea.innerHTML = savedNotes;
+
+    // Save notes on input
+    notesArea.addEventListener('input', () => {
+      localStorage.setItem('userNotes', notesArea.innerHTML);
+    });
+  }
+
+  // TO-DO LIST - Save & Load
+  const taskInput = document.getElementById('taskInput');
+  const taskList = document.getElementById('taskList');
+  const taskCount = document.getElementById('taskCount');
+
+  if (taskList) {
+    const savedTasks = JSON.parse(localStorage.getItem('userTasks')) || [];
+    renderTasks(savedTasks);
+
+    // Add task function
+    window.addTask = function() {
+      const taskText = taskInput.value.trim();
+      if (taskText === "") return;
+      savedTasks.push({ text: taskText, done: false });
+      localStorage.setItem('userTasks', JSON.stringify(savedTasks));
+      renderTasks(savedTasks);
+      taskInput.value = "";
+    };
+
+    // Render task list
+    function renderTasks(tasks) {
+      taskList.innerHTML = "";
+      tasks.forEach((task, i) => {
+        const li = document.createElement('li');
+        li.className = `flex justify-between items-center p-3 rounded-lg border border-white/20 bg-white/10`;
+        li.innerHTML = `
+          <span class="flex-1 cursor-pointer ${task.done ? 'line-through opacity-60' : ''}" onclick="toggleTask(${i})">${task.text}</span>
+          <button onclick="deleteTask(${i})" class="ml-3 text-red-400 hover:text-red-600 transition">🗑️</button>
+        `;
+        taskList.appendChild(li);
+      });
+      taskCount.textContent = `${tasks.length} tasks`;
+    }
+
+    // Toggle task done/undone
+    window.toggleTask = function(index) {
+      savedTasks[index].done = !savedTasks[index].done;
+      localStorage.setItem('userTasks', JSON.stringify(savedTasks));
+      renderTasks(savedTasks);
+    };
+
+    // Delete task
+    window.deleteTask = function(index) {
+      savedTasks.splice(index, 1);
+      localStorage.setItem('userTasks', JSON.stringify(savedTasks));
+      renderTasks(savedTasks);
+    };
+  }
+});
+
+/* ---------- UPLOADED NOTES (persist in localStorage) ---------- */
+  const uploadInput = document.getElementById('uploadNotes');
+  const uploadedList = document.getElementById('uploadedNotes');
+
+  // load stored uploads
+  const savedUploads = JSON.parse(localStorage.getItem('uploadedNotes')) || [];
+  renderUploads(savedUploads);
+
+  // attach global upload handler (HTML button calls uploadFile())
+  window.uploadFile = function() {
+    const files = (uploadInput && uploadInput.files) ? Array.from(uploadInput.files) : [];
+    if (!files.length) {
+      alert('Please choose a file to upload.');
+      return;
+    }
+
+    // limit per-file size (soft guard for localStorage)
+    const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+    // read each file as dataURL and save
+    let reads = files.map(file => {
+      return new Promise((resolve) => {
+        if (file.size > MAX_FILE_BYTES) {
+          // skip large files
+          resolve({ skipped: true, name: file.name, reason: 'size' });
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target.result;
+          resolve({
+            skipped: false,
+            entry: {
+              name: file.name,
+              type: file.type || 'application/octet-stream',
+              size: file.size,
+              dataUrl,
+              uploadedAt: new Date().toISOString()
+            }
+          });
+        };
+        reader.onerror = () => {
+          resolve({ skipped: true, name: file.name, reason: 'read_error' });
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(reads).then(results => {
+      let anyAdded = false;
+      results.forEach(r => {
+        if (r.skipped) {
+          console.warn('Skipped upload:', r.name, r.reason);
+        } else if (r.entry) {
+          savedUploads.push(r.entry);
+          anyAdded = true;
+        }
+      });
+
+      try {
+        // try to save - localStorage may throw if quota exceeded
+        localStorage.setItem('uploadedNotes', JSON.stringify(savedUploads));
+        if (anyAdded) {
+          renderUploads(savedUploads);
+          // clear file input
+          uploadInput.value = "";
+          alert('Upload saved.');
+        } else {
+          alert('No files were added. Files larger than 5 MB are skipped to avoid storage issues.');
+        }
+      } catch (e) {
+        console.error('Saving uploaded files failed:', e);
+        alert('Failed to save uploads — storage might be full. Consider removing some saved items or use a backend.');
+      }
+    });
+  };
+
+  // render uploads list
+  function renderUploads(list) {
+    if (!uploadedList) return;
+    uploadedList.innerHTML = '';
+    if (!list.length) {
+      uploadedList.innerHTML = '<li class="text-white/70">No uploaded notes yet.</li>';
+      return;
+    }
+
+    list.forEach((entry, index) => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center justify-between p-2 rounded-md';
+
+      // show name + small meta, and download link
+      const meta = document.createElement('div');
+      meta.className = 'flex-1 truncate';
+      const nameEl = document.createElement('a');
+      nameEl.href = entry.dataUrl;
+      nameEl.download = entry.name;
+      nameEl.title = entry.name;
+      nameEl.className = 'underline text-sm truncate';
+      nameEl.textContent = entry.name;
+      meta.appendChild(nameEl);
+
+      const info = document.createElement('div');
+      info.className = 'text-xs text-white/60 ml-3';
+      const sizeKb = Math.round(entry.size/1024);
+      info.textContent = ` ${sizeKb} KB • ${new Date(entry.uploadedAt).toLocaleString()}`;
+
+      const right = document.createElement('div');
+      right.className = 'flex items-center gap-2 ml-4';
+      const openBtn = document.createElement('a');
+      openBtn.href = entry.dataUrl;
+      openBtn.target = '_blank';
+      openBtn.className = 'px-2 py-1 bg-white/5 rounded text-sm';
+      openBtn.textContent = 'Open';
+      openBtn.rel = 'noopener noreferrer';
+
+      const dlBtn = document.createElement('a');
+      dlBtn.href = entry.dataUrl;
+      dlBtn.download = entry.name;
+      dlBtn.className = 'px-2 py-1 bg-white/5 rounded text-sm';
+      dlBtn.textContent = 'Download';
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'ml-2 text-red-400 hover:text-red-600 text-sm';
+      delBtn.textContent = 'Delete';
+      delBtn.onclick = () => {
+        if (!confirm(`Delete "${entry.name}" from saved uploads?`)) return;
+        savedUploads.splice(index, 1);
+        try {
+          localStorage.setItem('uploadedNotes', JSON.stringify(savedUploads));
+        } catch (e) {
+          console.error('Could not update uploads after delete', e);
+        }
+        renderUploads(savedUploads);
+      };
+
+      li.appendChild(meta);
+      li.appendChild(info);
+      right.appendChild(openBtn);
+      right.appendChild(dlBtn);
+      right.appendChild(delBtn);
+      li.appendChild(right);
+
+      uploadedList.appendChild(li);
+    });
+  }
+
+  // small helper: escape HTML for text nodes (used in task rendering)
+  function escapeHtml(str) {
+    return (str + '').replace(/[&<>"'`=\/]/g, function(s) {
+      return {
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
+        "'": '&#39;', '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
+      }[s];
+    });
+  }

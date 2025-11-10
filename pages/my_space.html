@@ -48,15 +48,15 @@
   class="min-h-screen w-screen bg-cover bg-center bg-fixed dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden pb-6"
   style="background-image: url(https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg);">
 
-  <div class="app-sidebar"></div>
+ <nav class="navbar"></nav>
 
-  <div class="container mx-auto px-4 py-8 pb-4 md:ml-20">
+  <div class="container mx-auto px-4 py-8 pb-4 md:ml-4 pt-20">
     <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 max-w-7xl mx-auto items-start">
 
       <!-- Pomodoro -->
       <div id="pomodoro" class="xl:col-span-3 self-start">
         <div
-          class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px] flex flex-col">
+          class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px] flex flex-col">
           <div
             class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           </div>
@@ -135,7 +135,7 @@
       </div>
 
       <!-- Notes -->
-      <div id="notes" class="xl:col-span-6 self-start">
+  <div id="notes" class="xl:col-span-5 self-start">
         <div
           class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px]">
           <div
@@ -212,7 +212,7 @@
 
       <!-- To-Do -->
       <section
-        class="item-blur todo-card self-start md:col-span-3 xl:col-span-3 group relative overflow-hidden rounded-2xl border border-white/20 shadow-xl transition-all duration-300 p-6 flex flex-col hover:shadow-2xl min-h-[600px]">
+        class="item-blur todo-card self-start md:col-span-3 xl:col-span-4 group relative overflow-hidden rounded-2xl border border-white/20 shadow-xl transition-all duration-300 p-6 flex flex-col hover:shadow-2xl min-h-[600px]">
         <div class="relative flex items-center justify-between mb-5">
           <div class="flex items-center">
             <span class="text-3xl mr-2">📝</span>
@@ -365,7 +365,8 @@
   <script src="../js/my_space.js"></script>
   <script src="../js/sidebar.js"></script>
   <script src="../js/script.js"></script>      
-  <script src="../js/study_room-1.js"></script>      
+  <script src="../js/study_room-1.js"></script>  
+  <script src="../js/Navbar.js"></script>    
 </body>
 
 </html>
