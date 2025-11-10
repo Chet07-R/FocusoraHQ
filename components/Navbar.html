@@ -388,7 +388,7 @@
         <div class="flex items-center gap-4">
             <!-- Mobile Menu Button -->
             <button id="mobile-menu-btn"
-                class="lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300"
+                class="lg:hidden p-2 hover:rounded-lg transition-colors duration-300"
                 aria-label="Toggle menu">
                 <svg class="w-6 h-6 text-white transition-all duration-300" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
@@ -475,7 +475,7 @@
         class="hidden lg:hidden fixed top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300">
         <div class="px-4 py-6 space-y-4">
             <a href="../pages/my_space.html" data-page="my_space"
-                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:transition-colors duration-300">
                 <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
@@ -485,7 +485,7 @@
             </a>
 
             <a href="../pages/study_room.html" data-page="study_room"
-                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:transition-colors duration-300">
                 <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -495,7 +495,7 @@
             </a>
 
             <a href="../pages/Blog.html" data-page="Blog"
-                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:transition-colors duration-300">
                 <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -505,7 +505,7 @@
             </a>
 
             <a href="../pages/leaderboard.html" data-page="leaderboard"
-                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                class="nav-link flex items-center gap-3 p-3 rounded-lg hover:transition-colors duration-300">
                 <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
                     <path
                         d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
@@ -525,12 +525,6 @@
 
         .nav-link.active .nav-text::after {
             width: 100% !important;
-        }
-
-        /* Mobile menu active state */
-        .nav-link.active {
-            background-color: rgba(31, 41, 55, 0.5);
-            /* gray-800/50 */
         }
     </style>
 
