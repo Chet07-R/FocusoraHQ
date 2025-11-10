@@ -2,245 +2,182 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Footer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-    </script>
-    
-    <script type="text/javascript">
-        (function () {
-            emailjs.init({
-                publicKey: "ia_jZUu19Ui5dHTqg",
-            });
-        })();
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Footer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        .underline-hover {
-            position: relative;
-            display: inline-block;
-        }
+  <style>
+    .underline-hover {
+      position: relative;
+      display: inline-block;
+    }
 
-        .underline-hover::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(90deg, #06b6d4, #ec4899, #f3f4f6);
-            transition: width 0.3s ease;
-        }
+    .underline-hover::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: linear-gradient(90deg, #06b6d4, #ec4899, #f3f4f6);
+      transition: width 0.3s ease;
+    }
 
-        .underline-hover:hover::after {
-            width: 100%;
-        }
-    </style>
+    .underline-hover:hover::after {
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-900">
-    <footer class="bg-gradient-to-b from-black via-gray-900 to-gray-950 w-full relative overflow-hidden">
-        <!-- Subtle background glow -->
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
-            <div class="absolute bottom-1/4 right-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
+  <footer class="bg-gradient-to-b from-black via-gray-900 to-gray-950 w-full relative overflow-hidden">
+    <!-- Subtle background glow -->
+    <div class="absolute inset-0 opacity-10">
+      <div
+        class="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
+      <div
+        class="absolute bottom-1/4 right-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-6 py-12 relative z-10">
+      <!-- Main Footer Content -->
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 mb-8 justify-items-start">
+
+        <!-- Brand Section -->
+        <div class="sm:col-span-2 md:col-span-3 lg:col-span-2">
+          <div class="flex items-center mb-4">
+            <img src="../images/transparent.png" alt="FocusoraHQ Logo" class="h-12 w-12 rounded-full" />
+            <span
+              class="ml-3 font-bold text-2xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">FocusoraHQ</span>
+          </div>
+          <p class="text-gray-300 text-sm leading-relaxed mb-6 md:max-w-md">
+            The all-in-one platform for focused work. Minimize digital noise and maximize your potential — whether
+            you're working alone or with a team.
+          </p>
+          <!-- Contact Info -->
+          <div class="space-y-2 text-sm text-gray-300">
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Bengaluru, IN
+            </div>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              +91 12345-67890
+            </div>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              focusorahq@gmail.com
+            </div>
+          </div>
         </div>
-        
-        <div class="container mx-auto px-6 py-12 relative z-10">
-            <!-- Main Footer Content -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 mb-8 justify-items-start">
-                <!-- Brand Section -->
-                <div class="sm:col-span-2 md:col-span-3 lg:col-span-2">
-                    <div class="flex items-center mb-4">
-                        <img src="../images/transparent.png" alt="FocusoraHQ Logo" class="h-12 w-12 rounded-full">
-                        <span class="ml-3 font-bold text-2xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">FocusoraHQ</span>
-                    </div>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6 md:max-w-md">
-                        The all-in-one platform for focused work. Minimize digital noise and maximize your potential,
-                        whether you're working alone or with a team.
-                    </p>
-                    <!-- Contact Info -->
-                    <div class="space-y-2 text-sm text-gray-300">
-                        <div class="flex items-center">
-                            <svg class="w-4 h-4 mr-3 text-cyan-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Bengaluru, IN
-                        </div>
-                        <div class="flex items-center">
-                            <svg class="w-4 h-4 mr-3 text-cyan-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                            +91 12345-67890
-                        </div>
-                        <div class="flex items-center">
-                            <svg class="w-4 h-4 mr-3 text-cyan-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                            focusorahq@gmail.com
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Navigation Columns -->
-                <div class="space-y-4">
-                    <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Product</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="../pages/my_space.html" class="text-gray-300 hover:text-cyan-400 transition-colors">My Space</a></li>
-                        <li><a href="../pages/study_room.html" class="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</a></li>
-                        <li><a href="../pages/Blog.html" class="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</a></li>
-                        <li><a href="../pages/leaderboard.html" class="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</a></li>
-                    </ul>
-                </div>
+        <!-- Navigation Columns -->
+        <div class="space-y-4">
+          <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Product</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="../pages/my_space.html"
+                class="text-gray-300 hover:text-cyan-400 transition-colors">My Space</a></li>
+            <li><a href="../pages/study_room.html"
+                class="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</a></li>
+            <li><a href="../pages/Blog.html"
+                class="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</a></li>
+            <li><a href="../pages/leaderboard.html"
+                class="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</a></li>
+          </ul>
+        </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Company</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">About</a></li>
-                        <li><a href="Blog.html" class="text-gray-300 hover:text-cyan-400 transition-colors">Blog</a>
-                        </li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Careers</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Press</a></li>
-                    </ul>
-                </div>
+        <div class="space-y-4">
+          <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Company</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">About</a></li>
+            <li><a href="../pages/Blog.html"
+                class="text-gray-300 hover:text-cyan-400 transition-colors">Blog</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Careers</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Press</a></li>
+          </ul>
+        </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Support</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Help Center</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Documentation</a>
-                        </li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Community</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Contact</a></li>
-                    </ul>
-                </div>
+        <div class="space-y-4">
+          <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Support</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Help Center</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Documentation</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Community</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
 
-                <div class="space-y-4">
-                    <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Legal</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Privacy Policy</a>
-                        </li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Terms of Service</a>
-                        </li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Cookie Policy</a>
-                        </li>
-                        <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Disclaimer</a></li>
-                    </ul>
-                </div>
-            </div>
+        <div class="space-y-4">
+          <h3 class="text-white font-semibold text-lg underline-hover cursor-default">Legal</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Cookie Policy</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-cyan-400 transition-colors">Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
 
-            <!-- Newsletter Section -->
-            <div class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300">
-                <div class="flex flex-col md:flex-row items-center justify-between">
-                    <div class="mb-4 md:mb-0">
-                        <h3 class="text-white font-semibold text-lg mb-2 flex items-center gap-2">
-                            <span class="text-2xl">📬</span>
-                            Stay Updated
-                        </h3>
-                        <p class="text-gray-300 text-sm">Get the latest updates and productivity tips straight to your
-                            inbox.</p>
-                    </div>
-                    <div class="flex w-full md:w-auto">
-                        <input type="email" placeholder="Enter your email"
-                            class="px-4 py-2 w-full md:w-64 rounded-l-lg bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 outline-none focus:border-cyan-500 focus:bg-gray-700 transition-all"
-                            aria-label="Email address" id="email">
-                        <button
-                            class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-semibold rounded-r-lg hover:from-cyan-600 hover:to-pink-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:shadow-lg hover:shadow-cyan-500/50"
-                            onclick="sendMail()">
-                            Subscribe
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <!-- Newsletter Section -->
+      <div
+        class="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <div class="mb-4 md:mb-0">
+            <h3 class="text-white font-semibold text-lg mb-2 flex items-center gap-2">
+              <span class="text-2xl">📬</span> Stay Updated
+            </h3>
+            <p class="text-gray-300 text-sm">Get the latest updates and productivity tips straight to your inbox.</p>
+          </div>
+          <div class="flex w-full md:w-auto">
+            <input type="email" id="subscriber_email" placeholder="Enter your email"
+              class="px-4 py-2 w-full md:w-64 rounded-l-lg bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 outline-none focus:border-cyan-500 focus:bg-gray-700 transition-all" />
+            <button onclick="handleSubscription()"
+              class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-pink-500 text-white font-semibold rounded-r-lg hover:from-cyan-600 hover:to-pink-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:shadow-lg hover:shadow-cyan-500/50">
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
 
-            <!-- Divider -->
-            <div>
-                <hr class="m-2 border-gray-700/50" />
-            </div>
+      <hr class="m-2 border-gray-700/50" />
+      <div class="flex flex-col sm:flex-row items-center justify-between p-2">
+        <p class="text-gray-300 text-sm text-center sm:text-left">
+          © 2025 <span
+            class="font-semibold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">FocusoraHQ</span><br />
+          Made with <span class="text-pink-500 animate-pulse">❤️</span> by students.<br />
+          All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
 
-            <div class="flex flex-col sm:flex-row items-center justify-between p-2">
-                <p class="text-gray-300 text-sm">
-                    © 2025 <span class="font-semibold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">FocusoraHQ</span><br>
-                    Made with <span class="text-pink-500 animate-pulse">❤️</span> by students.<br>
-                    All rights reserved.
-                </p>
-
-                <div class="flex items-center gap-6 md:gap-10 mt-4 sm:mt-0 ml-0 sm:ml-auto flex-wrap justify-center sm:justify-end">
-                    <a href="#" aria-label="Discord" class="text-gray-400 hover:text-[#5865F2] transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_#5865F2]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50"
-                            style="fill:currentcolor">
-                            <path
-                                d="M 41.625 10.769531 C 37.644531 7.566406 31.347656 7.023438 31.078125 7.003906 C 30.660156 6.96875 30.261719 7.203125 30.089844 7.589844 C 30.074219 7.613281 29.9375 7.929688 29.785156 8.421875 C 32.417969 8.867188 35.652344 9.761719 38.578125 11.578125 C 39.046875 11.867188 39.191406 12.484375 38.902344 12.953125 C 38.710938 13.261719 38.386719 13.429688 38.050781 13.429688 C 37.871094 13.429688 37.6875 13.378906 37.523438 13.277344 C 32.492188 10.15625 26.210938 10 25 10 C 23.789063 10 17.503906 10.15625 12.476563 13.277344 C 12.007813 13.570313 11.390625 13.425781 11.101563 12.957031 C 10.808594 12.484375 10.953125 11.871094 11.421875 11.578125 C 14.347656 9.765625 17.582031 8.867188 20.214844 8.425781 C 20.0625 7.929688 19.925781 7.617188 19.914063 7.589844 C 19.738281 7.203125 19.34375 6.960938 18.921875 7.003906 C 18.652344 7.023438 12.355469 7.566406 8.320313 10.8125 C 6.214844 12.761719 2 24.152344 2 34 C 2 34.175781 2.046875 34.34375 2.132813 34.496094 C 5.039063 39.605469 12.972656 40.941406 14.78125 41 C 14.789063 41 14.800781 41 14.8125 41 C 15.132813 41 15.433594 40.847656 15.621094 40.589844 L 17.449219 38.074219 C 12.515625 36.800781 9.996094 34.636719 9.851563 34.507813 C 9.4375 34.144531 9.398438 33.511719 9.765625 33.097656 C 10.128906 32.683594 10.761719 32.644531 11.175781 33.007813 C 11.234375 33.0625 15.875 37 25 37 C 34.140625 37 38.78125 33.046875 38.828125 33.007813 C 39.242188 32.648438 39.871094 32.683594 40.238281 33.101563 C 40.601563 33.515625 40.5625 34.144531 40.148438 34.507813 C 40.003906 34.636719 37.484375 36.800781 32.550781 38.074219 L 34.378906 40.589844 C 34.566406 40.847656 34.867188 41 35.1875 41 C 35.199219 41 35.210938 41 35.21875 41 C 37.027344 40.941406 44.960938 39.605469 47.867188 34.496094 C 47.953125 34.34375 48 34.175781 48 34 C 48 24.152344 43.785156 12.761719 41.625 10.769531 Z M 18.5 30 C 16.566406 30 15 28.210938 15 26 C 15 23.789063 16.566406 22 18.5 22 C 20.433594 22 22 23.789063 22 26 C 22 28.210938 20.433594 30 18.5 30 Z M 31.5 30 C 29.566406 30 28 28.210938 28 26 C 28 23.789063 29.566406 22 31.5 22 C 33.433594 22 35 23.789063 35 26 C 35 28.210938 33.433594 30 31.5 30 Z">
-                            </path>
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-[#1DA1F2] transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_#1DA1F2]">
-                        <svg width="30" height="30" fill="currentColor" viewBox="0 0 50 50">
-                            <path
-                                d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z">
-                            </path>
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="LinkedIn" class="text-gray-400 hover:text-[#0A66C2] transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_#0A66C2]">
-                        <svg width="30" height="30" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z">
-                            </path>
-                        </svg>
-                    </a>
-                    <a href="#" aria-label="GitHub" class="text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 transform hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                        <svg width="30" height="30" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z">
-                            </path>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-
-    </footer>
-
-    <script>
-        function sendMail() {
-            let parms = {
-                user_email: document.getElementById("email").value
-            };
-
-            emailjs.send("service_mj850sc", "template_xz8bp6i", parms)
-                .then(function (response) {
-                    alert("✅ Subscription successful! Check your email.");
-                }, function (error) {
-                    alert("❌ Failed to send email.");
-                });
-        }
-        
-        // Fix paths based on current location
-        (function() {
-            const isInPages = window.location.pathname.includes('/pages/');
-            
-            if (!isInPages) {
-                // We're in root, update all paths to remove ../ prefix
-                document.querySelectorAll('footer a[href^="../"]').forEach(link => {
-                    link.href = link.getAttribute('href').replace('../', '');
-                });
-                document.querySelectorAll('footer img[src^="../"]').forEach(img => {
-                    img.src = img.getAttribute('src').replace('../', '');
-                });
-            }
-        })();
-    </script>
-
+  <!-- ✅ Path Fixer Script (safe for dynamic loading) -->
+  <script>
+    (function () {
+      const isInPages = window.location.pathname.includes('/pages/');
+      if (!isInPages) {
+        document.querySelectorAll('footer a[href^="../"]').forEach(link => {
+          link.href = link.getAttribute('href').replace('../', '');
+        });
+        document.querySelectorAll('footer img[src^="../"]').forEach(img => {
+          img.src = img.getAttribute('src').replace('../', '');
+        });
+      }
+    })();
+  </script>
 </body>
 
 </html>
