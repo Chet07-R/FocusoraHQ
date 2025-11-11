@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { NavLink, Link } from "react-router-dom";
 import "./Navbar.css"; // Keep only this one — contains all custom navbar animations
 
 const Navbar = () => {
@@ -44,13 +45,14 @@ const Navbar = () => {
           { name: "My Space", href: "/pages/my_space.html", color: "text-pink-400", icon: "mail" },
           { name: "Study Room", href: "/pages/study_room.html", color: "text-purple-400", icon: "book" },
           { name: "Blogs", href: "/pages/Blog.html", color: "text-blue-400", icon: "note" },
-          { name: "Leaderboard", href: "/pages/leaderboard.html", color: "text-yellow-400", icon: "star" },
+          { name: "Leaderboard", to: "/leaderboard", color: "text-yellow-400", icon: "star" },
         ].map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            className="nav-link flex items-center gap-2 cursor-pointer group"
-          >
+          item.name === "Leaderboard" ? (
+            <NavLink
+              key={item.name}
+              to={item.to}
+              className={({ isActive }) => `nav-link flex items-center gap-2 cursor-pointer group${isActive ? ' active' : ''}`}
+            >
             {/* Inline icons to match the screenshot */}
             {item.icon === "mail" && (
 <svg class="w-5 h-5 group-hover:scale-110 text-pink-400 transition-transform duration-300" fill="none"
@@ -83,7 +85,47 @@ const Navbar = () => {
             <span className="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">
               {item.name}
             </span>
-          </a>
+            </NavLink>
+          ) : (
+            <a
+              key={item.name}
+              href={item.href}
+              className="nav-link flex items-center gap-2 cursor-pointer group"
+            >
+              {/* Inline icons to match the screenshot */}
+              {item.icon === "mail" && (
+<svg class="w-5 h-5 group-hover:scale-110 text-pink-400 transition-transform duration-300" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 7l5 5l5-5"></path>
+                </svg>
+              )}
+              {item.icon === "book" && (
+<svg class="w-5 h-5 group-hover:scale-110 text-purple-400 transition-transform duration-300" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+              )}
+              {item.icon === "note" && (
+<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        </svg>
+              )}
+              {item.icon === "star" && (
+<svg class="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform duration-300"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.5l2.9 5.9 6.6.9-4.8 4.7 1.1 6.6L12 17.8l-5.8 3.1 1.1-6.6-4.8-4.7 6.6-.9L12 2.5z" />
+                </svg>
+              )}
+              <span className="nav-text relative text-white hover:text-cyan-400 transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-cyan-400 after:to-pink-400 after:transition-all after:duration-300 hover:after:w-full">
+                {item.name}
+              </span>
+            </a>
+          )
         ))}
       </div>
 
@@ -210,17 +252,28 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
+        {mobileMenuOpen && (
         <div className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden">
           <div className="px-4 py-6 space-y-4">
             {["My Space", "Study Room", "Blogs", "Leaderboard"].map((item) => (
-              <a
-                key={item}
-                href={`/pages/${item.replace(/\s/g, "_").toLowerCase()}.html`}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
-              >
-                {item}
-              </a>
+              item === "Leaderboard" ? (
+                <Link
+                  key={item}
+                  to="/leaderboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
+                >
+                  {item}
+                </Link>
+              ) : (
+                <a
+                  key={item}
+                  href={`/pages/${item.replace(/\s/g, "_").toLowerCase()}.html`}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
+                >
+                  {item}
+                </a>
+              )
             ))}
           </div>
         </div>
