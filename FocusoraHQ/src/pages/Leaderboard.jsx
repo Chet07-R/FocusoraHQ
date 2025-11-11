@@ -9,7 +9,7 @@ const App = () => {
     goalRate: 0,
   });
 
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [visibleCount] = useState(10);
   const leaderboardData = [
     {
       rank: 4,

@@ -1,30 +1,40 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Blog from "./pages/Blog";
+import Blog1 from "./pages/Blog1";
+import Blog2 from "./pages/Blog2";
 import Leaderboard from "./pages/Leaderboard";
 
 function Home() {
   return (
-    <main className="pt-16 text-center text-gray-700 dark:text-gray-200 min-h-screen bg-gray-50 dark:bg-gray-900">
-      <h1 className="text-4xl font-bold mt-20">FocusoraHQ Landing Page</h1>
-      <p className="mt-4 text-lg">If you see the Navbar above, it’s working ✅</p>
-    </main>
+    <div className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          FocusoraHQ Landing Page
+        </h1>
+        <p className="text-xl text-gray-700 dark:text-gray-300">
+          If you see the Navbar above, it's working ✅
+        </p>
+      </div>
+    </div>
   );
 }
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog1" element={<Blog1 />} />
+        <Route path="/blog2" element={<Blog2 />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
-
       <Footer />
-    </BrowserRouter>
+    </>
   );
 }
 
