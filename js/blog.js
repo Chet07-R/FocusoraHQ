@@ -21,8 +21,29 @@ if (articlesGrid && loadMoreBtn) {
     });
 }
 
+// ============================================
+// LOAD MORE ARTICLES FUNCTIONALITY
+// ============================================
 
-// TOC Slider functionality
+if (articlesGrid && loadMoreBtn) {
+    const originalArticles = Array.from(articlesGrid.children);
+    loadMoreBtn.addEventListener('click', function() {
+        originalArticles.forEach((article) => {
+            const clone = article.cloneNode(true);
+            articlesGrid.appendChild(clone);
+        });
+        setTimeout(() => {
+            const newArticles = articlesGrid.children;
+            const firstNewArticle = newArticles[newArticles.length - originalArticles.length];
+            firstNewArticle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    });
+}
+
+
+// ============================================
+// TOC SLIDER FUNCTIONALITY (FIXED)
+// ============================================
 const tocLinks = document.querySelectorAll('.toc-link');
 const tocIndicator = document.querySelector('.toc-indicator');
 
@@ -40,39 +61,48 @@ if (tocLinks.length > 0 && tocIndicator) {
     }
   });
 
-  // Function to update slider position - optimized
+  // ⭐ FIXED: Update slider position with correct calculation
   function updateSlider(activeLink) {
     if (!activeLink || !tocIndicator) return;
     
-    // Use getBoundingClientRect for accurate positioning
+    // Get the parent nav container
+    const navContainer = tocIndicator.parentElement;
+    if (!navContainer) return;
+    
+    // Calculate position relative to the nav container
+    const navRect = navContainer.getBoundingClientRect();
     const linkRect = activeLink.getBoundingClientRect();
-    const containerRect = activeLink.parentElement.getBoundingClientRect();
     
-    const topPosition = linkRect.top - containerRect.top;
+    // Calculate the offset from the top of nav container
+    const topPosition = linkRect.top - navRect.top + navContainer.scrollTop;
     
-    // Use transform for better performance
+    // Apply the transform with proper positioning
     tocIndicator.style.transform = `translateY(${topPosition}px)`;
     tocIndicator.style.height = `${linkRect.height}px`;
+    tocIndicator.style.width = '4px';
+    tocIndicator.style.background = 'linear-gradient(to bottom, #3b82f6, #9333ea)';
+    tocIndicator.style.opacity = '1';
+    tocIndicator.style.borderRadius = '9999px';
   }
 
-  // Optimized scroll handler with requestAnimationFrame
+  // Optimized scroll handler
   function onScroll() {
     if (sections.length === 0) return;
     
     let current = '';
     const scrollPos = window.scrollY;
     
-    // Find current section
+    // Find current section with better offset
     for (let i = sections.length - 1; i >= 0; i--) {
       const section = sections[i];
-      const sectionTop = section.element.offsetTop - 150;
+      const sectionTop = section.element.offsetTop - 200;
       if (scrollPos >= sectionTop) {
         current = section.id;
         break;
       }
     }
     
-    // Only update if changed
+    // Update active state
     if (current && current !== currentActive) {
       currentActive = current;
       
@@ -86,7 +116,7 @@ if (tocLinks.length > 0 && tocIndicator) {
     }
   }
 
-  // Throttled scroll listener using requestAnimationFrame
+  // Throttled scroll listener
   window.addEventListener('scroll', () => {
     if (!ticking) {
       window.requestAnimationFrame(() => {
@@ -105,13 +135,9 @@ if (tocLinks.length > 0 && tocIndicator) {
       const targetSection = document.getElementById(targetId);
       
       if (targetSection) {
-        // Update current active
         currentActive = targetId;
-        
-        // Smooth scroll to section
         targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         
-        // Update active state and slider
         tocLinks.forEach(l => l.classList.remove('active-toc'));
         link.classList.add('active-toc');
         updateSlider(link);
@@ -119,7 +145,7 @@ if (tocLinks.length > 0 && tocIndicator) {
     });
   });
 
-  // Initialize slider position on page load
+  // Initialize on page load
   setTimeout(() => {
     const firstLink = tocLinks[0];
     if (firstLink) {
@@ -128,4 +154,12 @@ if (tocLinks.length > 0 && tocIndicator) {
       updateSlider(firstLink);
     }
   }, 100);
+
+  // ⭐ FIX: Update slider on window resize
+  window.addEventListener('resize', () => {
+    const activeLink = document.querySelector('.toc-link.active-toc');
+    if (activeLink) {
+      updateSlider(activeLink);
+    }
+  });
 }
