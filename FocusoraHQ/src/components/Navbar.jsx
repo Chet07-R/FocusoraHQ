@@ -7,10 +7,11 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Shared classes for link text (desktop + mobile) with hover and focus gradient underline
-  const linkTextClasses = "nav-text relative text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent focus:bg-gradient-to-r focus:from-blue-400 focus:to-blue-600 focus:bg-clip-text focus:text-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
+  // Shared classes for link text with hover and focus gradient underline
+  const linkTextClasses =
+    "nav-text relative text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent focus:bg-gradient-to-r focus:from-blue-400 focus:to-blue-600 focus:bg-clip-text focus:text-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
 
-  // Handle dark mode toggle
+  // Handle dark mode toggle effect
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) root.classList.add("dark");
@@ -20,13 +21,97 @@ const Navbar = () => {
   // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!e.target.closest("#profile-menu") && !e.target.closest("#profile-icon")) {
+      if (
+        !e.target.closest("#profile-menu") &&
+        !e.target.closest("#profile-icon")
+      ) {
         setProfileOpen(false);
       }
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  // Nav items array (external or internal links with icons)
+  const navItems = [
+    { name: "My Space", href: "/pages/my_space.html", icon: "mail", isExternal: true },
+    { name: "Study Room", to: "/study-room", icon: "book" },
+    { name: "Blogs", href: "/pages/Blog.html", icon: "note", isExternal: true },
+    { name: "Leaderboard", to: "/leaderboard", icon: "star" },
+  ];
+
+  // Render icon SVG based on icon type
+  const renderIcon = (icon) => {
+    switch (icon) {
+      case "mail":
+        return (
+          <svg
+            className="w-5 h-5 group-hover:scale-110 text-pink-400 transition-transform duration-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m7 7 5 5 5-5"
+            />
+          </svg>
+        );
+      case "book":
+        return (
+          <svg
+            className="w-5 h-5 group-hover:scale-110 text-purple-400 transition-transform duration-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
+        );
+      case "note":
+        return (
+          <svg
+            className="w-5 h-5 text-blue-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+            />
+          </svg>
+        );
+      case "star":
+        return (
+          <svg
+            className="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform duration-300"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 2.5l2.9 5.9 6.6.9-4.8 4.7 1.1 6.6L12 17.8l-5.8 3.1 1.1-6.6-4.8-4.7 6.6-.9L12 2.5z" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <nav className="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50">
@@ -35,70 +120,40 @@ const Navbar = () => {
         href="/"
         className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
       >
-        {/* lamp logo (shrinked) placed left of brand */}
-        <img src="/images/logo-shrinked.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
-        <span className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent brand-gradient" style={{ letterSpacing: '-0.5px' }}>
+        <img
+          src="/images/logo-shrinked.png"
+          className="w-8 h-8"
+          alt="FocusoraHQ Lamp Logo"
+        />
+        <span
+          className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent brand-gradient"
+          style={{ letterSpacing: "-0.5px" }}
+        >
           FocusoraHQ
         </span>
       </a>
 
       {/* Desktop Nav Links */}
       <div className="hidden lg:flex gap-10 items-center font-semibold text-base">
-        {[
-          { name: "My Space", href: "/pages/my_space.html", color: "text-pink-400", icon: "mail", isExternal: true },
-          { name: "Study Room", href: "/pages/study_room.html", color: "text-purple-400", icon: "book", isExternal: true },
-          { name: "Blogs", href: "/blog", color: "text-blue-400", icon: "note", isExternal: false },
-          { name: "Leaderboard", href: "/leaderboard", color: "text-yellow-400", icon: "star", isExternal: false },
-        ].map((item) => {
-          const renderIcon = () => {
-            if (item.icon === "mail") {
-              return (
-                <svg className="w-5 h-5 group-hover:scale-110 text-pink-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m7 7l5 5l5-5"></path>
-                </svg>
-              );
-            } else if (item.icon === "book") {
-              return (
-                <svg className="w-5 h-5 group-hover:scale-110 text-purple-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                </svg>
-              );
-            } else if (item.icon === "note") {
-              return (
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-              );
-            } else if (item.icon === "star") {
-              return (
-                <svg className="w-5 h-5 text-yellow-400 group-hover:scale-110 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2.5l2.9 5.9 6.6.9-4.8 4.7 1.1 6.6L12 17.8l-5.8 3.1 1.1-6.6-4.8-4.7 6.6-.9L12 2.5z" />
-                </svg>
-              );
-            }
-            return null;
-          };
-
-          const commonClasses = "nav-link flex items-center gap-2 cursor-pointer group";
-          const spanClasses = linkTextClasses;
-
-          if (item.isExternal) {
-            return (
-              <a key={item.name} href={item.href} className={commonClasses}>
-                {renderIcon()}
-                <span className={spanClasses}>{item.name}</span>
-              </a>
-            );
-          } else {
-            return (
-              <NavLink key={item.name} to={item.href} className={({ isActive }) => `${commonClasses} ${isActive ? 'active' : ''}`}>
-                {renderIcon()}
-                <span className={spanClasses}>{item.name}</span>
-              </NavLink>
-            );
-          }
-        })}
+        {navItems.map((item) =>
+          item.isExternal ? (
+            <a key={item.name} href={item.href} className="nav-link flex items-center gap-2 cursor-pointer group">
+              {renderIcon(item.icon)}
+              <span className={linkTextClasses}>{item.name}</span>
+            </a>
+          ) : (
+            <NavLink
+              key={item.name}
+              to={item.to}
+              className={({ isActive }) =>
+                `nav-link flex items-center gap-2 cursor-pointer group${isActive ? " active" : ""}`
+              }
+            >
+              {renderIcon(item.icon)}
+              <span className={linkTextClasses}>{item.name}</span>
+            </NavLink>
+          )
+        )}
       </div>
 
       {/* Right Controls */}
@@ -109,7 +164,12 @@ const Navbar = () => {
           className="lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300"
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             {mobileMenuOpen ? (
               <path
                 strokeLinecap="round"
@@ -134,7 +194,11 @@ const Navbar = () => {
             onClick={() => setProfileOpen(!profileOpen)}
             className="profile-ring cursor-pointer w-10 h-10 rounded-full overflow-hidden"
           >
-            <img src="/images/Profile_Icon.png" alt="Profile" className="w-full h-full object-cover" />
+            <img
+              src="/images/Profile_Icon.png"
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {profileOpen && (
@@ -153,7 +217,9 @@ const Navbar = () => {
                 </div>
                 <div className="min-w-0">
                   <p className="profile-name truncate">John Doe</p>
-                  <p className="profile-email text-sm truncate">john.doe@email.com</p>
+                  <p className="profile-email text-sm truncate">
+                    john.doe@email.com
+                  </p>
                 </div>
               </div>
 
@@ -165,23 +231,45 @@ const Navbar = () => {
                   href="/pages/profile.html"
                   className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"
                 >
-                  <svg className="menu-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z"/>
-                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                  <svg
+                    className="menu-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z" />
+                    <path d="M20 21a8 8 0 0 0-16 0" />
                   </svg>
-                  <span className="text-hover-wrap text-gray-700 dark:text-gray-200 font-medium">Profile</span>
+                  <span className="text-hover-wrap text-gray-700 dark:text-gray-200 font-medium">
+                    Profile
+                  </span>
                 </a>
                 <a
                   href="/pages/community.html"
                   className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"
                 >
-                  <svg className="menu-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"/>
-                    <path d="M7 14a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"/>
-                    <path d="M5 20a7 7 0 0 1 7-7"/>
-                    <path d="M16 21a5 5 0 0 1 5-5"/>
+                  <svg
+                    className="menu-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+                    <path d="M7 14a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+                    <path d="M5 20a7 7 0 0 1 7-7" />
+                    <path d="M16 21a5 5 0 0 1 5-5" />
                   </svg>
-                  <span className="text-hover-wrap text-gray-700 dark:text-gray-200 font-medium">Community</span>
+                  <span className="text-hover-wrap text-gray-700 dark:text-gray-200 font-medium">
+                    Community
+                  </span>
                 </a>
               </div>
 
@@ -196,9 +284,11 @@ const Navbar = () => {
                   aria-checked={darkMode}
                   aria-label="Toggle dark mode"
                   onClick={() => setDarkMode(!darkMode)}
-                  className={`theme-toggle ${darkMode ? 'on' : ''} focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2`}
+                  className={`theme-toggle ${
+                    darkMode ? "on" : ""
+                  } focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2`}
                 >
-                  <span className={`toggle-knob ${darkMode ? 'on' : ''}`}/>
+                  <span className={`toggle-knob ${darkMode ? "on" : ""}`} />
                 </button>
               </div>
 
@@ -210,10 +300,19 @@ const Navbar = () => {
                   href="#"
                   className="menu-item logout-btn flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 transition-all group focus:outline-none"
                 >
-                  <svg className="menu-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <path d="M16 17l5-5-5-5"/>
-                    <path d="M21 12H9"/>
+                  <svg
+                    className="menu-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <path d="M16 17l5-5-5-5" />
+                    <path d="M21 12H9" />
                   </svg>
                   <span className="font-medium">Logout</span>
                 </a>
@@ -224,35 +323,29 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-        {mobileMenuOpen && (
+      {mobileMenuOpen && (
         <div className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden">
           <div className="px-4 py-6 space-y-4">
-                {[
-              { name: "My Space", href: "/pages/my_space.html", isExternal: true },
-              { name: "Study Room", href: "/pages/study_room.html", isExternal: true },
-              { name: "Blogs", href: "/blog", isExternal: false },
-              { name: "Leaderboard", href: "/leaderboard", isExternal: false },
-            ].map((item) => (
-              item.isExternal ? (
-                <a
-                  key={item.name}
-                  href={item.href}
+            {["My Space", "Study Room", "Blogs", "Leaderboard"].map((item) =>
+              item === "Leaderboard" ? (
+                <Link
+                  key={item}
+                  to="/leaderboard"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-300 text-white font-semibold group hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
                 >
-                  <span className={linkTextClasses}>{item.name}</span>
-                </a>
+                  {item}
+                </Link>
               ) : (
-                <NavLink
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) => `flex items-center gap-3 p-3 rounded-lg transition-colors duration-300 text-white font-semibold group ${isActive ? 'bg-gray-700' : 'hover:bg-gray-800'}`}
+                <a
+                  key={item}
+                  href={`/pages/${item.replace(/\s/g, "_").toLowerCase()}.html`}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
                 >
-                  <span className={linkTextClasses}>{item.name}</span>
-                </NavLink>
+                  {item}
+                </a>
               )
-            ))}
+            )}
           </div>
         </div>
       )}
