@@ -368,12 +368,12 @@ const Blog = () => {
           <p className="mt-4 text-lg text-gray-300 dark:text-gray-400 max-w-2xl mx-auto mb-4">
             Join thousands who've transformed their work and life with our proven systems and strategies.
           </p>
-          <a
-            href="/pages/signup.html"
+          <Link
+            to="/signup"
             className="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg m-3"
           >
             Start Your Journey
-          </a>
+          </Link>
           <a
             href="#latest-articles"
             className="inline-block bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-indigo-700 transform hover:scale-105 transition-all duration-300 m-3"

@@ -6,6 +6,8 @@ import Blog from "./pages/Blog";
 import Blog1 from "./pages/Blog1";
 import Blog2 from "./pages/Blog2";
 import Leaderboard from "./pages/Leaderboard";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import JoinSpace from "./pages/JoinSpace";
 import CreateSpace from "./pages/CreateSpace";
 import StudyRoom from "./pages/StudyRoom";
@@ -27,9 +29,11 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog1" element={<Blog1 />} />
         <Route path="/blog2" element={<Blog2 />} />
-  <Route path="/my-space" element={<MySpace />} />
+        <Route path="/my-space" element={<MySpace />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/join-space" element={<JoinSpace />} />
         <Route path="/study-room-1" element={<StudyRoom1 />} />
         <Route path="/study-room" element={<StudyRoom />} />

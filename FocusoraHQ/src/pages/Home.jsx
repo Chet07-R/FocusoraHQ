@@ -154,7 +154,12 @@ const Home = () => {
         <div className="container mx-auto px-6 py-20 text-center relative z-10">
           <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">Ready to Reclaim Your Focus?</h2>
           <p className="mt-4 text-lg text-gray-300 dark:text-gray-400 max-w-2xl mx-auto">Join thousands of users who are boosting their productivity and achieving their goals. Get started for free today.</p>
-          <a href="/pages/signup.html" className="mt-8 inline-block bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-400 hover:from-cyan-500 hover:via-blue-500 hover:to-pink-500 text-white font-bold px-10 py-4 rounded-lg transition-all text-lg shadow-xl hover:shadow-2xl hover:scale-105 duration-300 ring-1 ring-white/20">Sign Up for Free</a>
+          <Link
+            to="/signup"
+            className="mt-8 inline-block px-8 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold text-lg shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300"
+          >
+            Sign Up for Free
+          </Link>
         </div>
       </section>
     </>

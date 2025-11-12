@@ -12,6 +12,42 @@ const App = () => {
   const [visibleCount] = useState(10);
   const leaderboardData = [
     {
+      rank: 1,
+      name: "Tanish Mehta",
+      location: "us San Francisco",
+      points: 8245,
+      today: "+298 today",
+      sessions: 127,
+      time: "89h 15m",
+      streak: 12,
+      badge: { label: "Hot Streak", color: "green" },
+      img: "/images/People/4.jpg",
+    },
+    {
+      rank: 2,
+      name: "Chetan Ajmani",
+      location: "us New York",
+      points: 9876,
+      today: "+356 today",
+      sessions: 156,
+      time: "142h 30m",
+      streak: 25,
+      badge: { label: "Champion", color: "green" },
+      img: "/images/People/5.jpg",
+    },
+    {
+      rank: 3,
+      name: "Vansh Thakur",
+      location: "ru Moscow",
+      points: 7892,
+      today: "+267 today",
+      sessions: 101,
+      time: "76h 45m",
+      streak: 8,
+      badge: { label: "Rising Star", color: "blue" },
+      img: "/images/People/6.jpeg",
+    },
+    {
       rank: 4,
       name: "Aryan Garg",
       location: "us San Francisco",
@@ -24,7 +60,7 @@ const App = () => {
       img: "/images/People/7.jpg",
     },
     {
-      rank: 4,
+      rank: 5,
       name: "Arush Mittal",
       location: "us California",
       points: 6543,
@@ -36,7 +72,7 @@ const App = () => {
       img: "/images/People/15.jpg",
     },
     {
-      rank: 5,
+      rank: 6,
       name: "Pratham Gupta",
       location: "gb London",
       points: 5987,
@@ -48,7 +84,7 @@ const App = () => {
       img: "/images/People/8.png",
     },
     {
-      rank: 6,
+      rank: 7,
       name: "Pratibha",
       location: "ca Toronto",
       points: 5234,
@@ -60,7 +96,7 @@ const App = () => {
       img: "/images/People/9.enc",
     },
     {
-      rank: 7,
+      rank: 8,
       name: "Vaibhav Garg",
       location: "sg Singapore",
       points: 4892,
@@ -72,7 +108,7 @@ const App = () => {
       img: "/images/People/10.jpg",
     },
     {
-      rank: 8,
+      rank: 9,
       name: "Bhoomi Kataria",
       location: "us Mississippi",
       points: 4892,
@@ -82,6 +118,18 @@ const App = () => {
       streak: 15,
       badge: { label: "Consistent", color: "orange" },
       img: "/images/People/16.jpg",
+    },
+    {
+      rank: 10,
+      name: "Bhavya Kaushal",
+      location: "eng Manchester",
+      points: 3120,
+      today: "+78 today",
+      sessions: 41,
+      time: "25h 12m",
+      streak: 3,
+      badge: { label: "Newcomer", color: "slate" },
+      img: "/images/People/12.enc",
     },
     {
       rank: 11,
@@ -120,18 +168,7 @@ const App = () => {
       badge: { label: "Newcomer", color: "slate" },
       img: "/images/People/14.enc",
     },
-    {
-      rank: 14,
-      name: "Bhavya Kaushal",
-      location: "eng Manchester",
-      points: 3120,
-      today: "+78 today",
-      sessions: 41,
-      time: "25h 12m",
-      streak: 3,
-      badge: { label: "Newcomer", color: "slate" },
-      img: "/images/People/12.enc",
-    },
+
   ];
 
   const getBadgeColor = (color) => {
@@ -149,7 +186,7 @@ const App = () => {
   const idRef = useRef(leaderboardData.length + 1);
   const [rows, setRows] = useState(() =>
     leaderboardData
-      .slice(0, visibleCount)
+      .slice(3, visibleCount + 3)
       .map((u, idx) => ({ ...u, _id: idx + 1 }))
   );
 
@@ -230,6 +267,62 @@ const App = () => {
               {stats.goalRate}%
             </h3>
             <p className="text-gray-400 mt-2">Goal Rate</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Hall of Champions ===== */}
+      <section className="py-20 px-6 md:px-20 bg-gradient-to-b from-[#071019] to-[#0b0f19]">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="flex justify-center mb-6">
+            <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6" />
+            </div>
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Hall of Champions</h2>
+          <p className="text-gray-400 mb-10">This month's top performers</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+            {leaderboardData.slice(0, 3).map((u, idx) => (
+              <div
+                key={`${u.name}-${idx}`}
+                className={`rounded-2xl p-8 shadow-lg transition transform ${
+                  idx === 1
+                    ? 'scale-105 border-4 border-blue-600 bg-gradient-to-b from-blue-900 to-blue-800'
+                    : 'bg-[#111827]'
+                }`}
+              >
+                <div className="flex flex-col items-center">
+                  {idx === 1 && (
+                    <div className="mb-3 text-yellow-300">
+                      <Crown className="w-10 h-10" />
+                    </div>
+                  )}
+
+                  <div className={`w-28 h-28 rounded-full overflow-hidden border-4 ${idx === 1 ? 'border-blue-400' : 'border-gray-600'} mb-4`}>
+                    <img src={u.img} alt={u.name} className="w-full h-full object-cover" />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-white mb-2">{u.name}</h3>
+
+                  <p className={`text-3xl font-extrabold ${idx === 1 ? 'text-blue-300' : 'text-blue-400'}`}>
+                    {u.points.toLocaleString()}
+                  </p>
+
+                  <p className="text-sm text-gray-400 mt-2">{u.sessions} sessions • {u.time}</p>
+
+                  <div className="flex gap-2 mt-4">
+                    <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
+                      {idx === 1 ? 'Champion' : idx === 0 ? '2nd' : '3rd'}
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-orange-700 text-white text-sm">
+                      {u.streak} day streak
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

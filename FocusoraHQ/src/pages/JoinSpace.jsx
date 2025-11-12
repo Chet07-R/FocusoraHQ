@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
 const JoinSpace = () => {
   const allRooms = [
@@ -140,9 +141,9 @@ const JoinSpace = () => {
                   ))}
                 </div>
 
-                <button className="mt-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all w-full">
+                <Link to="/study-room-1" className="mt-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all w-full text-center">
                   Join
-                </button>
+                </Link>
               </div>
             ))
           ) : (
