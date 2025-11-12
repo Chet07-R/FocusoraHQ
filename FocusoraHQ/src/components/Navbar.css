@@ -85,20 +85,28 @@ nav::after {
 }
 
 .profile-ring {
-  background: transparent;
-  padding: 0; /* remove outer ring spacing */
+  /* Gradient ring around the avatar */
+  background: linear-gradient(135deg, #06b6d4 0%, #c084fc 50%, #ec4899 100%);
+  padding: 3px; /* ring thickness */
   border-radius: 9999px;
   position: relative;
-  transition: box-shadow 0.3s ease;
-  box-shadow: none;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+  box-shadow: 0 6px 18px rgba(6,182,212,0.08), 0 2px 8px rgba(192,132,252,0.06);
 }
-.profile-ring:hover { box-shadow: none; }
+.profile-ring:hover {
+  transform: scale(1.06);
+  box-shadow: 0 10px 30px rgba(6,182,212,0.12), 0 6px 20px rgba(192,132,252,0.08);
+}
 .profile-ring img {
   display: block;
   border-radius: 9999px;
-  border: none; /* remove inner border */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* inner white border to separate avatar from ring */
+  border: 2px solid rgba(255,255,255,0.06);
 }
-.dark .profile-ring img { border: none; }
+.dark .profile-ring img { border-color: rgba(255,255,255,0.12); }
 
 /* ===== PREMIUM GLASSMORPHISM PANEL (light vs dark) ===== */
 .profile-panel {
@@ -338,3 +346,15 @@ nav::after {
 /* Improve vertical rhythm inside dropdown */
 .profile-panel a.menu-item { min-height: 48px; }
 .profile-panel .logout-btn { min-height: 48px; }
+
+/* Ensure nav link text remains white on hover/focus and prevent gradient/text-clip effects */
+.nav-link .nav-text {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+.nav-link:hover .nav-text,
+.nav-link:focus .nav-text,
+.nav-link:active .nav-text {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}

@@ -8,8 +8,9 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Shared classes for link text with hover and focus gradient underline
+  // Keep nav text white on hover; only animate the underline (after:)
   const linkTextClasses =
-    "nav-text relative text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:bg-clip-text hover:text-transparent focus:bg-gradient-to-r focus:from-blue-400 focus:to-blue-600 focus:bg-clip-text focus:text-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
+    "nav-text relative text-white transition-all duration-300 focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
 
   // Handle dark mode toggle effect
   useEffect(() => {
@@ -34,10 +35,11 @@ const Navbar = () => {
 
   // Nav items array (external or internal links with icons)
   const navItems = [
-    { name: "My Space", href: "/pages/my_space.html", icon: "mail", isExternal: true },
-    { name: "Study Room", to: "/study-room", icon: "book" },
-    { name: "Blogs", href: "/pages/Blog.html", icon: "note", isExternal: true },
-    { name: "Leaderboard", to: "/leaderboard", icon: "star" },
+    { name: "My Space", href: "/pages/my_space.html", icon: "mail", isExternal: true, dataPage: "my_space" },
+    { name: "Study Room", to: "/study-room", icon: "book", dataPage: "study_room" },
+    // Use internal React route for Blogs so it matches App.jsx routes
+    { name: "Blogs", to: "/blog", icon: "note", dataPage: "Blog" },
+    { name: "Leaderboard", to: "/leaderboard", icon: "star", dataPage: "leaderboard" },
   ];
 
   // Render icon SVG based on icon type
@@ -137,7 +139,12 @@ const Navbar = () => {
       <div className="hidden lg:flex gap-10 items-center font-semibold text-base">
         {navItems.map((item) =>
           item.isExternal ? (
-            <a key={item.name} href={item.href} className="nav-link flex items-center gap-2 cursor-pointer group">
+            <a
+              key={item.name}
+              href={item.href}
+              data-page={item.dataPage}
+              className="nav-link flex items-center gap-2 cursor-pointer group"
+            >
               {renderIcon(item.icon)}
               <span className={linkTextClasses}>{item.name}</span>
             </a>
@@ -145,6 +152,7 @@ const Navbar = () => {
             <NavLink
               key={item.name}
               to={item.to}
+              data-page={item.dataPage}
               className={({ isActive }) =>
                 `nav-link flex items-center gap-2 cursor-pointer group${isActive ? " active" : ""}`
               }
@@ -160,8 +168,11 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {/* Mobile Menu Button */}
         <button
+          id="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300"
+          className={`lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300 ${
+            mobileMenuOpen ? "active" : ""
+          }`}
           aria-label="Toggle menu"
         >
           <svg
@@ -324,26 +335,31 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden">
+        <div id="mobile-menu" className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden">
           <div className="px-4 py-6 space-y-4">
-            {["My Space", "Study Room", "Blogs", "Leaderboard"].map((item) =>
-              item === "Leaderboard" ? (
+            {navItems.map((item) =>
+              item.isExternal ? (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  data-page={item.dataPage}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
+                >
+                  {renderIcon(item.icon)}
+                  <span className="text-white font-semibold">{item.name}</span>
+                </a>
+              ) : (
                 <Link
-                  key={item}
-                  to="/leaderboard"
+                  key={item.name}
+                  to={item.to}
+                  data-page={item.dataPage}
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-300 text-white font-semibold group hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
                 >
-                  {item}
+                  {renderIcon(item.icon)}
+                  <span>{item.name}</span>
                 </Link>
-              ) : (
-                <a
-                  key={item}
-                  href={`/pages/${item.replace(/\s/g, "_").toLowerCase()}.html`}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
-                >
-                  {item}
-                </a>
               )
             )}
           </div>
