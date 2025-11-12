@@ -35,7 +35,7 @@ const Navbar = () => {
 
   // Nav items array (external or internal links with icons)
   const navItems = [
-    { name: "My Space", href: "/pages/my_space.html", icon: "mail", isExternal: true, dataPage: "my_space" },
+    { name: "My Space", to: "/my-space", icon: "mail", isExternal: false, dataPage: "my_space" },
     { name: "Study Room", to: "/study-room", icon: "book", dataPage: "study_room" },
     // Use internal React route for Blogs so it matches App.jsx routes
     { name: "Blogs", to: "/blog", icon: "note", dataPage: "Blog" },
@@ -118,22 +118,12 @@ const Navbar = () => {
   return (
     <nav className="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50">
       {/* Logo Section */}
-      <a
-        href="/"
-        className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
-      >
-        <img
-          src="/images/logo-shrinked.png"
-          className="w-8 h-8"
-          alt="FocusoraHQ Lamp Logo"
-        />
-        <span
-          className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent brand-gradient"
-          style={{ letterSpacing: "-0.5px" }}
-        >
+      <Link to="/" className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300">
+        <img src="/images/logo-shrinked.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
+        <span className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent brand-gradient" style={{ letterSpacing: "-0.5px" }}>
           FocusoraHQ
         </span>
-      </a>
+      </Link>
 
       {/* Desktop Nav Links */}
       <div className="hidden lg:flex gap-10 items-center font-semibold text-base">
