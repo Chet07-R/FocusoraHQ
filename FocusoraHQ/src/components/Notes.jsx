@@ -262,36 +262,38 @@ const Notes = ({ addNotification = () => {} }) => {
       </div>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex items-center gap-2 bg-white/5 p-2 rounded-lg">
-          <button
-            onClick={() => formatText('bold')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
-          >
-            B
-          </button>
-          <button
-            onClick={() => formatText('italic')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
-          >
-            I
-          </button>
-          <button
-            onClick={() => formatText('underline')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
-          >
-            U
-          </button>
-          
-          <div className="w-px h-6 bg-white/10 mx-2" />
-          <button onClick={() => setAlignment('left')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignLeft size={14} /></button>
-          <button onClick={() => setAlignment('center')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignCenter size={14} /></button>
-          <button onClick={() => setAlignment('right')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignRight size={14} /></button>
+      <div className="flex flex-col gap-3 mb-3">
+        {/* First row: B, I, U, and alignment buttons */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white/5 p-2 rounded-lg">
+            <button
+              onClick={() => formatText('bold')}
+              className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            >
+              B
+            </button>
+            <button
+              onClick={() => formatText('italic')}
+              className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            >
+              I
+            </button>
+            <button
+              onClick={() => formatText('underline')}
+              className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            >
+              U
+            </button>
+            
+            <div className="w-px h-6 bg-white/10 mx-2" />
+            <button onClick={() => setAlignment('left')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignLeft size={14} /></button>
+            <button onClick={() => setAlignment('center')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignCenter size={14} /></button>
+            <button onClick={() => setAlignment('right')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignRight size={14} /></button>
+          </div>
         </div>
 
-        <div className="flex-1" />
-
-        <div className="flex items-center gap-3 ml-auto">
+        {/* Second row: Speak, Listen, and stats */}
+        <div className="flex items-center gap-3">
           <button
             onClick={startDictation}
             aria-label="Speak"
@@ -306,7 +308,7 @@ const Notes = ({ addNotification = () => {} }) => {
             <Volume2 size={16} />
             <span className="select-none">Listen</span>
           </button>
-          <div className="text-xs text-gray-300">{chars} chars • {words} words • {minutes} min read</div>
+          <div className="text-xs text-gray-300 ml-auto">{chars} chars • {words} words • {minutes} min read</div>
         </div>
       </div>
 

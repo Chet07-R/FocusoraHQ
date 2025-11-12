@@ -10,6 +10,7 @@ import JoinSpace from "./pages/JoinSpace";
 import CreateSpace from "./pages/CreateSpace";
 import StudyRoom from "./pages/StudyRoom";
 import MySpace from "./pages/MySpace";
+import Community from "./pages/Community";
 import ScrollToTop from "./components/ScrollToTop";
 import StudyRoom1 from "./pages/StudyRoom-1";
 import Home from "./pages/Home";
@@ -28,6 +29,7 @@ function App() {
         <Route path="/blog2" element={<Blog2 />} />
   <Route path="/my-space" element={<MySpace />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/community" element={<Community />} />
         <Route path="/join-space" element={<JoinSpace />} />
         <Route path="/study-room-1" element={<StudyRoom1 />} />
         <Route path="/study-room" element={<StudyRoom />} />

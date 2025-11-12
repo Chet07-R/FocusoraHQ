@@ -44,10 +44,20 @@ const MySpace = () => {
       setNotification((prev) => ({ ...prev, show: false }));
     }, 3000);
   };
+  useEffect(() => {
+      const sel = document.querySelector('footer, .footer, #footer, .site-footer');
+      if (!sel) return;
+      const prev = sel.style.display;
+      sel.style.display = 'none';
+      return () => {
+        try { sel.style.display = prev || ''; } catch (e) { /* ignore */ }
+      };
+  }, []);
 
   const hideNotification = () => {
     setNotification((prev) => ({ ...prev, show: false }));
   };
+  
 
   return (
     <div className="min-h-screen w-screen overflow-x-hidden pb-6">

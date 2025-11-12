@@ -249,8 +249,8 @@ const Navbar = () => {
                     Profile
                   </span>
                 </a>
-                <a
-                  href="/pages/community.html"
+                <Link
+                  to="/community"
                   className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"
                 >
                   <svg
@@ -271,7 +271,7 @@ const Navbar = () => {
                   <span className="text-hover-wrap text-gray-700 dark:text-gray-200 font-medium">
                     Community
                   </span>
-                </a>
+                </Link>
               </div>
 
               <div className="dropdown-divider"></div>
