@@ -37,7 +37,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Link to="/my-space" className="group">
-              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300">
                 <div className="bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
@@ -47,7 +47,7 @@ const Home = () => {
             </Link>
 
             <Link to="/study-room" className="group">
-              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300">
                 <div className="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 </div>
@@ -57,7 +57,7 @@ const Home = () => {
             </Link>
 
             <Link to="/blog" className="group">
-              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300">
                 <div className="bg-sky-100 dark:bg-sky-900 text-sky-600 dark:text-sky-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                 </div>
@@ -67,7 +67,7 @@ const Home = () => {
             </Link>
 
             <Link to="/leaderboard" className="group">
-              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300">
                 <div className="bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 w-12 h-12 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                 </div>
@@ -122,7 +122,6 @@ const Home = () => {
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">See what our users are saying about FocusoraHQ.</p>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
             {
-              // Use a simple testimonials array so each card shows distinct info
               [
                 { name: 'Bhavya Jain', role: 'Student', img: '/images/People/1.jpg' },
                 { name: 'Vinit', role: 'Student', img: '/images/People/2.enc' },
@@ -154,12 +153,29 @@ const Home = () => {
         <div className="container mx-auto px-6 py-20 text-center relative z-10">
           <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">Ready to Reclaim Your Focus?</h2>
           <p className="mt-4 text-lg text-gray-300 dark:text-gray-400 max-w-2xl mx-auto">Join thousands of users who are boosting their productivity and achieving their goals. Get started for free today.</p>
-          <Link
-            to="/signup"
-            className="mt-8 inline-block px-8 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold text-lg shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300"
-          >
-            Sign Up for Free
-          </Link>
+            <Link to="/signup" className="group relative mt-8 inline-block px-10 py-4 rounded-2xl overflow-hidden">
+              {/* Animated gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient-x"></div>
+  
+              {/* Shine effect overlay */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 opacity-30"></div>
+              </div>
+  
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-75 blur-xl transition-all duration-500 group-hover:duration-200"></div>
+  
+              {/* Button content */}
+              <span className="relative flex items-center gap-3 text-white font-bold text-lg">
+                <svg className="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Sign Up for Free
+                <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+            </Link>
         </div>
       </section>
     </>
