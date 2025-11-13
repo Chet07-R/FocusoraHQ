@@ -280,9 +280,8 @@ const Pomodoro = ({ addNotification = () => { } }) => {
     appearance-none
   "
             >
-              <option className="bg-gray-900 text-white">Short (5 min)</option>
-              <option className="bg-gray-900 text-white">Long (15 min)</option>
-              <option className="bg-gray-900 text-white">Custom (20 min)</option>
+              <option value={5} className="bg-gray-900 text-white">Short (5 min)</option>
+              <option value={15} className="bg-gray-900 text-white">Long (15 min)</option>
             </select>
 
           </div>
