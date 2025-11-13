@@ -1,8 +1,6 @@
 import React from 'react';
-// Note: You'll need to import your CSS files
-// import './components/style.css';
+import { Link } from 'react-router-dom';
 import '../components/blog.css';
-
 import Navbar from "../components/Navbar";
 
 const Blog1 = () => {
@@ -601,7 +599,7 @@ const Blog1 = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/*  Article 1  */}
                 <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
-                    <a href="Blog-2.html" className="block h-full">
+                    <Link to="/blog2" className="block h-full">
                         <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
                             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                              alt="Focus and concentration techniques" 
@@ -622,12 +620,12 @@ const Blog1 = () => {
                                 </svg>
                             </span>
                         </div>
-                    </a>
+                    </Link>
                 </article>
 
                 {/*  Article 2  */}
                 <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
-                    <a href="Blog-2.html" className="block h-full">
+                    <Link to="/blog2" className="block h-full">
                         <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
                             <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                              alt="Time management and planning" 
@@ -648,12 +646,12 @@ const Blog1 = () => {
                                 </svg>
                             </span>
                         </div>
-                    </a>
+                        </Link>
                 </article>
 
                 {/*  Article 3  */}
                 <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2 md:col-span-2 lg:col-span-1">
-                    <a href="Blog-2.html" className="block h-full">
+                    <Link to="/blog2" className="block h-full">
                         <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
                             <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                              alt="Email management and organization" 
@@ -674,7 +672,7 @@ const Blog1 = () => {
                                 </svg>
                             </span>
                         </div>
-                    </a>
+                        </Link>
                 </article>
             </div>
         </div>

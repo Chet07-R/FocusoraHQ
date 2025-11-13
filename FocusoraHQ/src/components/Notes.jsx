@@ -264,7 +264,7 @@ const Notes = ({ addNotification = () => {} }) => {
       {/* Toolbar */}
       <div className="flex flex-col gap-3 mb-3">
         {/* First row: B, I, U, and alignment buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center gap-3">
           <div className="flex items-center gap-2 bg-white/5 p-2 rounded-lg">
             <button
               onClick={() => formatText('bold')}
@@ -313,7 +313,7 @@ const Notes = ({ addNotification = () => {} }) => {
       </div>
 
       {/* Editable area */}
-      <div className="w-full p-4 rounded-xl bg-white/5 border border-white/10 min-h-[8rem] mb-4">
+      <div className="w-full p-4 rounded-xl bg-white/5 border border-white/10 h-[240px] mb-4 overflow-y-auto">
         <div
           id="notesArea"
           ref={notesAreaRef}
@@ -322,7 +322,7 @@ const Notes = ({ addNotification = () => {} }) => {
           role="textbox"
           aria-multiline="true"
           placeholder="Write your notes..."
-          className="w-full min-h-[6rem] text-white resize-none outline-none"
+          className="w-full h-full text-white resize-none outline-none"
           dangerouslySetInnerHTML={{ __html: notes }}
         />
       </div>

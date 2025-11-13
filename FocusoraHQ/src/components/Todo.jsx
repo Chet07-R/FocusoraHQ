@@ -60,8 +60,9 @@ const Todo = ({ addNotification = () => {} }) => {
         </button>
       </div>
 
-      <ul className="space-y-3 max-h-[42vh] overflow-auto custom-scrollbar pr-2">
-        {tasks.map((t, i) => (
+      <ul className="space-y-3 max-h-[450px] overflow-auto custom-scrollbar pr-2">
+        <div className="space-y-3 h-[450px] overflow-y-auto">
+          {tasks.map((t, i) => (
           <li key={i} className="flex items-center justify-between bg-white/5 p-3 rounded-md">
             <div className="flex items-center gap-3">
               <input type="checkbox" checked={t.completed} onChange={() => toggleTask(i)} className="w-4 h-4" />
@@ -71,7 +72,8 @@ const Todo = ({ addNotification = () => {} }) => {
               <Trash2 size={16} />
             </button>
           </li>
-        ))}
+          ))}
+        </div>
       </ul>
     </section>
   );

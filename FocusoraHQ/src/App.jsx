@@ -35,6 +35,8 @@ function App() {
         <Route path="/study-room-1" element={<StudyRoom1 />} />
         <Route path="/study-room" element={<StudyRoom />} />
         <Route path="/create-space" element={<CreateSpace />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
       <Footer />
     </>

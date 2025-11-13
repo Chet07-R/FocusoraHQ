@@ -466,7 +466,7 @@ const Blog2 = () => {
 
               {/* Article 2 */}
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
-                <Link to="/blog2" className="block h-full">
+                <Link to="/blog1" className="block h-full">
                   <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
                     <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" 
                       alt="Time management and planning" 
