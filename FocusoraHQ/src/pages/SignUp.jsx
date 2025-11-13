@@ -48,7 +48,7 @@ const SignUp = () => {
               Join the Squad! 🎓
             </h2>
             <p className="text-gray-300 text-sm">
-              Start your productivity journey today! 💪
+              Start your productivity journey today!
             </p>
           </div>
 
@@ -56,7 +56,7 @@ const SignUp = () => {
           <form onSubmit={handleSignUp} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-blue-300 mb-2">
-                👤 Full Name
+                Full Name
               </label>
               <input
                 type="text"
@@ -71,7 +71,7 @@ const SignUp = () => {
 
             <div>
               <label className="block text-sm font-semibold text-blue-300 mb-2">
-                📧 Email
+                Email
               </label>
               <input
                 type="email"
@@ -86,7 +86,7 @@ const SignUp = () => {
 
             <div>
               <label className="block text-sm font-semibold text-blue-300 mb-2">
-                🔐 Password
+                Password
               </label>
               <input
                 type="password"
@@ -101,7 +101,7 @@ const SignUp = () => {
 
             <div>
               <label className="block text-sm font-semibold text-blue-300 mb-2">
-                ✅ Confirm Password
+                Confirm Password
               </label>
               <input
                 type="password"
@@ -129,7 +129,7 @@ const SignUp = () => {
                 <Link to="/terms" className="text-purple-400 hover:text-purple-300 hover:underline font-semibold">
                   Terms & Conditions
                 </Link>
-                {' '}(we promise they're not boring 😉)
+                {' '}(we promise they're not boring)
               </label>
             </div>
 
@@ -138,7 +138,7 @@ const SignUp = () => {
               type="submit"
               className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold py-3 rounded-xl hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
             >
-              Create Account 🚀
+              Create Account
             </button>
           </form>
 
@@ -146,7 +146,7 @@ const SignUp = () => {
           <p className="text-center text-gray-300 text-sm mt-6">
             Already a member? {' '}
             <Link to="/signin" className="text-purple-400 hover:text-purple-300 font-bold hover:underline transition-colors">
-              Sign In Here! 👈
+              Sign In Here!
             </Link>
           </p>
         </div>
