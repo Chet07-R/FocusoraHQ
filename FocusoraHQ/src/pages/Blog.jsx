@@ -276,11 +276,16 @@ const Blog = () => {
           </div>
 
           {/* Load More Articles */}
-          <div className="text-center mt-12">
-            <button className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 transform shadow-lg">
-              Load More Articles
-            </button>
-          </div>
+          {visibleCount < allArticles.length && (
+            <div className="text-center mt-12">
+              <button 
+                onClick={loadMoreArticles}
+                className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 transform shadow-lg"
+              >
+                Load More Articles
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

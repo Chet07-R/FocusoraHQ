@@ -45,7 +45,7 @@ const SignUp = () => {
           {/* Heading */}
           <div className="text-center mb-8">
             <h2 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-              Join the Squad! 🎓
+              Join the Squad!
             </h2>
             <p className="text-gray-300 text-sm">
               Start your productivity journey today!

@@ -188,10 +188,10 @@ const Footer = () => {
               Company
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">About</a></li>
-              <li><a href="/pages/Blog.html" className="text-gray-300 hover:text-cyan-400 transition-colors">Blog</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Careers</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Press</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">About</a></li>
+              <li><a href="/pages/Blog.html" className="text-gray-300 hover:text-purple-500 transition-colors">Blog</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Careers</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Press</a></li>
             </ul>
           </div>
 
@@ -212,10 +212,10 @@ const Footer = () => {
               Legal
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Cookie Policy</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Disclaimer</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Cookie Policy</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Disclaimer</a></li>
             </ul>
           </div>
         </div>
@@ -270,4 +270,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
