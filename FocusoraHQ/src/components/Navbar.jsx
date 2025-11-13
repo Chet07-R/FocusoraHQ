@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useTheme();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -11,13 +12,6 @@ const Navbar = () => {
   // Keep nav text white on hover; only animate the underline (after:)
   const linkTextClasses =
     "nav-text relative text-white transition-all duration-300 focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
-
-  // Handle dark mode toggle effect
-  useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode) root.classList.add("dark");
-    else root.classList.remove("dark");
-  }, [darkMode]);
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -284,7 +278,7 @@ const Navbar = () => {
                   role="switch"
                   aria-checked={darkMode}
                   aria-label="Toggle dark mode"
-                  onClick={() => setDarkMode(!darkMode)}
+                  onClick={toggleDarkMode}
                   className={`theme-toggle ${
                     darkMode ? "on" : ""
                   } focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2`}

@@ -193,17 +193,22 @@ const App = () => {
   useEffect(() => {
     const animateValue = (key, end, duration) => {
       let start = 0;
-      const stepTime = Math.max(10, Math.floor(duration / Math.max(1, end)));
+      const increment = Math.ceil(end / 50); // Faster increment based on target value
+      const stepTime = Math.floor(duration / 50); // Fixed number of steps for smooth animation
       const timer = setInterval(() => {
-        start += 1;
-        setStats((prev) => ({ ...prev, [key]: start }));
-        if (start >= end) clearInterval(timer);
+        start += increment;
+        if (start >= end) {
+          setStats((prev) => ({ ...prev, [key]: end }));
+          clearInterval(timer);
+        } else {
+          setStats((prev) => ({ ...prev, [key]: start }));
+        }
       }, stepTime);
     };
-    animateValue("users", 2847, 1500);
-    animateValue("points", 156, 1800);
-    animateValue("sessions", 8392, 2000);
-    animateValue("goalRate", 94, 2200);
+    animateValue("users", 2847, 800);
+    animateValue("points", 156, 800);
+    animateValue("sessions", 8392, 800);
+    animateValue("goalRate", 94, 800);
   }, []);
 
   return (
@@ -287,10 +292,10 @@ const App = () => {
             {leaderboardData.slice(0, 3).map((u, idx) => (
               <div
                 key={`${u.name}-${idx}`}
-                className={`rounded-2xl p-8 shadow-lg transition transform ${
+                className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative ${
                   idx === 1
-                    ? 'scale-105 border-4 border-blue-600 bg-gradient-to-b from-blue-900 to-blue-800'
-                    : 'bg-[#111827]'
+                    ? 'scale-105 border-4 border-blue-600 bg-gradient-to-b from-blue-900 to-blue-800 hover:border-blue-400 hover:from-blue-800 hover:to-blue-700'
+                    : 'bg-[#111827] hover:bg-gradient-to-br hover:from-[#1a2840] hover:to-[#1a2332] hover:border-2 hover:border-blue-500/30'
                 }`}
               >
                 <div className="flex flex-col items-center">
@@ -444,7 +449,7 @@ const App = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Focus Sessions */}
-            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg">
+            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-yellow-400">
                   <Clock className="w-8 h-8" />
@@ -468,7 +473,7 @@ const App = () => {
             </div>
 
             {/* Task Completion */}
-            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg">
+            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-teal-300">
                   <CheckCircle className="w-8 h-8" />
@@ -492,7 +497,7 @@ const App = () => {
             </div>
 
             {/* Streaks */}
-            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg">
+            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-red-400">
                   <Zap className="w-8 h-8" />

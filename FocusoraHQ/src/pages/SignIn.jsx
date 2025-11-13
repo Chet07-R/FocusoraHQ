@@ -16,14 +16,14 @@ const SignIn = () => {
     <>
       <Navbar />
       <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4 py-8">
-        <div className="max-w-md w-full bg-[#1e293b] rounded-2xl shadow-2xl p-8 border border-gray-700">
+        <div className="max-w-md w-full bg-[#1e293b] rounded-2xl shadow-2xl p-8 border border-gray-700 mt-12">
           {/* Logo Icon */}
           <div className="flex justify-center mb-6">
             <img src="../images/transparent.png" alt="Logo" className="w-20 h-20" />
           </div>
 
           {/* Heading */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 ">
             <h2 className="text-3xl font-bold text-white mb-2">
               Welcome Back
             </h2>
