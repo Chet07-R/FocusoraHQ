@@ -28,6 +28,7 @@ const Notes = ({ addNotification = () => {} }) => {
   useEffect(() => {
     localStorage.setItem("sr_notes", notes);
   }, [notes]);
+
   useEffect(() => {
     localStorage.setItem("sr_files", JSON.stringify(uploadedFiles));
   }, [uploadedFiles]);
@@ -42,6 +43,7 @@ const Notes = ({ addNotification = () => {} }) => {
   useEffect(() => {
     const el = notesAreaRef.current;
     if (!el) return;
+
     let t = null;
     const onInput = () => {
       clearTimeout(t);
@@ -51,13 +53,13 @@ const Notes = ({ addNotification = () => {} }) => {
         addNotification("💾 Notes auto-saved");
       }, 1000);
     };
-      const onSelection = () => {
+
+    const onSelection = () => {
       try {
         if (document.queryCommandState) {
           setActiveBold(!!document.queryCommandState('bold'));
           setActiveItalic(!!document.queryCommandState('italic'));
           setActiveUnderline(!!document.queryCommandState('underline'));
-          
           // alignment
           if (document.queryCommandState('justifyCenter')) setActiveAlign('center');
           else if (document.queryCommandState('justifyRight')) setActiveAlign('right');
@@ -111,6 +113,7 @@ const Notes = ({ addNotification = () => {} }) => {
       // ignore execCommand errors
     }
     setNotes(el.innerHTML);
+
     // refresh toolbar active state shortly after execCommand
     setTimeout(() => {
       try {
@@ -129,18 +132,18 @@ const Notes = ({ addNotification = () => {} }) => {
     }, 20);
   };
 
-  
-
   /* ===== Dictation ===== */
   const startDictation = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition)
       return addNotification("⚠️ Speech recognition not supported");
+
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
     }
+
     const rec = new SpeechRecognition();
     rec.lang = "en-US";
     rec.interimResults = false;
@@ -202,6 +205,7 @@ const Notes = ({ addNotification = () => {} }) => {
     setUploadedFiles((s) => [meta, ...s]);
     addNotification("📎 File uploaded");
   };
+
   const removeFile = (id) => {
     setUploadedFiles((s) => s.filter((x) => x.id !== id));
     addNotification("🗑️ File removed");
@@ -241,109 +245,158 @@ const Notes = ({ addNotification = () => {} }) => {
   const { chars, words, minutes } = getNotesStats();
 
   return (
-    <section className="relative rounded-2xl p-6 shadow-xl border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-lg text-white overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl" style={{ height: 'calc(725px - 120px)' }}>
       {/* Top header with title and action buttons */}
-      <div className="flex items-center gap-4 mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-400 to-pink-400 flex items-center justify-center text-white text-2xl">✍️</div>
-          <div>
-            <div className="text-2xl font-semibold">Notes</div>
-          </div>
-        </div>
-
-        <div className="ml-auto flex items-center gap-3">
-          <button onClick={saveLocalNotes} className="px-3 py-2 bg-emerald-500 rounded-md text-white flex items-center gap-2">
-            <Save size={14} /> Save
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <span>Notes</span>
+        </h1>
+        <div className="flex gap-3">
+          <button
+            onClick={saveLocalNotes}
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg flex items-center gap-2 transition"
+          >
+            <Save className="w-4 h-4" />
+            Save
           </button>
-          <button onClick={downloadNotes} className="px-3 py-2 bg-white/10 rounded-md text-white flex items-center gap-2">
-            <Download size={14} /> Download
+          <button
+            onClick={downloadNotes}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center gap-2 transition"
+          >
+            <Download className="w-4 h-4" />
+            Download
           </button>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col gap-3 mb-3">
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0">
         {/* First row: B, I, U, and alignment buttons */}
-        <div className="flex items-center justify-center gap-3">
-          <div className="flex items-center gap-2 bg-white/5 p-2 rounded-lg">
-            <button
-              onClick={() => formatText('bold')}
-              className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
-            >
-              B
-            </button>
-            <button
-              onClick={() => formatText('italic')}
-              className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
-            >
-              I
-            </button>
-            <button
-              onClick={() => formatText('underline')}
-              className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
-            >
-              U
-            </button>
-            
-            <div className="w-px h-6 bg-white/10 mx-2" />
-            <button onClick={() => setAlignment('left')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignLeft size={14} /></button>
-            <button onClick={() => setAlignment('center')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignCenter size={14} /></button>
-            <button onClick={() => setAlignment('right')} className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}><AlignRight size={14} /></button>
-          </div>
+        <div className="flex items-center gap-2 justify-center">
+          <button
+            onClick={() => formatText('bold')}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+          >
+            <strong>B</strong>
+          </button>
+          <button
+            onClick={() => formatText('italic')}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+          >
+            <em>I</em>
+          </button>
+          <button
+            onClick={() => formatText('underline')}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+          >
+            <u>U</u>
+          </button>
+
+          {/* Alignment buttons */}
+          <button 
+            onClick={() => formatText('justifyLeft')} 
+            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+          >
+            <AlignLeft className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => formatText('justifyCenter')} 
+            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+          >
+            <AlignCenter className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={() => formatText('justifyRight')} 
+            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+          >
+            <AlignRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Second row: Speak, Listen, and stats */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={startDictation}
-            aria-label="Speak"
-            className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition">
-            <Mic size={16} />
-            <span className="select-none">Speak</span>
-          </button>
+        <div className="flex items-center gap-3 flex-wrap">
           <button
             onClick={readNotesAloud}
-            aria-label="Listen"
-            className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition">
-            <Volume2 size={16} />
-            <span className="select-none">Listen</span>
+            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
+              isSpeaking ? 'bg-red-600' : 'bg-purple-600 hover:bg-purple-500'
+            }`}
+          >
+            <Volume2 className="w-4 h-4" />
+            {isSpeaking ? 'Stop' : 'Speak'}
           </button>
-          <div className="text-xs text-gray-300 ml-auto">{chars} chars • {words} words • {minutes} min read</div>
-        </div>
-      </div>
-
-      {/* Editable area */}
-      <div className="w-full p-4 rounded-xl bg-white/5 border border-white/10 h-[240px] mb-4 overflow-y-auto">
-        <div
-          id="notesArea"
-          ref={notesAreaRef}
-          contentEditable
-          suppressContentEditableWarning
-          role="textbox"
-          aria-multiline="true"
-          placeholder="Write your notes..."
-          className="w-full h-full text-white resize-none outline-none"
-          dangerouslySetInnerHTML={{ __html: notes }}
-        />
-      </div>
-
-      {/* Upload notes block */}
-      <div className="mt-2 bg-white/5 p-4 rounded-xl border border-white/10">
-        <div className="flex items-center justify-between mb-3">
-          <div className="text-white font-semibold flex items-center gap-2">📥 Upload Notes</div>
-        </div>
-        <div className="flex items-center gap-4">
-          <label className="cursor-pointer bg-emerald-500 text-white px-4 py-2 rounded-md inline-flex items-center gap-3">
-            <UploadCloud size={16} /> Choose File
-            <input type="file" onChange={handleFileUpload} className="hidden" />
-          </label>
-          <div className="text-gray-300">{uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}</div>
-          <div className="ml-auto">
-            <button className="px-4 py-2 bg-emerald-500 text-white rounded-md">Upload</button>
+          <button
+            onClick={startDictation}
+            disabled={isRecording}
+            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
+              isRecording
+                ? 'bg-red-600 cursor-not-allowed'
+                : 'bg-orange-600 hover:bg-orange-500'
+            }`}
+          >
+            <Mic className="w-4 h-4" />
+            {isRecording ? 'Listening...' : 'Dictate'}
+          </button>
+          <div className="text-sm text-white/70">
+            {chars} chars • {words} words • {minutes} min read
           </div>
         </div>
       </div>
-    </section>
+
+      {/* Editable area - flex-1 makes it take remaining space */}
+      <div
+        ref={notesAreaRef}
+        contentEditable
+        suppressContentEditableWarning
+        className="flex-1 bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4"
+      />
+
+      {/* Upload notes block - flex-shrink-0 prevents it from shrinking */}
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <UploadCloud className="w-5 h-5 text-white/70" />
+          <span className="text-sm font-semibold text-white/70">📥 Upload Notes</span>
+          <input
+            type="file"
+            id="fileUpload"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          <label
+            htmlFor="fileUpload"
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg cursor-pointer transition text-sm"
+          >
+            Choose File
+          </label>
+          <span className="text-sm text-white/60">
+            {uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}
+          </span>
+        </div>
+
+        {uploadedFiles.length > 0 && (
+          <div className="mt-3 space-y-2">
+            {uploadedFiles.map((file) => (
+              <div
+                key={file.id}
+                className="flex items-center justify-between bg-white/10 rounded-lg p-3"
+              >
+                <div className="flex-1">
+                  <p className="text-sm font-medium">{file.name}</p>
+                  <p className="text-xs text-white/60">
+                    {file.size} • {file.uploadedAt}
+                  </p>
+                </div>
+                <button
+                  onClick={() => removeFile(file.id)}
+                  className="text-red-400 hover:text-red-300 transition"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
