@@ -1,14 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import emailjs from '@emailjs/browser';
 import "./Footer.css";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+
+  // Initialize EmailJS on component mount
+  useEffect(() => {
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+      console.log("📩 EmailJS initialized successfully.");
+    } else {
+      console.error("❌ EmailJS public key not found in environment variables");
+    }
+  }, []);
+
+  // Toast notification function
+  const showToast = (message, type = "info") => {
+    const colors = {
+      success: "bg-green-600 text-white",
+      error: "bg-red-600 text-white",
+      warning: "bg-yellow-500 text-black",
+      info: "bg-gray-700 text-white"
+    };
+
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.className = `fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg z-50 transition-all duration-500 transform opacity-0 translate-y-2 ${colors[type]} font-medium`;
+
+    document.body.appendChild(toast);
+
+    // Animate toast appearance
+    setTimeout(() => toast.classList.remove("opacity-0", "translate-y-2"), 100);
+
+    // Remove toast after 3.5 seconds
+    setTimeout(() => {
+      toast.classList.add("opacity-0", "translate-y-2");
+      setTimeout(() => toast.remove(), 500);
+    }, 3500);
+  };
+
   const handleSubscription = () => {
-    const email = document.getElementById("subscriber_email").value.trim();
-    if (!email) {
-      alert("Please enter your email before subscribing!");
+    const userEmail = email.trim();
+
+    // Validate user input
+    if (!userEmail) {
+      showToast("⚠️ Please enter your email address.", "warning");
       return;
     }
-    alert(`Thanks for subscribing, ${email}! 🎉`);
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userEmail)) {
+      showToast("⚠️ Please enter a valid email address.", "warning");
+      return;
+    }
+
+    const params = { user_email: userEmail };
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+    if (!serviceId || !templateId) {
+      console.error("❌ EmailJS service or template ID not found");
+      showToast("❌ Email service configuration error.", "error");
+      return;
+    }
+
+    // Send email using EmailJS
+    emailjs.send(serviceId, templateId, params)
+      .then(() => {
+        showToast("✅ Subscription successful! Check your email.", "success");
+        setEmail(""); // Clear input after success
+      })
+      .catch((error) => {
+        console.error("❌ EmailJS Error:", error);
+        showToast("❌ Failed to send email. Please try again later.", "error");
+      });
   };
 
   return (
@@ -165,7 +234,9 @@ const Footer = () => {
             <div className="flex w-full md:w-auto">
               <input
                 type="email"
-                id="subscriber_email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSubscription()}
                 placeholder="Enter your email"
                 className="px-4 py-2 w-full md:w-64 rounded-l-lg bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 outline-none focus:border-cyan-500 focus:bg-gray-700 transition-all"
               />

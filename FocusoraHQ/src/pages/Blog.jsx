@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const Blog = () => {
-  const articles = [
+  const allArticles = [
     {
       id: 1,
       title: '7 Science-Backed Methods to Eliminate Distractions',
@@ -59,7 +59,68 @@ const Blog = () => {
       description: 'Learn to work with your natural energy cycles and maintain peak performance without burning out.',
       link: '/blog2',
     },
+    {
+      id: 7,
+      title: 'Building Resilience: Thriving Under Pressure',
+      category: 'Focus',
+      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      readTime: '11 min read',
+      description: 'Develop mental toughness and learn strategies to perform at your best even in challenging situations.',
+      link: '/blog1',
+    },
+    {
+      id: 8,
+      title: 'The Power of Saying No: Protect Your Focus',
+      category: 'Time Management',
+      image: 'https://images.unsplash.com/photo-1551836022-4c4c79ecde51?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      readTime: '6 min read',
+      description: 'Master the art of declining commitments that don\'t align with your goals and priorities.',
+      link: '/blog2',
+    },
+    {
+      id: 9,
+      title: 'Creating Your Ideal Work Environment',
+      category: 'Organization',
+      image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      readTime: '9 min read',
+      description: 'Design a workspace that enhances focus, creativity, and productivity throughout your day.',
+      link: '/blog1',
+    },
+    {
+      id: 10,
+      title: 'Goal Setting Framework for 2025',
+      category: 'Goals',
+      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      readTime: '14 min read',
+      description: 'Learn a proven system for setting and achieving ambitious goals that truly matter to you.',
+      link: '/blog2',
+    },
+    {
+      id: 11,
+      title: 'Breaking Bad Habits: A Scientific Approach',
+      category: 'Habits',
+      image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      readTime: '10 min read',
+      description: 'Understanding the neuroscience behind habits and practical steps to replace them with positive ones.',
+      link: '/blog1',
+    },
+    {
+      id: 12,
+      title: 'Optimizing Your Sleep for Peak Performance',
+      category: 'Energy',
+      image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      readTime: '13 min read',
+      description: 'Discover evidence-based strategies to improve sleep quality and wake up energized every morning.',
+      link: '/blog2',
+    },
   ];
+
+  const [visibleCount, setVisibleCount] = useState(6);
+  const articles = allArticles.slice(0, visibleCount);
+
+  const loadMoreArticles = () => {
+    setVisibleCount(prev => Math.min(prev + 6, allArticles.length));
+  };
 
   const categoryColors = {
     Focus: 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400',
@@ -133,7 +194,7 @@ const Blog = () => {
 
                 {/* Content Container */}
                 <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
-                  <Link to="/blog2" className="block h-full">
+                  <Link to="/blog1" className="block h-full">
                     <div className="inline-block bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide mb-4 group-hover:bg-blue-800 dark:group-hover:bg-blue-700 transition-colors duration-300">
                       Featured
                     </div>
