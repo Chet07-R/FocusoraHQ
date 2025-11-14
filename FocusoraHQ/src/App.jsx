@@ -31,6 +31,8 @@ function App() {
         <Route path="/blog2" element={<Blog2 />} />
         <Route path="/my-space" element={<MySpace />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
         <Route path="/join-space" element={<JoinSpace />} />
         <Route path="/study-room-1" element={<StudyRoom1 />} />
         <Route path="/study-room" element={<StudyRoom />} />

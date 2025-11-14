@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react";
 
 const App = () => {
+  // Stats state for animated statistics
   const [stats, setStats] = useState({
     users: 0,
     points: 0,
@@ -9,8 +10,44 @@ const App = () => {
     goalRate: 0,
   });
 
-  const [visibleCount] = useState(10);
+  // Leaderboard data
   const leaderboardData = [
+    {
+      rank: 1,
+      name: "Tanish Mehta",
+      location: "us San Francisco",
+      points: 8245,
+      today: "+298 today",
+      sessions: 127,
+      time: "89h 15m",
+      streak: 12,
+      badge: { label: "Hot Streak", color: "green" },
+      img: "/images/People/4.jpg",
+    },
+    {
+      rank: 2,
+      name: "Chetan Ajmani",
+      location: "us New York",
+      points: 9876,
+      today: "+356 today",
+      sessions: 156,
+      time: "142h 30m",
+      streak: 25,
+      badge: { label: "Champion", color: "green" },
+      img: "/images/People/5.jpg",
+    },
+    {
+      rank: 3,
+      name: "Vansh Thakur",
+      location: "ru Moscow",
+      points: 7892,
+      today: "+267 today",
+      sessions: 101,
+      time: "76h 45m",
+      streak: 8,
+      badge: { label: "Rising Star", color: "blue" },
+      img: "/images/People/6.jpeg",
+    },
     {
       rank: 1,
       name: "Tanish Mehta",
@@ -168,9 +205,22 @@ const App = () => {
       badge: { label: "Newcomer", color: "slate" },
       img: "/images/People/14.enc",
     },
-
   ];
 
+  // State management for load more functionality
+  const [visibleCount] = useState(10);
+  const [loadedCount, setLoadedCount] = useState(10);
+  const idRef = useRef(leaderboardData.length + 1);
+  
+  // Initialize rows with ranks 4 and above
+  const [rows, setRows] = useState(() =>
+    leaderboardData
+      .filter((u) => u.rank >= 4)
+      .slice(0, visibleCount)
+      .map((u, idx) => ({ ...u, _id: idx + 1 }))
+  );
+
+  // Badge color mapping function
   const getBadgeColor = (color) => {
     const colors = {
       green: "bg-green-600",
@@ -183,18 +233,25 @@ const App = () => {
     return colors[color] || "bg-gray-600";
   };
 
-  const idRef = useRef(leaderboardData.length + 1);
-  const [rows, setRows] = useState(() =>
-    leaderboardData
-      .slice(3, visibleCount + 3)
-      .map((u, idx) => ({ ...u, _id: idx + 1 }))
-  );
+  // Load more handler function
+  const handleLoadMore = () => {
+    const filteredData = leaderboardData.filter((u) => u.rank >= 4);
+    const newItems = filteredData
+      .slice(loadedCount, loadedCount + 10)
+      .map((u) => ({ ...u, _id: idRef.current++ }));
+    
+    if (newItems.length > 0) {
+      setRows((prev) => [...prev, ...newItems]);
+      setLoadedCount((prev) => prev + newItems.length);
+    }
+  };
 
+  // Animate statistics on component mount
   useEffect(() => {
     const animateValue = (key, end, duration) => {
       let start = 0;
-      const increment = Math.ceil(end / 50); // Faster increment based on target value
-      const stepTime = Math.floor(duration / 50); // Fixed number of steps for smooth animation
+      const increment = Math.ceil(end / 500);
+      const stepTime = Math.floor(duration / 500);
       const timer = setInterval(() => {
         start += increment;
         if (start >= end) {
@@ -228,7 +285,6 @@ const App = () => {
         </p>
       </section>
 
-      
       {/* ===== Platform Statistics ===== */}
       <section className="py-12 px-6 md:px-20 bg-[#0b0f19] text-center">
         <h2 className="text-2xl md:text-3xl font-semibold text-white mb-2">
@@ -341,6 +397,7 @@ const App = () => {
               Track your progress among all users
             </p>
           </div>
+          
           <div className="overflow-x-auto bg-[#141a2a]">
             <table className="min-w-full text-left text-sm text-gray-300">
               <thead className="bg-[#1e263b] text-gray-200 uppercase text-xs">
@@ -410,119 +467,104 @@ const App = () => {
             </table>
           </div>
 
-          {/* Buttons */}
+          {/* Load More Button */}
           <div className="flex justify-center gap-4 py-6 bg-[#141a2a] rounded-b-2xl">
-
-
-            <button
-              onClick={() => {
-                const currentMax = rows.reduce(
-                  (max, r) => Math.max(max, Number(r.rank) || 0),
-                  0
-                );
-                let nextRank = currentMax;
-                const clones = [];
-                leaderboardData
-                  .filter((orig) => !orig.you && Number(orig.rank) >= 4)
-                  .forEach((orig) => {
-                    nextRank += 1;
-                    const clone = { ...orig, rank: nextRank, _id: idRef.current++ };
-                    clones.push(clone);
-                  });
-                setRows((prev) => [...prev, ...clones]);
-              }}
-              className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-md transition"
-            >
-              Load More Rankings
-            </button>
+            {leaderboardData.filter((u) => u.rank >= 4).length > loadedCount && (
+              <button
+                onClick={handleLoadMore}
+                className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-md transition"
+              >
+                Load More Rankings
+              </button>
+            )}
           </div>
         </div>
+
         {/* ===== How to Earn Points ===== */}
-      <section className="py-20 px-6 md:px-20 bg-gradient-to-b from-[#0b0f19] to-[#071019]">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-2">
-            How to Earn Points
-          </h2>
-          <p className="text-gray-400 mb-10">
-            Understanding the point system to climb the leaderboard
-          </p>
+        <section className="py-20 px-6 md:px-20 bg-gradient-to-b from-[#0b0f19] to-[#071019]">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-2">
+              How to Earn Points
+            </h2>
+            <p className="text-gray-400 mb-10">
+              Understanding the point system to climb the leaderboard
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Focus Sessions */}
-            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-yellow-400">
-                  <Clock className="w-8 h-8" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Focus Sessions */}
+              <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-yellow-400">
+                    <Clock className="w-8 h-8" />
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold text-white mb-4">Focus Sessions</h3>
+                <ul className="space-y-3 text-left">
+                  <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
+                    <span>25min session</span>
+                    <span className="text-blue-300 font-semibold">+10 pts</span>
+                  </li>
+                  <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
+                    <span>50min session</span>
+                    <span className="text-blue-300 font-semibold">+15 pts</span>
+                  </li>
+                  <li className="flex justify-between items-center bg-gradient-to-r from-cyan-900 to-transparent rounded-md px-4 py-3 text-gray-300">
+                    <span>4 sessions/day</span>
+                    <span className="text-teal-300 font-semibold">+50 bonus</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Focus Sessions</h3>
-              <ul className="space-y-3 text-left">
-                <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
-                  <span>25min session</span>
-                  <span className="text-blue-300 font-semibold">+10 pts</span>
-                </li>
-                <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
-                  <span>50min session</span>
-                  <span className="text-blue-300 font-semibold">+15 pts</span>
-                </li>
-                <li className="flex justify-between items-center bg-gradient-to-r from-cyan-900 to-transparent rounded-md px-4 py-3 text-gray-300">
-                  <span>4 sessions/day</span>
-                  <span className="text-teal-300 font-semibold">+50 bonus</span>
-                </li>
-              </ul>
-            </div>
 
-            {/* Task Completion */}
-            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-teal-300">
-                  <CheckCircle className="w-8 h-8" />
+              {/* Task Completion */}
+              <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-teal-300">
+                    <CheckCircle className="w-8 h-8" />
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold text-white mb-4">Task Completion</h3>
+                <ul className="space-y-3 text-left">
+                  <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
+                    <span>Per task completed</span>
+                    <span className="text-cyan-200 font-semibold">+5 pts</span>
+                  </li>
+                  <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
+                    <span>Daily goal achieved</span>
+                    <span className="text-cyan-200 font-semibold">+20 pts</span>
+                  </li>
+                  <li className="flex justify-between items-center bg-gradient-to-r from-purple-900 to-transparent rounded-md px-4 py-3 text-gray-300">
+                    <span>Weekly goals met</span>
+                    <span className="text-pink-300 font-semibold">+100 bonus</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Task Completion</h3>
-              <ul className="space-y-3 text-left">
-                <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
-                  <span>Per task completed</span>
-                  <span className="text-cyan-200 font-semibold">+5 pts</span>
-                </li>
-                <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
-                  <span>Daily goal achieved</span>
-                  <span className="text-cyan-200 font-semibold">+20 pts</span>
-                </li>
-                <li className="flex justify-between items-center bg-gradient-to-r from-purple-900 to-transparent rounded-md px-4 py-3 text-gray-300">
-                  <span>Weekly goals met</span>
-                  <span className="text-pink-300 font-semibold">+100 bonus</span>
-                </li>
-              </ul>
-            </div>
 
-            {/* Streaks */}
-            <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-red-400">
-                  <Zap className="w-8 h-8" />
+              {/* Streaks */}
+              <div className="bg-[#0f1724] rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-[#121b2a] relative hover:z-50">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-[#0b141b] flex items-center justify-center text-red-400">
+                    <Zap className="w-8 h-8" />
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold text-white mb-4">Streaks</h3>
+                <ul className="space-y-3 text-left">
+                  <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
+                    <span>Daily streak bonus</span>
+                    <span className="text-yellow-300 font-semibold">+25 pts</span>
+                  </li>
+                  <li className="flex justify-between items-center bg-[#2b1a10] rounded-md px-4 py-3 text-gray-300 border border-orange-700">
+                    <span>7-day streak</span>
+                    <span className="text-orange-300 font-semibold">+100 pts</span>
+                  </li>
+                  <li className="flex justify-between items-center bg-gradient-to-r from-pink-900 to-transparent rounded-md px-4 py-3 text-gray-300">
+                    <span>30-day streak</span>
+                    <span className="text-pink-300 font-semibold">+500 bonus</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Streaks</h3>
-              <ul className="space-y-3 text-left">
-                <li className="flex justify-between items-center bg-[#07121a] rounded-md px-4 py-3 text-gray-300">
-                  <span>Daily streak bonus</span>
-                  <span className="text-yellow-300 font-semibold">+25 pts</span>
-                </li>
-                <li className="flex justify-between items-center bg-[#2b1a10] rounded-md px-4 py-3 text-gray-300 border border-orange-700">
-                  <span>7-day streak</span>
-                  <span className="text-orange-300 font-semibold">+100 pts</span>
-                </li>
-                <li className="flex justify-between items-center bg-gradient-to-r from-pink-900 to-transparent rounded-md px-4 py-3 text-gray-300">
-                  <span>30-day streak</span>
-                  <span className="text-pink-300 font-semibold">+500 bonus</span>
-                </li>
-              </ul>
             </div>
           </div>
-        </div>
-      </section>
-
+        </section>
       </section>
     </div>
   );
