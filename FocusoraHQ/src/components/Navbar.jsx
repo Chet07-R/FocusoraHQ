@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import "./Navbar.css";
 
@@ -7,11 +7,21 @@ const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Shared classes for link text with hover and focus gradient underline
   // Keep nav text white on hover; only animate the underline (after:)
   const linkTextClasses =
     "nav-text relative text-white transition-all duration-300 focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
+
+  // Handle logo click - scroll to top if on home page, navigate if on other page
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -112,7 +122,11 @@ const Navbar = () => {
   return (
     <nav className="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50">
       {/* Logo Section */}
-      <Link to="/" className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300">
+      <Link 
+        to="/" 
+        onClick={handleLogoClick}
+        className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
+      >
         <img src="/images/logo-shrinked.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
         <span className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent brand-gradient" style={{ letterSpacing: "-0.5px" }}>
           FocusoraHQ
