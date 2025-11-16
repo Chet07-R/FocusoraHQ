@@ -40,7 +40,9 @@ const CreateSpace = () => {
     setError("");
     try {
       const room = await createRoom(formData);
-      navigate(`/study-room/${room.id}`);
+      // Redirect to Study Room 1 as requested
+      // If you want to keep the new room id available, pass via state or query
+      navigate(`/study-room-1`, { state: { roomId: room?.id || null } });
     } catch (err) {
       setError(err.message || "Failed to create room.");
     } finally {
@@ -185,6 +187,22 @@ const CreateSpace = () => {
           </form>
         </div>
       </div>
+      {/* Keep autofill consistent with dark theme */}
+      <style>{`
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        textarea:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px #0F172A inset !important;
+          -webkit-text-fill-color: #ffffff !important;
+          caret-color: #ffffff !important;
+          transition: background-color 9999s ease-in-out 0s;
+        }
+      `}</style>
     </div>
   );
 };

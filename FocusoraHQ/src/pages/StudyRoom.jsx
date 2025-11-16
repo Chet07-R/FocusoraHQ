@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StudyRoom = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
       {/* Navbar */}
@@ -41,7 +42,19 @@ const StudyRoom = () => {
           {/* Action Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-12 sm:mb-16 md:mb-20">
             {/* Create Space */}
-            <Link to="/create-space" className="group">
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label="Create Space"
+              onClick={() => navigate('/create-space')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate('/create-space');
+                }
+              }}
+              className="group cursor-pointer"
+            >
               <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-transparent hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 opacity-50"></div>
                 <div className="relative p-5 sm:p-6 md:p-8">
@@ -116,7 +129,7 @@ const StudyRoom = () => {
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
 
             {/* Join Space */}
             <Link to="/join-space" className="group">
