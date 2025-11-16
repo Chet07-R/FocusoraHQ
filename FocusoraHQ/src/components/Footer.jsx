@@ -255,7 +255,7 @@ const Footer = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-between p-2">
           <p className="text-gray-300 text-sm text-center sm:text-left">
-            © 2025{" "}
+            FocusoraHQ © 2025{" "}
             <span className="font-semibold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">
               FocusoraHQ
             </span>
