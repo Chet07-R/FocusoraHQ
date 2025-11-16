@@ -91,9 +91,9 @@ const Footer = () => {
 
       <div className="container mx-auto px-6 py-12 relative z-10">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 mb-8 justify-items-start">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-8 mb-8">
           {/* Brand Section */}
-          <div className="sm:col-span-2 md:col-span-3 lg:col-span-2">
+          <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img
                 src="/images/transparent.png"
