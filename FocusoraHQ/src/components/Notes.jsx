@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, AlignRight, FileText, Eye } from "lucide-react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -87,6 +87,20 @@ const Notes = ({ addNotification = () => {} }) => {
     };
 
     const onSelection = () => {
+      // Only update toolbar state if selection is within the notes area
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+      
+      const range = selection.getRangeAt(0);
+      if (!el.contains(range.commonAncestorContainer)) {
+        // Reset all formatting states when clicking outside
+        setActiveBold(false);
+        setActiveItalic(false);
+        setActiveUnderline(false);
+        setActiveAlign('left');
+        return;
+      }
+      
       try {
         if (document.queryCommandState) {
           setActiveBold(!!document.queryCommandState('bold'));
@@ -114,8 +128,8 @@ const Notes = ({ addNotification = () => {} }) => {
     el.addEventListener('keyup', onSelection);
     el.addEventListener('mouseup', onSelection);
 
-    // initialize active states
-    onSelection();
+    // Don't initialize active states immediately - wait for first interaction
+    // onSelection();
 
     return () => {
       el.removeEventListener("input", onInput);
@@ -307,14 +321,79 @@ const Notes = ({ addNotification = () => {} }) => {
   const handleFileUpload = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    const meta = {
-      id: Date.now(),
-      name: f.name,
-      size: `${Math.round(f.size / 1024)} KB`,
-      uploadedAt: new Date().toLocaleString(),
+    
+      // Read file content
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target.result;
+        const meta = {
+          id: Date.now(),
+          name: f.name,
+          size: `${Math.round(f.size / 1024)} KB`,
+          uploadedAt: new Date().toLocaleString(),
+          content: content,
+          type: f.type
+        };
+        setUploadedFiles((s) => [meta, ...s]);
+        addNotification("📎 File added");
+      };
+    
+      // Read as text for text files, or as data URL for others
+      if (f.type.startsWith('text/') || f.name.endsWith('.txt') || f.name.endsWith('.md')) {
+        reader.readAsText(f);
+      } else {
+        reader.readAsDataURL(f);
+      }
     };
-    setUploadedFiles((s) => [meta, ...s]);
-    addNotification("📎 File added");
+
+    const openFile = (file) => {
+      // If it's a text file, load content into notes area
+      if (file.type?.startsWith('text/') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+        const el = notesAreaRef.current;
+        if (!el) return;
+      
+        if (confirm(`Load "${file.name}" into notes? This will replace current content.`)) {
+          const htmlContent = file.content.replace(/\n/g, '<br>');
+          el.innerHTML = htmlContent;
+          setNotes(htmlContent);
+          addNotification(`📄 Loaded ${file.name}`);
+        }
+      } else if (file.content?.startsWith('data:')) {
+        const win = window.open();
+        if (win) {
+          win.document.write(`
+            <html>
+              <head><title>${file.name}</title></head>
+              <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#1a1a1a;">
+                ${file.type?.startsWith('image/') 
+                  ? `<img src="${file.content}" alt="${file.name}" style="max-width:100%;max-height:100vh;" />`
+                  : `<iframe src="${file.content}" style="width:100%;height:100vh;border:none;"></iframe>`
+                }
+              </body>
+            </html>
+          `);
+          win.document.close();
+        }
+        addNotification(`📂 Opened ${file.name}`);
+      }
+    };
+
+    const downloadFile = (file) => {
+      if (file.content?.startsWith('data:')) {
+        const a = document.createElement('a');
+        a.href = file.content;
+        a.download = file.name;
+        a.click();
+      } else {
+        const blob = new Blob([file.content], { type: file.type || 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+      addNotification(`💾 Downloaded ${file.name}`);
   };
 
   const removeFile = (id) => {
@@ -410,19 +489,19 @@ const Notes = ({ addNotification = () => {} }) => {
 
           {/* Alignment buttons */}
           <button 
-            onClick={() => formatText('justifyLeft')} 
+            onClick={() => setAlignment('left')} 
             className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
           >
             <AlignLeft className="w-4 h-4" />
           </button>
           <button 
-            onClick={() => formatText('justifyCenter')} 
+            onClick={() => setAlignment('center')} 
             className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
           >
             <AlignCenter className="w-4 h-4" />
           </button>
           <button 
-            onClick={() => formatText('justifyRight')} 
+            onClick={() => setAlignment('right')} 
             className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
           >
             <AlignRight className="w-4 h-4" />
@@ -503,19 +582,6 @@ const Notes = ({ addNotification = () => {} }) => {
           <div className="text-gray-300">{uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}</div>
           <div className="ml-auto text-xs text-gray-300">Local only</div>
         </div>
-        <div className="mt-3 max-h-40 overflow-auto space-y-2">
-          {uploadedFiles.map((f) => (
-            <div key={f.id} className="flex items-center justify-between bg-white/5 p-2 rounded">
-              <div className="text-sm text-white">{f.name} <span className="text-xs text-gray-400">• {f.size}</span></div>
-              <button onClick={() => removeFile(f.id)} className="text-red-400 text-xs">Remove</button>
-            </div>
-          ))}
-        </div>
-          <span className="text-sm text-white/60">
-            {uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}
-          </span>
-        </div>
-
         {uploadedFiles.length > 0 && (
           <div className="mt-3 space-y-2">
             {uploadedFiles.map((file) => (
@@ -529,17 +595,34 @@ const Notes = ({ addNotification = () => {} }) => {
                     {file.size} • {file.uploadedAt}
                   </p>
                 </div>
-                <button
-                  onClick={() => removeFile(file.id)}
-                  className="text-red-400 hover:text-red-300 transition"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => openFile(file)}
+                      className="text-blue-400 hover:text-blue-300 transition p-1"
+                      title="Open/View file"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => downloadFile(file)}
+                      className="text-green-400 hover:text-green-300 transition p-1"
+                      title="Download file"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => removeFile(file.id)}
+                      className="text-red-400 hover:text-red-300 transition text-xs px-2"
+                    >
+                      Remove
+                    </button>
+                  </div>
               </div>
             ))}
           </div>
         )}
       </div>
+    </div>
   );
 };
 
