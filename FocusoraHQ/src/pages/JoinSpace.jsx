@@ -98,7 +98,13 @@ const JoinSpace = () => {
           />
           <button
             onClick={() => setSearchTerm("")}
-            className="bg-blue-700 hover:bg-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md transition-all text-sm sm:text-base"
+            className="text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all text-sm sm:text-base hover:brightness-110 transform hover:scale-[1.02]"
+            style={{
+              background:
+                "linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)",
+              boxShadow:
+                "0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(139, 92, 246, 0.25), 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
+            }}
           >
             Clear
           </button>
@@ -113,47 +119,60 @@ const JoinSpace = () => {
             </div>
           ) : visibleRooms.length > 0 ? (
             visibleRooms.map((room) => (
-              <div
-                key={room.id}
-                className={`bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-xl p-4 sm:p-5 md:p-6 flex flex-col gap-2.5 sm:gap-3 border-t-4 ${room.borderColor} hover:shadow-2xl transition-shadow duration-300`}
-              >
-                <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
-                  <span className="text-xl sm:text-2xl">{room.icon}</span>
-                  <span className="font-bold text-base sm:text-lg text-blue-900 dark:text-blue-200 line-clamp-1">
-                    {room.title}
-                  </span>
-                </div>
+              <div key={room.id} className="relative group rounded-2xl">
+                {/* Gradient glow border */}
+                <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-70 blur-sm transition-opacity duration-300"></div>
 
-                <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1 sm:mb-2">
-                  {room.tags.map((tag, j) => (
-                    <span
-                      key={j}
-                      className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full whitespace-nowrap ${
-                        tag.includes("Host")
-                          ? "bg-gray-100 dark:bg-gray-700"
-                          : tag.includes("users")
-                          ? "bg-green-100 dark:bg-green-900"
-                          : "bg-blue-100 dark:bg-blue-900"
-                      }`}
-                    >
-                      {tag}
+                {/* Card content */}
+                <div className={`relative rounded-2xl p-4 sm:p-5 md:p-6 flex flex-col gap-2.5 sm:gap-3 backdrop-blur-xl bg-white/70 dark:bg-gray-900/60 border border-white/20 dark:border-white/10 shadow-xl`}> 
+                  <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                    <span className="text-xl sm:text-2xl">{room.icon}</span>
+                    <span className="font-bold text-base sm:text-lg text-blue-900 dark:text-blue-200 line-clamp-1">
+                      {room.title}
                     </span>
-                  ))}
-                </div>
+                  </div>
 
-                <button
-                  onClick={() => handleJoinRoom(room.id)}
-                  disabled={room.isFull || joiningRoomId === room.id}
-                  className={`mt-1 sm:mt-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg font-semibold transition-all w-full text-center text-sm sm:text-base ${
-                    room.isFull
-                      ? 'bg-gray-400 cursor-not-allowed text-white'
-                      : joiningRoomId === room.id
-                      ? 'bg-blue-400 text-white'
-                      : 'bg-green-600 hover:bg-green-700 text-white'
-                  }`}
-                >
-                  {joiningRoomId === room.id ? "Joining..." : room.isFull ? "Full" : "Join"}
-                </button>
+                  <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    {room.tags.map((tag, j) => (
+                      <span
+                        key={j}
+                        className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full whitespace-nowrap ${
+                          tag.includes("Host")
+                            ? "bg-white/70 dark:bg-white/10 border border-white/20"
+                            : tag.includes("users")
+                            ? "bg-green-100/70 dark:bg-emerald-900/40 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200"
+                            : "bg-blue-100/70 dark:bg-blue-900/40 border border-blue-500/20 text-blue-800 dark:text-blue-200"
+                        }`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => handleJoinRoom(room.id)}
+                    disabled={room.isFull || joiningRoomId === room.id}
+                    style={
+                      room.isFull || joiningRoomId === room.id
+                        ? undefined
+                        : {
+                            background:
+                              "linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)",
+                            boxShadow:
+                              "0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(139, 92, 246, 0.25), 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
+                          }
+                    }
+                    className={`mt-1 sm:mt-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg font-semibold transition-all w-full text-center text-sm sm:text-base ${
+                      room.isFull
+                        ? 'bg-gray-500 cursor-not-allowed text-white'
+                        : joiningRoomId === room.id
+                        ? 'bg-blue-500 text-white'
+                        : 'text-white hover:brightness-110 transform hover:scale-[1.02]'
+                    }`}
+                  >
+                    {joiningRoomId === room.id ? "Joining..." : room.isFull ? "Full" : "Join"}
+                  </button>
+                </div>
               </div>
             ))
           ) : (
@@ -163,7 +182,13 @@ const JoinSpace = () => {
               </p>
               <Link
                 to="/create-space"
-                className="inline-block bg-blue-700 hover:bg-blue-800 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base"
+                className="inline-block text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base hover:brightness-110"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)",
+                  boxShadow:
+                    "0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(139, 92, 246, 0.25), 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
+                }}
               >
                 Create the First Room
               </Link>
@@ -176,7 +201,13 @@ const JoinSpace = () => {
           <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
             <button
               onClick={() => setVisibleCount(visibleCount + 2)}
-              className="bg-blue-700 hover:bg-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-md transition-all text-base sm:text-lg flex items-center gap-2"
+              className="text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all text-base sm:text-lg flex items-center gap-2 hover:brightness-110 transform hover:scale-[1.02]"
+              style={{
+                background:
+                  "linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)",
+                boxShadow:
+                  "0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(139, 92, 246, 0.25), 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
+              }}
             >
               <span>Load More</span>
               <svg

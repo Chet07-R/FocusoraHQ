@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { getLeaderboard } from "../utils/firestoreUtils";
 
 const App = () => {
   const { user, userProfile } = useAuth();
@@ -174,7 +175,6 @@ const App = () => {
 
   // State management for load more functionality
   const [visibleCount] = useState(10);
-  const [loadedCount, setLoadedCount] = useState(10);
   const idRef = useRef(leaderboardData.length + 1);
   
   // Get current user's info for matching
@@ -190,41 +190,11 @@ const App = () => {
     return n1 === n2 || n1.includes(n2) || n2.includes(n1);
   }
   
-  // Check if current user exists in leaderboard data
-  const userExistsInData = leaderboardData.some(u => 
-    namesMatch(u.name, currentUserName)
-  );
-  
-  // Initialize rows with ALL ranks (including 1, 2, 3), marking current user
-  const [rows, setRows] = useState(() => {
-    const filteredData = leaderboardData; // Show all ranks now
-    
-    // If user doesn't exist in data and is logged in, add them
-    let dataToShow = [...filteredData];
-    if (user && !userExistsInData) {
-      dataToShow.push({
-        rank: 12,
-        name: currentUserName,
-        location: "Your Location",
-        points: 3247,
-        today: "+89 today",
-        sessions: 45,
-        time: "28h 45m",
-        streak: 3,
-        badge: { label: "Rising Star", color: "blue" },
-        img: currentUserPhoto,
-        you: true,
-      });
-    }
-    
-    return dataToShow
-      .slice(0, visibleCount)
-      .map((u, idx) => ({
-        ...u,
-        _id: idx + 1,
-        you: (user && namesMatch(u.name, currentUserName))
-      }));
-  });
+  // Dynamic users from Firestore (global)
+  const [dynamicUsers, setDynamicUsers] = useState([]);
+  const [allRows, setAllRows] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [hasLoadedMore, setHasLoadedMore] = useState(false);
 
   // Badge color mapping function
   const getBadgeColor = (color) => {
@@ -241,12 +211,8 @@ const App = () => {
 
   // Load more handler function - shows all remaining data
   const handleLoadMore = () => {
-    const filteredData = leaderboardData; // Load from all ranks
-    setRows(filteredData.map((u, idx) => ({
-        ...u,
-        _id: idx + 1,
-        you: (user && namesMatch(u.name, currentUserName))
-      })));
+    setHasLoadedMore(true);
+    setRows(allRows);
   };
 
   // Animate statistics on component mount
@@ -272,40 +238,51 @@ const App = () => {
   }, []);
 
   // Update rows when user login state changes
+  // Subscribe to Firestore leaderboard (global users)
   useEffect(() => {
-    if (user && currentUserName) {
-      setRows((prevRows) => {
-        // Check if user already exists in rows
-        const userExists = prevRows.some(row => namesMatch(row.name, currentUserName));
-        
-        // If user doesn't exist, add them
-        if (!userExists) {
-          const newUserRow = {
-            _id: idRef.current++,
-            rank: 12,
-            name: currentUserName,
-            location: "Your Location",
-            points: 3247,
-            today: "+89 today",
-            sessions: 45,
-            time: "28h 45m",
-            streak: 3,
-            badge: { label: "Rising Star", color: "blue" },
-            img: currentUserPhoto,
-            you: true,
-          };
-          return [...prevRows, newUserRow];
-        }
-        
-        // Otherwise just mark the matching row
-        return prevRows.map((row) => ({
-          ...row,
-          you: namesMatch(row.name, currentUserName),
-          img: namesMatch(row.name, currentUserName) ? currentUserPhoto : row.img
-        }));
-      });
-    }
-  }, [user, currentUserName, currentUserPhoto]);
+    const unsubscribe = getLeaderboard((users) => {
+      const mapped = users.map((u) => ({
+        id: u.id,
+        name: u.displayName || "User",
+        location: u.location || u.country || "Your Location",
+        points: typeof u.points === 'number' ? u.points : 0,
+        today: u.todayIncrement ? `+${u.todayIncrement} today` : "+0 today",
+        sessions: u.studySessions || 0,
+        time: (() => {
+          const mins = u.totalStudyTime || 0;
+          const h = Math.floor(mins / 60);
+          const m = mins % 60;
+          return `${h}h ${m}m`;
+        })(),
+        streak: u.streak || 0,
+        badge: { label: (u.points || 0) === 0 ? "Newcomer" : (u.streak || 0) >= 10 ? "Hot Streak" : "Steady", color: (u.points || 0) === 0 ? "slate" : (u.streak || 0) >= 10 ? "green" : "gray" },
+        img: u.photoURL || "/images/People/default-avatar.png",
+        you: user && u.id === user.uid,
+      }));
+      setDynamicUsers(mapped);
+    }, 500);
+    return () => unsubscribe && unsubscribe();
+  }, [user]);
+
+  // Build merged, sorted rows when dynamic or static data changes
+  useEffect(() => {
+    const staticNames = new Set(leaderboardData.map(u => (u.name || '').toLowerCase()));
+    const filteredDynamic = dynamicUsers.filter(d => !staticNames.has((d.name || '').toLowerCase()));
+    const merged = [...leaderboardData, ...filteredDynamic];
+    // Sort by points desc, then sessions, then name
+    merged.sort((a, b) => (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name)));
+    // Re-rank and add _id
+    const ranked = merged.map((u, idx) => ({ ...u, rank: idx + 1, _id: idx + 1 }));
+    setAllRows(ranked);
+    setRows((prev) => hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
+  }, [dynamicUsers, hasLoadedMore]);
+
+  // Initialize initial rows (before Firestore responds)
+  useEffect(() => {
+    const initial = leaderboardData.slice(0, visibleCount).map((u, idx) => ({ ...u, _id: idx + 1 }));
+    setRows(initial);
+    setAllRows(leaderboardData.map((u, idx) => ({ ...u, _id: idx + 1 })));
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-gray-100 pt-24">
@@ -385,9 +362,9 @@ const App = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
             {/* Reorder to show: 2nd, 1st (center/tallest), 3rd, with safety guard */}
-            {(leaderboardData.length >= 3
-              ? [leaderboardData[1], leaderboardData[0], leaderboardData[2]]
-              : leaderboardData.slice(0, 3)
+            {(allRows.length >= 3
+              ? [allRows[1], allRows[0], allRows[2]]
+              : (allRows.length ? allRows.slice(0, 3) : leaderboardData.slice(0,3))
             ).map((u, displayIdx) => {
               if (!u) return null;
               const isChampion = displayIdx === 1; // Middle position is champion
@@ -410,7 +387,15 @@ const App = () => {
                     )}
 
                     <div className={`w-28 h-28 rounded-full overflow-hidden border-4 ${isChampion ? 'border-blue-400' : 'border-gray-600'} mb-4`}>
-                      <img src={u.img} alt={u.name} className="w-full h-full object-cover" />
+                      <img
+                        src={u.img}
+                        alt={u.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
+                          e.currentTarget.src = '/images/Profile_Icon.png';
+                        }}
+                      />
                     </div>
 
                     <h3 className="text-xl font-bold text-white mb-2">{u.name}</h3>
@@ -476,14 +461,16 @@ const App = () => {
                         src={user.img}
                         alt={user.name}
                         className="w-9 h-9 rounded-full border border-gray-600"
+                        onError={(e) => {
+                          if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
+                          e.currentTarget.src = '/images/Profile_Icon.png';
+                        }}
                       />
                       <div>
                         <p className="font-medium text-gray-100">
-                          {user.name}{" "}
+                          {user.name}
                           {user.you && (
-                            <span className="text-xs text-blue-400 font-semibold ml-1">
-                              YOU
-                            </span>
+                            <span className="text-xs text-blue-400 font-semibold ml-2">YOU</span>
                           )}
                         </p>
                         <p className="text-xs text-gray-400">{user.location}</p>
@@ -530,14 +517,6 @@ const App = () => {
             >
               Load More Rankings
             </button>
-            {leaderboardData.length > loadedCount && (
-              <button
-                onClick={handleLoadMore}
-                className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-md transition"
-              >
-                Load More Rankings
-              </button>
-            )}
           </div>
         </div>
 
