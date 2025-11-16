@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const App = () => {
+  const { user, userProfile } = useAuth();
   // Stats state for animated statistics
   const [stats, setStats] = useState({
     users: 0,
@@ -14,18 +16,6 @@ const App = () => {
   const leaderboardData = [
     {
       rank: 1,
-      name: "Tanish Mehta",
-      location: "us San Francisco",
-      points: 8245,
-      today: "+298 today",
-      sessions: 127,
-      time: "89h 15m",
-      streak: 12,
-      badge: { label: "Hot Streak", color: "green" },
-      img: "/images/People/4.jpg",
-    },
-    {
-      rank: 2,
       name: "Chetan Ajmani",
       location: "us New York",
       points: 9876,
@@ -37,19 +27,7 @@ const App = () => {
       img: "/images/People/5.jpg",
     },
     {
-      rank: 3,
-      name: "Vansh Thakur",
-      location: "ru Moscow",
-      points: 7892,
-      today: "+267 today",
-      sessions: 101,
-      time: "76h 45m",
-      streak: 8,
-      badge: { label: "Rising Star", color: "blue" },
-      img: "/images/People/6.jpeg",
-    },
-    {
-      rank: 1,
+      rank: 2,
       name: "Tanish Mehta",
       location: "us San Francisco",
       points: 8245,
@@ -59,18 +37,6 @@ const App = () => {
       streak: 12,
       badge: { label: "Hot Streak", color: "green" },
       img: "/images/People/4.jpg",
-    },
-    {
-      rank: 2,
-      name: "Chetan Ajmani",
-      location: "us New York",
-      points: 9876,
-      today: "+356 today",
-      sessions: 156,
-      time: "142h 30m",
-      streak: 25,
-      badge: { label: "Champion", color: "green" },
-      img: "/images/People/5.jpg",
     },
     {
       rank: 3,
@@ -191,7 +157,6 @@ const App = () => {
       streak: 3,
       badge: { label: "Rising Star", color: "blue" },
       img: "/images/People/13.enc",
-      you: true,
     },
     {
       rank: 13,
@@ -208,12 +173,58 @@ const App = () => {
   ];
 
   // State management for load more functionality
-  const [rows, setRows] = useState(() =>
-    leaderboardData
-      .filter((u) => u.rank >= 4)
-      .slice(0, 10)
-      .map((u, idx) => ({ ...u, _id: idx + 1 }))
+  const [visibleCount] = useState(10);
+  const [loadedCount, setLoadedCount] = useState(10);
+  const idRef = useRef(leaderboardData.length + 1);
+  
+  // Get current user's info for matching
+  const currentUserEmail = user?.email;
+  const currentUserName = userProfile?.displayName || user?.displayName || "You";
+  const currentUserPhoto = userProfile?.photoURL || user?.photoURL || "/images/People/default-avatar.png";
+  
+  // Helper function to check if names match (exact or partial)
+  function namesMatch(name1, name2) {
+    if (!name1 || !name2) return false;
+    const n1 = name1.toLowerCase().trim();
+    const n2 = name2.toLowerCase().trim();
+    return n1 === n2 || n1.includes(n2) || n2.includes(n1);
+  }
+  
+  // Check if current user exists in leaderboard data
+  const userExistsInData = leaderboardData.some(u => 
+    namesMatch(u.name, currentUserName)
   );
+  
+  // Initialize rows with ALL ranks (including 1, 2, 3), marking current user
+  const [rows, setRows] = useState(() => {
+    const filteredData = leaderboardData; // Show all ranks now
+    
+    // If user doesn't exist in data and is logged in, add them
+    let dataToShow = [...filteredData];
+    if (user && !userExistsInData) {
+      dataToShow.push({
+        rank: 12,
+        name: currentUserName,
+        location: "Your Location",
+        points: 3247,
+        today: "+89 today",
+        sessions: 45,
+        time: "28h 45m",
+        streak: 3,
+        badge: { label: "Rising Star", color: "blue" },
+        img: currentUserPhoto,
+        you: true,
+      });
+    }
+    
+    return dataToShow
+      .slice(0, visibleCount)
+      .map((u, idx) => ({
+        ...u,
+        _id: idx + 1,
+        you: (user && namesMatch(u.name, currentUserName))
+      }));
+  });
 
   // Badge color mapping function
   const getBadgeColor = (color) => {
@@ -230,8 +241,12 @@ const App = () => {
 
   // Load more handler function - shows all remaining data
   const handleLoadMore = () => {
-    const filteredData = leaderboardData.filter((u) => u.rank >= 4);
-    setRows(filteredData.map((u, idx) => ({ ...u, _id: idx + 1 })));
+    const filteredData = leaderboardData; // Load from all ranks
+    setRows(filteredData.map((u, idx) => ({
+        ...u,
+        _id: idx + 1,
+        you: (user && namesMatch(u.name, currentUserName))
+      })));
   };
 
   // Animate statistics on component mount
@@ -255,6 +270,42 @@ const App = () => {
     animateValue("sessions", 8392, 800);
     animateValue("goalRate", 94, 800);
   }, []);
+
+  // Update rows when user login state changes
+  useEffect(() => {
+    if (user && currentUserName) {
+      setRows((prevRows) => {
+        // Check if user already exists in rows
+        const userExists = prevRows.some(row => namesMatch(row.name, currentUserName));
+        
+        // If user doesn't exist, add them
+        if (!userExists) {
+          const newUserRow = {
+            _id: idRef.current++,
+            rank: 12,
+            name: currentUserName,
+            location: "Your Location",
+            points: 3247,
+            today: "+89 today",
+            sessions: 45,
+            time: "28h 45m",
+            streak: 3,
+            badge: { label: "Rising Star", color: "blue" },
+            img: currentUserPhoto,
+            you: true,
+          };
+          return [...prevRows, newUserRow];
+        }
+        
+        // Otherwise just mark the matching row
+        return prevRows.map((row) => ({
+          ...row,
+          you: namesMatch(row.name, currentUserName),
+          img: namesMatch(row.name, currentUserName) ? currentUserPhoto : row.img
+        }));
+      });
+    }
+  }, [user, currentUserName, currentUserPhoto]);
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-gray-100 pt-24">
@@ -333,45 +384,55 @@ const App = () => {
           <p className="text-gray-400 mb-10">This month's top performers</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
-            {leaderboardData.slice(0, 3).map((u, idx) => (
-              <div
-                key={`${u.name}-${idx}`}
-                className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative ${
-                  idx === 1
-                    ? 'scale-105 border-4 border-blue-600 bg-gradient-to-b from-blue-900 to-blue-800 hover:border-blue-400 hover:from-blue-800 hover:to-blue-700'
-                    : 'bg-[#111827] hover:bg-gradient-to-br hover:from-[#1a2840] hover:to-[#1a2332] hover:border-2 hover:border-blue-500/30'
-                }`}
-              >
-                <div className="flex flex-col items-center">
-                  {idx === 1 && (
-                    <div className="mb-3 text-yellow-300">
-                      <Crown className="w-10 h-10" />
+            {/* Reorder to show: 2nd, 1st (center/tallest), 3rd, with safety guard */}
+            {(leaderboardData.length >= 3
+              ? [leaderboardData[1], leaderboardData[0], leaderboardData[2]]
+              : leaderboardData.slice(0, 3)
+            ).map((u, displayIdx) => {
+              if (!u) return null;
+              const isChampion = displayIdx === 1; // Middle position is champion
+              const actualRank = u.rank;
+              
+              return (
+                <div
+                  key={`${u.name}-${displayIdx}`}
+                  className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative ${
+                    isChampion
+                      ? 'scale-105 border-4 border-blue-600 bg-gradient-to-b from-blue-900 to-blue-800 hover:border-blue-400 hover:from-blue-800 hover:to-blue-700'
+                      : 'bg-[#111827] hover:bg-gradient-to-br hover:from-[#1a2840] hover:to-[#1a2332] hover:border-2 hover:border-blue-500/30'
+                  }`}
+                >
+                  <div className="flex flex-col items-center">
+                    {isChampion && (
+                      <div className="mb-3 text-yellow-300">
+                        <Crown className="w-10 h-10" />
+                      </div>
+                    )}
+
+                    <div className={`w-28 h-28 rounded-full overflow-hidden border-4 ${isChampion ? 'border-blue-400' : 'border-gray-600'} mb-4`}>
+                      <img src={u.img} alt={u.name} className="w-full h-full object-cover" />
                     </div>
-                  )}
 
-                  <div className={`w-28 h-28 rounded-full overflow-hidden border-4 ${idx === 1 ? 'border-blue-400' : 'border-gray-600'} mb-4`}>
-                    <img src={u.img} alt={u.name} className="w-full h-full object-cover" />
-                  </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{u.name}</h3>
 
-                  <h3 className="text-xl font-bold text-white mb-2">{u.name}</h3>
+                    <p className={`text-3xl font-extrabold ${isChampion ? 'text-blue-300' : 'text-blue-400'}`}>
+                      {u.points.toLocaleString()}
+                    </p>
 
-                  <p className={`text-3xl font-extrabold ${idx === 1 ? 'text-blue-300' : 'text-blue-400'}`}>
-                    {u.points.toLocaleString()}
-                  </p>
+                    <p className="text-sm text-gray-400 mt-2">{u.sessions} sessions • {u.time}</p>
 
-                  <p className="text-sm text-gray-400 mt-2">{u.sessions} sessions • {u.time}</p>
-
-                  <div className="flex gap-2 mt-4">
-                    <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
-                      {idx === 1 ? 'Champion' : idx === 0 ? '2nd' : '3rd'}
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-orange-700 text-white text-sm">
-                      {u.streak} day streak
-                    </span>
+                    <div className="flex gap-2 mt-4">
+                      <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
+                        {actualRank === 1 ? 'Champion' : actualRank === 2 ? '2nd' : '3rd'}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-orange-700 text-white text-sm">
+                        {u.streak} day streak
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -469,6 +530,14 @@ const App = () => {
             >
               Load More Rankings
             </button>
+            {leaderboardData.length > loadedCount && (
+              <button
+                onClick={handleLoadMore}
+                className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-md transition"
+              >
+                Load More Rankings
+              </button>
+            )}
           </div>
         </div>
 
