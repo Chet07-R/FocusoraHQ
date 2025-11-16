@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
-  const { user, userProfile, signOutUser } = useAuth();
+  const { user, userProfile, signOutUser, loading } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -339,9 +339,24 @@ const Navbar = () => {
         ) : (
           <Link
             to="/signin"
-            className="bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold px-6 py-2 rounded-lg hover:from-purple-500 hover:to-cyan-500 transform hover:scale-105 transition-all duration-300"
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
+              boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+              padding: '12px 24px',
+              borderRadius: '12px'
+            }}
+            className="text-white font-semibold hover:brightness-110 transform hover:scale-103 transition-all duration-300"
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
           >
-            Sign In
+            <span>Sign In</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginTop: '2px' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
           </Link>
         )}
       </div>

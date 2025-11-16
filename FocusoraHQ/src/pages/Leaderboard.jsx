@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react";
 
 const App = () => {
@@ -208,15 +208,10 @@ const App = () => {
   ];
 
   // State management for load more functionality
-  const [visibleCount] = useState(10);
-  const [loadedCount, setLoadedCount] = useState(10);
-  const idRef = useRef(leaderboardData.length + 1);
-  
-  // Initialize rows with ranks 4 and above
   const [rows, setRows] = useState(() =>
     leaderboardData
       .filter((u) => u.rank >= 4)
-      .slice(0, visibleCount)
+      .slice(0, 10)
       .map((u, idx) => ({ ...u, _id: idx + 1 }))
   );
 
@@ -233,17 +228,10 @@ const App = () => {
     return colors[color] || "bg-gray-600";
   };
 
-  // Load more handler function
+  // Load more handler function - shows all remaining data
   const handleLoadMore = () => {
     const filteredData = leaderboardData.filter((u) => u.rank >= 4);
-    const newItems = filteredData
-      .slice(loadedCount, loadedCount + 10)
-      .map((u) => ({ ...u, _id: idRef.current++ }));
-    
-    if (newItems.length > 0) {
-      setRows((prev) => [...prev, ...newItems]);
-      setLoadedCount((prev) => prev + newItems.length);
-    }
+    setRows(filteredData.map((u, idx) => ({ ...u, _id: idx + 1 })));
   };
 
   // Animate statistics on component mount
@@ -269,9 +257,9 @@ const App = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] text-gray-100">
+    <div className="min-h-screen bg-[#0b0f19] text-gray-100 pt-24">
       {/* ===== Hero Section ===== */}
-      <section className="pt-24 pb-12 text-center bg-gradient-to-b from-[#111827] to-[#0b0f19] border-b border-gray-800">
+      <section className="pb-12 text-center bg-gradient-to-b from-[#111827] to-[#0b0f19] border-b border-gray-800">
         <div className="flex justify-center mb-6">
           <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
             <Star className="w-6 h-6" />
@@ -469,14 +457,18 @@ const App = () => {
 
           {/* Load More Button */}
           <div className="flex justify-center gap-4 py-6 bg-[#141a2a] rounded-b-2xl">
-            {leaderboardData.filter((u) => u.rank >= 4).length > loadedCount && (
-              <button
-                onClick={handleLoadMore}
-                className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-md transition"
-              >
-                Load More Rankings
-              </button>
-            )}
+            <button
+              onClick={handleLoadMore}
+              style={{ 
+                background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              }}
+              className="text-white font-semibold px-8 py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300"
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
+            >
+              Load More Rankings
+            </button>
           </div>
         </div>
 

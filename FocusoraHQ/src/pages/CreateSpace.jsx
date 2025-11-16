@@ -57,11 +57,11 @@ const CreateSpace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0F172A] text-white flex items-center justify-center p-4 pt-24 sm:pt-28 md:pt-32">
       <div className="w-full max-w-lg">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold">Create Your Space</h1>
-          <p className="text-gray-400 mt-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">Create Your Space</h1>
+          <p className="text-gray-400 mt-2 text-sm sm:text-base">
             Customize your private or group study room
           </p>
         </div>

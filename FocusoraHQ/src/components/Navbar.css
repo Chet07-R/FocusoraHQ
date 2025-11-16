@@ -35,7 +35,7 @@
 
 /* ===== NAVBAR STYLING ===== */
 nav {
-  background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(17,24,39,0.95) 100%);
+  background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(17,24,39,0.85) 100%);
   position: relative;
 }
 

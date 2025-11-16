@@ -243,7 +243,13 @@ const Footer = () => {
               />
               <button
                 onClick={handleSubscription}
-                className="px-6 py-2 subscribe-btn rounded-r-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 hover:shadow-lg hover:shadow-cyan-400/50"
+                style={{
+                  background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
+                  boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                }}
+                className="px-6 py-2 text-white font-semibold rounded-r-lg hover:brightness-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
               >
                 Subscribe
               </button>

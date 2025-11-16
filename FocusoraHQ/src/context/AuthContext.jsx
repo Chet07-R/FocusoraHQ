@@ -17,7 +17,8 @@ import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserPr
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // Initialize user from Firebase's current user (cached) to prevent flash
+  const [user, setUser] = useState(auth.currentUser);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
 

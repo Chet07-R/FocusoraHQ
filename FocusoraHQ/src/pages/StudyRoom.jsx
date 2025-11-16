@@ -199,14 +199,23 @@ const StudyRoom = () => {
 
           {/* Feature Image */}
           <div className="flex justify-center px-4">
-            <div className="relative">
+            <div className="relative group max-w-md">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
-              <img
-                src="../images/study_room.png"
-                alt="Study Room Illustration"
-                className="relative w-64 sm:w-80 md:w-96 lg:w-[32rem] rounded-xl sm:rounded-2xl shadow-2xl border-2 sm:border-4 border-white dark:border-gray-700 bg-white/80 dark:bg-gray-800/80"
-                loading="lazy"
-              />
+              <div className="absolute inset-0 rounded-xl overflow-hidden">
+                <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-cyan-500 to-pink-500 w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
+                <div className="absolute top-0 right-0 w-1 bg-gradient-to-b from-pink-500 to-purple-500 h-0 group-hover:h-full transition-all duration-700 ease-out delay-300"></div>
+                <div className="absolute bottom-0 right-0 h-1 bg-gradient-to-l from-purple-500 to-blue-500 w-0 group-hover:w-full transition-all duration-700 ease-out delay-700"></div>
+                <div className="absolute bottom-0 left-0 w-1 bg-gradient-to-t from-blue-500 to-cyan-500 h-0 group-hover:h-full transition-all duration-700 ease-out delay-1000"></div>
+              </div>
+
+              <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-600 relative transition-all duration-300 group-hover:shadow-3xl group-hover:shadow-cyan-500/20">
+                <img 
+                  src="/images/study_room.jpeg" 
+                  alt="Study Room Illustration" 
+                  className="relative w-64 sm:w-80 md:w-96 lg:w-[32rem] rounded-lg"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
