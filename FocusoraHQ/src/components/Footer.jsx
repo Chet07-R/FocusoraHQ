@@ -176,10 +176,10 @@ const Footer = () => {
               Product
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/pages/my_space.html" className="text-gray-300 hover:text-cyan-400 transition-colors">My Space</a></li>
-              <li><a href="/pages/study_room.html" className="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</a></li>
-              <li><a href="/pages/Blog.html" className="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</a></li>
-              <li><a href="/pages/leaderboard.html" className="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</a></li>
+              <li><a href="/my_space" className="text-gray-300 hover:text-cyan-400 transition-colors">My Space</a></li>
+              <li><a href="/study_room" className="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</a></li>
+              <li><a href="/Blog" className="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</a></li>
+              <li><a href="/leaderboard" className="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</a></li>
             </ul>
           </div>
 
@@ -189,7 +189,7 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2 text-sm">
               <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">About</a></li>
-              <li><a href="/pages/Blog.html" className="text-gray-300 hover:text-purple-500 transition-colors">Blog</a></li>
+              <li><a href="/blog" className="text-gray-300 hover:text-purple-500 transition-colors">Blogs</a></li>
               <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Careers</a></li>
               <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Press</a></li>
             </ul>
@@ -202,7 +202,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Help Center</a></li>
               <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Documentation</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Community</a></li>
+              <li><a href="/community" className="text-gray-300 hover:text-cyan-400 transition-colors">Community</a></li>
               <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Contact</a></li>
             </ul>
           </div>
@@ -212,10 +212,10 @@ const Footer = () => {
               Legal
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Cookie Policy</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Disclaimer</a></li>
+              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Terms of Service</a></li>
+              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Cookie Policy</a></li>
+              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Disclaimer</a></li>
             </ul>
           </div>
         </div>
