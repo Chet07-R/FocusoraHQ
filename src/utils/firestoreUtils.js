@@ -17,6 +17,7 @@ import {
   arrayRemove,
   getDocs,
   writeBatch,
+  collectionGroup,
 } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
@@ -634,4 +635,66 @@ export const subscribeToTodos = (userId, callback) => {
     const todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     callback(todos);
   });
+};
+
+// ==================== ACCOUNT CLEANUP ====================
+
+/**
+ * Delete a user's Firestore footprint so they no longer appear on the leaderboard.
+ * This removes:
+ * - users/{userId}
+ * - users/{userId}/notes/*
+ * - users/{userId}/todos/*
+ * - studySessions where userId == {userId}
+ * - presence documents across rooms (best-effort via collection group)
+ *
+ * Note: Large accounts may exceed a single batch; current implementation is best-effort
+ * and suitable for typical personal usage sizes.
+ */
+export const deleteUserData = async (userId) => {
+  // Collect deletes in batches of up to ~400 ops per commit to stay safe
+  const commitBatches = async (ops) => {
+    let batch = writeBatch(db);
+    let count = 0;
+    const commits = [];
+    for (const op of ops) {
+      batch.delete(op);
+      count += 1;
+      if (count >= 400) {
+        commits.push(batch.commit());
+        batch = writeBatch(db);
+        count = 0;
+      }
+    }
+    if (count > 0) commits.push(batch.commit());
+    if (commits.length) await Promise.all(commits);
+  };
+
+  const ops = [];
+
+  // Subcollections: notes and todos
+  const notesSnap = await getDocs(collection(db, 'users', userId, 'notes'));
+  notesSnap.forEach((d) => ops.push(doc(db, 'users', userId, 'notes', d.id)));
+
+  const todosSnap = await getDocs(collection(db, 'users', userId, 'todos'));
+  todosSnap.forEach((d) => ops.push(doc(db, 'users', userId, 'todos', d.id)));
+
+  // Top-level study sessions for this user
+  const ssQuery = query(collection(db, 'studySessions'), where('userId', '==', userId));
+  const ssSnap = await getDocs(ssQuery);
+  ssSnap.forEach((d) => ops.push(doc(db, 'studySessions', d.id)));
+
+  // Presence docs across rooms (collection group)
+  try {
+    const presenceGroup = collectionGroup(db, 'presence');
+    const presenceSnap = await getDocs(query(presenceGroup, where('userId', '==', userId)));
+    presenceSnap.forEach((d) => ops.push(d.ref));
+  } catch {
+    // collectionGroup might fail if not indexed; ignore best-effort
+  }
+
+  // Finally, the user profile document itself
+  ops.push(doc(db, 'users', userId));
+
+  await commitBatches(ops);
 };

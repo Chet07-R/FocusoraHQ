@@ -1,53 +1,126 @@
 # FocusoraHQ
 
-**Focus. Study. Thrive.**
+FocusoraHQ is a modern, fast, and collaborative study platform with personal focus tools, shared study rooms, blogs, and a global leaderboard.
 
 ---
 
+**Tech Stack**
 
-> **Note:** This project is currently in the planning and development phase. The features described below represent the full vision for the application. We are actively working towards bringing them to life! You can follow our progress here.
-
----
-
-
-### ➤ Core Mission
-
-In an age of constant digital noise and fragmented attention, FocusoraHQ is a comprehensive web platform designed to be your personal headquarters for productivity. Our mission is to empower individuals to combat distraction, reclaim their focus, and achieve their goals in a serene and supportive online environment.
-
----
-
-### ✨ Key Features
-
-FocusoraHQ is built around four core pillars designed to create an all-in-one ecosystem for deep work:
-
-**1. 🧘 The Sanctuary: Personal Workspace**
-A private, fully customizable, and distraction-free zone designed for individual focus sessions.
-* **Integrated To-Do List:** Organize your tasks and track your progress seamlessly.
-* **Customizable Pomodoro Timer:** Employ the proven Pomodoro Technique to work in focused, manageable sprints.
-* **Ambiance Control:** Curate your perfect study atmosphere with an integrated Spotify player and a selection of soothing background themes.
-
-**2. 🤝 The Commons: Collaborative Study Rooms**
-Connect, collaborate, and stay accountable with other users in a shared, productive space.
-* **Create & Join Rooms:** Set up your own virtual study room to invite friends, or join existing rooms to connect with a community of like-minded peers.
-* **Peer Interaction:** Engage through real-time messaging to share ideas, ask questions, and motivate one another.
-* **Shared Productivity Tools:** All the features of the Personal Workspace are available within each room, ensuring a unified group experience.
-
-**3. 📚 The Library: Curated Blog & Resources**
-A dedicated space for knowledge and inspiration to help you on your productivity journey.
-* **Expert Tips & Strategies:** Discover articles on improving focus, time management, and digital wellness.
-* **Inspirational Content:** Read stories and posts designed to keep you motivated and committed to your goals.
-
-**4. 🏆 The Arena: Gamified Analytics & Leaderboards**
-Track your progress and challenge yourself with our gamified performance metrics.
-* **Global Leaderboard:** See how your focus time stacks up against users from around the world, adding a fun, competitive edge to your work.
-* **Personal Analytics:** Gain insights into your work habits by tracking the time devoted to individual tasks and projects.
+- Frontend: React 19, Vite 7, Tailwind CSS 4
+- Auth/DB/Analytics: Firebase v12 (Modular SDK)
+- Routing: `react-router-dom` v6
+- Icons/UI: `lucide-react`
+- Email: `@emailjs/browser`
+- Linting: ESLint 9
 
 ---
 
-### 💻 Project by
+**Prerequisites**
 
-This project was brought to life by:
+- Node.js 18.17+ (LTS recommended) and npm 9+
+- Firebase project (Web app) with Authentication enabled
+- EmailJS account (optional, for Contact form)
 
-* **Chetan Ajmani** - [@Chet07-R](https://github.com/Chet07-R)
-* **Tanish Mehta** - [@TanishMehta23](https://github.com/TanishMehta23)
-* **Vansh Thakur** - [@Vans30m](https://github.com/Vans30m)
+---
+
+**Quick Start**
+
+- Clone and install:
+	- `git clone https://github.com/Chet07-R/FocusoraHQ.git`
+	- `cd FocusoraHQ`
+	- `npm install`
+- Configure environment variables:
+	- Create a file named `.env.local` in the project root with:
+		- `VITE_FIREBASE_API_KEY=...`
+		- `VITE_FIREBASE_AUTH_DOMAIN=...`
+		- `VITE_FIREBASE_PROJECT_ID=...`
+		- `VITE_FIREBASE_STORAGE_BUCKET=...`
+		- `VITE_FIREBASE_MESSAGING_SENDER_ID=...`
+		- `VITE_FIREBASE_APP_ID=...`
+		- `VITE_FIREBASE_MEASUREMENT_ID=...` (optional)
+		- `VITE_EMAILJS_PUBLIC_KEY=...` (optional)
+		- `VITE_EMAILJS_SERVICE_ID=...` (optional)
+		- `VITE_EMAILJS_TEMPLATE_ID=...` (optional)
+- Start the dev server:
+	- `npm run dev`
+	- Open the printed `http://localhost:51xx/` URL
+
+Notes:
+- Only variables prefixed with `VITE_` are exposed to the client in Vite.
+- Firebase → Authentication → Settings → Authorized domains: add `localhost` and any dev hostname you use.
+
+---
+
+**Available Scripts**
+
+- `npm run dev`: Start Vite dev server with HMR
+- `npm run build`: Production build to `dist/`
+- `npm run preview`: Preview the production build locally
+- `npm run lint`: Run ESLint
+
+---
+
+**Project Structure**
+
+```
+FocusoraHQ/
+├─ index.html
+├─ package.json
+├─ vite.config.js
+├─ public/
+│  ├─ images/
+│  └─ animations/
+└─ src/
+	 ├─ main.jsx                # App bootstrap
+	 ├─ App.jsx                 # Routes
+	 ├─ firebaseConfig.js       # Firebase init (reads VITE_ envs)
+	 ├─ index.css / App.css
+	 ├─ components/             # Reusable UI (Navbar, Footer, etc.)
+	 ├─ context/                # Auth, Theme, StudyRoom providers
+	 ├─ hooks/                  # Reusable hooks
+	 ├─ pages/                  # Route pages (Home, Leaderboard, etc.)
+	 └─ utils/                  # Firestore utilities (leaderboard, rooms, notes)
+```
+
+Key modules:
+- `src/context/AuthContext.jsx`: Auth state, login, Google sign-in, delete account.
+- `src/utils/firestoreUtils.js`: Users collection, study sessions, leaderboard, rooms, todos.
+- `src/pages/Leaderboard.jsx`: Real-time leaderboard (merges dynamic + static showcase data).
+
+---
+
+**Environment Setup (Firebase)**
+
+- In Firebase Console → Project settings → Your apps → Web app → Config, copy values into `.env.local` as `VITE_FIREBASE_*`.
+- Enable providers in Firebase → Authentication (e.g., Email/Password, Google).
+- Ensure the domain is authorized under Authentication → Settings → Authorized domains.
+
+---
+
+**Build and Preview**
+
+- Production build:
+	- `npm run build`
+- Preview build locally:
+	- `npm run preview`
+
+---
+
+**Troubleshooting**
+
+- Invalid API Key / Firebase auth errors:
+	- Ensure `.env.local` exists and keys start with `VITE_`.
+	- Restart the dev server after changing env vars.
+	- Check Authorized domains in Firebase Authentication settings.
+- Port already in use:
+	- Vite auto-selects a free port; open the printed URL.
+- Logged-in UI flicker:
+	- Navbar shows a small skeleton while auth is loading to avoid flash.
+
+---
+
+**Contributors**
+
+- Chetan Ajmani — [@Chet07-R](https://github.com/Chet07-R)
+- Tanish Mehta — [@TanishMehta23](https://github.com/TanishMehta23)
+- Vansh Thakur — [@Vans30m](https://github.com/Vans30m)

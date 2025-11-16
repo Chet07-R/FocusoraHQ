@@ -9,7 +9,7 @@ const DEFAULT_PROFILE = "/images/Profile_Icon.png";
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, deleteAccount } = useAuth();
 
   const [profilePic, setProfilePic] = useState(DEFAULT_PROFILE);
   const [username, setUsername] = useState("");
@@ -24,6 +24,7 @@ const EditProfile = () => {
   const [totalFocusTime, setTotalFocusTime] = useState("0h");
   const [currentStreak, setCurrentStreak] = useState("0 days");
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -110,6 +111,30 @@ const EditProfile = () => {
 
   const onCancel = () => {
     if (confirm("Discard changes?")) navigate(-1);
+  };
+
+  const onDeleteAccount = async () => {
+    if (!user) {
+      alert('Please sign in first.');
+      return;
+    }
+    const confirmDelete = confirm('Delete your account permanently? This will remove your profile and stats from the leaderboard.');
+    if (!confirmDelete) return;
+    if (deleting) return;
+    setDeleting(true);
+    try {
+      await deleteAccount();
+      alert('Your account has been deleted.');
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      const msg = err?.code === 'auth/requires-recent-login'
+        ? 'Please sign in again and retry account deletion.'
+        : (err?.message || 'Failed to delete account.');
+      alert(msg);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -250,14 +275,27 @@ const EditProfile = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end mt-12 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className={`px-8 py-3 text-white font-semibold rounded-lg transition duration-200 transform shadow-lg ${saving ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 hover:scale-105'}`}
-                >
-                  {saving ? 'Saving…' : 'Save Changes'}
-                </button>
+              <div className="mt-12 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className={`px-8 py-3 text-white font-semibold rounded-lg transition duration-200 transform shadow-lg ${saving ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 hover:scale-105'}`}
+                  >
+                    {saving ? 'Saving…' : 'Save Changes'}
+                  </button>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={onDeleteAccount}
+                      disabled={deleting}
+                      className={`px-5 py-3 rounded-lg border-2 ${deleting ? 'border-red-300 text-red-300 cursor-not-allowed' : 'border-red-600 text-red-600 hover:bg-red-600 hover:text-white'} transition`}
+                    >
+                      {deleting ? 'Deleting…' : 'Delete Account'}
+                    </button>
+                  </div>
+                </div>
               </div>
             </form>
           </div>

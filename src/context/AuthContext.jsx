@@ -10,9 +10,11 @@ import {
   signOut,
   updateProfile,
   sendPasswordResetEmail,
+  deleteUser,
+  reauthenticateWithPopup,
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebaseConfig';
-import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserProfile } from '../utils/firestoreUtils';
+import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserProfile, deleteUserData } from '../utils/firestoreUtils';
 
 const AuthContext = createContext(null);
 
@@ -108,8 +110,39 @@ export const AuthProvider = ({ children }) => {
     await signOut(auth);
   };
 
+  // Delete current account and associated Firestore data so it disappears from leaderboard
+  const deleteAccount = async () => {
+    const current = auth.currentUser;
+    if (!current) throw new Error('Not signed in');
+    const uid = current.uid;
+
+    // Best effort: cleanup Firestore first (uses current auth session)
+    try {
+      await deleteUserData(uid);
+    } catch (e) {
+      console.warn('Partial data cleanup; proceeding to delete auth user:', e);
+    }
+
+    // Attempt delete; reauthenticate if required
+    try {
+      await deleteUser(current);
+    } catch (err) {
+      if (String(err?.code) === 'auth/requires-recent-login') {
+        // Try popup reauth with Google if available
+        try {
+          await reauthenticateWithPopup(current, googleProvider);
+          await deleteUser(current);
+        } catch (reauthErr) {
+          throw reauthErr;
+        }
+      } else {
+        throw err;
+      }
+    }
+  };
+
   const value = useMemo(
-    () => ({ user, userProfile, loading, hadInitialUser, signUp, signIn, signInWithGoogle, resetPassword, signOutUser }),
+    () => ({ user, userProfile, loading, hadInitialUser, signUp, signIn, signInWithGoogle, resetPassword, signOutUser, deleteAccount }),
     [user, userProfile, loading, hadInitialUser]
   );
 
