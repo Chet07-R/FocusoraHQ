@@ -133,7 +133,7 @@ const Navbar = () => {
         className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
       >
         <img src="/images/logo-shrinked.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
-        <span className="font-bold text-xl brand-gradient" style={{ letterSpacing: "-0.5px" }}>
+        <span className="font-bold text-xl bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent brand-gradient" style={{ letterSpacing: "-0.5px" }}>
           FocusoraHQ
         </span>
       </Link>
@@ -400,11 +400,15 @@ const Navbar = () => {
                   to={item.to}
                   data-page={item.dataPage}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-300 text-white font-semibold group hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
+                  className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 text-white font-semibold group focus:outline-none ${
+                    location.pathname === item.to 
+                      ? 'bg-white/5 shadow-lg shadow-black/30' 
+                      : 'hover:bg-gray-800'
+                  }`}
                 >
                   {renderIcon(item.icon)}
                   <span className={location.pathname === item.to 
-                    ? 'bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold underline underline-offset-4 decoration-2 drop-shadow'
+                    ? 'text-white font-bold underline underline-offset-4 decoration-cyan-400 decoration-2'
                     : 'text-white font-semibold'
                   }>{item.name}</span>
                 </Link>
