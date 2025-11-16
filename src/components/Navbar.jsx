@@ -12,6 +12,9 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Determine avatar source from Firestore profile, Auth user, or fallback
+  const avatarSrc = userProfile?.photoURL ?? user?.photoURL ?? "/images/Profile_Icon.png";
+
   // Shared classes for link text with hover and focus gradient underline
   // Keep nav text white on hover; only animate the underline (after:)
   const linkTextClasses =
@@ -229,7 +232,12 @@ const Navbar = () => {
               className="profile-ring cursor-pointer w-10 h-10 rounded-full overflow-hidden"
             >
               <img
-                src="/images/Profile_Icon.png"
+                src={avatarSrc}
+                onError={(e) => {
+                  if (e.currentTarget.src !== "/images/Profile_Icon.png") {
+                    e.currentTarget.src = "/images/Profile_Icon.png";
+                  }
+                }}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -244,7 +252,12 @@ const Navbar = () => {
               <div className="flex p-4 items-center gap-3 profile-gradient-header">
                 <div className="profile-ring w-11 h-11 p-1">
                   <img
-                    src="/images/Profile_Icon.png"
+                    src={avatarSrc}
+                    onError={(e) => {
+                      if (e.currentTarget.src !== "/images/Profile_Icon.png") {
+                        e.currentTarget.src = "/images/Profile_Icon.png";
+                      }
+                    }}
                     className="w-full h-full object-cover rounded-full"
                     alt="Profile"
                   />
