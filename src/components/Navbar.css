@@ -270,6 +270,12 @@ nav::after {
   filter: drop-shadow(0 0 12px rgba(6,182,212,0.6));
 }
 
+/* Ensure active link shows full underline */
+.nav-link.active .nav-text::after {
+  width: 100% !important;
+  height: 2px;
+}
+
 /* ===== MOBILE MENU TOGGLE ===== */
 .mobile-menu { display: none; }
 .mobile-menu.active { display: block; }

@@ -403,7 +403,10 @@ const Navbar = () => {
                   className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-300 text-white font-semibold group hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
                 >
                   {renderIcon(item.icon)}
-                  <span>{item.name}</span>
+                  <span className={location.pathname === item.to 
+                    ? 'bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold underline underline-offset-4 decoration-2 drop-shadow'
+                    : 'text-white font-semibold'
+                  }>{item.name}</span>
                 </Link>
               )
             )}
