@@ -18,9 +18,12 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   // Initialize user from Firebase's current user (cached) to prevent flash
-  const [user, setUser] = useState(auth.currentUser);
+  const initialUser = auth.currentUser;
+  const [user, setUser] = useState(initialUser);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
+  // Track whether there was an initial cached user to suppress navbar flicker (constant)
+  const hadInitialUser = !!initialUser;
 
   useEffect(() => {
     let unsubscribeProfile = null;
@@ -106,8 +109,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = useMemo(
-    () => ({ user, userProfile, loading, signUp, signIn, signInWithGoogle, resetPassword, signOutUser }),
-    [user, userProfile, loading]
+    () => ({ user, userProfile, loading, hadInitialUser, signUp, signIn, signInWithGoogle, resetPassword, signOutUser }),
+    [user, userProfile, loading, hadInitialUser]
   );
 
   return (

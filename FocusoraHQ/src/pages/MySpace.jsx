@@ -86,12 +86,14 @@ const MySpace = () => {
         </div>
       </div>
 
-      {/* Spotify Player */}
-      <FocusPlaylist
-        addNotification={addNotification}
-        bgPanelOpen={bgPanelOpen}
-        setBgPanelOpen={setBgPanelOpen}
-      />
+      {/* Spotify Player (match card container width and slightly smaller) */}
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-6xl">
+        <FocusPlaylist
+          addNotification={addNotification}
+          bgPanelOpen={bgPanelOpen}
+          setBgPanelOpen={setBgPanelOpen}
+        />
+      </div>
 
       {/* Background Selector Panel */}
       <BackgroundSelector
