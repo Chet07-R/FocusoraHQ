@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
-  const { user, signOutUser } = useAuth();
+  const { user, userProfile, signOutUser } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -207,7 +207,7 @@ const Navbar = () => {
               className="profile-ring cursor-pointer w-10 h-10 rounded-full overflow-hidden"
             >
               <img
-                src="/images/Profile_Icon.png"
+                src={userProfile?.photoURL || user?.photoURL || "/images/Profile_Icon.png"}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -222,13 +222,13 @@ const Navbar = () => {
               <div className="flex p-4 items-center gap-3 profile-gradient-header">
                 <div className="profile-ring w-11 h-11 p-1">
                   <img
-                    src="/images/Profile_img.png"
+                    src={userProfile?.photoURL || user?.photoURL || "/images/Profile_Icon.png"}
                     className="w-full h-full object-cover rounded-full"
                     alt="Profile"
                   />
                 </div>
                 <div className="min-w-0">
-                  <p className="profile-name truncate">{user?.displayName || 'User'}</p>
+                  <p className="profile-name truncate">{userProfile?.displayName || user?.displayName || 'User'}</p>
                   <p className="profile-email text-sm truncate">{user?.email || 'Not signed in'}</p>
                 </div>
               </div>
@@ -237,8 +237,8 @@ const Navbar = () => {
 
               {/* Menu Items */}
               <div className="py-1 space-y-1">
-                <a
-                  href="/pages/profile.html"
+                <Link
+                  to="/profile"
                   className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"
                 >
                   <svg
@@ -257,7 +257,7 @@ const Navbar = () => {
                   <span className="text-hover-wrap text-gray-700 dark:text-gray-200 font-medium">
                     Profile
                   </span>
-                </a>
+                </Link>
                 <Link
                   to="/community"
                   className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"

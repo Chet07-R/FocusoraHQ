@@ -12,7 +12,7 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebaseConfig';
-import { createUserProfile, getUserProfile } from '../utils/firestoreUtils';
+import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserProfile } from '../utils/firestoreUtils';
 
 const AuthContext = createContext(null);
 
@@ -22,31 +22,44 @@ export const AuthProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+    let unsubscribeProfile = null;
+    const unsubscribeAuth = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
-        // Fetch or create user profile in Firestore
         try {
           let profile = await getUserProfile(u.uid);
           if (!profile) {
-            // Create profile if it doesn't exist
             await createUserProfile(u.uid, {
               displayName: u.displayName || 'User',
               email: u.email,
               photoURL: u.photoURL || null,
             });
-            profile = await getUserProfile(u.uid);
+          } else {
+            // If profile exists but missing photo or name, backfill from Auth (e.g., Google profile)
+            const updates = {};
+            if (!profile.photoURL && u.photoURL) updates.photoURL = u.photoURL;
+            if (!profile.displayName && u.displayName) updates.displayName = u.displayName;
+            if (Object.keys(updates).length > 0) {
+              await updateUserProfile(u.uid, updates);
+            }
           }
-          setUserProfile(profile);
+          // Realtime subscription for profile updates
+          if (unsubscribeProfile) unsubscribeProfile();
+          unsubscribeProfile = subscribeToUserProfile(u.uid, (p) => setUserProfile(p));
         } catch (error) {
           console.error('Error loading user profile:', error);
         }
       } else {
+        if (unsubscribeProfile) unsubscribeProfile();
+        unsubscribeProfile = null;
         setUserProfile(null);
       }
       setLoading(false);
     });
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribeProfile) unsubscribeProfile();
+      unsubscribeAuth();
+    };
   }, []);
 
   const signUp = async ({ displayName, email, password }) => {

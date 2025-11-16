@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import emailjs from '@emailjs/browser';
 import "./Footer.css";
 
@@ -176,10 +177,10 @@ const Footer = () => {
               Product
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/my_space" className="text-gray-300 hover:text-cyan-400 transition-colors">My Space</a></li>
-              <li><a href="/study_room" className="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</a></li>
-              <li><a href="/Blog" className="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</a></li>
-              <li><a href="/leaderboard" className="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</a></li>
+              <li><Link to="/my-space" className="text-gray-300 hover:text-cyan-400 transition-colors">My Space</Link></li>
+              <li><Link to="/study-room" className="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</Link></li>
+              <li><Link to="/leaderboard" className="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</Link></li>
             </ul>
           </div>
 
@@ -188,10 +189,10 @@ const Footer = () => {
               Company
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">About</a></li>
-              <li><a href="/blog" className="text-gray-300 hover:text-purple-500 transition-colors">Blogs</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Careers</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-purple-500 transition-colors">Press</a></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-purple-500 transition-colors">About</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-purple-500 transition-colors">Blogs</Link></li>
+              <li><Link to="/careers" className="text-gray-300 hover:text-purple-500 transition-colors">Careers</Link></li>
+              <li><Link to="/press" className="text-gray-300 hover:text-purple-500 transition-colors">Press</Link></li>
             </ul>
           </div>
 
@@ -200,10 +201,10 @@ const Footer = () => {
               Support
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Help Center</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Documentation</a></li>
-              <li><a href="/community" className="text-gray-300 hover:text-cyan-400 transition-colors">Community</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-cyan-400 transition-colors">Contact</a></li>
+              <li><Link to="/help-center" className="text-gray-300 hover:text-cyan-400 transition-colors">Help Center</Link></li>
+              <li><Link to="/documentation" className="text-gray-300 hover:text-cyan-400 transition-colors">Documentation</Link></li>
+              <li><Link to="/community" className="text-gray-300 hover:text-cyan-400 transition-colors">Community</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-cyan-400 transition-colors">Contact</Link></li>
             </ul>
           </div>
 
@@ -212,10 +213,10 @@ const Footer = () => {
               Legal
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Privacy Policy</a></li>
-              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Terms of Service</a></li>
-              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Cookie Policy</a></li>
-              <li><a href="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Disclaimer</a></li>
+              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Terms of Service</Link></li>
+              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Cookie Policy</Link></li>
+              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Disclaimer</Link></li>
             </ul>
           </div>
         </div>
