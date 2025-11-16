@@ -14,6 +14,7 @@ import {
   reauthenticateWithPopup,
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebaseConfig';
+import { sendWelcomeEmail, sendSignInAlert } from '../utils/email';
 import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserProfile, deleteUserData } from '../utils/firestoreUtils';
 
 const AuthContext = createContext(null);
@@ -79,12 +80,21 @@ export const AuthProvider = ({ children }) => {
       email,
       photoURL: null,
     });
+    // Fire-and-forget welcome email
+    try {
+      sendWelcomeEmail({ email, name: displayName || 'User' });
+    } catch {}
     return cred.user;
   };
 
   const signIn = async ({ email, password, remember = false }) => {
     await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
     const cred = await signInWithEmailAndPassword(auth, email, password);
+    // Fire-and-forget sign-in alert
+    try {
+      const name = cred.user?.displayName || 'User';
+      sendSignInAlert({ email: cred.user?.email || email, name, provider: 'password' });
+    } catch {}
     return cred.user;
   };
 
@@ -99,6 +109,10 @@ export const AuthProvider = ({ children }) => {
         photoURL: cred.user.photoURL || null,
       });
     }
+    // Fire-and-forget sign-in alert
+    try {
+      sendSignInAlert({ email: cred.user.email, name: cred.user.displayName || 'User', provider: 'google' });
+    } catch {}
     return cred.user;
   };
 
