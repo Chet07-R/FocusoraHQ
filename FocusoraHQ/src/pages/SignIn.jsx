@@ -103,17 +103,49 @@
 // export default SignIn;
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
+import { mapAuthError } from '../utils/authErrors';
+import ForgotPasswordModal from '../components/ForgotPasswordModal';
 
 const SignIn = () => {
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [rememberMe, setRememberMe] = useState(false);
+const [submitting, setSubmitting] = useState(false);
+const [error, setError] = useState('');
+const [showForgotPassword, setShowForgotPassword] = useState(false);
+const navigate = useNavigate();
+const { signIn, signInWithGoogle } = useAuth();
 
-const handleSignIn = (e) => {
-e.preventDefault();
-console.log('Sign In:', { email, password, rememberMe });
+const handleSignIn = async (e) => {
+  e.preventDefault();
+  setError('');
+  setSubmitting(true);
+  try {
+    await signIn({ email, password, remember: rememberMe });
+    navigate('/');
+  } catch (err) {
+    const friendly = mapAuthError(err?.code);
+    setError(friendly || err?.message || 'Failed to sign in');
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+const handleGoogle = async () => {
+  setError('');
+  setSubmitting(true);
+  try {
+    await signInWithGoogle();
+    navigate('/');
+  } catch (err) {
+    const friendly = mapAuthError(err?.code);
+    setError(friendly || err?.message || 'Google sign-in failed');
+  } finally {
+    setSubmitting(false);
+  }
 };
 
 return (
@@ -146,6 +178,11 @@ return (
 
       {/* Form */}
       <form onSubmit={handleSignIn} className="space-y-5">
+        {error && (
+          <div className="w-full bg-red-500/10 border border-red-500/40 text-red-300 text-sm px-4 py-2 rounded-lg">
+            {error}
+          </div>
+        )}
         <div>
           <label className="block text-sm font-semibold text-purple-300 mb-2">
             Email
@@ -168,7 +205,7 @@ return (
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your secret password"
+            placeholder="Enter your password"
             className="w-full bg-slate-900/50 border-2 border-purple-500/30 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
             required
           />
@@ -185,17 +222,31 @@ return (
             />
             <span className="ml-2 text-sm text-gray-300 group-hover:text-purple-300 transition-colors">Remember me</span>
           </label>
-          <Link to="/forgot-password" className="text-sm text-cyan-400 hover:text-cyan-300 hover:underline transition-all">
+          <button
+            type="button"
+            onClick={() => setShowForgotPassword(true)}
+            className="text-sm text-cyan-400 hover:text-cyan-300 hover:underline transition-all"
+          >
             Forgot Password?
-          </Link>
+          </button>
         </div>
 
         {/* Submit Button with cool gradient */}
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold py-3 rounded-xl hover:from-purple-500 hover:to-cyan-500 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
+          disabled={submitting}
+          className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold py-3 rounded-xl hover:from-purple-500 hover:to-cyan-500 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Sign In
+          {submitting ? 'Signing In…' : 'Sign In'}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGoogle}
+          disabled={submitting}
+          className="w-full mt-3 bg-slate-700/60 border-2 border-purple-500/30 text-white font-semibold py-3 rounded-xl hover:bg-slate-700 hover:border-cyan-400 transform hover:scale-[1.01] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          Continue with Google
         </button>
       </form>
 
@@ -226,6 +277,12 @@ return (
       animation-delay: 4s;
     }
   `}</style>
+
+  {/* Forgot Password Modal */}
+  <ForgotPasswordModal
+    isOpen={showForgotPassword}
+    onClose={() => setShowForgotPassword(false)}
+  />
 </>
 );
 };

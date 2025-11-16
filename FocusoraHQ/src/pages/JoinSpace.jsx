@@ -1,80 +1,75 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+import { useStudyRoom } from "../context/StudyRoomContext";
+import { useAuth } from "../context/AuthContext";
 
 const JoinSpace = () => {
-  const allRooms = [
-    {
-      icon: "💻",
-      title: "Math Study Group",
-      tags: ["Calculus Revision", "3/12 users"],
-      color: "blue",
-      borderColor: "border-blue-600 dark:border-blue-400",
-    },
-    {
-      icon: "📚",
-      title: "Focus & Flow",
-      tags: ["Study", "Host: Alex C.", "5/10 users"],
-      color: "cyan",
-      borderColor: "border-cyan-600 dark:border-cyan-400",
-    },
-    {
-      icon: "✍️",
-      title: "Writers' Retreat",
-      tags: ["Writing", "Host: Mike R.", "3/8 users"],
-      color: "purple",
-      borderColor: "border-purple-600 dark:border-purple-400",
-    },
-    {
-      icon: "🌅",
-      title: "Morning Motivation",
-      tags: ["Accountability", "Host: Jessica Y.", "12/20 users"],
-      color: "yellow",
-      borderColor: "border-yellow-500 dark:border-yellow-400",
-    },
-    {
-      icon: "🧠",
-      title: "AI Learners Hub",
-      tags: ["Machine Learning", "Host: Neha P.", "6/15 users"],
-      color: "pink",
-      borderColor: "border-pink-600 dark:border-pink-400",
-    },
-    {
-      icon: "🧩",
-      title: "Puzzle Masters",
-      tags: ["Critical Thinking", "Host: Riya K.", "2/10 users"],
-      color: "indigo",
-      borderColor: "border-indigo-600 dark:border-indigo-400",
-    },
-    {
-      icon: "🚀",
-      title: "Startup Think Tank",
-      tags: ["Innovation", "Host: Arjun V.", "8/20 users"],
-      color: "orange",
-      borderColor: "border-orange-600 dark:border-orange-400",
-    },
-    {
-      icon: "🎨",
-      title: "Art & Design Studio",
-      tags: ["Creativity", "Host: Mira D.", "5/12 users"],
-      color: "rose",
-      borderColor: "border-rose-600 dark:border-rose-400",
-    },
-  ];
-
+  const { activeRooms, joinRoom, loading: roomsLoading } = useStudyRoom();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleCount, setVisibleCount] = useState(4);
+  const [joiningRoomId, setJoiningRoomId] = useState(null);
 
-  // Filter rooms by title, host, or tags
-  const filteredRooms = allRooms.filter((room) => {
+  // Convert Firestore rooms to display format with real-time data
+  const allRooms = useMemo(() => {
+    return activeRooms.map(room => {
+      const participantCount = room.participants?.length || 0;
+      const hostInfo = room.hostName ? `Host: ${room.hostName}` : "";
+      
+      return {
+        id: room.id,
+        icon: room.isPublic ? "🌐" : "🔒",
+        title: room.name,
+        description: room.description,
+        tags: [
+          ...(room.description ? [room.description.substring(0, 20)] : []),
+          ...(hostInfo ? [hostInfo] : []),
+          `${participantCount}/${room.maxParticipants || 10} users`
+        ],
+        color: room.isPublic ? "blue" : "purple",
+        borderColor: room.isPublic ? "border-blue-600 dark:border-blue-400" : "border-purple-600 dark:border-purple-400",
+        isFull: participantCount >= (room.maxParticipants || 10)
+      };
+    });
+  }, [activeRooms]);
+
+  // Filter rooms by title or tags
+  const filteredRooms = useMemo(() => {
+    if (!searchTerm) return allRooms;
+    
     const text = searchTerm.toLowerCase();
-    return (
-      room.title.toLowerCase().includes(text) ||
-      room.tags.some((tag) => tag.toLowerCase().includes(text))
-    );
-  });
+    return allRooms.filter((room) => {
+      return (
+        room.title.toLowerCase().includes(text) ||
+        room.description?.toLowerCase().includes(text) ||
+        room.tags.some((tag) => tag.toLowerCase().includes(text))
+      );
+    });
+  }, [allRooms, searchTerm]);
 
   // Rooms currently visible
   const visibleRooms = filteredRooms.slice(0, visibleCount);
+
+  const handleJoinRoom = async (roomId) => {
+    if (!user) {
+      alert("Please sign in to join a room");
+      navigate('/signin');
+      return;
+    }
+
+    setJoiningRoomId(roomId);
+    try {
+      await joinRoom(roomId);
+      navigate('/study-room-1', { state: { roomId } });
+    } catch (error) {
+      console.error("Error joining room:", error);
+      alert(error.message || "Failed to join room");
+    } finally {
+      setJoiningRoomId(null);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
@@ -111,10 +106,15 @@ const JoinSpace = () => {
 
         {/* Room Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {visibleRooms.length > 0 ? (
-            visibleRooms.map((room, i) => (
+          {roomsLoading ? (
+            <div className="col-span-2 text-center py-10">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">Loading rooms...</p>
+            </div>
+          ) : visibleRooms.length > 0 ? (
+            visibleRooms.map((room) => (
               <div
-                key={i}
+                key={room.id}
                 className={`bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-xl p-6 flex flex-col gap-3 border-t-4 ${room.borderColor}`}
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -141,15 +141,33 @@ const JoinSpace = () => {
                   ))}
                 </div>
 
-                <Link to="/study-room-1" className="mt-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all w-full text-center">
-                  Join
-                </Link>
+                <button
+                  onClick={() => handleJoinRoom(room.id)}
+                  disabled={room.isFull || joiningRoomId === room.id}
+                  className={`mt-2 px-6 py-2 rounded-lg font-semibold transition-all w-full text-center ${
+                    room.isFull
+                      ? 'bg-gray-400 cursor-not-allowed text-white'
+                      : joiningRoomId === room.id
+                      ? 'bg-blue-400 text-white'
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  }`}
+                >
+                  {joiningRoomId === room.id ? "Joining..." : room.isFull ? "Full" : "Join"}
+                </button>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-600 dark:text-gray-400 col-span-2 py-10">
-              No rooms found. Try another search!
-            </p>
+            <div className="col-span-2 text-center py-10">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                {searchTerm ? "No rooms found. Try another search!" : "No active rooms yet."}
+              </p>
+              <Link
+                to="/create-space"
+                className="inline-block bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-xl font-semibold transition-all"
+              >
+                Create the First Room
+              </Link>
+            </div>
           )}
         </div>
 

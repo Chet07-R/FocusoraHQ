@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { UploadCloud, Download, Mic, Save, Volume2, Trash2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { useStudyRoom } from "../context/StudyRoomContext";
+import { useAuth } from "../context/AuthContext";
 
 const Notes = ({ addNotification = () => {} }) => {
-  const [notes, setNotes] = useState(() => localStorage.getItem("sr_notes") || "");
+  const { roomData, updateNotes, currentRoom } = useStudyRoom();
+  const { user, userProfile } = useAuth();
+  const [notes, setNotes] = useState("");
   const notesAreaRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const recognitionRef = useRef(null);
@@ -17,6 +21,8 @@ const Notes = ({ addNotification = () => {} }) => {
       return [];
     }
   });
+  const [dictationLang, setDictationLang] = useState('en-US');
+  const [autoPunct, setAutoPunct] = useState(true);
 
   // active format states for toolbar buttons
   const [activeBold, setActiveBold] = useState(false);
@@ -24,14 +30,33 @@ const Notes = ({ addNotification = () => {} }) => {
   const [activeUnderline, setActiveUnderline] = useState(false);
   const [activeAlign, setActiveAlign] = useState('left');
 
-  /* ===== Auto-persist ===== */
+  /* ===== Sync from room (real-time) or fallback to local ===== */
   useEffect(() => {
-    localStorage.setItem("sr_notes", notes);
-  }, [notes]);
+    if (roomData && typeof roomData.sharedNotes === 'string') {
+      setNotes(roomData.sharedNotes || "");
+      const el = notesAreaRef.current;
+      if (el && el.innerHTML !== (roomData.sharedNotes || "")) {
+        el.innerHTML = roomData.sharedNotes || "";
+      }
+    } else {
+      const local = localStorage.getItem("sr_notes") || "";
+      setNotes(local);
+    }
+  }, [roomData]);
+  
+  // Persist locally as a fallback (non-room usage)
+  useEffect(() => {
+    if (!currentRoom) {
+      localStorage.setItem("sr_notes", notes);
+    }
+  }, [notes, currentRoom]);
 
   useEffect(() => {
     localStorage.setItem("sr_files", JSON.stringify(uploadedFiles));
   }, [uploadedFiles]);
+
+  // Remove shared files list (real-time) per request
+  // const { roomFiles, addRoomFile, removeRoomFile } = useStudyRoom();
 
   /* ===== Sync editable area ===== */
   useEffect(() => {
@@ -39,7 +64,7 @@ const Notes = ({ addNotification = () => {} }) => {
     if (el && el.innerHTML !== notes) el.innerHTML = notes;
   }, [notes]);
 
-  /* ===== Auto-save debounce ===== */
+  /* ===== Auto-save debounce (to room if joined) ===== */
   useEffect(() => {
     const el = notesAreaRef.current;
     if (!el) return;
@@ -50,7 +75,14 @@ const Notes = ({ addNotification = () => {} }) => {
       t = setTimeout(() => {
         const html = el.innerHTML;
         setNotes(html);
-        addNotification("💾 Notes auto-saved");
+        if (currentRoom) {
+          updateNotes(html);
+          const name = user?.displayName || userProfile?.displayName || 'You';
+          addNotification(`💾 Notes saved to room by ${name}`);
+        } else {
+          try { localStorage.setItem("sr_notes", html); } catch {}
+          addNotification("💾 Notes auto-saved");
+        }
       }, 1000);
     };
 
@@ -69,6 +101,15 @@ const Notes = ({ addNotification = () => {} }) => {
     };
 
     el.addEventListener("input", onInput);
+    // enforce plain-text paste to avoid accidental markup/code in notes
+    const onPaste = (e) => {
+      try {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      } catch {}
+    };
+    el.addEventListener('paste', onPaste);
     document.addEventListener('selectionchange', onSelection);
     el.addEventListener('keyup', onSelection);
     el.addEventListener('mouseup', onSelection);
@@ -78,12 +119,33 @@ const Notes = ({ addNotification = () => {} }) => {
 
     return () => {
       el.removeEventListener("input", onInput);
+      el.removeEventListener('paste', onPaste);
       document.removeEventListener('selectionchange', onSelection);
       el.removeEventListener('keyup', onSelection);
       el.removeEventListener('mouseup', onSelection);
       clearTimeout(t);
     };
-  }, []);
+  }, [currentRoom, updateNotes, user, userProfile, addNotification]);
+
+  /* ===== Notify on external updates ===== */
+  const lastNotesRef = useRef("");
+  const lastUpdaterRef = useRef(null);
+  useEffect(() => {
+    const incoming = roomData?.sharedNotes ?? null;
+    const updaterId = roomData?.notesUpdatedById || null;
+    const updaterName = roomData?.notesUpdatedByName || 'Someone';
+    if (currentRoom && typeof incoming === 'string') {
+      const isOwn = user && updaterId && updaterId === user.uid;
+      const changed = incoming !== lastNotesRef.current;
+      if (changed) {
+        if (!isOwn && lastNotesRef.current !== "") {
+          addNotification(`📝 Notes updated by ${updaterName}`);
+        }
+        lastNotesRef.current = incoming;
+        lastUpdaterRef.current = updaterId;
+      }
+    }
+  }, [roomData, currentRoom, user]);
 
   /* ===== Voice list for TTS ===== */
   useEffect(() => {
@@ -132,6 +194,16 @@ const Notes = ({ addNotification = () => {} }) => {
     }, 20);
   };
 
+  const setAlignment = (align) => {
+    const el = notesAreaRef.current;
+    if (!el) return;
+    el.focus();
+    const cmd = align === 'center' ? 'justifyCenter' : align === 'right' ? 'justifyRight' : 'justifyLeft';
+    try { document.execCommand(cmd, false, null); } catch {}
+    setNotes(el.innerHTML);
+    setActiveAlign(align);
+  };
+
   /* ===== Dictation ===== */
   const startDictation = () => {
     const SpeechRecognition =
@@ -145,16 +217,31 @@ const Notes = ({ addNotification = () => {} }) => {
     }
 
     const rec = new SpeechRecognition();
-    rec.lang = "en-US";
-    rec.interimResults = false;
+    rec.lang = dictationLang || 'en-US';
+    rec.interimResults = true;
+    rec.continuous = true;
+    let finalTranscript = '';
     rec.onresult = (ev) => {
-      const transcript =
-        ev.results[ev.results.length - 1][0].transcript.trim();
-      const el = notesAreaRef.current;
-      if (!el) return;
-      el.innerText = `${el.innerText.trim()} ${transcript}`.trim();
-      setNotes(el.innerHTML);
-      addNotification("✅ Dictation added");
+      let interimTranscript = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const res = ev.results[i];
+        const text = res[0]?.transcript || '';
+        if (res.isFinal) {
+          finalTranscript += text + ' ';
+        } else {
+          interimTranscript += text;
+        }
+      }
+      if (finalTranscript) {
+        const el = notesAreaRef.current;
+        if (!el) return;
+        const processed = autoPunct ? postProcessTranscript(finalTranscript) : finalTranscript;
+        const current = el.innerText.trim();
+        const sep = current && !/[\s\n]$/.test(el.innerText) ? ' ' : '';
+        el.innerText = (current + sep + processed).trim();
+        setNotes(el.innerHTML);
+        finalTranscript = '';
+      }
     };
     rec.onerror = () => addNotification("❌ Dictation error");
     rec.onend = () => setIsRecording(false);
@@ -162,6 +249,30 @@ const Notes = ({ addNotification = () => {} }) => {
     rec.start();
     setIsRecording(true);
     addNotification("🎤 Listening...");
+  };
+
+  const stopDictation = () => {
+    try { recognitionRef.current?.stop(); } catch {}
+    recognitionRef.current = null;
+    setIsRecording(false);
+    addNotification('⏹️ Stopped listening');
+  };
+
+  const postProcessTranscript = (text) => {
+    let t = ' ' + text + ' ';
+    // word-to-punctuation replacements
+    t = t.replace(/\s(comma|,)(\s|$)/gi, ', ');
+    t = t.replace(/\s(full stop|period|\.)(\s|$)/gi, '. ');
+    t = t.replace(/\s(question mark|\?)(\s|$)/gi, '? ');
+    t = t.replace(/\s(exclamation mark|!)(\s|$)/gi, '! ');
+    t = t.replace(/\s(new line|line break)(\s|$)/gi, '\n');
+    // cleanup extra spaces
+    t = t.replace(/\s+([,\.!\?])/g, '$1 ');
+    t = t.replace(/\s{2,}/g, ' ');
+    t = t.trim();
+    // sentence case basic
+    t = t.replace(/(^\s*[a-z])|([\.\!\?]\s+[a-z])/g, (m) => m.toUpperCase());
+    return t;
   };
 
   /* ===== TTS ===== */
@@ -203,7 +314,7 @@ const Notes = ({ addNotification = () => {} }) => {
       uploadedAt: new Date().toLocaleString(),
     };
     setUploadedFiles((s) => [meta, ...s]);
-    addNotification("📎 File uploaded");
+    addNotification("📎 File added");
   };
 
   const removeFile = (id) => {
@@ -224,8 +335,13 @@ const Notes = ({ addNotification = () => {} }) => {
 
   const saveLocalNotes = () => {
     try {
-      localStorage.setItem("sr_notes", notes);
-      addNotification("💾 Notes saved");
+      if (currentRoom) {
+        updateNotes(notes);
+        addNotification("💾 Notes saved to room");
+      } else {
+        localStorage.setItem("sr_notes", notes);
+        addNotification("💾 Notes saved");
+      }
     } catch {
       addNotification("❌ Could not save notes");
     }
@@ -270,7 +386,7 @@ const Notes = ({ addNotification = () => {} }) => {
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0">
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0" style={{ userSelect: 'none' }}>
         {/* First row: B, I, U, and alignment buttons */}
         <div className="flex items-center gap-2 justify-center">
           <button
@@ -324,6 +440,22 @@ const Notes = ({ addNotification = () => {} }) => {
             <Volume2 className="w-4 h-4" />
             {isSpeaking ? 'Stop' : 'Speak'}
           </button>
+          <select
+            value={dictationLang}
+            onChange={(e) => setDictationLang(e.target.value)}
+            className="px-2 py-2 rounded-md bg-white/10 text-white outline-none"
+            title="Dictation language"
+          >
+            <option className="bg-gray-900" value="en-US">English (US)</option>
+            <option className="bg-gray-900" value="en-IN">English (India)</option>
+            <option className="bg-gray-900" value="en-GB">English (UK)</option>
+            <option className="bg-gray-900" value="hi-IN">Hindi (India)</option>
+            <option className="bg-gray-900" value="en-CA">English (Canada)</option>
+          </select>
+          <label className="flex items-center gap-2 text-xs text-gray-300">
+            <input type="checkbox" checked={autoPunct} onChange={(e) => setAutoPunct(e.target.checked)} />
+            Auto punctuation
+          </label>
           <button
             onClick={startDictation}
             disabled={isRecording}
@@ -343,6 +475,7 @@ const Notes = ({ addNotification = () => {} }) => {
       </div>
 
       {/* Editable area - flex-1 makes it take remaining space */}
+      {/* Pasting is sanitized to plain text in the effect below */}
       <div
         ref={notesAreaRef}
         contentEditable
@@ -350,7 +483,7 @@ const Notes = ({ addNotification = () => {} }) => {
         className="flex-1 bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4"
       />
 
-      {/* Upload notes block - flex-shrink-0 prevents it from shrinking */}
+      {/* Upload notes block (local only, shared list removed) - flex-shrink-0 prevents it from shrinking */}
       <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 flex-shrink-0">
         <div className="flex items-center gap-3">
           <UploadCloud className="w-5 h-5 text-white/70" />
@@ -367,6 +500,17 @@ const Notes = ({ addNotification = () => {} }) => {
           >
             Choose File
           </label>
+          <div className="text-gray-300">{uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}</div>
+          <div className="ml-auto text-xs text-gray-300">Local only</div>
+        </div>
+        <div className="mt-3 max-h-40 overflow-auto space-y-2">
+          {uploadedFiles.map((f) => (
+            <div key={f.id} className="flex items-center justify-between bg-white/5 p-2 rounded">
+              <div className="text-sm text-white">{f.name} <span className="text-xs text-gray-400">• {f.size}</span></div>
+              <button onClick={() => removeFile(f.id)} className="text-red-400 text-xs">Remove</button>
+            </div>
+          ))}
+        </div>
           <span className="text-sm text-white/60">
             {uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}
           </span>
@@ -396,7 +540,6 @@ const Notes = ({ addNotification = () => {} }) => {
           </div>
         )}
       </div>
-    </div>
   );
 };
 

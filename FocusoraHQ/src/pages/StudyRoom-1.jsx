@@ -1,5 +1,8 @@
 // StudyRoom-1.jsx
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useStudyRoom } from "../context/StudyRoomContext";
 import {
   Sun,
   Moon,
@@ -35,6 +38,84 @@ import FocusPlaylist from "../components/FocusPlaylist";
  */
 
 const StudyRoom1 = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { 
+    currentRoom, 
+    roomData, 
+    participants, 
+    chatMessages: firestoreChatMessages,
+    roomTodos: firestoreTodos,
+    joinRoom, 
+    leaveRoom, 
+    deleteRoom,
+    sendMessage: sendFirestoreMessage,
+    updateNotes: updateFirestoreNotes,
+    addTodo: addFirestoreTodo,
+    toggleTodo: toggleFirestoreTodo,
+    deleteTodo: deleteFirestoreTodo,
+    updateBackground,
+  } = useStudyRoom();
+  
+  // Get roomId from navigation state or current room context
+  const roomId = location.state?.roomId || currentRoom;
+  
+  // Join room on mount if we have a roomId
+  useEffect(() => {
+    if (roomId && !currentRoom && user) {
+      console.log("Attempting to join room:", roomId);
+      joinRoom(roomId).catch(err => {
+        console.error("Failed to join room:", err);
+        navigate('/join-space');
+      });
+    }
+  }, [roomId, currentRoom, user]);
+  
+  // Check if room becomes inactive (deleted by host)
+  useEffect(() => {
+    if (roomData && roomData.active === false) {
+      addNotification("🚫 This room has been closed by the host");
+      navigate('/study-room');
+    }
+  }, [roomData, navigate]);
+  
+  // Don't auto-leave on unmount - let user manually leave
+  // This prevents leaving when page reloads
+  
+  // Handle leaving the room
+  const handleLeaveRoom = async () => {
+    if (window.confirm("Are you sure you want to leave this room?")) {
+      try {
+        await leaveRoom();
+        addNotification("👋 Left the room");
+        navigate('/study-room');
+      } catch (error) {
+        console.error("Error leaving room:", error);
+        addNotification("❌ Failed to leave room");
+      }
+    }
+  };
+  
+  // Handle deleting the room (creator only)
+  const handleDeleteRoom = async () => {
+    if (window.confirm("Are you sure you want to delete this room? This will close it for all participants.")) {
+      try {
+        await deleteRoom();
+        addNotification("🗑️ Room deleted");
+        navigate('/study-room');
+      } catch (error) {
+        console.error("Error deleting room:", error);
+        addNotification("❌ " + (error.message || "Failed to delete room"));
+      }
+    }
+  };
+  
+  // Check if current user is the room creator
+  const isCreator = user && roomData && roomData.creatorId === user.uid;
+  
+  // Auto-close countdown UI removed; background auto-close still handled in context
+  
   // ===== DARK MODE (persisted in localStorage) =====
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -294,44 +375,104 @@ const StudyRoom1 = () => {
   };
 
   // ===== CHAT =====
-  const [chatMessages, setChatMessages] = useState(() => {
-    try {
-      const raw = localStorage.getItem("sr_chat");
-      return raw ? JSON.parse(raw) : [{ from: "system", text: "Welcome to the FocusoraHQ Study Room!" }];
-    } catch {
-      return [{ from: "system", text: "Welcome to the FocusoraHQ Study Room!" }];
-    }
-  });
   const [chatInput, setChatInput] = useState("");
   const chatEnd = useRef();
+  
+  // Use Firestore chat messages
+  const chatMessages = firestoreChatMessages && firestoreChatMessages.length > 0 
+    ? firestoreChatMessages 
+    : [{ userId: "system", displayName: "System", message: "Welcome to the FocusoraHQ Study Room!" }];
+  
   useEffect(() => {
-    localStorage.setItem("sr_chat", JSON.stringify(chatMessages));
     chatEnd.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages]);
+  }, [firestoreChatMessages]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const text = chatInput.trim();
     if (!text) return;
-    setChatMessages((s) => [...s, { from: "you", text }]);
-    setChatInput("");
-    addNotification("💬 Message sent");
+    
+    console.log("Sending message:", text);
+    console.log("Current room:", currentRoom);
+    console.log("sendFirestoreMessage available:", !!sendFirestoreMessage);
+    
+    if (!currentRoom) {
+      addNotification("❌ Not in a room");
+      return;
+    }
+    
+    if (!sendFirestoreMessage) {
+      addNotification("❌ Chat not available");
+      return;
+    }
+    
+    try {
+      await sendFirestoreMessage(text);
+      setChatInput("");
+      console.log("Message sent successfully");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      addNotification("❌ Failed to send: " + error.message);
+    }
   };
 
   // ===== PANELS (participants/chat) =====
   const [openPanel, setOpenPanel] = useState(null);
   const openParticipants = () => setOpenPanel("participants");
   const openChat = () => setOpenPanel("chat");
+
+  // Unread chat notifications
+  const [unreadChat, setUnreadChat] = useState(0);
+  const lastMessageIdRef = useRef(null);
+
+  // When chat panel opens, clear unread badge
+  useEffect(() => {
+    if (openPanel === 'chat') setUnreadChat(0);
+  }, [openPanel]);
+
+  // Notify on new incoming messages from others
+  useEffect(() => {
+    if (!firestoreChatMessages || firestoreChatMessages.length === 0) return;
+    const last = firestoreChatMessages[firestoreChatMessages.length - 1];
+    if (!last) return;
+
+    if (lastMessageIdRef.current !== last.id) {
+      lastMessageIdRef.current = last.id;
+      const isOwn = last.userId && user && last.userId === user.uid;
+      const isSystem = last.userId === 'system';
+      if (!isOwn && !isSystem) {
+        if (openPanel !== 'chat') setUnreadChat((c) => c + 1);
+        addNotification(`💬 ${last.displayName || 'Someone'}: ${last.message || ''}`);
+      }
+    }
+  }, [firestoreChatMessages, openPanel, user]);
   const closePanel = () => setOpenPanel(null);
 
   // ===== BACKGROUND IMAGE SELECTION =====
   const defaultBg = "https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg";
   const [bgUrl, setBgUrl] = useState(() => localStorage.getItem("sr_bg") || defaultBg);
+  // sync from room
   useEffect(() => {
-    localStorage.setItem("sr_bg", bgUrl);
-  }, [bgUrl]);
-  const changeBackground = (url) => {
-    setBgUrl(url);
-    addNotification("🎨 Background Changed");
+    if (roomData?.backgroundUrl) {
+      setBgUrl(roomData.backgroundUrl);
+      localStorage.setItem("sr_bg", roomData.backgroundUrl);
+    }
+  }, [roomData?.backgroundUrl]);
+  useEffect(() => {
+    if (!currentRoom) localStorage.setItem("sr_bg", bgUrl);
+  }, [bgUrl, currentRoom]);
+  const changeBackground = async (url) => {
+    if (currentRoom) {
+      try {
+        await updateBackground(url);
+        addNotification("🎨 Background changed for everyone");
+      } catch (e) {
+        addNotification("❌ Failed to update background");
+      }
+    } else {
+      setBgUrl(url);
+      localStorage.setItem("sr_bg", url);
+      addNotification("🎨 Background Changed");
+    }
     setBgPanelOpen(false);
   };
 
@@ -357,8 +498,7 @@ const StudyRoom1 = () => {
   }, []);
   useEffect(() => {
     if (musicOn) {
-      audioR
-      ef.current?.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      audioRef.current?.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     } else {
       audioRef.current?.pause();
       setIsPlaying(false);
@@ -378,10 +518,10 @@ const StudyRoom1 = () => {
   };
 
   const roomInfo = {
-    id: "SR-6223",
-    name: "Focus Study Room",
-    host: "Host",
-    members: 3,
+    id: roomData?.id || roomId || "SR-####",
+    name: roomData?.name || "Loading...",
+    host: roomData?.creatorName || "Host",
+    members: participants?.length || 0,
   };
 
   const cx = (...args) => args.filter(Boolean).join(" ");
@@ -456,8 +596,12 @@ const StudyRoom1 = () => {
 
           <div className="flex items-center gap-3">
             <div className="text-sm text-gray-200">Members {roomInfo.members}</div>
-            <button onClick={() => { navigator.clipboard?.writeText(roomInfo.id); addNotification("📋 Room ID copied"); }} className="px-3 py-2 rounded-md bg-white/10 text-white">Copy ID</button>
-            <button onClick={() => addNotification("Invite link copied (placeholder)")} className="px-3 py-2 rounded-md bg-emerald-500 text-white">Invite</button>
+            <button onClick={() => { navigator.clipboard?.writeText(roomInfo.id); addNotification("📋 Room ID copied"); }} className="px-3 py-2 rounded-md bg-white/10 text-white hover:bg-white/20 transition">Copy ID</button>
+            <button onClick={() => addNotification("Invite link copied (placeholder)")} className="px-3 py-2 rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition">Invite</button>
+            {isCreator && (
+              <button onClick={handleDeleteRoom} className="px-3 py-2 rounded-md bg-orange-500 text-white hover:bg-orange-600 transition">Delete Room</button>
+            )}
+            <button onClick={handleLeaveRoom} className="px-3 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition">Leave Room</button>
           </div>
         </div>
 
@@ -485,17 +629,43 @@ const StudyRoom1 = () => {
   {/* RIGHT FLOATING PANEL TRIGGERS */}
       <div className="fixed right-4 top-1/3 z-50 flex flex-col gap-3">
         <button onClick={openParticipants} className="bg-blue-600 text-white px-4 py-2 rounded-l-full shadow-md">👥 Participants</button>
-        <button onClick={openChat} className="bg-green-600 text-white px-4 py-2 rounded-l-full shadow-md">💬 Chat</button>
+        <button onClick={openChat} className="bg-green-600 text-white px-4 py-2 rounded-l-full shadow-md relative">
+          💬 Chat
+          {unreadChat > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5 min-w-[22px] text-center">
+              {unreadChat}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* OFF-CANVAS PARTICIPANTS */}
       <aside className={cx("fixed top-0 right-0 h-full w-80 z-50 transition-transform duration-300", openPanel === "participants" ? "translate-x-0" : "translate-x-full")}>
         <div className="h-full bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-xl p-4 border-l border-white/10">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-white text-lg font-semibold">Participants</h4>
+            <h4 className="text-white text-lg font-semibold">Participants ({participants?.length || 0})</h4>
             <button onClick={closePanel} className="text-white"><X /></button>
           </div>
-          <div className="text-gray-300">No participants yet</div>
+          <div className="space-y-3">
+            {participants && participants.length > 0 ? (
+              participants.map((participant) => (
+                <div key={participant.userId} className="flex items-center gap-3 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
+                    {participant.displayName?.charAt(0)?.toUpperCase() || "?"}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-white font-medium">{participant.displayName || "User"}</div>
+                    <div className="text-xs text-gray-400">{participant.status || "active"}</div>
+                  </div>
+                  {participant.userId === roomData?.creatorId && (
+                    <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded">Host</span>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="text-gray-300 text-center py-4">No participants yet</div>
+            )}
+          </div>
         </div>
       </aside>
 
@@ -508,16 +678,35 @@ const StudyRoom1 = () => {
           </div>
 
           <div className="flex-1 overflow-auto space-y-2">
-            {chatMessages.map((m, i) => (
-              <div key={i} className={cx("p-2 rounded-md max-w-[75%]", m.from === "you" ? "ml-auto bg-blue-600 text-white" : "bg-white/10 text-white")}>
-                {m.text}
-              </div>
-            ))}
+            {chatMessages.map((m, i) => {
+              const isOwnMessage = m.userId === user?.uid;
+              const isSystem = m.userId === "system";
+              
+              return (
+                <div key={m.id || i} className={cx("p-2 rounded-md max-w-[75%]", 
+                  isOwnMessage ? "ml-auto bg-blue-600 text-white" : 
+                  isSystem ? "mx-auto bg-gray-500/30 text-gray-300 text-center text-sm" :
+                  "bg-white/10 text-white"
+                )}>
+                  {!isSystem && !isOwnMessage && (
+                    <div className="text-xs text-gray-400 mb-1">{m.displayName || 'User'}</div>
+                  )}
+                  <div>{m.message || m.text}</div>
+                </div>
+              );
+            })}
+            <div ref={chatEnd} />
           </div>
 
           <div className="mt-auto flex gap-2">
-            <input value={chatInput} onChange={(e) => setChatInput(e.target.value)} className="flex-1 px-3 py-2 rounded-md bg-white/5 text-white outline-none" placeholder="Type a message..." />
-            <button onClick={() => { sendMessage(); }} className="px-4 py-2 bg-blue-600 rounded-md text-white">Send</button>
+            <input 
+              value={chatInput} 
+              onChange={(e) => setChatInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              className="flex-1 px-3 py-2 rounded-md bg-white/5 text-white outline-none" 
+              placeholder="Type a message..." 
+            />
+            <button onClick={sendMessage} className="px-4 py-2 bg-blue-600 rounded-md text-white hover:bg-blue-700">Send</button>
           </div>
         </div>
       </aside>

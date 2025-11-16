@@ -16,8 +16,7 @@ import Community from "./pages/Community";
 import ScrollToTop from "./components/ScrollToTop";
 import StudyRoom1 from "./pages/StudyRoom-1";
 import Home from "./pages/Home";
-
-
+import Terms from "./pages/Terms";
 
 function App() {
   return (
@@ -39,6 +38,7 @@ function App() {
         <Route path="/create-space" element={<CreateSpace />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
       <Footer />
     </>

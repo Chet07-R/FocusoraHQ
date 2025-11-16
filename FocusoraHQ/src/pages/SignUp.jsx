@@ -150,8 +150,10 @@
 
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
+import { mapAuthError } from '../utils/authErrors';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -162,6 +164,11 @@ const SignUp = () => {
     agreeTerms: false,
   });
 
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { signUp, signInWithGoogle } = useAuth();
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -170,9 +177,41 @@ const SignUp = () => {
     });
   };
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    console.log('Sign Up:', formData);
+    setError('');
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    try {
+      setSubmitting(true);
+      await signUp({
+        displayName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      });
+      navigate('/');
+    } catch (err) {
+      const friendly = mapAuthError(err?.code);
+      setError(friendly || err?.message || 'Failed to create account');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setError('');
+    setSubmitting(true);
+    try {
+      await signInWithGoogle();
+      navigate('/');
+    } catch (err) {
+      const friendly = mapAuthError(err?.code);
+      setError(friendly || err?.message || 'Google sign-up failed');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -205,6 +244,11 @@ const SignUp = () => {
 
           {/* Form */}
           <form onSubmit={handleSignUp} className="space-y-4">
+            {error && (
+              <div className="w-full bg-red-500/10 border border-red-500/40 text-red-300 text-sm px-4 py-2 rounded-lg">
+                {error}
+              </div>
+            )}
             <div>
               <label className="block text-sm font-semibold text-blue-300 mb-2">
                 Full Name
@@ -229,7 +273,7 @@ const SignUp = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="your.email@college.edu"
+                placeholder="Enter your Email (your.email@example.com)"
                 className="w-full bg-slate-900/50 border-2 border-blue-500/30 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 transition-all duration-300"
                 required
               />
@@ -287,9 +331,19 @@ const SignUp = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold py-3 rounded-xl hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
+              disabled={submitting}
+              className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold py-3 rounded-xl hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Create Account
+              {submitting ? 'Creating Account…' : 'Create Account'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleGoogle}
+              disabled={submitting}
+              className="w-full mt-3 bg-slate-700/60 border-2 border-blue-500/30 text-white font-semibold py-3 rounded-xl hover:bg-slate-700 hover:border-purple-400 transform hover:scale-[1.01] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              Continue with Google
             </button>
           </form>
 

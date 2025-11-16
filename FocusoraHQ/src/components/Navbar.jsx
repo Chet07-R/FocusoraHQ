@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import "./Navbar.css";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
+  const { user, signOutUser } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -196,19 +198,20 @@ const Navbar = () => {
           </svg>
         </button>
 
-        {/* Profile Dropdown */}
-        <div className="relative">
-          <div
-            id="profile-icon"
-            onClick={() => setProfileOpen(!profileOpen)}
-            className="profile-ring cursor-pointer w-10 h-10 rounded-full overflow-hidden"
-          >
-            <img
-              src="/images/Profile_Icon.png"
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
-          </div>
+        {/* Sign In Button (when not logged in) or Profile Dropdown (when logged in) */}
+        {user ? (
+          <div className="relative">
+            <div
+              id="profile-icon"
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="profile-ring cursor-pointer w-10 h-10 rounded-full overflow-hidden"
+            >
+              <img
+                src="/images/Profile_Icon.png"
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            </div>
 
           {profileOpen && (
             <div
@@ -225,10 +228,8 @@ const Navbar = () => {
                   />
                 </div>
                 <div className="min-w-0">
-                  <p className="profile-name truncate">John Doe</p>
-                  <p className="profile-email text-sm truncate">
-                    john.doe@email.com
-                  </p>
+                  <p className="profile-name truncate">{user?.displayName || 'User'}</p>
+                  <p className="profile-email text-sm truncate">{user?.email || 'Not signed in'}</p>
                 </div>
               </div>
 
@@ -305,9 +306,15 @@ const Navbar = () => {
 
               {/* Logout */}
               <div className="px-4 py-2">
-                <a
-                  href="#"
-                  className="menu-item logout-btn flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 transition-all group focus:outline-none"
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to log out?')) {
+                      signOutUser();
+                      setProfileOpen(false);
+                    }
+                  }}
+                  className="w-full text-left menu-item logout-btn flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 transition-all group focus:outline-none"
                 >
                   <svg
                     className="menu-icon"
@@ -324,11 +331,19 @@ const Navbar = () => {
                     <path d="M21 12H9" />
                   </svg>
                   <span className="font-medium">Logout</span>
-                </a>
+                </button>
               </div>
             </div>
           )}
         </div>
+        ) : (
+          <Link
+            to="/signin"
+            className="bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold px-6 py-2 rounded-lg hover:from-purple-500 hover:to-cyan-500 transform hover:scale-105 transition-all duration-300"
+          >
+            Sign In
+          </Link>
+        )}
       </div>
 
       {/* Mobile Menu */}
