@@ -373,7 +373,7 @@ const App = () => {
               return (
                 <div
                   key={`${u.name}-${displayIdx}`}
-                  className={`rounded-2xl p-8 shadow-lg transition-all duration-300 ease-out transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] hover:-translate-y-1 relative ${
+                  className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative ${
                     isChampion
                       ? 'scale-105 border-4 border-blue-600 bg-gradient-to-b from-blue-900 to-blue-800 hover:border-blue-400 hover:from-blue-800 hover:to-blue-700'
                       : 'bg-[#111827] hover:bg-gradient-to-br hover:from-[#1a2840] hover:to-[#1a2332] hover:border-2 hover:border-blue-500/30'
