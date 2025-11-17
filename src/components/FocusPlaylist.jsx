@@ -52,9 +52,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
     if (currentRoom) {
       try {
         await updatePlaylist(newUrl);
-        if (roomData?.playlistUpdatedById && user?.uid !== roomData.playlistUpdatedById) {
-          // noop, handled by receiver; we still notify local action below
-        }
         addNotification("🎵 Playlist updated for everyone");
       } catch (e) {
         addNotification("❌ Failed to update playlist");
@@ -88,19 +85,19 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
       {/* ===== FOCUS PLAYLIST SECTION ===== */}
       <div className="w-full mb-8">
         <div className="bg-gradient-to-r from-black/60 via-gray-900/80 to-black/60 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg text-white">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between mb-3">
+          <div className="px-2 sm:px-4 md:px-6 py-4">
+            <div className="flex flex-wrap items-center justify-between mb-3 gap-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">🎵</span>
                 <span className="font-semibold">Focus Playlist</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <button
                   onClick={() => {
                     setMusicPanelOpen(!musicPanelOpen);
                     if (setBgPanelOpen) setBgPanelOpen(false);
                   }}
-                  className="text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition"
+                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition"
                 >
                   🎧 Change Music
                 </button>
@@ -125,7 +122,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                     if (setBgPanelOpen) setBgPanelOpen(!bgPanelOpen);
                     setMusicPanelOpen(false);
                   }}
-                  className="text-sm bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition"
+                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition"
                 >
                   🌈 Choose Ambience
                 </button>
@@ -133,7 +130,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
               </div>
             </div>
             {syncPrompt && (
-              <div className="mb-3 px-3 py-2 rounded-lg bg-white/10 text-white flex items-center justify-between">
+              <div className="mb-3 px-3 py-2 rounded-lg bg-white/10 text-white flex flex-col sm:flex-row items-center justify-between gap-2">
                 <span>
                   {syncPrompt.type === 'play'
                     ? `${syncPrompt.by} pressed Play — click the ▶ button in the player to start.`
@@ -152,7 +149,8 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
               style={{ borderRadius: "12px" }}
               src={spotifyUrl}
               width="100%"
-              height="80"
+              // Responsive height below
+              className="h-20 sm:h-24 md:h-32"
               frameBorder="0"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               title="Focus Playlist"
@@ -163,7 +161,8 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
 
       {/* ===== MUSIC SELECTOR PANEL ===== */}
       <div
-        className={`fixed bottom-36 left-1/2 transform -translate-x-1/2 w-96 max-w-[90vw] rounded-2xl bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-5 transition-all duration-500 z-50 ${
+        className={`fixed bottom-0 left-0 w-full max-w-full rounded-t-2xl md:rounded-2xl md:left-1/2 md:bottom-36 md:transform md:-translate-x-1/2 md:w-96 max-w-[90vw]
+          bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-4 md:p-5 transition-all duration-500 z-50 ${
           musicPanelOpen
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-6 pointer-events-none"
@@ -180,7 +179,8 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
             ✖
           </button>
         </div>
-        <div className="space-y-2">
+        {/* Responsive grid for playlist buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button
             onClick={() =>
               changeMusicUrl(
