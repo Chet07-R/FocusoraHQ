@@ -151,7 +151,6 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { mapAuthError } from '../utils/authErrors';
 
@@ -191,7 +190,8 @@ const SignUp = () => {
         email: formData.email,
         password: formData.password,
       });
-      navigate('/');
+      // Redirect to email verification page
+      navigate('/verify-email');
     } catch (err) {
       const friendly = mapAuthError(err?.code);
       setError(friendly || err?.message || 'Failed to create account');
@@ -216,7 +216,6 @@ const SignUp = () => {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
         <div className="relative max-w-md w-full bg-slate-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border-2 border-blue-500/30 mt-12 hover:border-purple-400/50 transition-all duration-300">
           {/* Logo with cool glow effect */}

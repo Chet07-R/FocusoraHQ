@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 
 const Terms = () => {
   return (
     <>
-      <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-20 px-4">
         <div className="max-w-4xl mx-auto bg-slate-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 border-2 border-purple-500/30">
           {/* Header */}

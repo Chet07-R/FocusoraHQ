@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+// Navbar/Footer are rendered globally in App.jsx
 
 const Blog = () => {
   const allArticles = [

@@ -2,12 +2,14 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import EmailVerificationBanner from "./components/EmailVerificationBanner";
 import Blog from "./pages/Blog";
 import Blog1 from "./pages/Blog1";
 import Blog2 from "./pages/Blog2";
 import Leaderboard from "./pages/Leaderboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import VerifyEmail from "./pages/VerifyEmail";
 import JoinSpace from "./pages/JoinSpace";
 import CreateSpace from "./pages/CreateSpace";
 import StudyRoom from "./pages/StudyRoom";
@@ -31,6 +33,7 @@ function App() {
     <>
       <ScrollToTop />
       <Navbar />
+        <EmailVerificationBanner />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
@@ -41,6 +44,7 @@ function App() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/join-space" element={<JoinSpace />} />
         <Route path="/study-room-1" element={<StudyRoom1 />} />
         <Route path="/study-room" element={<StudyRoom />} />

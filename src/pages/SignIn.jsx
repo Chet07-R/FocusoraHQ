@@ -104,7 +104,6 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { mapAuthError } from '../utils/authErrors';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
@@ -117,15 +116,21 @@ const [submitting, setSubmitting] = useState(false);
 const [error, setError] = useState('');
 const [showForgotPassword, setShowForgotPassword] = useState(false);
 const navigate = useNavigate();
-const { signIn, signInWithGoogle } = useAuth();
+const { signIn, signInWithGoogle, signOutUser } = useAuth();
 
 const handleSignIn = async (e) => {
   e.preventDefault();
   setError('');
   setSubmitting(true);
   try {
-    await signIn({ email, password, remember: rememberMe });
-    navigate('/');
+    const user = await signIn({ email, password, remember: rememberMe });
+    // Enforce verification: if not verified, sign out and redirect
+    if (!user.emailVerified) {
+      try { await signOutUser(); } catch {}
+      navigate('/verify-email');
+    } else {
+      navigate('/');
+    }
   } catch (err) {
     const friendly = mapAuthError(err?.code);
     setError(friendly || err?.message || 'Failed to sign in');
@@ -150,7 +155,6 @@ const handleGoogle = async () => {
 
 return (
 <>
-<Navbar />
 <div className="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
     <div className="relative max-w-md w-full bg-slate-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border-2 border-purple-500/30 mt-12 hover:border-cyan-400/50 transition-all duration-300">
       {/* Logo Icon with bounce animation */}

@@ -10,6 +10,8 @@ import {
   signOut,
   updateProfile,
   sendPasswordResetEmail,
+  sendEmailVerification,
+  applyActionCode,
   deleteUser,
   reauthenticateWithPopup,
 } from 'firebase/auth';
@@ -74,6 +76,8 @@ export const AuthProvider = ({ children }) => {
     if (displayName) {
       await updateProfile(cred.user, { displayName });
     }
+    // Send email verification
+    await sendEmailVerification(cred.user);
     // Create Firestore profile
     await createUserProfile(cred.user.uid, {
       displayName: displayName || 'User',
@@ -84,6 +88,8 @@ export const AuthProvider = ({ children }) => {
     try {
       sendWelcomeEmail({ email, name: displayName || 'User' });
     } catch {}
+    // Require explicit sign-in after verification
+    await signOut(auth);
     return cred.user;
   };
 
@@ -118,6 +124,29 @@ export const AuthProvider = ({ children }) => {
 
   const resetPassword = async (email) => {
     await sendPasswordResetEmail(auth, email);
+  };
+
+  const resendVerificationEmail = async () => {
+    const current = auth.currentUser;
+    if (!current) throw new Error('Not signed in');
+    if (current.emailVerified) throw new Error('Email already verified');
+    await sendEmailVerification(current);
+  };
+
+  const verifyEmail = async (actionCode) => {
+    await applyActionCode(auth, actionCode);
+    // Reload user to get updated emailVerified status
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      setUser({ ...auth.currentUser });
+    }
+  };
+
+  const reloadUser = async () => {
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      setUser({ ...auth.currentUser });
+    }
   };
 
   const signOutUser = async () => {
@@ -156,7 +185,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = useMemo(
-    () => ({ user, userProfile, loading, hadInitialUser, signUp, signIn, signInWithGoogle, resetPassword, signOutUser, deleteAccount }),
+    () => ({ user, userProfile, loading, hadInitialUser, signUp, signIn, signInWithGoogle, resetPassword, resendVerificationEmail, verifyEmail, reloadUser, signOutUser, deleteAccount }),
     [user, userProfile, loading, hadInitialUser]
   );
 

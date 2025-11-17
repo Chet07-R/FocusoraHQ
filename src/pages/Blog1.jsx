@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../components/blog.css';
-import Navbar from "../components/Navbar";
+// Navbar is rendered globally in App.jsx
 
 const Blog1 = () => {
   return (
