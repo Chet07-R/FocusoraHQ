@@ -23,7 +23,17 @@ const Profile = () => {
         <div className="max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-300 relative">
           {/* Profile Header with animated banner */}
           <div className="relative">
-            <div className="relative h-48 md:h-64 overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
+            <div className="relative h-48 md:h-64 overflow-hidden">
+              {/* Background Image */}
+              <div className="absolute inset-0">
+                <img 
+                  src="/images/cover-img-profile.png" 
+                  alt="Profile Banner" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/20" />
+              </div>
+
               <div className="absolute inset-0 opacity-30">
                 <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full mix-blend-screen opacity-20 animate-pulse" />
                 <div className="absolute bottom-10 right-20 w-40 h-40 bg-white rounded-full mix-blend-screen opacity-20 animate-pulse" style={{ animationDelay: "0.5s" }} />
@@ -66,8 +76,6 @@ const Profile = () => {
               </div>
 
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">Focus. Study. Thrive.</h2>
-                <p className="text-lg md:text-xl text-white/90 drop-shadow-md">Your Productivity Headquarters</p>
               </div>
 
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 z-5" />

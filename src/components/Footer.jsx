@@ -266,7 +266,7 @@ const Footer = () => {
               FocusoraHQ
             </span>
             <br />
-            Made with <span className="text-pink-500 animate-pulse">❤️</span> by students.
+            Made with <span className="text-pink-500 animate-pulse">❤️</span> by students, for students.
             <br />
             All rights reserved.
           </p>
