@@ -181,16 +181,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
         </div>
         {/* Responsive grid for playlist buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {/* <button
-            onClick={() =>
-              changeMusicUrl(
-                "https://open.spotify.com/embed/artist/6DARBhWbfcS9E4yJzcliqQ?utm_source=generator"
-              )
-            }
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
-          >
-            🎤 <span>Karan Aujla</span>
-          </button> */}
           <button
             onClick={() => changeMusic("37i9dQZF1DZ06evO0FDzS8")}
             className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
