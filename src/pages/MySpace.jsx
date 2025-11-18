@@ -4,8 +4,10 @@ import Notes from "../components/Notes";
 import Todo from "../components/Todo";
 import FocusPlaylist from "../components/FocusPlaylist";
 import BackgroundSelector from "../components/BackgroundSelector";
+import { useTheme } from "../context/ThemeContext";
 
 const MySpace = () => {
+  const { darkMode } = useTheme();
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
   const [notification, setNotification] = useState({
     show: false,
@@ -104,23 +106,33 @@ const MySpace = () => {
 
       {/* Notification Toast */}
       <div
-        className={`fixed top-20 sm:top-24 right-3 sm:right-4 md:right-6 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-lg border border-white/20 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-xl transform transition-transform duration-500 z-50 max-w-[calc(100vw-1.5rem)] sm:max-w-sm ${
+        className={`fixed top-20 sm:top-24 right-3 sm:right-4 md:right-6 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-xl transform transition-transform duration-500 z-50 max-w-[calc(100vw-1.5rem)] sm:max-w-sm ${
           notification.show ? "translate-x-0" : "translate-x-[200%]"
+        } ${
+          darkMode 
+            ? "bg-gradient-to-r from-white/20 to-white/10 border border-white/20" 
+            : "bg-gradient-to-r from-purple-100/90 to-cyan-100/90 border border-purple-300/40"
         }`}
       >
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="text-xl sm:text-2xl flex-shrink-0">{notification.icon}</span>
           <div className="flex-1 min-w-0">
-            <div className="text-white font-semibold text-sm sm:text-base truncate">
+            <div className={`font-semibold text-sm sm:text-base truncate ${
+              darkMode ? "text-white" : "text-gray-800"
+            }`}>
               {notification.title}
             </div>
-            <div className="text-white/80 text-xs sm:text-sm line-clamp-2">
+            <div className={`text-xs sm:text-sm line-clamp-2 ${
+              darkMode ? "text-white/80" : "text-gray-700"
+            }`}>
               {notification.message}
             </div>
           </div>
           <button
             onClick={hideNotification}
-            className="text-white/60 hover:text-white transition flex-shrink-0 text-sm sm:text-base"
+            className={`transition flex-shrink-0 text-sm sm:text-base ${
+              darkMode ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-800"
+            }`}
           >
             ✖
           </button>

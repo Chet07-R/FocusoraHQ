@@ -1,9 +1,11 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Profile = () => {
   const { user, userProfile } = useAuth();
+  const { darkMode } = useTheme();
 
   const display = useMemo(() => {
     const name = userProfile?.displayName || user?.displayName || "John Doe";
@@ -25,25 +27,20 @@ const Profile = () => {
           <div className="relative">
             <div className="relative h-48 md:h-64 overflow-hidden">
               {/* Background Image */}
-              <div className="absolute inset-0">
-                <img 
-                  src="/images/cover-img-profile.png" 
-                  alt="Profile Banner" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/20" />
+              <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900' : 'bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400'}`}>
+                <div className={`absolute inset-0 ${darkMode ? 'bg-black/20' : 'bg-white/10'}`} />
               </div>
 
               <div className="absolute inset-0 opacity-30">
-                <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full mix-blend-screen opacity-20 animate-pulse" />
-                <div className="absolute bottom-10 right-20 w-40 h-40 bg-white rounded-full mix-blend-screen opacity-20 animate-pulse" style={{ animationDelay: "0.5s" }} />
-                <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-white rounded-full mix-blend-screen opacity-20 animate-pulse" style={{ animationDelay: "1s" }} />
+                <div className={`absolute top-10 left-10 w-32 h-32 rounded-full mix-blend-screen opacity-20 animate-pulse ${darkMode ? 'bg-white' : 'bg-white'}`} />
+                <div className={`absolute bottom-10 right-20 w-40 h-40 rounded-full mix-blend-screen opacity-20 animate-pulse ${darkMode ? 'bg-white' : 'bg-white'}`} style={{ animationDelay: "0.5s" }} />
+                <div className={`absolute top-1/2 left-1/2 w-24 h-24 rounded-full mix-blend-screen opacity-20 animate-pulse ${darkMode ? 'bg-white' : 'bg-white'}`} style={{ animationDelay: "1s" }} />
               </div>
 
-              <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <svg className={`absolute inset-0 w-full h-full ${darkMode ? 'opacity-10' : 'opacity-20'}`} viewBox="0 0 100 100" preserveAspectRatio="none">
                 <defs>
                   <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5" />
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke={darkMode ? "white" : "white"} strokeWidth="0.5" />
                   </pattern>
                 </defs>
                 <rect width="100%" height="100%" fill="url(#grid)" />
@@ -53,22 +50,22 @@ const Profile = () => {
                 <div className="relative w-full h-full flex items-center justify-center">
                   {/* Floating icons (simple circles using SVG paths) */}
                   <div className="absolute top-8 left-12 animate-bounce" style={{ animationDuration: "3s" }}>
-                    <svg className="w-12 h-12 text-white opacity-60" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-12 h-12 opacity-60 ${darkMode ? 'text-white' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div className="absolute top-12 right-16 animate-bounce" style={{ animationDuration: "4s", animationDelay: "0.5s" }}>
-                    <svg className="w-10 h-10 text-white opacity-60" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-10 h-10 opacity-60 ${darkMode ? 'text-white' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
                       <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5.951-1.488 5.951 1.488a1 1 0 001.169-1.409l-7-14z" />
                     </svg>
                   </div>
                   <div className="absolute bottom-8 left-1/4 animate-bounce" style={{ animationDuration: "3.5s", animationDelay: "1s" }}>
-                    <svg className="w-11 h-11 text-white opacity-60" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-11 h-11 opacity-60 ${darkMode ? 'text-white' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </div>
                   <div className="absolute bottom-12 right-1/4 animate-bounce" style={{ animationDuration: "4.5s", animationDelay: "1.5s" }}>
-                    <svg className="w-10 h-10 text-white opacity-60" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className={`w-10 h-10 opacity-60 ${darkMode ? 'text-white' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
                       <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5.951-1.488 5.951 1.488a1 1 0 001.169-1.409l-7-14z" transform="rotate(-45)" />
                     </svg>
                   </div>
@@ -78,7 +75,7 @@ const Profile = () => {
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
               </div>
 
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 z-5" />
+              <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-transparent z-5 ${darkMode ? 'to-black/20' : 'to-white/20'}`} />
             </div>
 
             {/* Profile Info */}

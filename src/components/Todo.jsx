@@ -18,7 +18,8 @@ const Todo = ({ addNotification = () => {} }) => {
     }
   });
 
-  const todos = currentRoom ? (roomTodos || []) : 
+  const todos = currentRoom ? (roomTodos || []) : localTodos;
+
   useEffect(() => {
     if (!currentRoom) {
       localStorage.setItem('myspace_todos', JSON.stringify(localTodos));

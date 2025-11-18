@@ -30,7 +30,10 @@
 
 nav {
   background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(17,24,39,0.85) 100%);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 nav::after {

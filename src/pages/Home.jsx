@@ -6,24 +6,24 @@ const Home = () => {
   return (
     <>
       {/* --- HERO SECTION --- */}
-      <main className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen relative overflow-hidden flex flex-col lg:justify-center pt-24 lg:pt-0">
+      <main className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen relative overflow-hidden flex flex-col lg:justify-start pt-24 lg:pt-20">
         
         {/* Main Content Container */}
         {/* Added 'h-full' and 'flex-grow' to ensure the inner content takes up available height for spacing distribution */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-16 flex flex-col lg:flex-row items-center justify-between relative z-10 flex-grow lg:flex-grow-0">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-16 flex flex-col lg:flex-row items-center justify-between relative z-10 flex-grow lg:flex-grow-0 lg:mt-8">
           
           {/* 1. Text Content */}
-          <div className="w-full lg:w-1/2 text-center lg:text-left lg:pr-12 lg:mb-0">
+          <div className="w-full lg:w-1/2 text-center lg:text-left lg:pr-12 mb-8 lg:mb-0">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-blue-900 dark:text-white mb-4 tracking-tight leading-tight">
               FocusoraHQ
             </h1>
 
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-blue-800 dark:text-gray-300 font-medium">
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-blue-800 dark:text-gray-300 font-medium mb-6">
               Focus. Study. Thrive.
             </p>
 
-            {/* Added 'mt-8' here to give extra space at the top of this specific paragraph */}
-            <p className="mt-8 text-base sm:text-lg text-blue-700 dark:text-gray-400 max-w-2xl mx-auto lg:mx-0">
+            {/* Description paragraph */}
+            <p className="text-base sm:text-lg text-blue-700 dark:text-gray-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Your personal headquarters for productivity. Combat distraction, reclaim your focus, and achieve your goals in a serene and supportive online environment.
             </p>
           </div>
@@ -202,45 +202,70 @@ const Home = () => {
 
 
       {/* --- CTA SECTION --- */}
-      <section className="bg-gradient-to-r from-gray-900 via-gray-800 to-black dark:bg-gray-900 relative overflow-hidden">
+      <section className="relative overflow-hidden py-20 sm:py-28 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
         
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-300 dark:bg-cyan-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           
-          <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
-            Ready to Reclaim Your Focus?
+          {/* Badge */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-purple-500/10 dark:from-cyan-500/20 dark:to-purple-500/20 border border-cyan-500/20 dark:border-cyan-500/30 backdrop-blur-sm">
+              <svg className="w-4 h-4 text-cyan-600 dark:text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Join 10,000+ Focused Students</span>
+            </div>
+          </div>
+
+          {/* Main heading with gradient */}
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-center mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+              Ready to Reclaim
+            </span>
+            <br />
+            <span className="text-gray-900 dark:text-white">Your Focus?</span>
           </h2>
 
-          <p className="mt-4 text-base sm:text-lg text-gray-300 dark:text-gray-400 max-w-2xl mx-auto">
+          {/* Subtext */}
+          <p className="text-lg sm:text-xl text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
             Join thousands of users who are boosting their productivity and achieving their goals. Get started for free today.
           </p>
 
-          <Link to="/signup" className="group relative mt-8 inline-block w-full sm:w-auto px-10 py-4 rounded-2xl overflow-hidden">
-
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient-x"></div>
-
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 opacity-30"></div>
-            </div>
-
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-75 blur-xl transition-all duration-500 group-hover:duration-200"></div>
-
-            <span className="relative flex items-center justify-center gap-3 text-white font-bold text-lg">
-              <svg className="w-5 h-5 transform group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <Link 
+              to="/signup" 
+              className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-white text-lg shadow-2xl hover:shadow-cyan-500/50 dark:hover:shadow-cyan-400/30 transition-all duration-300 hover:scale-105 overflow-hidden w-full sm:w-auto"
+              style={{
+                background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)'
+              }}
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+              <svg className="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              Sign Up for Free
-              <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span className="relative z-10">Start Today</span>
+              <svg className="w-5 h-5 relative z-10 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </span>
-
-          </Link>
-
+            </Link>
+            
+            <Link 
+              to="/about" 
+              className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-semibold text-gray-700 dark:text-gray-200 text-lg border-2 border-gray-300 dark:border-gray-600 hover:border-cyan-500 dark:hover:border-cyan-400 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 w-full sm:w-auto"
+            >
+              <span>Learn More</span>
+              <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </section>
 

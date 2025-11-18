@@ -6,8 +6,7 @@ import { getLeaderboard } from "../utils/firestoreUtils";
 
 const App = () => {
   const { user, userProfile } = useAuth();
-  const { theme } = useTheme();
-  
+  const { darkMode } = useTheme();
   // Stats state for animated statistics
   const [stats, setStats] = useState({
     users: 0,
@@ -179,12 +178,12 @@ const App = () => {
   // State management for load more functionality
   const [visibleCount] = useState(10);
   const idRef = useRef(leaderboardData.length + 1);
-
+  
   // Get current user's info for matching
   const currentUserEmail = user?.email;
   const currentUserName = userProfile?.displayName || user?.displayName || "You";
   const currentUserPhoto = userProfile?.photoURL || user?.photoURL || "/images/People/default-avatar.png";
-
+  
   // Helper function to check if names match (exact or partial)
   function namesMatch(name1, name2) {
     if (!name1 || !name2) return false;
@@ -192,7 +191,7 @@ const App = () => {
     const n2 = name2.toLowerCase().trim();
     return n1 === n2 || n1.includes(n2) || n2.includes(n1);
   }
-
+  
   // Dynamic users from Firestore (global)
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
@@ -202,14 +201,14 @@ const App = () => {
   // Badge color mapping function
   const getBadgeColor = (color) => {
     const colors = {
-      green: "bg-green-600 dark:bg-green-500",
-      blue: "bg-blue-600 dark:bg-blue-500",
-      purple: "bg-purple-600 dark:bg-purple-500",
-      orange: "bg-orange-600 dark:bg-orange-500",
-      slate: "bg-slate-600 dark:bg-slate-500",
-      gray: "bg-gray-600 dark:bg-gray-500",
+      green: "bg-green-600",
+      blue: "bg-blue-600",
+      purple: "bg-purple-600",
+      orange: "bg-orange-600",
+      slate: "bg-slate-600",
+      gray: "bg-gray-600",
     };
-    return colors[color] || "bg-gray-600 dark:bg-gray-500";
+    return colors[color] || "bg-gray-600";
   };
 
   // Load more handler function - shows all remaining data
@@ -234,13 +233,13 @@ const App = () => {
         }
       }, stepTime);
     };
-
     animateValue("users", 2847, 800);
     animateValue("points", 156, 800);
     animateValue("sessions", 8392, 800);
     animateValue("goalRate", 94, 800);
   }, []);
 
+  // Update rows when user login state changes
   // Subscribe to Firestore leaderboard (global users)
   useEffect(() => {
     const unsubscribe = getLeaderboard((users) => {
@@ -258,16 +257,12 @@ const App = () => {
           return `${h}h ${m}m`;
         })(),
         streak: u.streak || 0,
-        badge: {
-          label: (u.points || 0) === 0 ? "Newcomer" : (u.streak || 0) >= 10 ? "Hot Streak" : "Steady",
-          color: (u.points || 0) === 0 ? "slate" : (u.streak || 0) >= 10 ? "green" : "gray"
-        },
+        badge: { label: (u.points || 0) === 0 ? "Newcomer" : (u.streak || 0) >= 10 ? "Hot Streak" : "Steady", color: (u.points || 0) === 0 ? "slate" : (u.streak || 0) >= 10 ? "green" : "gray" },
         img: u.photoURL || "/images/People/default-avatar.png",
         you: user && u.id === user.uid,
       }));
       setDynamicUsers(mapped);
     }, 500);
-
     return () => unsubscribe && unsubscribe();
   }, [user]);
 
@@ -276,346 +271,233 @@ const App = () => {
     const staticNames = new Set(leaderboardData.map(u => (u.name || '').toLowerCase()));
     const filteredDynamic = dynamicUsers.filter(d => !staticNames.has((d.name || '').toLowerCase()));
     const merged = [...leaderboardData, ...filteredDynamic];
-
     // Sort by points desc, then sessions, then name
-    merged.sort((a, b) =>
-      (b.points || 0) - (a.points || 0) ||
-      (b.sessions || 0) - (a.sessions || 0) ||
-      String(a.name).localeCompare(String(b.name))
-    );
-
+    merged.sort((a, b) => (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name)));
     // Re-rank and add _id
-    const ranked = merged.map((u, idx) => ({
-      ...u,
-      rank: idx + 1,
-      _id: idx + 1
-    }));
-
+    const ranked = merged.map((u, idx) => ({ ...u, rank: idx + 1, _id: idx + 1 }));
     setAllRows(ranked);
     setRows((prev) => hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
   }, [dynamicUsers, hasLoadedMore]);
 
   // Initialize initial rows (before Firestore responds)
   useEffect(() => {
-    const initial = leaderboardData.slice(0, visibleCount).map((u, idx) => ({
-      ...u,
-      _id: idx + 1
-    }));
+    const initial = leaderboardData.slice(0, visibleCount).map((u, idx) => ({ ...u, _id: idx + 1 }));
     setRows(initial);
-    setAllRows(leaderboardData.map((u, idx) => ({
-      ...u,
-      _id: idx + 1
-    })));
+    setAllRows(leaderboardData.map((u, idx) => ({ ...u, _id: idx + 1 })));
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#1a2332] dark:bg-gray-900 transition-colors duration-300">
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section - Keep Original Dark Design */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4">
-            Leaderboard
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Track your progress and compete with focused learners worldwide
-          </p>
-        </div>
-
-        {/* Stats Section - Keep Original Dark Design with Colored Shadow Hover Effects */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold text-center text-white mb-8">
-            Platform Statistics
-          </h2>
-          <p className="text-center text-gray-400 mb-8">
-            See how our global community is performing
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Active Users - Blue Glow */}
-            <div className="bg-[#252f3f] dark:bg-gray-800 rounded-2xl p-6 shadow-lg shadow-gray-800 dark:shadow-gray-950 hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 border border-[#2d3748] dark:border-gray-700 transform hover:scale-105 hover:-translate-y-1 cursor-pointer">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-blue-900/30 rounded-lg">
-                  <Users className="w-6 h-6 text-blue-400" />
-                </div>
-                <span className="text-3xl font-bold text-blue-400">
-                  {stats.users.toLocaleString()}
-                </span>
-              </div>
-              <p className="text-gray-400 font-medium">Active Users</p>
-            </div>
-
-            {/* Points Today - Pink/Magenta Glow */}
-            <div className="bg-[#252f3f] dark:bg-gray-800 rounded-2xl p-6 shadow-lg shadow-gray-800 dark:shadow-gray-950 hover:shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 border border-[#2d3748] dark:border-gray-700 transform hover:scale-105 hover:-translate-y-1 cursor-pointer">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-pink-900/30 rounded-lg">
-                  <Zap className="w-6 h-6 text-pink-400" />
-                </div>
-                <span className="text-3xl font-bold text-pink-400">
-                  {stats.points.toLocaleString()}K
-                </span>
-              </div>
-              <p className="text-gray-400 font-medium">Points Today</p>
-            </div>
-
-            {/* Focus Sessions - Yellow Glow */}
-            <div className="bg-[#252f3f] dark:bg-gray-800 rounded-2xl p-6 shadow-lg shadow-gray-800 dark:shadow-gray-950 hover:shadow-2xl hover:shadow-yellow-500/50 transition-all duration-300 border border-[#2d3748] dark:border-gray-700 transform hover:scale-105 hover:-translate-y-1 cursor-pointer">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-yellow-900/30 rounded-lg">
-                  <Clock className="w-6 h-6 text-yellow-400" />
-                </div>
-                <span className="text-3xl font-bold text-yellow-400">
-                  {stats.sessions.toLocaleString()}
-                </span>
-              </div>
-              <p className="text-gray-400 font-medium">Focus Sessions</p>
-            </div>
-
-            {/* Goal Rate - Green Glow */}
-            <div className="bg-[#252f3f] dark:bg-gray-800 rounded-2xl p-6 shadow-lg shadow-gray-800 dark:shadow-gray-950 hover:shadow-2xl hover:shadow-green-500/50 transition-all duration-300 border border-[#2d3748] dark:border-gray-700 transform hover:scale-105 hover:-translate-y-1 cursor-pointer">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-green-900/30 rounded-lg">
-                  <CheckCircle className="w-6 h-6 text-green-400" />
-                </div>
-                <span className="text-3xl font-bold text-green-400">
-                  {stats.goalRate}%
-                </span>
-              </div>
-              <p className="text-gray-400 font-medium">Goal Rate</p>
-            </div>
+    <div className={`min-h-screen pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+      {/* ===== Hero Section ===== */}
+      <section className="pb-12 text-center border-b border-white/20 dark:border-gray-700/50">
+        <div className="flex justify-center mb-6">
+          <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
+            <Star className="w-6 h-6" />
           </div>
         </div>
+        <h1 className={`text-4xl md:text-5xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+          Leaderboard
+        </h1>
+        <p className={`text-base md:text-lg max-w-xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          Track your progress and compete with focused learners worldwide
+        </p>
+      </section>
 
-        {/* Top 3 Podium */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-8">
-            This month's top performers
-          </h2>
-          <div className="flex flex-col md:flex-row items-end justify-center gap-4 max-w-4xl mx-auto">
-            {/* 2nd Place */}
-            {rows[1] && (
-              <div className="w-full md:w-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 shadow-lg transform hover:scale-105 transition-all duration-300 border-2 border-gray-300 dark:border-gray-600">
-                <div className="flex justify-center mb-4">
-                  <div className="relative">
-                    <img
-                      src={rows[1].img}
-                      alt={rows[1].name}
-                      className="w-20 h-20 rounded-full border-4 border-gray-400 dark:border-gray-500 object-cover"
-                      onError={(e) => {
-                        if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
-                        e.currentTarget.src = '/images/Profile_Icon.png';
-                      }}
-                    />
-                    <div className="absolute -top-2 -right-2 bg-gray-400 dark:bg-gray-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg">
-                      2
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold text-center text-gray-800 dark:text-gray-200 mb-2">
-                  {rows[1].name}
-                </h3>
-                <p className="text-center text-gray-600 dark:text-gray-400 text-sm mb-4">
-                  {rows[1].location}
-                </p>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-1">
-                    {rows[1].points.toLocaleString()}
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    {rows[1].sessions} sessions • {rows[1].time}
-                  </p>
-                </div>
-              </div>
-            )}
+      {/* ===== Platform Statistics ===== */}
+      <section className="py-12 px-6 md:px-20 text-center">
+        <h2 className={`text-2xl md:text-3xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+          Platform Statistics
+        </h2>
+        <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          See how our global community is performing
+        </p>
 
-            {/* 1st Place */}
-            {rows[0] && (
-              <div className="w-full md:w-72 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/40 dark:to-yellow-800/40 rounded-2xl p-6 shadow-xl transform hover:scale-105 transition-all duration-300 border-4 border-yellow-400 dark:border-yellow-600 md:mb-8">
-                <div className="flex justify-center mb-4">
-                  <div className="relative">
-                    <img
-                      src={rows[0].img}
-                      alt={rows[0].name}
-                      className="w-24 h-24 rounded-full border-4 border-yellow-400 dark:border-yellow-600 object-cover shadow-lg"
-                      onError={(e) => {
-                        if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
-                        e.currentTarget.src = '/images/Profile_Icon.png';
-                      }}
-                    />
-                    <div className="absolute -top-2 -right-2 bg-yellow-500 dark:bg-yellow-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-lg">
-                      <Crown className="w-5 h-5" />
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-2">
-                  {rows[0].name}
-                </h3>
-                <p className="text-center text-gray-600 dark:text-gray-400 mb-4">
-                  {rows[0].location}
-                </p>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-1">
-                    {rows[0].points.toLocaleString()}
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {rows[0].sessions} sessions • {rows[0].time}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* 3rd Place */}
-            {rows[2] && (
-              <div className="w-full md:w-64 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 rounded-2xl p-6 shadow-lg transform hover:scale-105 transition-all duration-300 border-2 border-orange-300 dark:border-orange-600">
-                <div className="flex justify-center mb-4">
-                  <div className="relative">
-                    <img
-                      src={rows[2].img}
-                      alt={rows[2].name}
-                      className="w-20 h-20 rounded-full border-4 border-orange-400 dark:border-orange-500 object-cover"
-                      onError={(e) => {
-                        if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
-                        e.currentTarget.src = '/images/Profile_Icon.png';
-                      }}
-                    />
-                    <div className="absolute -top-2 -right-2 bg-orange-500 dark:bg-orange-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg">
-                      3
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold text-center text-gray-800 dark:text-gray-200 mb-2">
-                  {rows[2].name}
-                </h3>
-                <p className="text-center text-gray-600 dark:text-gray-400 text-sm mb-4">
-                  {rows[2].location}
-                </p>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-1">
-                    {rows[2].points.toLocaleString()}
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    {rows[2].sessions} sessions • {rows[2].time}
-                  </p>
-                </div>
-              </div>
-            )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-cyan-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-4 text-blue-500">
+              <Users className="w-10 h-10" />
+            </div>
+            <h3 className="text-3xl font-bold text-blue-400">
+              {stats.users.toLocaleString()}
+            </h3>
+            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Users</p>
+          </div>
+          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-pink-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-4 text-pink-500">
+              <Zap className="w-10 h-10" />
+            </div>
+            <h3 className="text-3xl font-bold text-pink-400">{stats.points}K</h3>
+            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Points Today</p>
+          </div>
+          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-yellow-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-4 text-yellow-400">
+              <Clock className="w-10 h-10" />
+            </div>
+            <h3 className="text-3xl font-bold text-yellow-400">
+              {stats.sessions.toLocaleString()}
+            </h3>
+            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Focus Sessions</p>
+          </div>
+          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-green-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-4 text-green-500">
+              <CheckCircle className="w-10 h-10" />
+            </div>
+            <h3 className="text-3xl font-bold text-green-400">
+              {stats.goalRate}%
+            </h3>
+            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Goal Rate</p>
           </div>
         </div>
+      </section>
 
-        {/* Full Leaderboard Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-          <div className="p-6 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700">
-            <h2 className="text-2xl font-bold text-white">
+      {/* ===== Hall of Champions ===== */}
+      <section className="py-20 px-6 md:px-20">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="flex justify-center mb-6">
+            <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
+              <Star className="w-6 h-6" />
+            </div>
+          </div>
+
+          <h2 className={`text-3xl md:text-4xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hall of Champions</h2>
+          <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>This month's top performers</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+            {/* Reorder to show: 2nd, 1st (center/tallest), 3rd, with safety guard */}
+            {(allRows.length >= 3
+              ? [allRows[1], allRows[0], allRows[2]]
+              : (allRows.length ? allRows.slice(0, 3) : leaderboardData.slice(0,3))
+            ).map((u, displayIdx) => {
+              if (!u) return null;
+              const isChampion = displayIdx === 1; // Middle position is champion
+              const actualRank = u.rank;
+              
+              return (
+                <div
+                  key={`${u.name}-${displayIdx}`}
+                  className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative backdrop-blur-sm ${
+                    isChampion
+                      ? `scale-105 border-4 border-blue-600 ${darkMode ? 'bg-gradient-to-b from-blue-900/80 to-blue-800/80 hover:from-blue-800/90 hover:to-blue-700/90' : 'bg-gradient-to-b from-blue-100/80 to-blue-200/80 hover:from-blue-200/90 hover:to-blue-300/90'} hover:border-blue-400`
+                      : `${darkMode ? 'bg-gray-800/70 hover:bg-gradient-to-br hover:from-gray-800/80 hover:to-gray-900/80 border border-gray-700/50' : 'bg-white/80 hover:bg-gradient-to-br hover:from-blue-50/90 hover:to-gray-50/90 border border-white/50'} hover:border-2 hover:border-blue-500/30`
+                  }`}
+                >
+                  <div className="flex flex-col items-center">
+                    {isChampion && (
+                      <div className="mb-3 text-yellow-300">
+                        <Crown className="w-10 h-10" />
+                      </div>
+                    )}
+
+                    <div className={`w-28 h-28 rounded-full overflow-hidden border-4 ${isChampion ? 'border-blue-400' : darkMode ? 'border-gray-600' : 'border-gray-300'} mb-4`}>
+                      <img
+                        src={u.img}
+                        alt={u.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
+                          e.currentTarget.src = '/images/Profile_Icon.png';
+                        }}
+                      />
+                    </div>
+
+                    <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{u.name}</h3>
+
+                    <p className={`text-3xl font-extrabold ${isChampion ? (darkMode ? 'text-blue-300' : 'text-blue-600') : 'text-blue-400'}`}>
+                      {u.points.toLocaleString()}
+                    </p>
+
+                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sessions • {u.time}</p>
+
+                    <div className="flex gap-2 mt-4">
+                      <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
+                        {actualRank === 1 ? 'Champion' : actualRank === 2 ? '2nd' : '3rd'}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-orange-700 text-white text-sm">
+                        {u.streak} day streak
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Complete Rankings Table ===== */}
+      <section className="py-20 px-6 md:px-20 border-t border-white/20 dark:border-gray-700/50">
+        <div className={`rounded-t-2xl overflow-hidden backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50 shadow-lg'}`}>
+          <div className={`py-4 px-6 text-left text-lg font-semibold ${darkMode ? 'bg-blue-700 text-white' : 'bg-blue-600 text-white'}`}>
+            Complete Rankings
+            <p className="text-sm text-gray-200 font-normal">
               Track your progress among all users
-            </h2>
+            </p>
           </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-900">
+          
+          <div className={`overflow-x-auto ${darkMode ? 'bg-gray-900/40' : 'bg-white/60'}`}>
+            <table className={`min-w-full text-left text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <thead className={`uppercase text-xs ${darkMode ? 'bg-[#1e263b] text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Rank
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Points
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Sessions
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Focus Time
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Streak
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Badge
-                  </th>
+                  <th className="px-6 py-3">Rank</th>
+                  <th className="px-6 py-3">User</th>
+                  <th className="px-6 py-3">Points</th>
+                  <th className="px-6 py-3">Sessions</th>
+                  <th className="px-6 py-3">Focus Time</th>
+                  <th className="px-6 py-3">Streak</th>
+                  <th className="px-6 py-3">Badge</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {rows.map((user, index) => (
+              <tbody>
+                {rows.map((user) => (
                   <tr
                     key={user._id}
-                    className={`
-                      hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150
-                      ${user.you ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''}
-                      ${index < 3 ? 'bg-yellow-50 dark:bg-yellow-900/10' : ''}
-                    `}
+                    className={`border-t transition ${
+                      darkMode 
+                        ? `border-gray-700 hover:bg-[#1b243a] ${user.you ? 'bg-[#13213a]' : ''}` 
+                        : `border-gray-200 hover:bg-gray-50 ${user.you ? 'bg-blue-50' : ''}`
+                    }`}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span className={`
-                          text-lg font-bold
-                          ${index === 0 ? 'text-yellow-600 dark:text-yellow-400' : ''}
-                          ${index === 1 ? 'text-gray-600 dark:text-gray-400' : ''}
-                          ${index === 2 ? 'text-orange-600 dark:text-orange-400' : 'text-gray-800 dark:text-gray-200'}
-                        `}>
-                          {user.rank}
-                        </span>
+                    <td className={`px-6 py-4 font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                      {user.rank}
+                    </td>
+                    <td className="px-6 py-4 flex items-center gap-3">
+                      <img
+                        src={user.img}
+                        alt={user.name}
+                        className={`w-9 h-9 rounded-full border ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}
+                        onError={(e) => {
+                          if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
+                          e.currentTarget.src = '/images/Profile_Icon.png';
+                        }}
+                      />
+                      <div>
+                        <p className={`font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                          {user.name}
+                          {user.you && (
+                            <span className="text-xs text-blue-400 font-semibold ml-2">YOU</span>
+                          )}
+                        </p>
+                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{user.location}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <img
-                          src={user.img}
-                          alt={user.name}
-                          className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 object-cover mr-3"
-                          onError={(e) => {
-                            if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
-                            e.currentTarget.src = '/images/Profile_Icon.png';
-                          }}
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-800 dark:text-gray-200">
-                              {user.name}
-                            </span>
-                            {user.you && (
-                              <span className="px-2 py-1 text-xs font-bold bg-indigo-600 dark:bg-indigo-500 text-white rounded-full">
-                                YOU
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {user.location}
-                          </div>
-                        </div>
-                      </div>
+                    <td className="px-6 py-4 text-blue-400 font-semibold">
+                      {user.points.toLocaleString()}
+                      <span className="text-xs text-green-400 ml-1">
+                        {user.today}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-gray-800 dark:text-gray-200">
-                        <div className="font-bold text-lg">
-                          {user.points.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-green-600 dark:text-green-400">
-                          {user.today}
-                        </div>
-                      </div>
+                    <td className="px-6 py-4">{user.sessions}</td>
+                    <td className="px-6 py-4">{user.time}</td>
+                    <td className="px-6 py-4 flex items-center gap-1">
+                      <Flame className="text-orange-400 w-4 h-4" />
+                      {user.streak} days
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200 font-medium">
-                      {user.sessions}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200 font-medium">
-                      {user.time}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-1">
-                        {user.streak > 0 && (
-                          <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
-                        )}
-                        <span className="font-bold text-gray-800 dark:text-gray-200">
-                          {user.streak}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`
-                        px-3 py-1 rounded-full text-xs font-semibold text-white
-                        ${getBadgeColor(user.badge.color)}
-                      `}>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`text-white text-xs px-2 py-1 rounded-full ${getBadgeColor(
+                          user.badge.color
+                        )}`}
+                      >
                         {user.badge.label}
                       </span>
                     </td>
@@ -625,25 +507,109 @@ const App = () => {
             </table>
           </div>
 
-          {!hasLoadedMore && rows.length < allRows.length && (
-            <div className="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-              <button
-                onClick={handleLoadMore}
-                className="w-full py-3 px-6 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Load More Users
-              </button>
-            </div>
-          )}
+          {/* Load More Button */}
+          <div className={`flex justify-center gap-4 py-6 rounded-b-2xl ${darkMode ? 'bg-gray-900/40' : 'bg-white/60 border-t border-gray-200/50'}`}>
+            <button
+              onClick={handleLoadMore}
+              style={{ 
+                background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              }}
+              className="text-white font-semibold px-8 py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300"
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
+            >
+              Load More Rankings
+            </button>
+          </div>
         </div>
 
-        {/* Info Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Understanding the point system to climb the leaderboard
-          </p>
-        </div>
-      </div>
+        {/* ===== How to Earn Points ===== */}
+        <section className="py-20 px-6 md:px-20">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className={`text-3xl md:text-4xl font-extrabold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+              How to Earn Points
+            </h2>
+            <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              Understanding the point system to climb the leaderboard
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Focus Sessions */}
+              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+                <div className="flex items-center justify-center mb-4">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-yellow-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-yellow-50'}`}>
+                    <Clock className="w-8 h-8" />
+                  </div>
+                </div>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Focus Sessions</h3>
+                <ul className="space-y-3 text-left">
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                    <span>25min session</span>
+                    <span className="text-blue-300 font-semibold">+10 pts</span>
+                  </li>
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                    <span>50min session</span>
+                    <span className="text-blue-300 font-semibold">+15 pts</span>
+                  </li>
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-cyan-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-cyan-100 to-transparent text-gray-700'}`}>
+                    <span>4 sessions/day</span>
+                    <span className="text-teal-300 font-semibold">+50 bonus</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Task Completion */}
+              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+                <div className="flex items-center justify-center mb-4">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-teal-300 ${darkMode ? 'bg-[#0b141b]' : 'bg-teal-50'}`}>
+                    <CheckCircle className="w-8 h-8" />
+                  </div>
+                </div>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Task Completion</h3>
+                <ul className="space-y-3 text-left">
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                    <span>Per task completed</span>
+                    <span className="text-cyan-200 font-semibold">+5 pts</span>
+                  </li>
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                    <span>Daily goal achieved</span>
+                    <span className="text-cyan-200 font-semibold">+20 pts</span>
+                  </li>
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-purple-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-purple-100 to-transparent text-gray-700'}`}>
+                    <span>Weekly goals met</span>
+                    <span className="text-pink-300 font-semibold">+100 bonus</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Streaks */}
+              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+                <div className="flex items-center justify-center mb-4">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-red-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-red-50'}`}>
+                    <Zap className="w-8 h-8" />
+                  </div>
+                </div>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Streaks</h3>
+                <ul className="space-y-3 text-left">
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                    <span>Daily streak bonus</span>
+                    <span className="text-yellow-300 font-semibold">+25 pts</span>
+                  </li>
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 border border-orange-700 ${darkMode ? 'bg-[#2b1a10] text-gray-300' : 'bg-orange-50 text-gray-700'}`}>
+                    <span>7-day streak</span>
+                    <span className="text-orange-300 font-semibold">+100 pts</span>
+                  </li>
+                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-pink-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-pink-100 to-transparent text-gray-700'}`}>
+                    <span>30-day streak</span>
+                    <span className="text-pink-300 font-semibold">+500 bonus</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
     </div>
   );
 };

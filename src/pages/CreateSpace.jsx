@@ -52,23 +52,23 @@ const CreateSpace = () => {
 
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <p className="text-white">Loading...</p>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800">
+        <p className="text-gray-900 dark:text-white">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white flex items-center justify-center p-4 pt-24 sm:pt-28 md:pt-32">
+    <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300 flex items-center justify-center p-4 pt-24">
       <div className="w-full max-w-lg">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">Create Your Space</h1>
-          <p className="text-gray-400 mt-2 text-sm sm:text-base">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-900 dark:text-white mb-3 sm:mb-4">Create Your Space</h1>
+          <p className="text-blue-800 dark:text-blue-200 mt-2 text-sm sm:text-base">
             Customize your private or group study room
           </p>
         </div>
 
-        <div className="bg-[#1E293B] p-6 sm:p-8 rounded-xl shadow-2xl">
+        <div className="relative rounded-2xl backdrop-blur-xl bg-white/70 dark:bg-gray-900/60 border border-white/20 dark:border-white/10 shadow-xl p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <div className="bg-red-500/90 text-white p-3 rounded-md text-center">
@@ -79,7 +79,7 @@ const CreateSpace = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-blue-900 dark:text-blue-200 mb-2"
               >
                 Space Name
               </label>
@@ -90,14 +90,14 @@ const CreateSpace = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Math Study Group"
-                className="w-full p-3 bg-[#0F172A] rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-white rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-md"
               />
             </div>
 
             <div>
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-blue-900 dark:text-blue-200 mb-2"
               >
                 Description
               </label>
@@ -108,12 +108,12 @@ const CreateSpace = () => {
                 onChange={handleChange}
                 rows={3}
                 placeholder="Write a short description..."
-                className="w-full p-3 bg-[#0F172A] rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-white rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-md"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-blue-900 dark:text-blue-200 mb-2">
                 Privacy
               </label>
               <div className="grid grid-cols-2 gap-4">
@@ -124,7 +124,7 @@ const CreateSpace = () => {
                   className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
                     formData.isPublic
                       ? "border-blue-500 bg-blue-500/10"
-                      : "border-gray-700 hover:border-gray-500"
+                      : "border-white/20 dark:border-white/10 hover:border-blue-400"
                   }`}
                 >
                   <Globe className="w-6 h-6 mb-2" />
@@ -140,7 +140,7 @@ const CreateSpace = () => {
                   className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
                     !formData.isPublic
                       ? "border-blue-500 bg-blue-500/10"
-                      : "border-gray-700 hover:border-gray-500"
+                      : "border-white/20 dark:border-white/10 hover:border-blue-400"
                   }`}
                 >
                   <Lock className="w-6 h-6 mb-2" />
@@ -155,7 +155,7 @@ const CreateSpace = () => {
             <div>
               <label
                 htmlFor="maxParticipants"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-blue-900 dark:text-blue-200 mb-2"
               >
                 Max Participants
               </label>
@@ -167,14 +167,18 @@ const CreateSpace = () => {
                 max="50"
                 value={formData.maxParticipants}
                 onChange={handleChange}
-                className="w-full p-3 bg-[#0F172A] rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 bg-white/80 dark:bg-gray-800/80 text-gray-800 dark:text-white rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-md"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white font-bold py-3 rounded-md hover:bg-blue-700 transition duration-300 disabled:bg-blue-400 flex items-center justify-center"
+              className="w-full text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center hover:brightness-110 transform hover:scale-[1.02]"
+              style={{
+                background: "linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)",
+                boxShadow: "0 0 20px rgba(6, 182, 212, 0.35), 0 0 40px rgba(139, 92, 246, 0.25), 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)"
+              }}
             >
               {loading ? (
                 "Creating..."
@@ -189,6 +193,19 @@ const CreateSpace = () => {
       </div>
       {/* Keep autofill consistent with dark theme */}
       <style>{`
+        .dark input:-webkit-autofill,
+        .dark input:-webkit-autofill:hover,
+        .dark input:-webkit-autofill:focus,
+        .dark input:-webkit-autofill:active,
+        .dark textarea:-webkit-autofill,
+        .dark textarea:-webkit-autofill:hover,
+        .dark textarea:-webkit-autofill:focus,
+        .dark textarea:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px rgba(31, 41, 55, 0.8) inset !important;
+          -webkit-text-fill-color: #ffffff !important;
+          caret-color: #ffffff !important;
+          transition: background-color 9999s ease-in-out 0s;
+        }
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,
@@ -197,9 +214,9 @@ const CreateSpace = () => {
         textarea:-webkit-autofill:hover,
         textarea:-webkit-autofill:focus,
         textarea:-webkit-autofill:active {
-          -webkit-box-shadow: 0 0 0 30px #0F172A inset !important;
-          -webkit-text-fill-color: #ffffff !important;
-          caret-color: #ffffff !important;
+          -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.8) inset !important;
+          -webkit-text-fill-color: #1f2937 !important;
+          caret-color: #1f2937 !important;
           transition: background-color 9999s ease-in-out 0s;
         }
       `}</style>

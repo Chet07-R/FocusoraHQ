@@ -117,7 +117,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50">
+    <nav className="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed top-0 z-[100]">
       <Link 
         to="/" 
         onClick={handleLogoClick}

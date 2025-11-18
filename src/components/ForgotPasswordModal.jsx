@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { mapAuthError } from '../utils/authErrors';
 
 const ForgotPasswordModal = ({ isOpen, onClose }) => {
@@ -8,6 +9,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const { resetPassword } = useAuth();
+  const { darkMode } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,11 +38,11 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative max-w-md w-full bg-slate-800/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border-2 border-purple-500/30 animate-slideInUp">
+      <div className={`relative max-w-md w-full backdrop-blur-lg rounded-3xl shadow-2xl p-8 border-2 animate-slideInUp ${darkMode ? 'bg-slate-800/95 border-purple-500/30' : 'bg-white/95 border-purple-400/40'}`}>
 
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200"
+          className={`absolute top-4 right-4 cursor-pointer transition-colors duration-200 ${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
           aria-label="Close"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,20 +64,20 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                 Forgot Password?
               </h2>
-              <p className="text-gray-300 text-sm">
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 Enter your email and we'll send you a reset link
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="w-full bg-red-500/10 border border-red-500/40 text-red-300 text-sm px-4 py-2 rounded-lg">
+                <div className={`w-full border text-sm px-4 py-2 rounded-lg ${darkMode ? 'bg-red-500/10 border-red-500/40 text-red-300' : 'bg-red-50 border-red-300 text-red-700'}`}>
                   {error}
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-purple-300 mb-2">
+                <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-purple-300' : 'text-purple-700'}`}>
                   Email Address
                 </label>
                 <input
@@ -83,7 +85,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="w-full bg-slate-900/50 border-2 border-purple-500/30 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
+                  className={`w-full border-2 rounded-xl px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300 ${darkMode ? 'bg-slate-900/50 border-purple-500/30 text-white' : 'bg-white/90 border-purple-400/40 text-gray-900'}`}
                   required
                 />
               </div>
@@ -99,8 +101,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               <button
                 type="button"
                 onClick={handleClose}
-                className="w-full text-gray-400 hover:text-white font-semibold py-2 transition-colors duration-200"
-              >
+                className={`w-full cursor-pointer font-semibold py-2 transition-colors duration-200 ${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                 Cancel
               </button>
             </form>
@@ -114,16 +115,16 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-2">
+                <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   Check Your Email!
                 </h2>
-                <p className="text-gray-300 text-sm mb-4">
+                <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   We've sent a password reset link to:
                 </p>
                 <p className="text-cyan-400 font-semibold mb-6">
                   {email}
                 </p>
-                <p className="text-gray-400 text-xs mb-6">
+                <p className={`text-xs mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   Click the link in the email to reset your password. The link will expire in 1 hour.
                 </p>
               </div>
@@ -135,7 +136,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                 Got It!
               </button>
 
-              <p className="text-gray-400 text-xs mt-4">
+              <p className={`text-xs mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Didn't receive the email? Check your spam folder or{' '}
                 <button
                   onClick={() => setSuccess(false)}
