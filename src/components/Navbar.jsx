@@ -123,7 +123,7 @@ const Navbar = () => {
         onClick={handleLogoClick}
         className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
       >
-        <img src="/images/logo-shrinked.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
+        <img src="/images/transparent.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
         <span className="font-bold text-xl brand-gradient" style={{ letterSpacing: "-0.5px" }}>
           FocusoraHQ
         </span>
