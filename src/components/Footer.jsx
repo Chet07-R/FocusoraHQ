@@ -6,7 +6,6 @@ import "./Footer.css";
 const Footer = () => {
   const [email, setEmail] = useState("");
 
-  // Initialize EmailJS on component mount
   useEffect(() => {
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
     if (publicKey) {
@@ -17,7 +16,6 @@ const Footer = () => {
     }
   }, []);
 
-  // Toast notification function
   const showToast = (message, type = "info") => {
     const colors = {
       success: "bg-green-600 text-white",
@@ -32,10 +30,8 @@ const Footer = () => {
 
     document.body.appendChild(toast);
 
-    // Animate toast appearance
     setTimeout(() => toast.classList.remove("opacity-0", "translate-y-2"), 100);
 
-    // Remove toast after 3.5 seconds
     setTimeout(() => {
       toast.classList.add("opacity-0", "translate-y-2");
       setTimeout(() => toast.remove(), 500);
@@ -45,13 +41,11 @@ const Footer = () => {
   const handleSubscription = () => {
     const userEmail = email.trim();
 
-    // Validate user input
     if (!userEmail) {
       showToast("⚠️ Please enter your email address.", "warning");
       return;
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userEmail)) {
       showToast("⚠️ Please enter a valid email address.", "warning");
@@ -69,11 +63,10 @@ const Footer = () => {
       return;
     }
 
-    // Send email using EmailJS
     emailjs.send(serviceId, templateId, params)
       .then(() => {
         showToast("✅ Subscription successful! Check your email.", "success");
-        setEmail(""); // Clear input after success
+        setEmail("");
       })
       .catch((error) => {
         console.error("❌ EmailJS Error:", error);
@@ -83,16 +76,13 @@ const Footer = () => {
 
   return (
     <footer className="bg-gradient-to-b from-black via-gray-900 to-gray-950 w-full relative overflow-hidden text-gray-300">
-      {/* Subtle background glow */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
         <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-6 py-12 relative z-10">
-        {/* Main Footer Content */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-8 mb-8">
-          {/* Brand Section */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img
@@ -110,7 +100,6 @@ const Footer = () => {
               with a team.
             </p>
 
-            {/* Contact Info */}
             <div className="space-y-2 text-sm text-gray-300">
               <div className="flex items-center">
                 <svg
@@ -170,8 +159,6 @@ const Footer = () => {
               </div>
             </div>
           </div>
-
-          {/* Navigation Columns */}
           <div className="space-y-4">
             <h3 className="text-white font-semibold text-lg underline-hover cursor-default">
               Product
@@ -221,7 +208,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter Section */}
         <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-4 md:mb-0">

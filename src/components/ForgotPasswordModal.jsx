@@ -37,7 +37,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
       <div className="relative max-w-md w-full bg-slate-800/95 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border-2 border-purple-500/30 animate-slideInUp">
-        {/* Close Button */}
+
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors duration-200"
@@ -48,7 +48,6 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
           </svg>
         </button>
 
-        {/* Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +58,6 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
         {!success ? (
           <>
-            {/* Heading */}
             <div className="text-center mb-6">
               <h2 className="text-3xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                 Forgot Password?
@@ -69,7 +67,6 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
                 <div className="w-full bg-red-500/10 border border-red-500/40 text-red-300 text-sm px-4 py-2 rounded-lg">
@@ -110,7 +107,6 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
           </>
         ) : (
           <>
-            {/* Success Message */}
             <div className="text-center">
               <div className="mb-4">
                 <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">

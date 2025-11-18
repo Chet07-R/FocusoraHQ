@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Simple default avatar SVG (gradient ring + user silhouette)
 const DefaultAvatar = ({ size = 40 }) => {
   return (
     <div

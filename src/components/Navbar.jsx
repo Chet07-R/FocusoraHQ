@@ -12,15 +12,11 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Determine avatar source from Firestore profile, Auth user, or fallback
   const avatarSrc = userProfile?.photoURL ?? user?.photoURL ?? "/images/Profile_Icon.png";
 
-  // Shared classes for link text with hover and focus gradient underline
-  // Keep nav text white on hover; only animate the underline (after:)
   const linkTextClasses =
     "nav-text relative text-white transition-all duration-300 focus:outline-none after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-blue-400 after:to-blue-600 after:transition-all after:duration-300 hover:after:w-full focus:after:w-full";
 
-  // Handle logo click - scroll to top if on home page, navigate if on other page
   const handleLogoClick = (e) => {
     if (location.pathname === '/') {
       e.preventDefault();
@@ -28,7 +24,6 @@ const Navbar = () => {
     }
   };
 
-  // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -42,16 +37,13 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Nav items array (external or internal links with icons)
   const navItems = [
     { name: "My Space", to: "/my-space", icon: "mail", isExternal: false, dataPage: "my_space" },
     { name: "Study Room", to: "/study-room", icon: "book", dataPage: "study_room" },
-    // Use internal React route for Blogs so it matches App.jsx routes
     { name: "Blogs", to: "/blog", icon: "note", dataPage: "Blog" },
     { name: "Leaderboard", to: "/leaderboard", icon: "star", dataPage: "leaderboard" },
   ];
 
-  // Render icon SVG based on icon type
   const renderIcon = (icon) => {
     switch (icon) {
       case "mail":
@@ -126,7 +118,6 @@ const Navbar = () => {
 
   return (
     <nav className="w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed z-50">
-      {/* Logo Section */}
       <Link 
         to="/" 
         onClick={handleLogoClick}
@@ -138,7 +129,6 @@ const Navbar = () => {
         </span>
       </Link>
 
-      {/* Desktop Nav Links */}
       <div className="hidden lg:flex gap-10 items-center font-semibold text-base">
         {navItems.map((item) =>
           item.isExternal ? (
@@ -167,9 +157,8 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Right Controls */}
       <div className="flex items-center gap-4">
-        {/* Mobile Menu Button */}
+
         <button
           id="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -201,7 +190,6 @@ const Navbar = () => {
           </svg>
         </button>
 
-        {/* Auth area: profile when signed in; skeleton when loading a cached user; Sign In otherwise */}
         {user ? (
           <div className="relative">
             <div
@@ -226,7 +214,7 @@ const Navbar = () => {
               id="profile-menu"
               className="absolute right-0 top-12 z-50 w-72 rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 profile-panel overflow-hidden ring-1 ring-black/5 dark:ring-white/10 animate-slideInUp"
             >
-              {/* Profile Header */}
+
               <div className="flex p-4 items-center gap-3 profile-gradient-header">
                 <div className="profile-ring w-11 h-11 p-1">
                   <img
@@ -248,7 +236,6 @@ const Navbar = () => {
 
               <div className="dropdown-divider"></div>
 
-              {/* Menu Items */}
               <div className="py-1 space-y-1">
                 <Link
                   to="/profile"
@@ -298,7 +285,6 @@ const Navbar = () => {
 
               <div className="dropdown-divider"></div>
 
-              {/* Theme Toggle */}
               <div className="flex items-center justify-between px-4 py-3">
                 <span className="theme-label">Theme</span>
                 <button
@@ -317,7 +303,6 @@ const Navbar = () => {
 
               <div className="dropdown-divider"></div>
 
-              {/* Logout */}
               <div className="px-4 py-2">
                 <button
                   type="button"
@@ -350,7 +335,6 @@ const Navbar = () => {
           )}
         </div>
         ) : loading ? (
-          // Skeleton placeholder while loading a cached session
           <div className="w-10 h-10 rounded-full bg-gray-700/60 animate-pulse" aria-hidden="true" />
         ) : (
           <Link
@@ -378,7 +362,6 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div id="mobile-menu" className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden">
           <div className="px-4 py-6 space-y-4">

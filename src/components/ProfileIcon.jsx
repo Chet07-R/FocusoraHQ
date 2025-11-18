@@ -1,7 +1,6 @@
 import React from 'react';
 
 const ProfileIcon = ({ imageSrc, size = 'md', showSecondRing = true }) => {
-  // Size configurations
   const sizeClasses = {
     sm: { container: 'w-10 h-10', ring: 'w-12 h-12', decorative: 'w-8 h-8', gap: 'gap-2' },
     md: { container: 'w-12 h-12', ring: 'w-14 h-14', decorative: 'w-10 h-10', gap: 'gap-3' },
@@ -12,9 +11,7 @@ const ProfileIcon = ({ imageSrc, size = 'md', showSecondRing = true }) => {
 
   return (
     <div className={`flex items-center ${currentSize.gap}`}>
-      {/* Main Profile Icon with Gradient Ring */}
       <div className="relative flex items-center justify-center">
-        {/* Outer gradient ring with glow */}
         <div 
           className={`${currentSize.ring} rounded-full absolute`}
           style={{
@@ -23,11 +20,9 @@ const ProfileIcon = ({ imageSrc, size = 'md', showSecondRing = true }) => {
             boxShadow: '0 0 15px rgba(6, 182, 212, 0.4), 0 0 30px rgba(139, 92, 246, 0.3), 0 0 45px rgba(236, 72, 153, 0.2)'
           }}
         >
-          {/* Inner black circle to create ring effect */}
           <div className="w-full h-full rounded-full bg-gray-900"></div>
         </div>
 
-        {/* Profile Image */}
         <div className={`${currentSize.container} rounded-full overflow-hidden relative z-10 border-2 border-gray-800`}>
           {imageSrc ? (
             <img 
@@ -45,7 +40,6 @@ const ProfileIcon = ({ imageSrc, size = 'md', showSecondRing = true }) => {
         </div>
       </div>
 
-      {/* Second Decorative Ring */}
       {showSecondRing && (
         <div className="relative flex items-center justify-center">
           <div 

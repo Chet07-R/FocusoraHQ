@@ -24,13 +24,11 @@ const Notes = ({ addNotification = () => {} }) => {
   const [dictationLang, setDictationLang] = useState('en-US');
   const [autoPunct, setAutoPunct] = useState(true);
 
-  // active format states for toolbar buttons
   const [activeBold, setActiveBold] = useState(false);
   const [activeItalic, setActiveItalic] = useState(false);
   const [activeUnderline, setActiveUnderline] = useState(false);
   const [activeAlign, setActiveAlign] = useState('left');
 
-  /* ===== Sync from room (real-time) or fallback to local ===== */
   useEffect(() => {
     if (roomData && typeof roomData.sharedNotes === 'string') {
       setNotes(roomData.sharedNotes || "");
@@ -43,8 +41,7 @@ const Notes = ({ addNotification = () => {} }) => {
       setNotes(local);
     }
   }, [roomData]);
-  
-  // Persist locally as a fallback (non-room usage)
+
   useEffect(() => {
     if (!currentRoom) {
       localStorage.setItem("sr_notes", notes);
@@ -55,16 +52,11 @@ const Notes = ({ addNotification = () => {} }) => {
     localStorage.setItem("sr_files", JSON.stringify(uploadedFiles));
   }, [uploadedFiles]);
 
-  // Remove shared files list (real-time) per request
-  // const { roomFiles, addRoomFile, removeRoomFile } = useStudyRoom();
-
-  /* ===== Sync editable area ===== */
   useEffect(() => {
     const el = notesAreaRef.current;
     if (el && el.innerHTML !== notes) el.innerHTML = notes;
   }, [notes]);
 
-  /* ===== Auto-save debounce (to room if joined) ===== */
   useEffect(() => {
     const el = notesAreaRef.current;
     if (!el) return;
@@ -87,13 +79,11 @@ const Notes = ({ addNotification = () => {} }) => {
     };
 
     const onSelection = () => {
-      // Only update toolbar state if selection is within the notes area
       const selection = window.getSelection();
       if (!selection || selection.rangeCount === 0) return;
       
       const range = selection.getRangeAt(0);
       if (!el.contains(range.commonAncestorContainer)) {
-        // Reset all formatting states when clicking outside
         setActiveBold(false);
         setActiveItalic(false);
         setActiveUnderline(false);
@@ -115,7 +105,6 @@ const Notes = ({ addNotification = () => {} }) => {
     };
 
     el.addEventListener("input", onInput);
-    // enforce plain-text paste to avoid accidental markup/code in notes
     const onPaste = (e) => {
       try {
         e.preventDefault();
@@ -128,9 +117,6 @@ const Notes = ({ addNotification = () => {} }) => {
     el.addEventListener('keyup', onSelection);
     el.addEventListener('mouseup', onSelection);
 
-    // Don't initialize active states immediately - wait for first interaction
-    // onSelection();
-
     return () => {
       el.removeEventListener("input", onInput);
       el.removeEventListener('paste', onPaste);
@@ -141,7 +127,6 @@ const Notes = ({ addNotification = () => {} }) => {
     };
   }, [currentRoom, updateNotes, user, userProfile, addNotification]);
 
-  /* ===== Notify on external updates ===== */
   const lastNotesRef = useRef("");
   const lastUpdaterRef = useRef(null);
   useEffect(() => {
@@ -161,7 +146,6 @@ const Notes = ({ addNotification = () => {} }) => {
     }
   }, [roomData, currentRoom, user]);
 
-  /* ===== Voice list for TTS ===== */
   useEffect(() => {
     const load = () => {
       const vs = window.speechSynthesis?.getVoices() || [];
@@ -178,7 +162,6 @@ const Notes = ({ addNotification = () => {} }) => {
       window.speechSynthesis.onvoiceschanged = load;
   }, []);
 
-  /* ===== Helpers ===== */
   const formatText = (cmd) => {
     const el = notesAreaRef.current;
     if (!el) return;
@@ -186,24 +169,20 @@ const Notes = ({ addNotification = () => {} }) => {
     try {
       document.execCommand(cmd, false, null);
     } catch (e) {
-      // ignore execCommand errors
     }
     setNotes(el.innerHTML);
 
-    // refresh toolbar active state shortly after execCommand
     setTimeout(() => {
       try {
         if (document.queryCommandState) {
           setActiveBold(!!document.queryCommandState('bold'));
           setActiveItalic(!!document.queryCommandState('italic'));
           setActiveUnderline(!!document.queryCommandState('underline'));
-          // update alignment states
           if (document.queryCommandState('justifyCenter')) setActiveAlign('center');
           else if (document.queryCommandState('justifyRight')) setActiveAlign('right');
           else setActiveAlign('left');
         }
       } catch (e) {
-        // ignore
       }
     }, 20);
   };
@@ -218,7 +197,6 @@ const Notes = ({ addNotification = () => {} }) => {
     setActiveAlign(align);
   };
 
-  /* ===== Dictation ===== */
   const startDictation = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -274,22 +252,21 @@ const Notes = ({ addNotification = () => {} }) => {
 
   const postProcessTranscript = (text) => {
     let t = ' ' + text + ' ';
-    // word-to-punctuation replacements
+
     t = t.replace(/\s(comma|,)(\s|$)/gi, ', ');
     t = t.replace(/\s(full stop|period|\.)(\s|$)/gi, '. ');
     t = t.replace(/\s(question mark|\?)(\s|$)/gi, '? ');
     t = t.replace(/\s(exclamation mark|!)(\s|$)/gi, '! ');
     t = t.replace(/\s(new line|line break)(\s|$)/gi, '\n');
-    // cleanup extra spaces
+
     t = t.replace(/\s+([,\.!\?])/g, '$1 ');
     t = t.replace(/\s{2,}/g, ' ');
     t = t.trim();
-    // sentence case basic
+
     t = t.replace(/(^\s*[a-z])|([\.\!\?]\s+[a-z])/g, (m) => m.toUpperCase());
     return t;
   };
 
-  /* ===== TTS ===== */
   const readNotesAloud = () => {
     const el = notesAreaRef.current;
     if (!el) return;
@@ -317,12 +294,10 @@ const Notes = ({ addNotification = () => {} }) => {
     addNotification("🔊 Reading notes");
   };
 
-  /* ===== File upload ===== */
   const handleFileUpload = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    
-      // Read file content
+
       const reader = new FileReader();
       reader.onload = (event) => {
         const content = event.target.result;
@@ -337,8 +312,7 @@ const Notes = ({ addNotification = () => {} }) => {
         setUploadedFiles((s) => [meta, ...s]);
         addNotification("📎 File added");
       };
-    
-      // Read as text for text files, or as data URL for others
+
       if (f.type.startsWith('text/') || f.name.endsWith('.txt') || f.name.endsWith('.md')) {
         reader.readAsText(f);
       } else {
@@ -347,7 +321,6 @@ const Notes = ({ addNotification = () => {} }) => {
     };
 
     const openFile = (file) => {
-      // If it's a text file, load content into notes area
       if (file.type?.startsWith('text/') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
         const el = notesAreaRef.current;
         if (!el) return;
@@ -401,7 +374,6 @@ const Notes = ({ addNotification = () => {} }) => {
     addNotification("🗑️ File removed");
   };
 
-  /* ===== Stats ===== */
   const getNotesStats = () => {
     const text = notesAreaRef.current?.innerText || (notes || "");
     const chars = text.length;
@@ -441,7 +413,6 @@ const Notes = ({ addNotification = () => {} }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl" style={{ height: 'calc(725px - 120px)' }}>
-      {/* Top header with title and action buttons */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <span>Notes</span>
@@ -464,9 +435,7 @@ const Notes = ({ addNotification = () => {} }) => {
         </div>
       </div>
 
-      {/* Toolbar */}
       <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0" style={{ userSelect: 'none' }}>
-        {/* First row: B, I, U, and alignment buttons */}
         <div className="flex items-center gap-2 justify-center">
           <button
             onClick={() => formatText('bold')}
@@ -487,7 +456,6 @@ const Notes = ({ addNotification = () => {} }) => {
             <u>U</u>
           </button>
 
-          {/* Alignment buttons */}
           <button 
             onClick={() => setAlignment('left')} 
             className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
@@ -508,7 +476,6 @@ const Notes = ({ addNotification = () => {} }) => {
           </button>
         </div>
 
-        {/* Second row: Speak, Listen, and stats */}
         <div className="flex items-center gap-3 flex-wrap">
           <button
             onClick={readNotesAloud}
@@ -553,8 +520,6 @@ const Notes = ({ addNotification = () => {} }) => {
         </div>
       </div>
 
-      {/* Editable area - flex-1 makes it take remaining space */}
-      {/* Pasting is sanitized to plain text in the effect below */}
       <div
         ref={notesAreaRef}
         contentEditable
@@ -562,7 +527,6 @@ const Notes = ({ addNotification = () => {} }) => {
         className="flex-1 bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4"
       />
 
-      {/* Upload notes block (local only, shared list removed) - flex-shrink-0 prevents it from shrinking */}
       <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 flex-shrink-0">
         <div className="flex items-center gap-3">
           <UploadCloud className="w-5 h-5 text-white/70" />

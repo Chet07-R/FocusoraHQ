@@ -9,7 +9,6 @@ const EmailVerificationBanner = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  // Don't show if user is verified, doesn't exist, or banner is dismissed
   if (!user || user.emailVerified || dismissed) {
     return null;
   }

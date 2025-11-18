@@ -1,8 +1,3 @@
-/* =========================================
-   🌈 FocusoraHQ Navbar Custom Styles
-   ========================================= */
-
-/* ===== ANIMATIONS ===== */
 @keyframes gradientRotate {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -33,7 +28,6 @@
   50% { opacity: 1; }
 }
 
-/* ===== NAVBAR STYLING ===== */
 nav {
   background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(17,24,39,0.85) 100%);
   position: relative;
@@ -60,7 +54,6 @@ nav::after {
   background: linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(15,23,42,0.98) 100%);
 }
 
-/* ===== PROFILE DROPDOWN ANIMATION ===== */
 .profile-box {
   opacity: 0;
   transform: translateY(12px) scale(0.95);
@@ -74,7 +67,6 @@ nav::after {
   pointer-events: auto;
 }
 
-/* ===== ANIMATED GRADIENT RING ===== */
 .profile-ring {
   background: linear-gradient(135deg, #06b6d4 0%, #c084fc 50%, #ec4899 100%);
   padding: 3px;
@@ -85,9 +77,9 @@ nav::after {
 }
 
 .profile-ring {
-  /* Gradient ring around the avatar */
+
   background: linear-gradient(135deg, #06b6d4 0%, #c084fc 50%, #ec4899 100%);
-  padding: 3px; /* ring thickness */
+  padding: 3px;
   border-radius: 9999px;
   position: relative;
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
@@ -103,14 +95,12 @@ nav::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* inner white border to separate avatar from ring */
   border: 2px solid rgba(255,255,255,0.06);
 }
+
 .dark .profile-ring img { border-color: rgba(255,255,255,0.12); }
 
-/* ===== PREMIUM GLASSMORPHISM PANEL (light vs dark) ===== */
 .profile-panel {
-  /* Light mode: bright glass */
   background: linear-gradient(145deg,
       rgba(255,255,255,0.95) 0%,
       rgba(248,250,252,0.9) 50%,
@@ -128,12 +118,11 @@ nav::after {
 }
 
 .dark .profile-panel {
-  /* Dark mode: deep glass */
   background: linear-gradient(145deg,
       rgba(17,24,39,0.95) 0%,
       rgba(31,41,55,0.9) 50%,
       rgba(15,23,42,0.95) 100%);
-  color: #f1f5f9; /* slate-100 */
+  color: #f1f5f9;
   box-shadow:
     0 20px 60px -15px rgba(0,0,0,0.7),
     0 0 0 1px rgba(255,255,255,0.08) inset,
@@ -141,7 +130,6 @@ nav::after {
   border-color: rgba(255,255,255,0.08);
 }
 
-/* ===== GRADIENT HEADER ===== */
 .profile-gradient-header {
   background: linear-gradient(135deg,
       rgba(6,182,212,0.10) 0%,
@@ -150,6 +138,7 @@ nav::after {
   position: relative;
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
+
 .dark .profile-gradient-header {
   background: linear-gradient(135deg,
       rgba(6,182,212,0.18) 0%,
@@ -168,7 +157,6 @@ nav::after {
   background: linear-gradient(90deg, transparent, rgba(6,182,212,0.6), transparent);
 }
 
-/* ===== MENU ITEMS ===== */
 .menu-item {
   position: relative;
   overflow: hidden;
@@ -180,25 +168,25 @@ nav::after {
 
 .menu-item::before { display:none; }
 
-/* Restrict hover highlight to text span only */
 .menu-item .text-hover-wrap {
   position: relative;
-  display: block;            /* allow expansion */
-  flex: 1 1 auto;            /* fill the remaining row width */
-  padding: 10px 12px;        /* larger target */
-  border-radius: 12px;       /* slightly larger pill */
+  display: block;
+  flex: 1 1 auto;
+  padding: 10px 12px;
+  border-radius: 12px;       
   transition: background 0.35s ease, color 0.35s ease;
 }
+
 .menu-item:not(.logout-btn):hover .text-hover-wrap {
-  background: rgba(0,0,0,0.06); /* subtle gray in light mode */
+  background: rgba(0,0,0,0.06);
   color: #0f172a;
 }
+
 .dark .menu-item:not(.logout-btn):hover .text-hover-wrap {
-  background: rgba(255,255,255,0.08); /* subtle gray in dark mode */
+  background: rgba(255,255,255,0.08);
   color: #f1f5f9;
 }
 
-/* Remove global translate effect */
 .menu-item:hover { transform: none; }
 
 .menu-item svg,
@@ -212,7 +200,6 @@ nav::after {
   transform: scale(1.1) rotate(5deg);
 }
 
-/* Uniform icon styling inside dropdown */
 .profile-panel .menu-icon {
   width: 20px;
   height: 20px;
@@ -225,7 +212,6 @@ nav::after {
 .profile-panel .logout-btn .menu-icon { color: #dc2626; }
 .dark .profile-panel .logout-btn .menu-icon { color: #f87171; }
 
-/* ===== DIVIDERS ===== */
 .dropdown-divider {
   height: 1px;
   background: linear-gradient(to right,
@@ -234,7 +220,6 @@ nav::after {
       transparent 100%);
 }
 
-/* ===== LOGOUT BUTTON ===== */
 .menu-item.logout-btn {
   position: relative;
   overflow: visible;
@@ -249,9 +234,6 @@ nav::after {
   filter: none;
 }
 
-/* (Removed legacy #dark-toggle styles; using button-based switch) */
-
-/* ===== NAV LINK EFFECTS ===== */
 .nav-link .nav-text::after {
   background: linear-gradient(90deg,
       #06b6d4 0%,
@@ -270,13 +252,11 @@ nav::after {
   filter: drop-shadow(0 0 12px rgba(6,182,212,0.6));
 }
 
-/* Ensure active link shows full underline */
 .nav-link.active .nav-text::after {
   width: 100% !important;
   height: 2px;
 }
 
-/* ===== MOBILE MENU TOGGLE ===== */
 .mobile-menu { display: none; }
 .mobile-menu.active { display: block; }
 
@@ -287,44 +267,44 @@ nav::after {
   transform-origin: center;
 }
 
-/* Utility class for gradient text */
 .gradient-text {
   background: linear-gradient(135deg,#06b6d4 0%, #8b5cf6 40%, #c084fc 55%, #ec4899 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* Static themed gradient; animation removed per request */
 }
 
-/* Ensure bg-clip-text works consistently with a solid-color fallback */
 .brand-gradient {
-  color: #ffffff !important; /* Fallback when clip-text unsupported or CSS order issues */
+  color: #ffffff !important;
 }
+
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
   .brand-gradient {
-    background-image: linear-gradient(90deg, #22d3ee 0%, #f472b6 100%); /* cyan-400 -> pink-400 */
+    background-image: linear-gradient(90deg, #22d3ee 0%, #f472b6 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent !important;
   }
 }
-.bg-clip-text { -webkit-background-clip: text; background-clip: text; }
 
-/* === Light mode readability tweaks for profile panel content === */
+.bg-clip-text { -webkit-background-clip: text; background-clip: text; } 
+
 .profile-panel .profile-name { color: #0f172a; font-weight:600; }
+
 .profile-panel .profile-email { color: #475569; }
+
 .dark .profile-panel .profile-name { color: #f1f5f9; }
+
 .dark .profile-panel .profile-email { color: #94a3b8; }
 
-/* Theme row label stronger in light */
 .profile-panel .theme-label { color:#0f172a; font-weight:600; }
+
 .dark .profile-panel .theme-label { color:#e2e8f0; }
 
-/* ===== THEME TOGGLE (improved dark visibility) ===== */
 .theme-toggle {
   position: relative;
-  width: 3rem; /* 48px */
-  height: 1.75rem; /* 28px */
+  width: 3rem;
+  height: 1.75rem;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
@@ -333,13 +313,15 @@ nav::after {
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.15);
   transition: background 0.35s ease, box-shadow 0.35s ease;
 }
+
 .theme-toggle.on {
   background: linear-gradient(135deg, rgba(31,41,55,1) 0%, rgba(17,24,39,1) 100%);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 2px 6px rgba(0,0,0,0.4);
 }
+
 .toggle-knob {
   position: absolute;
-  width: 1.45rem; /* 23.2px */
+  width: 1.45rem; 
   height: 1.45rem;
   border-radius: 50%;
   background: #ffffff;
@@ -347,24 +329,28 @@ nav::after {
   transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.35s ease, box-shadow 0.35s ease;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
 .toggle-knob.on {
-  transform: translateX(1.25rem); /* shift right */
+  transform: translateX(1.25rem);
   background: linear-gradient(135deg,#06b6d4 0%, #c084fc 50%, #ec4899 100%);
   box-shadow: 0 0 0 2px rgba(6,182,212,0.4), 0 0 12px rgba(192,132,252,0.4), 0 0 24px rgba(236,72,153,0.35);
 }
+
 .theme-toggle:focus-visible { outline:2px solid #06b6d4; outline-offset:3px; }
 
-/* Improve vertical rhythm inside dropdown */
 .profile-panel a.menu-item { min-height: 48px; }
+
 .profile-panel .logout-btn { min-height: 48px; }
 
-/* Ensure nav link text remains white on hover/focus and prevent gradient/text-clip effects */
 .nav-link .nav-text {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
 .nav-link:hover .nav-text,
+
 .nav-link:focus .nav-text,
+
 .nav-link:active .nav-text {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;

@@ -29,13 +29,11 @@ const Pomodoro = ({ addNotification = () => { } }) => {
             clearInterval(intervalRef.current);
             setIsRunning(false);
 
-            // Play beep sound if enabled
             if (soundOn) {
               beepSound.current.currentTime = 0;
               beepSound.current.play().catch((e) => console.log("Sound error:", e));
             }
 
-            // Show notification
             if ("Notification" in window && Notification.permission === "granted") {
               const message = onBreak
                 ? "Work session complete! Time for a break."
@@ -50,12 +48,10 @@ const Pomodoro = ({ addNotification = () => { } }) => {
               addNotification("✅ Break complete!");
             }
 
-            // Switch session
             setOnBreak(!onBreak);
             setTimeLeft(onBreak ? workDuration * 60 : breakDuration * 60);
 
             if (autoStartNext) {
-              // Auto-start next session after 1 second
               setTimeout(() => setIsRunning(true), 1000);
             }
 
@@ -170,13 +166,10 @@ const Pomodoro = ({ addNotification = () => { } }) => {
           />
         </div>
 
-        {/* Button Section */}
         <div className="flex flex-col items-center w-full mt-4">
 
-          {/* Start + Pause in one row */}
           <div className="flex space-x-6">
 
-            {/* Start */}
             <button
               onClick={handleStart}
               disabled={isRunning}
@@ -191,7 +184,6 @@ const Pomodoro = ({ addNotification = () => { } }) => {
               <span className="text-white">Start</span>
             </button>
 
-            {/* Pause */}
             <button
               onClick={handlePause}
               className="
@@ -206,7 +198,6 @@ const Pomodoro = ({ addNotification = () => { } }) => {
             </button>
           </div>
 
-          {/* Reset button centered below */}
           <div className="mt-4 flex justify-center w-full">
             <button
               onClick={handleReset}
@@ -238,7 +229,6 @@ const Pomodoro = ({ addNotification = () => { } }) => {
 
         <div className="grid grid-cols-2 gap-6 w-full max-w-xs mt-4">
 
-          {/* Work Duration */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-200 tracking-wide">
               Work Duration
@@ -261,7 +251,6 @@ const Pomodoro = ({ addNotification = () => { } }) => {
             />
           </div>
 
-          {/* Break Duration */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-200 tracking-wide">
               Break Duration

@@ -18,10 +18,7 @@ const Todo = ({ addNotification = () => {} }) => {
     }
   });
 
-  // Use room todos if in a room, otherwise use local todos
-  const todos = currentRoom ? (roomTodos || []) : localTodos;
-
-  // Save local todos to localStorage
+  const todos = currentRoom ? (roomTodos || []) : 
   useEffect(() => {
     if (!currentRoom) {
       localStorage.setItem('myspace_todos', JSON.stringify(localTodos));
@@ -33,7 +30,7 @@ const Todo = ({ addNotification = () => {} }) => {
     if (!t) return addNotification("⚠️ Enter a task first");
     
     if (currentRoom) {
-      // Room mode
+      
       try {
         await addTodo(t);
         setNewTask("");
@@ -43,7 +40,7 @@ const Todo = ({ addNotification = () => {} }) => {
         console.error(e);
       }
     } else {
-      // Local mode
+      
       const newTodo = {
         id: Date.now().toString(),
         text: t,
@@ -90,7 +87,6 @@ const Todo = ({ addNotification = () => {} }) => {
   const active = todos.filter((t) => !t.completed).length;
   const hasUnknown = (roomTodos || []).some(t => !t.createdById || !t.createdByName);
 
-  // Real-time notifications for todo changes
   useEffect(() => {
     const prev = prevTodosRef.current || [];
     const prevMap = new Map(prev.map(t => [t.id, t]));
@@ -103,14 +99,14 @@ const Todo = ({ addNotification = () => {} }) => {
       return;
     }
 
-    // Added
+
     curr.forEach(t => {
       if (!prevMap.has(t.id)) {
         const own = t.createdById && user && t.createdById === user.uid;
         if (!own) addNotification(`➕ Task added by ${t.createdByName || 'Someone'}: ${t.text}`);
       }
     });
-    // Toggled
+
     curr.forEach(t => {
       const p = prevMap.get(t.id);
       if (p && p.completed !== t.completed) {
@@ -118,7 +114,7 @@ const Todo = ({ addNotification = () => {} }) => {
         addNotification(`☑️ Task ${state}: ${t.text}`);
       }
     });
-    // Deleted
+
     prev.forEach(p => {
       if (!currMap.has(p.id)) {
         addNotification(`🗑️ Task removed: ${p.text}`);

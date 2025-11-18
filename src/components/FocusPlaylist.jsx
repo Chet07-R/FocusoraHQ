@@ -1,4 +1,3 @@
-// FocusPlaylist.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
@@ -14,7 +13,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
   const lastPlayerAtRef = useRef(0);
   const [syncPrompt, setSyncPrompt] = useState(null);
 
-  // sync from room
   useEffect(() => {
     if (currentRoom && roomData?.spotifyUrl) {
       setSpotifyUrl(roomData.spotifyUrl);
@@ -25,7 +23,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
     }
   }, [currentRoom, roomData?.spotifyUrl]);
 
-  // Listen for shared playback signals (play/pause) and prompt user action
   useEffect(() => {
     if (!currentRoom) return;
     const at = roomData?.playerAt?.toMillis?.() || 0;
@@ -35,9 +32,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
     if (!action || !at) return;
     if (lastPlayerAtRef.current === at) return;
     lastPlayerAtRef.current = at;
-    if (user && actorId === user.uid) return; // ignore self signals
-
-    // Show a prompt asking user to click play/pause due to autoplay restrictions
+    if (user && actorId === user.uid) return;
     if (action === 'play') {
       setSyncPrompt({ type: 'play', by: actorName });
       addNotification(`▶ ${actorName} pressed Play — click the player to start`);
@@ -82,7 +77,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
 
   return (
     <>
-      {/* ===== FOCUS PLAYLIST SECTION ===== */}
       <div className="w-full mb-8">
         <div className="bg-gradient-to-r from-black/60 via-gray-900/80 to-black/60 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg text-white">
           <div className="px-2 sm:px-4 md:px-6 py-4">
@@ -149,7 +143,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
               style={{ borderRadius: "12px" }}
               src={spotifyUrl}
               width="100%"
-              // Responsive height below
               className="h-20 sm:h-24 md:h-32"
               frameBorder="0"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -159,7 +152,6 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
         </div>
       </div>
 
-      {/* ===== MUSIC SELECTOR PANEL ===== */}
       <div
         className={`fixed bottom-0 left-0 w-full max-w-full rounded-t-2xl md:rounded-2xl md:left-1/2 md:bottom-36 md:transform md:-translate-x-1/2 md:w-96 max-w-[90vw]
           bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-4 md:p-5 transition-all duration-500 z-50 ${
