@@ -13,9 +13,6 @@ import {
   deleteTodo,
 } from '../utils/firestoreUtils';
 
-/**
- * Hook to manage user profile with real-time updates
- */
 export const useUserProfile = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState(null);
@@ -44,9 +41,6 @@ export const useUserProfile = () => {
   return { profile, loading, updateProfile };
 };
 
-/**
- * Hook to manage user notes with real-time sync
- */
 export const useNotes = () => {
   const { user } = useAuth();
   const [notes, setNotes] = useState([]);
@@ -85,9 +79,6 @@ export const useNotes = () => {
   return { notes, loading, addNote, editNote, removeNote };
 };
 
-/**
- * Hook to manage user todos with real-time sync
- */
 export const useTodos = () => {
   const { user } = useAuth();
   const [todos, setTodos] = useState([]);

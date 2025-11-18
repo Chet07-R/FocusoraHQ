@@ -33,8 +33,7 @@ export const ThemeProvider = ({ children }) => {
       root.classList.remove('dark');
       console.log('Light mode enabled - dark class removed from HTML');
     }
-    
-    // Log current classes for debugging
+
     console.log('HTML classes:', root.className);
   }, [darkMode]);
 

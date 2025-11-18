@@ -39,9 +39,8 @@ export const StudyRoomProvider = ({ children }) => {
   const [roomTodos, setRoomTodos] = useState([]);
   const [roomFiles, setRoomFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const INACTIVITY_MS = 60 * 60 * 1000; // 1 hour
+  const INACTIVITY_MS = 60 * 60 * 1000;
 
-  // Subscribe to all active rooms
   useEffect(() => {
     const unsubscribe = getActiveStudyRooms((rooms) => {
       console.log("Active rooms updated:", rooms);
@@ -50,7 +49,6 @@ export const StudyRoomProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // Subscribe to current room data
   useEffect(() => {
     if (!currentRoom) {
       setRoomData(null);
@@ -89,7 +87,6 @@ export const StudyRoomProvider = ({ children }) => {
     };
   }, [currentRoom]);
 
-  // Heartbeat to update presence every 30 seconds
   useEffect(() => {
     if (!currentRoom || !user) return;
 
@@ -100,7 +97,6 @@ export const StudyRoomProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [currentRoom, user]);
 
-  // Presence visibility/focus tracking to mark inactive when tab/window not focused
   useEffect(() => {
     if (!currentRoom || !user) return;
     const goInactive = () => {
@@ -125,23 +121,22 @@ export const StudyRoomProvider = ({ children }) => {
     };
   }, [currentRoom, user]);
 
-  // Auto-disable room after inactivity (client-side enforcement)
   useEffect(() => {
     if (!currentRoom) return;
     const checkAndCloseIfInactive = async () => {
       try {
-        // Compute last activity from room updatedAt and participants lastActive
+
         const updatedAtMs = roomData?.updatedAt?.toMillis?.() || 0;
         const maxPresenceMs = (participants || []).reduce((max, p) => {
           const t = p?.lastActive?.toMillis?.() || 0;
           return t > max ? t : max;
         }, 0);
         const lastActivityMs = Math.max(updatedAtMs, maxPresenceMs);
-        if (lastActivityMs === 0) return; // not enough data yet
+        if (lastActivityMs === 0) return;
         const now = Date.now();
         const idle = now - lastActivityMs;
         if (idle > INACTIVITY_MS && roomData?.active !== false) {
-          // Mark room inactive
+
           await deleteStudyRoom(currentRoom);
         }
       } catch (e) {
@@ -149,15 +144,10 @@ export const StudyRoomProvider = ({ children }) => {
       }
     };
 
-    // Run on every change and also on an interval as a backstop
     checkAndCloseIfInactive();
-    const timer = setInterval(checkAndCloseIfInactive, 5 * 60 * 1000); // every 5 minutes
+    const timer = setInterval(checkAndCloseIfInactive, 5 * 60 * 1000);
     return () => clearInterval(timer);
   }, [currentRoom, roomData, participants]);
-
-  // Don't auto-leave on unmount - rooms should persist across page reloads
-  // Users can manually leave or timeout after inactivity
-
   const createRoom = useCallback(async (roomConfig) => {
     if (!user) throw new Error('Must be logged in to create a room');
     
@@ -182,8 +172,7 @@ export const StudyRoomProvider = ({ children }) => {
       console.log("Creating room with data:", roomData);
       const roomId = await createStudyRoom(roomData);
       console.log("Room created with ID:", roomId);
-      
-      // Auto-join the created room
+
       await joinRoom(roomId);
       return roomId;
     } finally {
@@ -196,7 +185,7 @@ export const StudyRoomProvider = ({ children }) => {
     
     setLoading(true);
     try {
-      // Leave current room if in one
+
       if (currentRoom) {
         await leaveStudyRoom(currentRoom, user.uid);
       }
@@ -268,8 +257,7 @@ export const StudyRoomProvider = ({ children }) => {
 
   const deleteRoom = useCallback(async () => {
     if (!currentRoom || !user) return;
-    
-    // Only room creator can delete
+
     if (roomData?.creatorId !== user.uid) {
       throw new Error('Only the room creator can delete the room');
     }
@@ -283,41 +271,35 @@ export const StudyRoomProvider = ({ children }) => {
     }
   }, [currentRoom, user, roomData]);
 
-  // Chat functions
   const sendMessage = useCallback(async (message) => {
     if (!currentRoom || !user || !message.trim()) return;
     await sendRoomChatMessage(currentRoom, user.uid, user.displayName || 'User', message);
   }, [currentRoom, user]);
 
-  // Notes functions
   const updateNotes = useCallback(async (notes) => {
     if (!currentRoom) return;
     const display = (user?.displayName || userProfile?.displayName || 'User');
     await updateRoomNotes(currentRoom, notes, user?.uid || null, display);
   }, [currentRoom, user, userProfile]);
 
-  // Playlist functions
   const updatePlaylist = useCallback(async (spotifyUrl) => {
     if (!currentRoom) return;
     const display = (user?.displayName || userProfile?.displayName || 'User');
     await updateRoomPlaylist(currentRoom, spotifyUrl, user?.uid || null, display);
   }, [currentRoom, user, userProfile]);
 
-  // Background
   const updateBackground = useCallback(async (backgroundUrl) => {
     if (!currentRoom) return;
     const display = (user?.displayName || userProfile?.displayName || 'User');
     await updateRoomBackground(currentRoom, backgroundUrl, user?.uid || null, display);
   }, [currentRoom, user, userProfile]);
 
-  // Playback signal (play/pause) for shared sync
   const signalPlayback = useCallback(async (action) => {
     if (!currentRoom) return;
     const display = (user?.displayName || userProfile?.displayName || 'User');
     await signalRoomPlayback(currentRoom, action, user?.uid || null, display);
   }, [currentRoom, user, userProfile]);
 
-  // Files (Upload Notes) functions
   const addRoomFile = useCallback(async (fileMeta) => {
     if (!currentRoom) return;
     await addRoomFileMetadata(currentRoom, fileMeta);
@@ -328,7 +310,6 @@ export const StudyRoomProvider = ({ children }) => {
     await deleteRoomFile(currentRoom, fileId);
   }, [currentRoom]);
 
-  // Todo functions
   const addTodo = useCallback(async (todoText) => {
     if (!currentRoom || !todoText.trim() || !user) return;
     const display = (user.displayName || userProfile?.displayName || 'User');

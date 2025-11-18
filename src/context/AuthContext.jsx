@@ -22,12 +22,10 @@ import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserPr
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // Initialize user from Firebase's current user (cached) to prevent flash
   const initialUser = auth.currentUser;
   const [user, setUser] = useState(initialUser);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
-  // Track whether there was an initial cached user to suppress navbar flicker (constant)
   const hadInitialUser = !!initialUser;
 
   useEffect(() => {
@@ -43,8 +41,8 @@ export const AuthProvider = ({ children }) => {
               email: u.email,
               photoURL: u.photoURL || null,
             });
-          } else {
-            // If profile exists but missing photo or name, backfill from Auth (e.g., Google profile)
+          }
+          else {
             const updates = {};
             if (!profile.photoURL && u.photoURL) updates.photoURL = u.photoURL;
             if (!profile.displayName && u.displayName) updates.displayName = u.displayName;
@@ -52,13 +50,13 @@ export const AuthProvider = ({ children }) => {
               await updateUserProfile(u.uid, updates);
             }
           }
-          // Realtime subscription for profile updates
           if (unsubscribeProfile) unsubscribeProfile();
           unsubscribeProfile = subscribeToUserProfile(u.uid, (p) => setUserProfile(p));
         } catch (error) {
           console.error('Error loading user profile:', error);
         }
-      } else {
+      } 
+      else {
         if (unsubscribeProfile) unsubscribeProfile();
         unsubscribeProfile = null;
         setUserProfile(null);
@@ -76,19 +74,19 @@ export const AuthProvider = ({ children }) => {
     if (displayName) {
       await updateProfile(cred.user, { displayName });
     }
-    // Send email verification
+
     await sendEmailVerification(cred.user);
-    // Create Firestore profile
+    
     await createUserProfile(cred.user.uid, {
       displayName: displayName || 'User',
       email,
       photoURL: null,
     });
-    // Fire-and-forget welcome email
+
     try {
       sendWelcomeEmail({ email, name: displayName || 'User' });
     } catch {}
-    // Require explicit sign-in after verification
+
     await signOut(auth);
     return cred.user;
   };
@@ -96,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   const signIn = async ({ email, password, remember = false }) => {
     await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
     const cred = await signInWithEmailAndPassword(auth, email, password);
-    // Fire-and-forget sign-in alert
+
     try {
       const name = cred.user?.displayName || 'User';
       sendSignInAlert({ email: cred.user?.email || email, name, provider: 'password' });
@@ -106,7 +104,6 @@ export const AuthProvider = ({ children }) => {
 
   const signInWithGoogle = async () => {
     const cred = await signInWithPopup(auth, googleProvider);
-    // Create or update Firestore profile
     const existingProfile = await getUserProfile(cred.user.uid);
     if (!existingProfile) {
       await createUserProfile(cred.user.uid, {
@@ -115,7 +112,7 @@ export const AuthProvider = ({ children }) => {
         photoURL: cred.user.photoURL || null,
       });
     }
-    // Fire-and-forget sign-in alert
+
     try {
       sendSignInAlert({ email: cred.user.email, name: cred.user.displayName || 'User', provider: 'google' });
     } catch {}
@@ -135,7 +132,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyEmail = async (actionCode) => {
     await applyActionCode(auth, actionCode);
-    // Reload user to get updated emailVerified status
+
     if (auth.currentUser) {
       await auth.currentUser.reload();
       setUser({ ...auth.currentUser });
@@ -153,25 +150,22 @@ export const AuthProvider = ({ children }) => {
     await signOut(auth);
   };
 
-  // Delete current account and associated Firestore data so it disappears from leaderboard
   const deleteAccount = async () => {
     const current = auth.currentUser;
     if (!current) throw new Error('Not signed in');
     const uid = current.uid;
 
-    // Best effort: cleanup Firestore first (uses current auth session)
     try {
       await deleteUserData(uid);
     } catch (e) {
       console.warn('Partial data cleanup; proceeding to delete auth user:', e);
     }
 
-    // Attempt delete; reauthenticate if required
     try {
       await deleteUser(current);
     } catch (err) {
       if (String(err?.code) === 'auth/requires-recent-login') {
-        // Try popup reauth with Google if available
+
         try {
           await reauthenticateWithPopup(current, googleProvider);
           await deleteUser(current);
