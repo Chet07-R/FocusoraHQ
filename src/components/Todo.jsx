@@ -9,42 +9,85 @@ const Todo = ({ addNotification = () => {} }) => {
   const prevTodosRef = React.useRef(null);
   const initializedRef = React.useRef(false);
   const [newTask, setNewTask] = useState("");
+  const [localTodos, setLocalTodos] = useState(() => {
+    try {
+      const saved = localStorage.getItem('myspace_todos');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Use room todos if in a room, otherwise use local todos
+  const todos = currentRoom ? (roomTodos || []) : localTodos;
+
+  // Save local todos to localStorage
+  useEffect(() => {
+    if (!currentRoom) {
+      localStorage.setItem('myspace_todos', JSON.stringify(localTodos));
+    }
+  }, [localTodos, currentRoom]);
 
   const addTask = async () => {
     const t = newTask.trim();
     if (!t) return addNotification("⚠️ Enter a task first");
-    if (!currentRoom) return addNotification("❌ Join a room first");
-    try {
-      await addTodo(t);
+    
+    if (currentRoom) {
+      // Room mode
+      try {
+        await addTodo(t);
+        setNewTask("");
+        addNotification("✅ Task added");
+      } catch (e) {
+        addNotification("❌ Failed to add task");
+        console.error(e);
+      }
+    } else {
+      // Local mode
+      const newTodo = {
+        id: Date.now().toString(),
+        text: t,
+        completed: false,
+        createdById: user?.uid || 'local',
+        createdByName: user?.displayName || userProfile?.displayName || 'You',
+        createdAt: new Date().toISOString()
+      };
+      setLocalTodos(prev => [...prev, newTodo]);
       setNewTask("");
       addNotification("✅ Task added");
-    } catch (e) {
-      addNotification("❌ Failed to add task");
-      console.error(e);
     }
   };
 
   const toggleTask = async (todo) => {
-    if (!currentRoom) return;
-    try {
-      await toggleTodo(todo.id, !todo.completed);
-    } catch (e) {
-      console.error(e);
+    if (currentRoom) {
+      try {
+        await toggleTodo(todo.id, !todo.completed);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setLocalTodos(prev => prev.map(t => 
+        t.id === todo.id ? { ...t, completed: !t.completed } : t
+      ));
     }
   };
 
   const removeTask = async (todo) => {
-    if (!currentRoom) return;
-    try {
-      await deleteTodo(todo.id);
+    if (currentRoom) {
+      try {
+        await deleteTodo(todo.id);
+        addNotification("🗑️ Task removed");
+      } catch (e) {
+        addNotification("❌ Failed to remove task");
+        console.error(e);
+      }
+    } else {
+      setLocalTodos(prev => prev.filter(t => t.id !== todo.id));
       addNotification("🗑️ Task removed");
-    } catch (e) {
-      addNotification("❌ Failed to remove task");
-      console.error(e);
     }
   };
 
-  const active = (roomTodos || []).filter((t) => !t.completed).length;
+  const active = todos.filter((t) => !t.completed).length;
   const hasUnknown = (roomTodos || []).some(t => !t.createdById || !t.createdByName);
 
   // Real-time notifications for todo changes
@@ -116,11 +159,11 @@ const Todo = ({ addNotification = () => {} }) => {
         <input
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
-          placeholder={currentRoom ? "Add a new task..." : "Join a room to add tasks"}
-          disabled={!currentRoom}
-          className="flex-1 px-3 py-2 rounded-md bg-white/10 text-white outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          onKeyPress={(e) => e.key === 'Enter' && addTask()}
+          placeholder="Add a new task..."
+          className="flex-1 px-3 py-2 rounded-md bg-white/10 text-white outline-none"
         />
-        <button onClick={addTask} disabled={!currentRoom} className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed">
+        <button onClick={addTask} className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:opacity-95 transition">
           <PlusCircle size={16} />
           <span className="select-none">Add</span>
         </button>
@@ -128,7 +171,7 @@ const Todo = ({ addNotification = () => {} }) => {
 
       <ul className="space-y-3 max-h-[450px] overflow-auto custom-scrollbar pr-2">
         <div className="space-y-3 h-[450px] overflow-y-auto">
-          {(roomTodos || []).map((t) => (
+          {todos.map((t) => (
             <li key={t.id} className="flex items-center justify-between bg-white/5 p-3 rounded-md">
               <div className="flex items-center gap-3">
                 <input type="checkbox" checked={!!t.completed} onChange={() => toggleTask(t)} className="w-4 h-4" />
