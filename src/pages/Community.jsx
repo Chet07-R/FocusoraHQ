@@ -1,13 +1,13 @@
-// Community.jsx
+
 import React from "react";
 
 const Community = () => {
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 min-h-screen flex flex-col">
-      {/* Navbar */}
+      {}
       <nav className="navbar"></nav>
 
-      {/* Main Content */}
+      {}
       <main className="flex flex-col items-center justify-center flex-grow text-center px-3">
         <div className="max-w-lg mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 mt-18">
           <h2 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-3">
@@ -19,7 +19,7 @@ const Community = () => {
             features, and be part of the growing community on Discord.
           </p>
 
-          {/* Discord Redirect Button */}
+          {}
           <a
             href="https://discord.gg/YOUR_INVITE_LINK"
             target="_blank"
@@ -36,7 +36,7 @@ const Community = () => {
         </div>
       </main>
 
-      {/* Footer */}
+      {}
       <footer className="footer"></footer>
     </div>
   );

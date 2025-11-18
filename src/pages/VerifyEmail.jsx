@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const { user, verifyEmail, resendVerificationEmail, reloadUser, signOutUser } = useAuth();
-  const [status, setStatus] = useState('checking'); // checking, verified, error, waiting
+  const [status, setStatus] = useState('checking'); 
   const [message, setMessage] = useState('');
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
@@ -15,11 +15,11 @@ const VerifyEmail = () => {
     const mode = searchParams.get('mode');
     const actionCode = searchParams.get('oobCode');
 
-    // If we have an action code from the email link, verify it
+    
     if (mode === 'verifyEmail' && actionCode) {
       handleEmailVerification(actionCode);
     } else if (user) {
-      // Check if user is already verified
+      
       if (user.emailVerified) {
         setStatus('verified');
         setMessage('Your email is already verified!');
@@ -28,7 +28,7 @@ const VerifyEmail = () => {
         setMessage('Please check your email for the verification link.');
       }
     } else {
-      // Not logged in: instruct user to verify via email, then sign in
+      
       setStatus('error');
       setMessage('We sent you a verification email. Click the link in your inbox to verify, then sign in.');
     }
@@ -39,7 +39,7 @@ const VerifyEmail = () => {
       await verifyEmail(actionCode);
       setStatus('verified');
       setMessage('Email verified successfully! Please sign in to continue.');
-      // Enforce fresh sign-in after verification
+      
       try { await signOutUser(); } catch {}
       setTimeout(() => navigate('/signin'), 2000);
     } catch (error) {
@@ -53,7 +53,7 @@ const VerifyEmail = () => {
       setResendDisabled(true);
       await resendVerificationEmail();
       setMessage('Verification email sent! Please check your inbox.');
-      // Start 60 second countdown
+      
       setCountdown(60);
       const timer = setInterval(() => {
         setCountdown((prev) => {
@@ -101,7 +101,7 @@ const VerifyEmail = () => {
       <div className="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8">
         <div className="relative max-w-lg w-full bg-slate-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border-2 border-blue-500/30 mt-12">
           
-          {/* Icon based on status */}
+          {}
           <div className="flex justify-center mb-6">
             {status === 'verified' && (
               <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center border-2 border-green-400">
@@ -126,7 +126,7 @@ const VerifyEmail = () => {
             )}
           </div>
 
-          {/* Heading */}
+          {}
           <div className="text-center mb-8">
             <h2 
               className="text-3xl font-extrabold mb-3"
@@ -144,7 +144,7 @@ const VerifyEmail = () => {
             </p>
           </div>
 
-          {/* User email display */}
+          {}
           {user && status === 'waiting' && (
             <div className="bg-slate-900/50 border border-blue-500/30 rounded-lg p-4 mb-6">
               <p className="text-sm text-gray-400 mb-1">Verification email sent to:</p>
@@ -152,7 +152,7 @@ const VerifyEmail = () => {
             </div>
           )}
 
-          {/* Action buttons */}
+          {}
           <div className="space-y-3">
             {status === 'waiting' && (
               <>
@@ -213,7 +213,7 @@ const VerifyEmail = () => {
             )}
           </div>
 
-          {/* Help text */}
+          {}
           {status === 'waiting' && (
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-400">

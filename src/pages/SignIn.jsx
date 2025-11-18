@@ -1,107 +1,3 @@
-// import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import Navbar from '../components/Navbar';
-
-// const SignIn = () => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [rememberMe, setRememberMe] = useState(false);
-
-//   const handleSignIn = (e) => {
-//     e.preventDefault();
-//     console.log('Sign In:', { email, password, rememberMe });
-//   };
-
-//   return (
-//     <>
-//       <Navbar />
-//       <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4 py-8">
-//         <div className="max-w-md w-full bg-[#1e293b] rounded-2xl shadow-2xl p-8 border border-gray-700">
-//           {/* Logo Icon */}
-//           <div className="flex justify-center mb-6">
-//             <img src="../images/transparent.png" alt="Logo" className="w-20 h-20" />
-//           </div>
-
-//           {/* Heading */}
-//           <div className="text-center mb-8">
-//             <h2 className="text-3xl font-bold text-white mb-2">
-//               Welcome Back
-//             </h2>
-//             <p className="text-gray-400 text-sm">
-//               Sign in to continue your focus journey
-//             </p>
-//           </div>
-
-//           {/* Form */}
-//           <form onSubmit={handleSignIn} className="space-y-5">
-//             <div>
-//               <label className="block text-sm font-medium text-gray-300 mb-2">
-//                 Email
-//               </label>
-//               <input
-//                 type="email"
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//                 placeholder="Enter your Email"
-//                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
-//                 required
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-300 mb-2">
-//                 Password
-//               </label>
-//               <input
-//                 type="password"
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//                 placeholder="Enter your Password"
-//                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
-//                 required
-//               />
-//             </div>
-
-//             {/* Remember Me & Forgot Password */}
-//             <div className="flex items-center justify-between">
-//               <label className="flex items-center cursor-pointer">
-//                 <input
-//                   type="checkbox"
-//                   checked={rememberMe}
-//                   onChange={(e) => setRememberMe(e.target.checked)}
-//                   className="w-4 h-4 bg-[#0f172a] border-gray-600 rounded text-cyan-500 focus:ring-0 focus:ring-offset-0"
-//                 />
-//                 <span className="ml-2 text-sm text-gray-300">Remember me</span>
-//               </label>
-//               <Link to="/forgot-password" className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">
-//                 Forgot Password?
-//               </Link>
-//             </div>
-
-//             {/* Submit Button */}
-//             <button
-//               type="submit"
-//               className="w-full bg-[#0f172a] border border-gray-600 text-white font-medium py-3 rounded-lg hover:bg-[#1e293b] hover:border-cyan-500 transition-all duration-200"
-//             >
-//               Sign In
-//             </button>
-//           </form>
-
-//           {/* Sign Up Link */}
-//           <p className="text-center text-gray-400 text-sm mt-6">
-//             Don't have an account?{' '}
-//             <Link to="/signup" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
-//               Sign Up
-//             </Link>
-//           </p>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default SignIn;
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -126,7 +22,7 @@ const handleSignIn = async (e) => {
   setSubmitting(true);
   try {
     const user = await signIn({ email, password, remember: rememberMe });
-    // Enforce verification: if not verified, sign out and redirect
+    
     if (!user.emailVerified) {
       try { await signOutUser(); } catch {}
       navigate('/verify-email');
@@ -159,7 +55,7 @@ return (
 <>
 <div className="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8 pt-16">
     <div className={`relative max-w-md w-full rounded-3xl shadow-2xl p-8 border-2 mt-12 hover:border-cyan-400/50 transition-all duration-300 backdrop-blur-lg ${darkMode ? 'bg-slate-800/80 border-purple-500/30' : 'bg-white/80 border-purple-400/40'}`}>
-      {/* Logo Icon with bounce animation */}
+      {}
       <div className="flex justify-center mb-6">
         <div className="relative">
           <img src="../images/transparent.png" alt="Logo" className="w-20 h-20 hover:scale-110 transition-transform duration-300 dark:invert-0 invert" />
@@ -167,7 +63,7 @@ return (
         </div>
       </div>
 
-      {/* Heading with FocusoraHQ gradient text */}
+      {}
       <div className="text-center mb-8">
         <h2 
           className="text-5xl font-black mb-3 tracking-tight" 
@@ -187,7 +83,7 @@ return (
         </p>
       </div>
 
-      {/* Form */}
+      {}
       <form onSubmit={handleSignIn} className="space-y-5">
         {error && (
           <div className={`w-full border text-sm px-4 py-2 rounded-lg ${darkMode ? 'bg-red-500/10 border-red-500/40 text-red-300' : 'bg-red-50 border-red-300 text-red-700'}`}>
@@ -224,7 +120,7 @@ return (
           />
         </div>
 
-        {/* Remember Me & Forgot Password */}
+        {}
         <div className="flex items-center justify-between">
           <label className="flex items-center cursor-pointer group">
             <input
@@ -244,7 +140,7 @@ return (
           </button>
         </div>
 
-        {/* Submit Button with cool gradient */}
+        {}
         <button
           type="submit"
           disabled={submitting}
@@ -271,7 +167,7 @@ return (
         </button>
       </form>
 
-      {/* Sign Up Link */}
+      {}
       <p className={`text-center text-sm mt-6 font-light ${darkMode ? 'text-gray-400' : 'text-gray-700'}`} style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
         New here?{' '}
         <Link to="/signup" className="text-cyan-400 hover:text-cyan-300 font-semibold hover:underline transition-colors">
@@ -281,7 +177,7 @@ return (
     </div>
   </div>
 
-  {/* Custom styles for autofill */}
+  {}
   <style>{`
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
@@ -294,7 +190,7 @@ return (
     }
   `}</style>
 
-  {/* Forgot Password Modal */}
+  {}
   <ForgotPasswordModal
     isOpen={showForgotPassword}
     onClose={() => setShowForgotPassword(false)}

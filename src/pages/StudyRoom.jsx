@@ -5,13 +5,13 @@ const StudyRoom = () => {
   const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
-      {/* Navbar */}
+      {}
       <nav className="navbar"></nav>
 
-      {/* Hero Section */}
+      {}
       <main className="min-h-screen relative overflow-hidden">
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-          {/* Header */}
+          {}
           <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12 md:mb-16 pt-8 sm:pt-10 md:pt-12">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
               <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-xl">
@@ -39,9 +39,9 @@ const StudyRoom = () => {
             </p>
           </div>
 
-          {/* Action Cards */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-12 sm:mb-16 md:mb-20">
-            {/* Create Space */}
+            {}
             <div
               role="button"
               tabIndex={0}
@@ -131,7 +131,7 @@ const StudyRoom = () => {
               </div>
             </div>
 
-            {/* Join Space */}
+            {}
             <Link to="/join-space" className="group">
               <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-transparent hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300 h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 opacity-50"></div>
@@ -210,7 +210,7 @@ const StudyRoom = () => {
             </Link>
           </div>
 
-          {/* Feature Image */}
+          {}
           <div className="flex justify-center px-4">
             <div className="relative group max-w-md">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
@@ -234,7 +234,7 @@ const StudyRoom = () => {
         </div>
       </main>
 
-      {/* Footer */}
+      {}
       <footer className="footer"></footer>
     </div>
   );

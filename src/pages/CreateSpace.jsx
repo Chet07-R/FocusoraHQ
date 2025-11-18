@@ -12,7 +12,7 @@ const CreateSpace = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    isPublic: true, // `true` for Public, `false` for Private
+    isPublic: true, 
     maxParticipants: 10,
   });
   const [loading, setLoading] = useState(false);
@@ -40,8 +40,8 @@ const CreateSpace = () => {
     setError("");
     try {
       const room = await createRoom(formData);
-      // Redirect to Study Room 1 as requested
-      // If you want to keep the new room id available, pass via state or query
+      
+      
       navigate(`/study-room-1`, { state: { roomId: room?.id || null } });
     } catch (err) {
       setError(err.message || "Failed to create room.");
@@ -117,7 +117,7 @@ const CreateSpace = () => {
                 Privacy
               </label>
               <div className="grid grid-cols-2 gap-4">
-                {/* Public */}
+                {}
                 <button
                   type="button"
                   onClick={() => handlePrivacyChange(true)}
@@ -133,7 +133,7 @@ const CreateSpace = () => {
                     Anyone can join your space
                   </span>
                 </button>
-                {/* Private */}
+                {}
                 <button
                   type="button"
                   onClick={() => handlePrivacyChange(false)}
@@ -191,7 +191,7 @@ const CreateSpace = () => {
           </form>
         </div>
       </div>
-      {/* Keep autofill consistent with dark theme */}
+      {}
       <style>{`
         .dark input:-webkit-autofill,
         .dark input:-webkit-autofill:hover,

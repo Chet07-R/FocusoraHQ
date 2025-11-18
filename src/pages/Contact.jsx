@@ -41,7 +41,7 @@ const Contact = () => {
 
     setSending(true);
 
-    // Simulate email sending (integrate with your EmailJS or backend)
+    
     setTimeout(() => {
       showToast("✅ Message sent successfully! We'll get back to you soon.", "success");
       setFormData({ name: "", email: "", subject: "", message: "" });
@@ -79,7 +79,7 @@ const Contact = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} pt-20 pb-16`}>
-      {/* Hero Section */}
+      {}
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 py-20">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -97,7 +97,7 @@ const Contact = () => {
       </div>
 
       <div className="container mx-auto px-6 -mt-10 relative z-20">
-        {/* Contact Methods */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {contactMethods.map((method, index) => (
             <div
@@ -120,7 +120,7 @@ const Contact = () => {
           ))}
         </div>
 
-        {/* Contact Form */}
+        {}
         <div className="max-w-4xl mx-auto">
           <div className={`${darkMode ? "bg-gray-800" : "bg-white"} rounded-2xl shadow-2xl p-8 md:p-12`}>
             <h2 className="text-3xl font-bold mb-2 text-center">Send us a Message</h2>
@@ -228,7 +228,7 @@ const Contact = () => {
             </form>
           </div>
 
-          {/* Additional Info */}
+          {}
           <div className={`mt-12 ${darkMode ? "bg-gray-800" : "bg-white"} rounded-xl p-8 text-center shadow-lg`}>
             <h3 className="text-2xl font-bold mb-4">Office Location</h3>
             <p className={`${darkMode ? "text-gray-300" : "text-gray-700"} mb-2`}>

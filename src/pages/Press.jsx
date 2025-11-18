@@ -92,7 +92,7 @@ const Press = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} pt-20 pb-16`}>
-      {/* Hero Section */}
+      {}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 py-24">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -115,7 +115,7 @@ const Press = () => {
         </div>
       </div>
 
-      {/* Press Releases */}
+      {}
       <div className="container mx-auto px-6 py-24">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Press Releases</h2>
         <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-600"} mb-12 max-w-2xl mx-auto`}>
@@ -157,7 +157,7 @@ const Press = () => {
         </div>
       </div>
 
-      {/* Media Coverage */}
+      {}
       <div className={`${darkMode ? "bg-gray-800/50" : "bg-gray-100"} py-24`}>
         <div className="container mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">In The News</h2>
@@ -189,7 +189,7 @@ const Press = () => {
         </div>
       </div>
 
-      {/* Media Kit */}
+      {}
       <div className="container mx-auto px-6 py-24">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Media Kit</h2>
         <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-600"} mb-12 max-w-2xl mx-auto`}>
@@ -225,7 +225,7 @@ const Press = () => {
         </div>
       </div>
 
-      {/* Contact Section */}
+      {}
       <div className="container mx-auto px-6">
         <div className={`${
           darkMode ? "bg-gray-800" : "bg-white"

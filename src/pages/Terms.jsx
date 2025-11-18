@@ -13,7 +13,7 @@ const Terms = () => {
       <div className={`min-h-screen pt-16 ${darkMode ? 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900' : 'bg-gradient-to-br from-indigo-300 to-cyan-100'}`}>
         <div className="py-20 px-4">
         <div className={`max-w-4xl mx-auto backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 border-2 ${darkMode ? 'bg-slate-800/80 border-purple-500/30' : 'bg-white/90 border-purple-400/40'}`}>
-          {/* Header */}
+          {}
           <div className="text-center mb-8">
             <h1 className={`text-4xl md:text-5xl font-extrabold mb-4 ${darkMode ? 'bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent' : 'text-gray-800'}`}>
               Terms & Conditions
@@ -23,7 +23,7 @@ const Terms = () => {
             </p>
           </div>
 
-          {/* Content */}
+          {}
           <div className={`space-y-6 ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
             <section>
               <h2 className={`text-2xl font-bold mb-3 ${darkMode ? 'text-purple-300' : 'text-purple-700'}`}>1. Acceptance of Terms</h2>
@@ -124,7 +124,7 @@ const Terms = () => {
             </section>
           </div>
 
-          {/* Back Button */}
+          {}
           <div className="mt-10 text-center">
             <Link
               to="/signup"

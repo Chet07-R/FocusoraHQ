@@ -2,17 +2,14 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import './Home.css';
 
+
 const Home = () => {
   return (
     <>
-      {/* --- HERO SECTION --- */}
       <main className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen relative overflow-hidden flex flex-col lg:justify-start pt-24 lg:pt-20">
         
-        {/* Main Content Container */}
-        {/* Added 'h-full' and 'flex-grow' to ensure the inner content takes up available height for spacing distribution */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-16 flex flex-col lg:flex-row items-center justify-between relative z-10 flex-grow lg:flex-grow-0 lg:mt-8">
           
-          {/* 1. Text Content */}
           <div className="w-full lg:w-1/2 text-center lg:text-left lg:pr-12 mb-8 lg:mb-0">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-blue-900 dark:text-white mb-4 tracking-tight leading-tight">
               FocusoraHQ
@@ -22,17 +19,11 @@ const Home = () => {
               Focus. Study. Thrive.
             </p>
 
-            {/* Description paragraph */}
             <p className="text-base sm:text-lg text-blue-700 dark:text-gray-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Your personal headquarters for productivity. Combat distraction, reclaim your focus, and achieve your goals in a serene and supportive online environment.
             </p>
           </div>
 
-          {/* 2. Animation Section 
-              - 'flex-grow': On mobile, this makes the animation container consume the available empty vertical space.
-              - 'items-center': Vertically centers the lottie within that empty space.
-              - 'lg:flex-grow-0': On desktop, we don't want it to grow, just sit on the right.
-          */}
           <div className="w-full lg:w-1/2 flex flex-grow lg:flex-grow-0 justify-center lg:justify-end items-center">
             <div className="relative w-full max-w-[280px] sm:max-w-[350px] lg:max-w-[450px]">
               <lottie-player 
@@ -48,10 +39,6 @@ const Home = () => {
 
         </div>
 
-        {/* 3. Button & Arrow (Centered Wrapper) 
-            - 'mt-auto': Pushes this section to the very bottom of the flex container on mobile.
-            - 'pb-8': Adds bottom padding so it doesn't touch the screen edge.
-        */}
         <div className="w-full flex flex-col items-center mt-auto pb-8 lg:mt-0 lg:pb-0 lg:absolute lg:bottom-8 lg:left-0 lg:z-20">
           
           <a href="#features" className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-10 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 mb-4">
@@ -68,8 +55,6 @@ const Home = () => {
 
       </main>
 
-
-      {/* --- FEATURES SECTION --- */}
       <section id="features" className="py-16 sm:py-20 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -85,14 +70,42 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
 
             {[
-              { to: "/my-space", color: "indigo", iconPath: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", title: "Personal Workspace", desc: "A private, customizable sanctuary with all the tools you need to enter a state of deep work." },
-              { to: "/study-room", color: "purple", iconPath: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", title: "Study Rooms", desc: "Connect with friends or like-minded peers in a collaborative, distraction-free environment." },
-              { to: "/blog", color: "sky", iconPath: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", title: "Blog & Resources", desc: "Discover inspiring articles and actionable tips to enhance your focus and well-being." },
-              { to: "/leaderboard", color: "amber", iconPath: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", title: "Leaderboard", desc: "Add a competitive edge to your productivity with gamified analytics and global rankings." }
+              { 
+                to: "/my-space", 
+                bgColor: "bg-indigo-100 dark:bg-indigo-900", 
+                textColor: "text-indigo-600 dark:text-indigo-400",
+                iconPath: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", 
+                title: "Personal Workspace", 
+                desc: "A private, customizable sanctuary with all the tools you need to enter a state of deep work." 
+              },
+              { 
+                to: "/study-room", 
+                bgColor: "bg-purple-100 dark:bg-purple-900", 
+                textColor: "text-purple-600 dark:text-purple-400",
+                iconPath: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", 
+                title: "Study Rooms", 
+                desc: "Connect with friends or like-minded peers in a collaborative, distraction-free environment." 
+              },
+              { 
+                to: "/blog", 
+                bgColor: "bg-sky-100 dark:bg-sky-900", 
+                textColor: "text-sky-600 dark:text-sky-400",
+                iconPath: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", 
+                title: "Blog & Resources", 
+                desc: "Discover inspiring articles and actionable tips to enhance your focus and well-being." 
+              },
+              { 
+                to: "/leaderboard", 
+                bgColor: "bg-amber-100 dark:bg-amber-900", 
+                textColor: "text-amber-600 dark:text-amber-400",
+                iconPath: "M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z", 
+                title: "Leaderboard", 
+                desc: "Add a competitive edge to your productivity with gamified analytics and global rankings." 
+              }
             ].map((item, idx) => (
               <Link key={idx} to={item.to} className="group h-full">
                 <div className="h-full bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300 flex flex-col">
-                  <div className={`bg-${item.color}-100 dark:bg-${item.color}-900 text-${item.color}-600 dark:text-${item.color}-400 w-12 h-12 rounded-full flex items-center justify-center mb-4 shrink-0`}>
+                  <div className={`${item.bgColor} ${item.textColor} w-12 h-12 rounded-full flex items-center justify-center mb-4 shrink-0`}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.iconPath} />
                     </svg>
@@ -107,8 +120,6 @@ const Home = () => {
         </div>
       </section>
 
-
-      {/* --- WORKSPACE SHOWCASE SECTION --- */}
       <section className="py-16 sm:py-20 bg-white dark:bg-gray-800 overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
@@ -155,8 +166,6 @@ const Home = () => {
         </div>
       </section>
 
-
-      {/* --- TESTIMONIALS --- */}
       <section className="py-16 sm:py-20 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           
@@ -200,11 +209,8 @@ const Home = () => {
         </div>
       </section>
 
-
-      {/* --- CTA SECTION --- */}
       <section className="relative overflow-hidden py-20 sm:py-28 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
         
-        {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-300 dark:bg-cyan-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
@@ -213,7 +219,6 @@ const Home = () => {
 
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           
-          {/* Badge */}
           <div className="flex justify-center mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-purple-500/10 dark:from-cyan-500/20 dark:to-purple-500/20 border border-cyan-500/20 dark:border-cyan-500/30 backdrop-blur-sm">
               <svg className="w-4 h-4 text-cyan-600 dark:text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
@@ -223,7 +228,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Main heading with gradient */}
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-center mb-6 leading-tight">
             <span className="bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
               Ready to Reclaim
@@ -232,12 +236,10 @@ const Home = () => {
             <span className="text-gray-900 dark:text-white">Your Focus?</span>
           </h2>
 
-          {/* Subtext */}
           <p className="text-lg sm:text-xl text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">
             Join thousands of users who are boosting their productivity and achieving their goals. Get started for free today.
           </p>
 
-          {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link 
               to="/signup" 
@@ -272,5 +274,6 @@ const Home = () => {
     </>
   );
 };
+
 
 export default Home;

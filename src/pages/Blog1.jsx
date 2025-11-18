@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../components/blog.css';
-// Navbar is rendered globally in App.jsx
 
 const Blog1 = () => {
   return (
     <>
     
-    {/*  Article Header  */}
+    {}
     <article className="py-6 sm:py-12">
         <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
@@ -27,7 +26,7 @@ const Blog1 = () => {
                         Transform Your Productivity in 30 Days
                     </p>
 
-                    {/*  Author and Date  */}
+                    {}
                     <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6 sm:mb-8">
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
@@ -54,7 +53,7 @@ const Blog1 = () => {
                         </div>
                     </div>
 
-                    {/*  Stats  */}
+                    {}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-blue-200 dark:border-blue-800">
                         <div className="text-center">
                             <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">47%</div>
@@ -74,10 +73,10 @@ const Blog1 = () => {
         </div>
     </article>
 
-    {/*  Main Content  */}
+    {}
     <div className="container mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-12 max-w-7xl mx-auto">
-           {/*  Sidebar  */}
+           {}
 <div className="lg:col-span-1 order-2 lg:order-1">
   <div className="bg-transparent rounded-xl shadow-lg p-4 sm:p-6 lg:sticky lg:top-24 border border-gray-200/50 dark:border-gray-700/50">
     <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-800 dark:text-white flex items-center gap-2">
@@ -87,7 +86,7 @@ const Blog1 = () => {
       Table of Contents
     </h3>
 
-      {/*  Slider Indicator  */}
+      {}
       <div className="toc-indicator absolute left-0 w-1 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out" style={{height: '36px', top: '0'}}></div>
       
       <div className="space-y-1 relative pl-4">
@@ -116,11 +115,10 @@ const Blog1 = () => {
   </div>
 </div>
 
-
-            {/*  Article Content  */}
+            {}
             <div className="lg:col-span-3 order-1 lg:order-2">
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                    {/*  Image  */}
+                    {}
                     <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 p-8 sm:p-12 text-center">
                         
                         <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Master Deep Work in 30 Days</h2>
@@ -128,7 +126,7 @@ const Blog1 = () => {
                     </div>
 
                     <div className="p-4 sm:p-8 md:p-12">
-                        {/*  Introduction  */}
+                        {}
                         <section id="introduction" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                                 What is Deep Work?
@@ -183,7 +181,7 @@ const Blog1 = () => {
                             </div>
                         </section>
 
-                        {/*  The Science Behind Deep Work  */}
+                        {}
                         <section id="science" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                                 The Science Behind Deep Work
@@ -221,7 +219,7 @@ const Blog1 = () => {
                             </div>
                         </section>
 
-                        {/*  Benefits & Impact  */}
+                        {}
                         <section id="benefits" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                                 Benefits & Impact
@@ -300,7 +298,7 @@ const Blog1 = () => {
                             </div>
                         </section>
 
-                        {/*  Common Challenges  */}
+                        {}
                         <section id="challenges" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                                  Common Challenges
@@ -361,7 +359,7 @@ const Blog1 = () => {
                             </div>
                         </section>
 
-                        {/*  30-Day Action Plan  */}
+                        {}
                         <section id="day-plan" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                                  30-Day Deep Work Transformation Plan
@@ -371,7 +369,7 @@ const Blog1 = () => {
                                 Transform your productivity with this structured 30-day program designed to build deep work habits progressively:
                             </p>
 
-                            {/*  Week 1: Foundation  */}
+                            {}
                             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 sm:p-8 rounded-lg border border-blue-200 dark:border-blue-800 mb-6 sm:mb-8">
                                 <h3 className="text-xl sm:text-2xl font-bold text-blue-800 dark:text-blue-300 mb-4 sm:mb-6 flex items-center">
                                      Week 1: Foundation Building (Days 1-7)
@@ -399,7 +397,7 @@ const Blog1 = () => {
                                 </div>
                             </div>
 
-                            {/*  Week 2: Skill Development  */}
+                            {}
                             <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 sm:p-8 rounded-lg border border-purple-200 dark:border-purple-800 mb-6 sm:mb-8">
                                 <h3 className="text-xl sm:text-2xl font-bold text-purple-800 dark:text-purple-300 mb-4 sm:mb-6 flex items-center">
                                      Week 2: Skill Development (Days 8-14)
@@ -427,7 +425,7 @@ const Blog1 = () => {
                                 </div>
                             </div>
 
-                            {/*  Week 3: Integration  */}
+                            {}
                             <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 p-6 sm:p-8 rounded-lg border border-green-200 dark:border-green-800 mb-6 sm:mb-8">
                                 <h3 className="text-xl sm:text-2xl font-bold text-green-800 dark:text-green-300 mb-4 sm:mb-6 flex items-center">
                                     Week 3: Integration (Days 15-21)
@@ -455,7 +453,7 @@ const Blog1 = () => {
                                 </div>
                             </div>
 
-                            {/*  Week 4: Mastery  */}
+                            {}
                             <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 p-6 sm:p-8 rounded-lg border border-orange-200 dark:border-orange-800">
                                 <h3 className="text-xl sm:text-2xl font-bold text-orange-800 dark:text-orange-300 mb-4 sm:mb-6 flex items-center">
                                 Week 4: Maery (Days 22-30)
@@ -484,14 +482,14 @@ const Blog1 = () => {
                             </div>
                         </section>
 
-                        {/*  Proven Techniques  */}
+                        {}
                         <section id="techniques" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                              Proven Deep Work Techniques
                             </h2>
 
                             <div className="space-y-6 sm:space-y-8">
-                                {/*  Pomodoro Technique  */}
+                                {}
                                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 sm:p-6 rounded-lg">
                                     <h4 className="font-bold text-lg sm:text-xl text-red-800 dark:text-red-300 mb-3 sm:mb-4 flex items-center">
                                      The Pomodoro Technique
@@ -504,7 +502,7 @@ const Blog1 = () => {
                                     </div>
                                 </div>
 
-                                {/*  Time Blocking  */}
+                                {}
                                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 sm:p-6 rounded-lg">
                                     <h4 className="font-bold text-lg sm:text-xl text-blue-800 dark:text-blue-300 mb-3 sm:mb-4 flex items-center">
                                      Time Blocking
@@ -517,7 +515,7 @@ const Blog1 = () => {
                                     </div>
                                 </div>
 
-                                {/*  The 90-Minute Rule  */}
+                                {}
                                 <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4 sm:p-6 rounded-lg">
                                     <h4 className="font-bold text-lg sm:text-xl text-green-800 dark:text-green-300 mb-3 sm:mb-4 flex items-center">
                                      The 90-Minute Rule
@@ -530,7 +528,7 @@ const Blog1 = () => {
                                     </div>
                                 </div>
 
-                                {/*  Batch Processing  */}
+                                {}
                                 <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 p-4 sm:p-6 rounded-lg">
                                     <h4 className="font-bold text-lg sm:text-xl text-purple-800 dark:text-purple-300 mb-3 sm:mb-4 flex items-center">
                                      Batch Processing
@@ -545,7 +543,7 @@ const Blog1 = () => {
                             </div>
                         </section>
 
-                        {/*  Progress Tracking  */}
+                        {}
                         <section id="tracking" className="mb-12 sm:mb-16">
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
                              Progress Tracking & Measurement
@@ -589,7 +587,7 @@ const Blog1 = () => {
         </div>
     </div>
 
-{/*  Related Articles  */}
+{}
 <section className="bg-gray-100 dark:bg-gray-800/50 py-12 sm:py-16">
     <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -597,7 +595,7 @@ const Blog1 = () => {
                 Related Articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {/*  Article 1  */}
+                {}
                 <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
                     <Link to="/blog2" className="block h-full">
                         <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
@@ -623,7 +621,7 @@ const Blog1 = () => {
                     </Link>
                 </article>
 
-                {/*  Article 2  */}
+                {}
                 <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
                     <Link to="/blog2" className="block h-full">
                         <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
@@ -649,7 +647,7 @@ const Blog1 = () => {
                         </Link>
                 </article>
 
-                {/*  Article 3  */}
+                {}
                 <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2 md:col-span-2 lg:col-span-1">
                     <Link to="/blog2" className="block h-full">
                         <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">

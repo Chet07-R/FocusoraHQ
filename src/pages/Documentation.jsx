@@ -212,7 +212,6 @@ const Documentation = () => {
             </div>
           </aside>
 
-          {/* Main Content */}
           <main className="flex-1">
             <div className={`${darkMode ? "bg-gray-800" : "bg-white"} rounded-xl p-8 shadow-lg`}>
               <h2 className="text-3xl font-bold mb-6">
@@ -224,7 +223,6 @@ const Documentation = () => {
                 )}
               </div>
 
-              {/* Navigation Buttons */}
               <div className="flex justify-between items-center mt-12 pt-6 border-t border-gray-700">
                 <Link
                   to="/help-center"

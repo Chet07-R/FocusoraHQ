@@ -1,154 +1,3 @@
-// import React, { useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import Navbar from '../components/Navbar';
-
-// const SignUp = () => {
-//   const [formData, setFormData] = useState({
-//     fullName: '',
-//     email: '',
-//     password: '',
-//     confirmPassword: '',
-//     agreeTerms: false,
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value, type, checked } = e.target;
-//     setFormData({
-//       ...formData,
-//       [name]: type === 'checkbox' ? checked : value,
-//     });
-//   };
-
-//   const handleSignUp = (e) => {
-//     e.preventDefault();
-//     console.log('Sign Up:', formData);
-//   };
-
-//   return (
-//     <>
-//       <Navbar />
-//       <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4 py-8">
-//         <div className="max-w-md w-full bg-[#1e293b] rounded-2xl shadow-2xl p-8 border border-gray-700 mt-12">
-//           {/* Logo Icon */}
-//           <div className="flex justify-center mb-6">
-//             <img src="../images/transparent.png" alt="Logo" className="w-20 h-20" />
-//           </div>
-
-//           {/* Heading */}
-//           <div className="text-center mb-8">
-//             <h2 className="text-3xl font-bold text-white mb-2">
-//               Create Account
-//             </h2>
-//             <p className="text-gray-400 text-sm">
-//               Join FocusoraHQ and Boost your Productivity
-//             </p>
-//           </div>
-
-//           {/* Form */}
-//           <form onSubmit={handleSignUp} className="space-y-5">
-//             <div>
-//               <label className="block text-sm font-medium text-gray-300 mb-2">
-//                 Full Name
-//               </label>
-//               <input
-//                 type="text"
-//                 name="fullName"
-//                 value={formData.fullName}
-//                 onChange={handleChange}
-//                 placeholder="Enter your Full Name"
-//                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
-//                 required
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-300 mb-2">
-//                 Email
-//               </label>
-//               <input
-//                 type="email"
-//                 name="email"
-//                 value={formData.email}
-//                 onChange={handleChange}
-//                 placeholder="Enter your Email"
-//                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
-//                 required
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-300 mb-2">
-//                 Password
-//               </label>
-//               <input
-//                 type="password"
-//                 name="password"
-//                 value={formData.password}
-//                 onChange={handleChange}
-//                 placeholder="Enter your Password"
-//                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
-//                 required
-//               />
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-gray-300 mb-2">
-//                 Confirm Password
-//               </label>
-//               <input
-//                 type="password"
-//                 name="confirmPassword"
-//                 value={formData.confirmPassword}
-//                 onChange={handleChange}
-//                 placeholder="Re-enter your Password"
-//                 className="w-full bg-[#0f172a] border border-gray-600 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-cyan-500 transition-colors"
-//                 required
-//               />
-//             </div>
-
-//             {/* Terms Checkbox */}
-//             <div className="flex items-center">
-//               <input
-//                 type="checkbox"
-//                 name="agreeTerms"
-//                 checked={formData.agreeTerms}
-//                 onChange={handleChange}
-//                 className="w-4 h-4 bg-[#0f172a] border-gray-600 rounded text-cyan-500 focus:ring-0 focus:ring-offset-0"
-//                 required
-//               />
-//               <label className="ml-2 text-sm text-gray-300">
-//                 I agree to the{' '}
-//                 <Link to="/terms" className="text-cyan-400 hover:text-cyan-300">
-//                   Terms & Conditions
-//                 </Link>
-//               </label>
-//             </div>
-
-//             {/* Submit Button */}
-//             <button
-//               type="submit"
-//               className="w-full bg-[#0f172a] border border-gray-600 text-white font-medium py-3 rounded-lg hover:bg-[#1e293b] hover:border-cyan-500 transition-all duration-200"
-//             >
-//               Sign Up
-//             </button>
-//           </form>
-
-//           {/* Sign In Link */}
-//           <p className="text-center text-gray-400 text-sm mt-6">
-//             Already have an account?{' '}
-//             <Link to="/signin" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
-//               Sign In
-//             </Link>
-//           </p>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default SignUp;
-
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -192,7 +41,7 @@ const SignUp = () => {
         email: formData.email,
         password: formData.password,
       });
-      // Redirect to email verification page
+      
       navigate('/verify-email');
     } catch (err) {
       const friendly = mapAuthError(err?.code);
@@ -220,7 +69,7 @@ const SignUp = () => {
     <>
       <div className="min-h-screen bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-4 py-8 pt-16">
         <div className={`relative max-w-md w-full rounded-3xl shadow-2xl p-8 border-2 mt-12 hover:border-purple-400/50 transition-all duration-300 backdrop-blur-lg ${darkMode ? 'bg-slate-800/80 border-blue-500/30' : 'bg-white/80 border-blue-400/40'}`}>
-          {/* Logo with cool glow effect */}
+          {}
           <div className="flex justify-center mb-6">
             <div className="relative">
               <img src="../images/transparent.png" alt="Logo" className="w-20 h-20 hover:rotate-12 transition-transform duration-300 dark:invert-0 invert" />
@@ -228,7 +77,7 @@ const SignUp = () => {
             </div>
           </div>
 
-          {/* Heading with FocusoraHQ gradient */}
+          {}
           <div className="text-center mb-8">
             <h2 
               className="text-4xl font-extrabold mb-2"
@@ -246,7 +95,7 @@ const SignUp = () => {
             </p>
           </div>
 
-          {/* Form */}
+          {}
           <form onSubmit={handleSignUp} className="space-y-4">
             {error && (
               <div className={`w-full border px-4 py-2 rounded-lg ${darkMode ? 'bg-red-500/10 border-red-500/40 text-red-300' : 'bg-red-50 border-red-300 text-red-700'}`}>
@@ -313,7 +162,7 @@ const SignUp = () => {
               />
             </div>
 
-            {/* Terms Checkbox */}
+            {}
             <div className="flex items-start">
               <input
                 type="checkbox"
@@ -332,7 +181,7 @@ const SignUp = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
+            {}
             <button
               type="submit"
               disabled={submitting}
@@ -358,7 +207,7 @@ const SignUp = () => {
             </button>
           </form>
 
-          {/* Sign In Link */}
+          {}
           <p className={`text-center text-sm mt-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             Already a member? {' '}
             <Link to="/signin" className="text-purple-400 hover:text-purple-300 font-bold hover:underline transition-colors">
@@ -368,7 +217,7 @@ const SignUp = () => {
         </div>
       </div>
 
-      {/* Custom styles for autofill */}
+      {}
       <style>{`
         input:-webkit-autofill,
         input:-webkit-autofill:hover,

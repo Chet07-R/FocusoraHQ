@@ -98,7 +98,7 @@ const Careers = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} pt-20 pb-16`}>
-      {/* Hero Section */}
+      {}
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 py-24">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -115,7 +115,7 @@ const Careers = () => {
         </div>
       </div>
 
-      {/* Benefits Section */}
+      {}
       <div className="container mx-auto px-6 -mt-16 relative z-20 mb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((benefit, index) => (
@@ -137,7 +137,7 @@ const Careers = () => {
         </div>
       </div>
 
-      {/* Culture Section */}
+      {}
       <div className="container mx-auto px-6 mb-24">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Why FocusoraHQ?</h2>
@@ -166,14 +166,14 @@ const Careers = () => {
         </div>
       </div>
 
-      {/* Job Openings */}
+      {}
       <div className="container mx-auto px-6 mb-24">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Open Positions</h2>
         <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-600"} mb-8`}>
           {filteredOpenings.length} open position{filteredOpenings.length !== 1 ? "s" : ""}
         </p>
 
-        {/* Department Filter */}
+        {}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {departments.map((dept) => (
             <button
@@ -192,7 +192,7 @@ const Careers = () => {
           ))}
         </div>
 
-        {/* Job Cards */}
+        {}
         <div className="max-w-4xl mx-auto space-y-6">
           {filteredOpenings.map((job, index) => (
             <div
@@ -234,7 +234,7 @@ const Careers = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
+      {}
       <div className={`container mx-auto px-6`}>
         <div className={`${
           darkMode ? "bg-gradient-to-r from-gray-800 to-gray-900" : "bg-gradient-to-r from-gray-100 to-gray-200"

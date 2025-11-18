@@ -65,7 +65,7 @@ const About = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} pt-20 pb-16`}>
-      {/* Hero Section */}
+      {}
       <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 py-24">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -84,7 +84,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Stats Section */}
+      {}
       <div className="container mx-auto px-6 -mt-16 relative z-20 mb-24">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
@@ -106,7 +106,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Story Section */}
+      {}
       <div className="container mx-auto px-6 mb-24">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">Our Story</h2>
@@ -124,7 +124,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Values Section */}
+      {}
       <div className="container mx-auto px-6 mb-24">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Our Values</h2>
         <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-600"} mb-12 max-w-2xl mx-auto`}>
@@ -150,7 +150,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* Team Section */}
+      {}
       <div className="container mx-auto px-6 mb-24">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Meet Our Team</h2>
         <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-600"} mb-12 max-w-2xl mx-auto`}>
@@ -179,7 +179,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
+      {}
       <div className={`container mx-auto px-6`}>
         <div className={`${
           darkMode ? "bg-gradient-to-r from-gray-800 to-gray-900" : "bg-gradient-to-r from-gray-100 to-gray-200"

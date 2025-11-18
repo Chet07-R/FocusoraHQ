@@ -13,7 +13,6 @@
   animation: bounce-down 1.5s infinite;
 }
 
-/* Blob Animation */
 @keyframes blob {
   0%, 100% {
     transform: translate(0, 0) scale(1);
@@ -38,7 +37,6 @@
   animation-delay: 4s;
 }
 
-/* Custom Scrollbar Styles */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -58,7 +56,6 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* Gradient Text Animation */
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -74,7 +71,6 @@
   background-clip: text;
 }
 
-/* Floating Animation */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
@@ -84,7 +80,6 @@
   animation: float 3s ease-in-out infinite;
 }
 
-/* Glow Effect */
 .glow-effect {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
   transition: box-shadow 0.3s ease;
@@ -94,7 +89,6 @@
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
 }
 
-/* Glass Morphism Enhancement */
 .glass-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
@@ -102,7 +96,6 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Task Item Styles */
 .task-item {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
@@ -114,7 +107,6 @@
   background: rgba(255, 255, 255, 0.95);
 }
 
-/* Hide empty state when tasks exist */
 .task-list:not(:empty) + #empty-state {
   display: none;
 }

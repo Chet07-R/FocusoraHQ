@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-// Navbar/Footer are rendered globally in App.jsx
 
 const Blog = () => {
   const allArticles = [
@@ -133,7 +132,7 @@ const Blog = () => {
   return (
     <>
 
-      {/* Main Section */}
+      {}
       <section className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 pt-20 pb-16 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between">
@@ -167,7 +166,7 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Featured Article Section */}
+      {}
       <section id="featured" className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
@@ -182,7 +181,7 @@ const Blog = () => {
           <div className="max-w-5xl mx-auto">
             <div className="group bg-gradient-to-r from-indigo-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 rounded-3xl overflow-hidden shadow-lg dark:shadow-xl hover:shadow-2xl dark:hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
               <div className="md:flex h-full">
-                {/* Image Container */}
+                {}
                 <div className="md:w-1/2 overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
@@ -191,7 +190,7 @@ const Blog = () => {
                   />
                 </div>
 
-                {/* Content Container */}
+                {}
                 <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
                   <Link to="/blog1" className="block h-full">
                     <div className="inline-block bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide mb-4 group-hover:bg-blue-800 dark:group-hover:bg-blue-700 transition-colors duration-300">
@@ -227,7 +226,7 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Latest Articles Grid */}
+      {}
       <section className="py-16 bg-gray-50 dark:bg-gray-900" id="latest-articles">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
@@ -274,7 +273,7 @@ const Blog = () => {
             ))}
           </div>
 
-          {/* Load More Articles */}
+          {}
           {visibleCount < allArticles.length && (
             <div className="text-center mt-12">
               <button 
@@ -288,7 +287,7 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Popular Articles Section */}
+      {}
       <section className="py-16 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-6 mt-6">
           <div className="text-center mb-12">
@@ -301,7 +300,7 @@ const Blog = () => {
           </div>
 
           <div className="max-w-4xl mx-auto space-y-6 mt-6">
-            {/* Popular Article 1 */}
+            {}
             <Link to="/blog1" className="block mb-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-700 rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-2xl transform hover:scale-105">
                 <div className="border-l-4 border-blue-600 pl-6 flex items-start space-x-6">
@@ -338,7 +337,7 @@ const Blog = () => {
               </div>
             </Link>
 
-            {/* Popular Article 2 */}
+            {}
             <Link to="/blog2" className="block mb-6">
               <div className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-700 dark:to-gray-700 rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-2xl transform hover:scale-105">
                 <div className="border-l-4 border-cyan-600 pl-6 flex items-start space-x-6">
@@ -375,7 +374,7 @@ const Blog = () => {
               </div>
             </Link>
 
-            {/* Popular Article 3 */}
+            {}
             <Link to="/blog1" className="block mb-6">
               <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-700 rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-2xl transform hover:scale-105">
                 <div className="border-l-4 border-indigo-600 pl-6 flex items-start space-x-6">
@@ -415,9 +414,9 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Sign Up Section */}
+      {}
       <section className="bg-gradient-to-r from-gray-900 via-gray-800 to-black dark:bg-gray-900 relative overflow-hidden">
-        {/* Animated background elements */}
+        {}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
           <div

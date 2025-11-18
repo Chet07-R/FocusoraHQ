@@ -28,8 +28,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     const load = async () => {
-      if (!user) return; // wait for auth
-      // Prefer context profile; fallback to Firestore fetch
+      if (!user) return;
       const p = userProfile || (await getUserProfile(user.uid));
       if (!p) return;
       setUsername(p.displayName || "");
@@ -149,11 +148,10 @@ const EditProfile = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transition-colors duration-300">
             <form onSubmit={onSubmit} className="p-8 md:p-12">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Left: Personal Information */}
+
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 pb-4 border-b-2 border-indigo-100 dark:border-indigo-700">Personal Information</h2>
 
-                  {/* Profile Picture */}
                   <div className="flex flex-col items-center space-y-4">
                     <div className="relative">
                       <img src={profilePic} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-indigo-600 dark:border-indigo-400 shadow-lg" />
@@ -165,13 +163,11 @@ const EditProfile = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400">Click the icon to upload a new photo</p>
                   </div>
 
-                  {/* Username */}
                   <div>
                     <label htmlFor="username" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Username</label>
                     <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:border-indigo-600 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900" placeholder="Enter your username" />
                   </div>
 
-                  {/* Email (locked) */}
                   <div>
                     <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Email Address</label>
                     <input
@@ -187,18 +183,15 @@ const EditProfile = () => {
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Email is managed by your account and cannot be changed here.</p>
                   </div>
 
-                  {/* Bio */}
                   <div>
                     <label htmlFor="bio" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Bio</label>
                     <textarea id="bio" rows={4} value={bio} onChange={(e) => setBio(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:border-indigo-600 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900 resize-none" placeholder="Tell us about your productivity goals and journey..." />
                   </div>
                 </div>
 
-                {/* Right: Settings & Preferences */}
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 pb-4 border-b-2 border-indigo-100 dark:border-indigo-700">Productivity Preferences</h2>
 
-                  {/* Work Duration */}
                   <div className="mb-6">
                     <label htmlFor="pomodoroWork" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Default Work Duration (minutes)</label>
                     <div className="flex items-center space-x-4">
@@ -207,7 +200,6 @@ const EditProfile = () => {
                     </div>
                   </div>
 
-                  {/* Break Duration */}
                   <div className="mb-6">
                     <label htmlFor="pomodoroBreak" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Default Break Duration (minutes)</label>
                     <div className="flex items-center space-x-4">
@@ -216,7 +208,6 @@ const EditProfile = () => {
                     </div>
                   </div>
 
-                  {/* Theme */}
                   <div className="mb-6">
                     <label htmlFor="theme" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Preferred Study Theme</label>
                     <select id="theme" value={theme} onChange={(e) => setTheme(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:border-indigo-600 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900">
@@ -228,7 +219,6 @@ const EditProfile = () => {
                     </select>
                   </div>
 
-                  {/* Privacy Settings */}
                   <div className="mt-8">
                     <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 pb-2 border-b-2 border-indigo-100 dark:border-indigo-700">Privacy Settings</h3>
 
@@ -257,7 +247,6 @@ const EditProfile = () => {
                     </div>
                   </div>
 
-                  {/* Account Statistics */}
                   <div className="mt-8">
                     <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 pb-2 border-b-2 border-indigo-100 dark:border-indigo-700">Your Statistics</h3>
                     <div className="grid grid-cols-2 gap-4">
@@ -274,7 +263,6 @@ const EditProfile = () => {
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="mt-12 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <button

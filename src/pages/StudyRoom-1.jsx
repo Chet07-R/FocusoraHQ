@@ -216,14 +216,14 @@ const StudyRoom1 = () => {
         .glass-card { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.06); }
       `}</style>
 
-      {/* BACKGROUND */}
+      {}
       <div
         className="fixed inset-0 bg-cover bg-center bg-fixed transition-all duration-700 z-0 filter saturate-90"
         style={{ backgroundImage: `url('${bgUrl}')` }}
         aria-hidden
       />
 
-      {/* Notifications - Compact mobile */}
+      {}
       <div className="fixed right-2 sm:right-4 top-14 sm:top-16 z-50 space-y-1.5 max-w-[calc(100vw-1rem)] sm:max-w-xs">
         {notifications.map((n) => (
           <div key={n.id} className="bg-blue-600 text-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded text-xs sm:text-sm shadow-md animate-slideInRight truncate">
@@ -232,12 +232,12 @@ const StudyRoom1 = () => {
         ))}
       </div>
 
-      {/* MAIN */}
+      {}
       <main className="pt-14 sm:pt-16 md:pt-20 pb-6 sm:pb-8 px-2 sm:px-3 md:px-4 max-w-7xl mx-auto relative z-20">
-        {/* Room Info - Ultra compact on mobile */}
+        {}
         <div className="glass-card rounded-lg sm:rounded-xl p-2 sm:p-3 mb-4 sm:mb-6 shadow-xl overflow-hidden" style={{ backdropFilter: "blur(8px)" }}>
           <div className="flex flex-col gap-2 sm:gap-3">
-            {/* Top row */}
+            {}
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-cyan-500 to-pink-500 rounded-lg flex items-center justify-center text-sm sm:text-base font-bold flex-shrink-0">
                 🔖
@@ -253,7 +253,7 @@ const StudyRoom1 = () => {
               <div className="text-[10px] sm:text-xs text-gray-200 ml-auto flex-shrink-0">{roomInfo.members} users</div>
             </div>
 
-            {/* Actions row */}
+            {}
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
               <button onClick={() => { navigator.clipboard?.writeText(roomInfo.id); addNotification("📋 Copied"); }} className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded bg-white/10 text-white hover:bg-white/20 text-[10px] sm:text-xs">Copy</button>
               {isCreator && (
@@ -264,7 +264,7 @@ const StudyRoom1 = () => {
           </div>
         </div>
 
-        {/* Grid - Mobile stacks vertically */}
+        {}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
           <div className="min-h-[350px] sm:min-h-[400px] lg:min-h-0">
             <Todo addNotification={addNotification} />
@@ -281,7 +281,7 @@ const StudyRoom1 = () => {
         />
       </main>
 
-      {/* Floating buttons - Compact */}
+      {}
       <div className="fixed right-0 top-1/3 z-40 flex flex-col gap-1.5 sm:gap-2">
         <button onClick={() => setOpenPanel("participants")} className="bg-blue-600 text-white pl-2 pr-1 sm:pl-3 sm:pr-2 py-1.5 sm:py-2 rounded-l-full shadow-md text-xs sm:text-sm flex items-center gap-1">
           <span>👥</span>
@@ -298,7 +298,7 @@ const StudyRoom1 = () => {
         </button>
       </div>
 
-      {/* Participants Panel */}
+      {}
       <aside className={cx("fixed top-0 right-0 h-full w-full sm:w-80 z-50 transition-transform duration-300", openPanel === "participants" ? "translate-x-0" : "translate-x-full")}>
         <div className="h-full bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-xl p-3 sm:p-4 border-l border-white/10 overflow-y-auto">
           <div className="flex items-center justify-between mb-3">
@@ -327,7 +327,7 @@ const StudyRoom1 = () => {
         </div>
       </aside>
 
-      {/* Chat Panel */}
+      {}
       <aside className={cx("fixed top-0 right-0 h-full w-full sm:w-80 z-50 transition-transform duration-300", openPanel === "chat" ? "translate-x-0" : "translate-x-full")}>
         <div className="h-full flex flex-col bg-black/80 backdrop-blur-xl p-3 border-l border-white/10">
           <div className="flex items-center justify-between mb-3">
@@ -369,7 +369,7 @@ const StudyRoom1 = () => {
         </div>
       </aside>
       
-      {/* Background Panel - Compact */}
+      {}
       <div
         className={`fixed bottom-16 sm:bottom-24 left-1/2 transform -translate-x-1/2 w-[96vw] sm:w-80 rounded-xl bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-3 sm:p-4 transition-all duration-500 z-50 ${
           bgPanelOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-6 pointer-events-none"

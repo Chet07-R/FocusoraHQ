@@ -12,7 +12,7 @@ const JoinSpace = () => {
   const [visibleCount, setVisibleCount] = useState(4);
   const [joiningRoomId, setJoiningRoomId] = useState(null);
 
-  // Convert Firestore rooms to display format with real-time data
+  
   const allRooms = useMemo(() => {
     return activeRooms.map(room => {
       const participantCount = room.participants?.length || 0;
@@ -35,7 +35,7 @@ const JoinSpace = () => {
     });
   }, [activeRooms]);
 
-  // Filter rooms by title or tags
+  
   const filteredRooms = useMemo(() => {
     if (!searchTerm) return allRooms;
     
@@ -49,7 +49,7 @@ const JoinSpace = () => {
     });
   }, [allRooms, searchTerm]);
 
-  // Rooms currently visible
+  
   const visibleRooms = filteredRooms.slice(0, visibleCount);
 
   const handleJoinRoom = async (roomId) => {
@@ -73,11 +73,11 @@ const JoinSpace = () => {
 
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
-      {/* Navbar Placeholder */}
+      {}
       <nav className="navbar"></nav>
 
       <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12 md:py-16 pt-24 sm:pt-28 md:pt-32">
-        {/* Header */}
+        {}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-900 dark:text-white mb-3 sm:mb-4 px-2">
             Join a Study Room
@@ -87,7 +87,7 @@ const JoinSpace = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
+        {}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10">
           <input
             type="text"
@@ -110,7 +110,7 @@ const JoinSpace = () => {
           </button>
         </div>
 
-        {/* Room Cards */}
+        {}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {roomsLoading ? (
             <div className="col-span-full text-center py-10">
@@ -120,10 +120,10 @@ const JoinSpace = () => {
           ) : visibleRooms.length > 0 ? (
             visibleRooms.map((room) => (
               <div key={room.id} className="relative group rounded-2xl">
-                {/* Gradient glow border */}
+                {}
                 <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-70 blur-sm transition-opacity duration-300"></div>
 
-                {/* Card content */}
+                {}
                 <div className={`relative rounded-2xl p-4 sm:p-5 md:p-6 flex flex-col gap-2.5 sm:gap-3 backdrop-blur-xl bg-white/70 dark:bg-gray-900/60 border border-white/20 dark:border-white/10 shadow-xl`}> 
                   <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                     <span className="text-xl sm:text-2xl">{room.icon}</span>
@@ -196,7 +196,7 @@ const JoinSpace = () => {
           )}
         </div>
 
-        {/* Load More Button */}
+        {}
         {visibleCount < filteredRooms.length && (
           <div className="flex justify-center mt-8 sm:mt-10 md:mt-12">
             <button
@@ -228,7 +228,7 @@ const JoinSpace = () => {
         )}
       </main>
 
-      {/* Footer Placeholder */}
+      {}
       <footer className="footer"></footer>
     </div>
   );

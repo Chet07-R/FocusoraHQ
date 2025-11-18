@@ -5,29 +5,29 @@ import '../components/blog.css';
 const Blog2 = () => {
   return (
     <>
-      {/* Article Header */}
+      {}
       <article className="py-6 sm:py-12">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
             <div className="mt-8 text-center mb-8 sm:mb-12">
-              {/* Tags */}
+              {}
               <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
                 <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full">Productivity</span>
                 <span className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full">Time Management</span>
                 <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full">Life Hack</span>
               </div>
 
-              {/* Title */}
+              {}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight px-4 sm:px-0">
                 The 2‑Minute Rule That Will Transform Your Day
               </h1>
 
-              {/* Sub */}
+              {}
               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 font-light px-4 sm:px-0">
                 Stop procrastination and build momentum with a simple habit used by top performers.
               </p>
 
-              {/* Author + Meta */}
+              {}
               <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6 sm:mb-8">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center shadow-[0_0_0_4px_rgba(59,130,246,0.15)]">
@@ -54,7 +54,7 @@ const Blog2 = () => {
                 </div>
               </div>
 
-              {/* Stats Bar */}
+              {}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]">
                 <div className="text-center">
                   <div className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 mb-1 drop-shadow-[0_0_12px_rgba(59,130,246,0.35)]">76%</div>
@@ -76,7 +76,7 @@ const Blog2 = () => {
 
       <div className="container mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-12 max-w-7xl mx-auto">
-          {/* Sidebar */}
+          {}
           <div className="lg:col-span-1 order-2 lg:order-1">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-2xl p-4 sm:p-6 lg:sticky lg:top-24 border border-gray-200 dark:border-gray-700">
               <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-800 dark:text-white flex items-center gap-2">
@@ -112,12 +112,12 @@ const Blog2 = () => {
             </div>
           </div>
 
-          {/* Article Content */}
+          {}
           <article className="lg:col-span-3 order-1 lg:order-2">
             <div className="max-w-4xl">
-              {/* Main Content */}
+              {}
               <div className="space-y-8">
-                {/* What Is The 2-Minute Rule */}
+                {}
                 <section id="what-is" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     What Is The 2-Minute Rule?
@@ -135,7 +135,7 @@ const Blog2 = () => {
                   </p>
                 </section>
 
-                {/* Why It Works */}
+                {}
                 <section id="why-works" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     Why The 2-Minute Rule Works
@@ -175,7 +175,7 @@ const Blog2 = () => {
                   </div>
                 </section>
 
-                {/* Key Benefits */}
+                {}
                 <section id="benefits" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     Key Benefits of The 2-Minute Rule
@@ -218,7 +218,7 @@ const Blog2 = () => {
                   </div>
                 </section>
 
-                {/* How to Implement */}
+                {}
                 <section id="how-implement" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     How to Implement The 2-Minute Rule
@@ -287,7 +287,7 @@ const Blog2 = () => {
                   </div>
                 </section>
 
-                {/* Real Examples */}
+                {}
                 <section id="examples" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     Real-World Examples
@@ -331,7 +331,7 @@ const Blog2 = () => {
                   </div>
                 </section>
 
-                {/* Overcoming Challenges */}
+                {}
                 <section id="challenges" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     Overcoming Common Challenges
@@ -370,7 +370,7 @@ const Blog2 = () => {
                   </div>
                 </section>
 
-                {/* Conclusion */}
+                {}
                 <section id="conclusion" className="scroll-mt-24">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                     Conclusion: Transform Your Day Starting Now
@@ -414,7 +414,7 @@ const Blog2 = () => {
                 </section>
               </div>
 
-              {/* Hero Content */}
+              {}
               <div className="mt-4 bg-gradient-to-r from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 mb-8 sm:mb-12 lg:mb-16 shadow-lg dark:shadow-2xl border border-blue-100 dark:border-blue-800">
                 <div className="text-center space-y-4 sm:space-y-6">
                   <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 italic">
@@ -430,7 +430,7 @@ const Blog2 = () => {
         </div>
       </div>
 
-      {/* Related Articles */}
+      {}
       <section className="bg-gray-100 dark:bg-gray-800/50 py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
@@ -438,7 +438,7 @@ const Blog2 = () => {
               Related Articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {/* Article 1 */}
+              {}
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
                 <Link to="/blog1" className="block h-full">
                   <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
@@ -464,7 +464,7 @@ const Blog2 = () => {
                 </Link>
               </article>
 
-              {/* Article 2 */}
+              {}
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2">
                 <Link to="/blog1" className="block h-full">
                   <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">
@@ -490,7 +490,7 @@ const Blog2 = () => {
                 </Link>
               </article>
 
-              {/* Article 3 */}
+              {}
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl hover:-translate-y-2 md:col-span-2 lg:col-span-1">
                 <Link to="/blog1" className="block h-full">
                   <div className="relative overflow-hidden h-48 sm:h-56 bg-gray-200 dark:bg-gray-700">

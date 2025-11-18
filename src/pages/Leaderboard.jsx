@@ -7,7 +7,6 @@ import { getLeaderboard } from "../utils/firestoreUtils";
 const App = () => {
   const { user, userProfile } = useAuth();
   const { darkMode } = useTheme();
-  // Stats state for animated statistics
   const [stats, setStats] = useState({
     users: 0,
     points: 0,
@@ -15,7 +14,6 @@ const App = () => {
     goalRate: 0,
   });
 
-  // Leaderboard data
   const leaderboardData = [
     {
       rank: 1,
@@ -175,30 +173,25 @@ const App = () => {
     },
   ];
 
-  // State management for load more functionality
   const [visibleCount] = useState(10);
   const idRef = useRef(leaderboardData.length + 1);
-  
-  // Get current user's info for matching
+
   const currentUserEmail = user?.email;
   const currentUserName = userProfile?.displayName || user?.displayName || "You";
   const currentUserPhoto = userProfile?.photoURL || user?.photoURL || "/images/People/default-avatar.png";
-  
-  // Helper function to check if names match (exact or partial)
+
   function namesMatch(name1, name2) {
     if (!name1 || !name2) return false;
     const n1 = name1.toLowerCase().trim();
     const n2 = name2.toLowerCase().trim();
     return n1 === n2 || n1.includes(n2) || n2.includes(n1);
   }
-  
-  // Dynamic users from Firestore (global)
+
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
   const [rows, setRows] = useState([]);
   const [hasLoadedMore, setHasLoadedMore] = useState(false);
 
-  // Badge color mapping function
   const getBadgeColor = (color) => {
     const colors = {
       green: "bg-green-600",
@@ -209,15 +202,12 @@ const App = () => {
       gray: "bg-gray-600",
     };
     return colors[color] || "bg-gray-600";
-  };
-
-  // Load more handler function - shows all remaining data
+  }
   const handleLoadMore = () => {
     setHasLoadedMore(true);
     setRows(allRows);
   };
 
-  // Animate statistics on component mount
   useEffect(() => {
     const animateValue = (key, end, duration) => {
       let start = 0;
@@ -238,9 +228,6 @@ const App = () => {
     animateValue("sessions", 8392, 800);
     animateValue("goalRate", 94, 800);
   }, []);
-
-  // Update rows when user login state changes
-  // Subscribe to Firestore leaderboard (global users)
   useEffect(() => {
     const unsubscribe = getLeaderboard((users) => {
       const mapped = users.map((u) => ({
@@ -265,13 +252,10 @@ const App = () => {
     }, 500);
     return () => unsubscribe && unsubscribe();
   }, [user]);
-
-  // Build merged, sorted rows when dynamic or static data changes
   useEffect(() => {
     const staticNames = new Set(leaderboardData.map(u => (u.name || '').toLowerCase()));
     const filteredDynamic = dynamicUsers.filter(d => !staticNames.has((d.name || '').toLowerCase()));
     const merged = [...leaderboardData, ...filteredDynamic];
-    // Sort by points desc, then sessions, then name
     merged.sort((a, b) => (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name)));
     // Re-rank and add _id
     const ranked = merged.map((u, idx) => ({ ...u, rank: idx + 1, _id: idx + 1 }));
@@ -279,7 +263,6 @@ const App = () => {
     setRows((prev) => hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
   }, [dynamicUsers, hasLoadedMore]);
 
-  // Initialize initial rows (before Firestore responds)
   useEffect(() => {
     const initial = leaderboardData.slice(0, visibleCount).map((u, idx) => ({ ...u, _id: idx + 1 }));
     setRows(initial);
@@ -288,7 +271,7 @@ const App = () => {
 
   return (
     <div className={`min-h-screen pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
-      {/* ===== Hero Section ===== */}
+
       <section className="pb-12 text-center border-b border-white/20 dark:border-gray-700/50">
         <div className="flex justify-center mb-6">
           <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
@@ -303,7 +286,7 @@ const App = () => {
         </p>
       </section>
 
-      {/* ===== Platform Statistics ===== */}
+
       <section className="py-12 px-6 md:px-20 text-center">
         <h2 className={`text-2xl md:text-3xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
           Platform Statistics
@@ -349,8 +332,6 @@ const App = () => {
           </div>
         </div>
       </section>
-
-      {/* ===== Hall of Champions ===== */}
       <section className="py-20 px-6 md:px-20">
         <div className="max-w-6xl mx-auto text-center">
           <div className="flex justify-center mb-6">
@@ -362,25 +343,26 @@ const App = () => {
           <h2 className={`text-3xl md:text-4xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hall of Champions</h2>
           <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>This month's top performers</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
-            {/* Reorder to show: 2nd, 1st (center/tallest), 3rd, with safety guard */}
-            {(allRows.length >= 3
-              ? [allRows[1], allRows[0], allRows[2]]
-              : (allRows.length ? allRows.slice(0, 3) : leaderboardData.slice(0,3))
-            ).map((u, displayIdx) => {
-              if (!u) return null;
-              const isChampion = displayIdx === 1; // Middle position is champion
-              const actualRank = u.rank;
-              
-              return (
-                <div
-                  key={`${u.name}-${displayIdx}`}
-                  className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative backdrop-blur-sm ${
-                    isChampion
-                      ? `scale-105 border-4 border-blue-600 ${darkMode ? 'bg-gradient-to-b from-blue-900/80 to-blue-800/80 hover:from-blue-800/90 hover:to-blue-700/90' : 'bg-gradient-to-b from-blue-100/80 to-blue-200/80 hover:from-blue-200/90 hover:to-blue-300/90'} hover:border-blue-400`
-                      : `${darkMode ? 'bg-gray-800/70 hover:bg-gradient-to-br hover:from-gray-800/80 hover:to-gray-900/80 border border-gray-700/50' : 'bg-white/80 hover:bg-gradient-to-br hover:from-blue-50/90 hover:to-gray-50/90 border border-white/50'} hover:border-2 hover:border-blue-500/30`
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+             {(allRows.length >= 3 ? [allRows[1], allRows[0], allRows[2]] : allRows.length ? allRows.slice(0, 3) : leaderboardData.slice(0,3)
+              ).map((u, displayIdx) => {
+                  if (!u) return null;
+                      const isChampion = displayIdx === 1;
+                      const actualRank = u.rank;
+
+                      const orderClass = displayIdx === 0 ? "order-1 md:order-1"  : displayIdx === 1 ? "order-0 md:order-2"  : "order-2 md:order-3"; 
+                return (
+              <div
+                key={u.name + "-" + displayIdx}
+                  className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative backdrop-blur-sm ${orderClass} ${
+                      isChampion ? "scale-105 border-4 border-blue-600 "
+                      +  (darkMode 
+                        ? "bg-gradient-to-b from-blue-900/80 to-blue-800/80 hover:from-blue-800/90 hover:to-blue-700/90"    : "bg-gradient-to-b from-blue-100/80 to-blue-200/80 hover:from-blue-200/90 hover:to-blue-300/90 hover:border-blue-400"): 
+                        darkMode 
+                        ? "bg-gray-800/70 hover:bg-gradient-to-br hover:from-gray-800/80 hover:to-gray-900/80 border border-gray-700/50": "bg-white/80 hover:bg-gradient-to-br hover:from-blue-50/90 hover:to-gray-50/90 border border-white/50 hover:border-2 hover:border-blue-500/30"
                   }`}
-                >
+              >
+
                   <div className="flex flex-col items-center">
                     {isChampion && (
                       <div className="mb-3 text-yellow-300">
@@ -423,8 +405,6 @@ const App = () => {
           </div>
         </div>
       </section>
-
-      {/* ===== Complete Rankings Table ===== */}
       <section className="py-20 px-6 md:px-20 border-t border-white/20 dark:border-gray-700/50">
         <div className={`rounded-t-2xl overflow-hidden backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50 shadow-lg'}`}>
           <div className={`py-4 px-6 text-left text-lg font-semibold ${darkMode ? 'bg-blue-700 text-white' : 'bg-blue-600 text-white'}`}>
@@ -507,13 +487,12 @@ const App = () => {
             </table>
           </div>
 
-          {/* Load More Button */}
           <div className={`flex justify-center gap-4 py-6 rounded-b-2xl ${darkMode ? 'bg-gray-900/40' : 'bg-white/60 border-t border-gray-200/50'}`}>
             <button
               onClick={handleLoadMore}
               style={{ 
                 background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
-                boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',cursor:'pointer'
               }}
               className="text-white font-semibold px-8 py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300"
               onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
@@ -524,7 +503,6 @@ const App = () => {
           </div>
         </div>
 
-        {/* ===== How to Earn Points ===== */}
         <section className="py-20 px-6 md:px-20">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className={`text-3xl md:text-4xl font-extrabold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -535,7 +513,7 @@ const App = () => {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Focus Sessions */}
+
               <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
                 <div className="flex items-center justify-center mb-4">
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-yellow-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-yellow-50'}`}>
@@ -559,7 +537,6 @@ const App = () => {
                 </ul>
               </div>
 
-              {/* Task Completion */}
               <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
                 <div className="flex items-center justify-center mb-4">
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-teal-300 ${darkMode ? 'bg-[#0b141b]' : 'bg-teal-50'}`}>
@@ -583,7 +560,6 @@ const App = () => {
                 </ul>
               </div>
 
-              {/* Streaks */}
               <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
                 <div className="flex items-center justify-center mb-4">
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-red-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-red-50'}`}>

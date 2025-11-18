@@ -86,7 +86,7 @@ const HelpCenter = () => {
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"} pt-20 pb-16`}>
-      {/* Hero Section */}
+      {}
       <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 py-20">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
@@ -101,7 +101,7 @@ const HelpCenter = () => {
             Search our knowledge base or browse categories below
           </p>
           
-          {/* Search Bar */}
+          {}
           <div className="max-w-2xl mx-auto">
             <div className="relative">
               <input
@@ -132,7 +132,7 @@ const HelpCenter = () => {
       </div>
 
       <div className="container mx-auto px-6 -mt-10 relative z-20">
-        {/* Categories Grid */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {categories.map((category, index) => (
             <div
@@ -170,7 +170,7 @@ const HelpCenter = () => {
           ))}
         </div>
 
-        {/* FAQ Section */}
+        {}
         <div className="max-w-4xl mx-auto mb-16">
           <h2 className="text-4xl font-bold text-center mb-4">
             Frequently Asked Questions
@@ -218,7 +218,7 @@ const HelpCenter = () => {
           </div>
         </div>
 
-        {/* Contact Section */}
+        {}
         <div className={`${
           darkMode ? "bg-gradient-to-r from-gray-800 to-gray-900" : "bg-gradient-to-r from-gray-100 to-gray-200"
         } rounded-2xl p-12 text-center`}>

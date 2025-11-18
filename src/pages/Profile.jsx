@@ -23,10 +23,10 @@ const Profile = () => {
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300 pt-16">
       <div className="p-4 md:p-8">
         <div className="max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-300 relative">
-          {/* Profile Header with animated banner */}
+          {}
           <div className="relative">
             <div className="relative h-48 md:h-64 overflow-hidden">
-              {/* Background Image */}
+              {}
               <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-900' : 'bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400'}`}>
                 <div className={`absolute inset-0 ${darkMode ? 'bg-black/20' : 'bg-white/10'}`} />
               </div>
@@ -48,7 +48,7 @@ const Profile = () => {
 
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative w-full h-full flex items-center justify-center">
-                  {/* Floating icons (simple circles using SVG paths) */}
+                  {}
                   <div className="absolute top-8 left-12 animate-bounce" style={{ animationDuration: "3s" }}>
                     <svg className={`w-12 h-12 opacity-60 ${darkMode ? 'text-white' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clipRule="evenodd" />
@@ -78,14 +78,14 @@ const Profile = () => {
               <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-transparent z-5 ${darkMode ? 'to-black/20' : 'to-white/20'}`} />
             </div>
 
-            {/* Profile Info */}
+            {}
             <div className="relative px-6 pb-8 -mt-20 text-center">
               <img src={display.photo} alt="Profile" className="w-32 h-32 md:w-40 md:h-40 rounded-full shadow-xl mx-auto object-cover" />
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">{display.name}</h1>
               <p className="text-gray-600 dark:text-gray-300 text-lg mt-2">{display.bio}</p>
 
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-full font-bold mt-4 shadow-lg" style={{ animation: "pulse-slow 2s infinite" }}>
-                {/* Fire icon */}
+                {}
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12.001 2c.6 2.4-.3 3.9-1.2 4.9-.9 1-1.7 2.1-.6 3.9.9-1.1 2.4-1.6 3.6-1.2 2 .7 3.1 3 2.3 5.1-.9 2.3-3.5 3.5-6 2.7-2.2-.7-3.7-2.7-3.7-5 0-3.6 2.7-5.7 3.6-6.8C10.6 4.1 11.2 3.2 12 2z" />
                 </svg>
@@ -94,38 +94,38 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Stats Dashboard */}
+          {}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
             <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
-              {/* Clock */}
+              {}
               <svg className="w-10 h-10 mx-auto text-indigo-600 dark:text-indigo-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.totalHours}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Total Hours</p>
             </div>
 
             <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
-              {/* Check Circle */}
+              {}
               <svg className="w-10 h-10 mx-auto text-green-600 dark:text-green-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.sessions}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Study Sessions</p>
             </div>
 
             <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
-              {/* Trophy */}
+              {}
               <svg className="w-10 h-10 mx-auto text-yellow-600 dark:text-yellow-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8"/><path d="M12 17a4 4 0 0 0 4-4V5H8v8a4 4 0 0 0 4 4z"/><path d="M7 5H5a2 2 0 0 0-2 2v1a5 5 0 0 0 5 5"/><path d="M17 5h2a2 2 0 0 1 2 2v1a5 5 0 0 1-5 5"/></svg>
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.points}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Points</p>
             </div>
 
             <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
-              {/* Stopwatch */}
+              {}
               <svg className="w-10 h-10 mx-auto text-red-600 dark:text-red-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8v4l3 3"/><path d="M10 2h4"/><path d="M4.93 4.93l2.83 2.83"/><circle cx="12" cy="13" r="8"/></svg>
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.pomodoros}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Pomodoros</p>
             </div>
           </div>
 
-          {/* Achievements */}
+          {}
           <div className="px-6 py-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-yellow-500 dark:text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8"/><path d="M12 17a4 4 0 0 0 4-4V5H8v8a4 4 0 0 0 4 4z"/><path d="M7 5H5a2 2 0 0 0-2 2v1a5 5 0 0 0 5 5"/><path d="M17 5h2a2 2 0 0 1 2 2v1a5 5 0 0 1-5 5"/></svg>
@@ -165,7 +165,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Weekly Activity */}
+          {}
           <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-7"/></svg>
@@ -197,7 +197,7 @@ const Profile = () => {
             ))}
           </div>
 
-          {/* Recent Activity */}
+          {}
           <div className="px-6 py-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16 20V4"/><path d="M8 20h9"/><path d="M12 20V10"/></svg>
@@ -237,7 +237,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Study Preferences */}
+          {}
           <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .69.28 1.32.73 1.77.45.45 1.08.73 1.77.73"/></svg>
@@ -287,7 +287,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="px-6 py-8 flex flex-col sm:flex-row gap-4">
             <Link
               to="/edit-profile"
