@@ -121,10 +121,10 @@ const Navbar = () => {
       <Link 
         to="/" 
         onClick={handleLogoClick}
-        className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
+        className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300 flex-shrink-0"
       >
-        <img src="/images/transparent.png" className="w-8 h-8" alt="FocusoraHQ Lamp Logo" />
-        <span className="font-bold text-xl brand-gradient" style={{ letterSpacing: "-0.5px" }}>
+        <img src="/images/transparent.png" className="w-7 h-7 sm:w-8 sm:h-8" alt="FocusoraHQ Lamp Logo" />
+        <span className="font-bold text-lg sm:text-xl brand-gradient" style={{ letterSpacing: "-0.5px" }}>
           FocusoraHQ
         </span>
       </Link>
@@ -157,37 +157,24 @@ const Navbar = () => {
         )}
       </div>
 
-      <div className="flex items-center gap-4">
-
+      <div className="flex items-center gap-2 sm:gap-4">
         <button
-          id="mobile-menu-btn"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300 ${
-            mobileMenuOpen ? "active" : ""
-          }`}
-          aria-label="Toggle menu"
+          type="button"
+          role="switch"
+          aria-checked={darkMode}
+          aria-label="Toggle dark mode"
+          onClick={toggleDarkMode}
+          className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
         >
-          <svg
-            className="w-6 h-6 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            {mobileMenuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 18h18" />
-              </>
-            )}
-          </svg>
+          {darkMode ? (
+            <svg className="w-5 h-5 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          )}
         </button>
 
         {user ? (
@@ -285,24 +272,6 @@ const Navbar = () => {
 
               <div className="dropdown-divider"></div>
 
-              <div className="flex items-center justify-between px-4 py-3">
-                <span className="theme-label">Theme</span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={darkMode}
-                  aria-label="Toggle dark mode"
-                  onClick={toggleDarkMode}
-                  className={`theme-toggle ${
-                    darkMode ? "on" : ""
-                  } focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2`}
-                >
-                  <span className={`toggle-knob ${darkMode ? "on" : ""}`} />
-                </button>
-              </div>
-
-              <div className="dropdown-divider"></div>
-
               <div className="px-4 py-2">
                 <button
                   type="button"
@@ -346,25 +315,57 @@ const Navbar = () => {
               gap: '6px',
               background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
               boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-              padding: '10px 20px',
+              padding: '8px 16px',
               borderRadius: '10px'
             }}
-            className="text-white text-sm font-semibold hover:brightness-110 transform hover:scale-103 transition-all duration-300"
+            className="text-white text-xs sm:text-sm font-semibold hover:brightness-110 transform hover:scale-103 transition-all duration-300 whitespace-nowrap"
             aria-label="Sign in or sign up"
             onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
             onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
           >
-            <span>Sign In / Sign Up</span>
+            <span className="hidden sm:inline">Sign In / Sign Up</span>
+            <span className="sm:hidden">Sign In</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginTop: '1px' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
             </svg>
           </Link>
         )}
+
+        <button
+          id="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className={`lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300 ${
+            mobileMenuOpen ? "active" : ""
+          }`}
+          aria-label="Toggle menu"
+        >
+          <svg
+            className="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {mobileMenuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6h18" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 18h18" />
+              </>
+            )}
+          </svg>
+        </button>
       </div>
 
       {mobileMenuOpen && (
-        <div id="mobile-menu" className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden">
-          <div className="px-4 py-6 space-y-4">
+        <div id="mobile-menu" className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden shadow-xl border-t border-white/10">
+          <div className="px-4 py-6 space-y-3">
             {navItems.map((item) =>
               item.isExternal ? (
                 <a
