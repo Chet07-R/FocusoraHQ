@@ -353,11 +353,13 @@ const App = () => {
               if (!u) return null;
               const isChampion = displayIdx === 1; 
               const actualRank = u.rank;
+              // CSS order for mobile: 1st, 2nd, 3rd
+              const mobileOrder = actualRank === 1 ? 'order-1' : actualRank === 2 ? 'order-2' : 'order-3';
               
               return (
                 <div
                   key={`${u.name}-${displayIdx}`}
-                  className={`rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative backdrop-blur-sm ${
+                  className={`${mobileOrder} md:order-none rounded-2xl p-8 shadow-lg transition-all duration-500 ease-out transform hover:scale-110 hover:shadow-[0_20px_50px_rgba(59,130,246,0.5)] hover:-translate-y-3 hover:z-50 relative backdrop-blur-sm ${
                     isChampion
                       ? `scale-105 border-4 border-blue-600 ${darkMode ? 'bg-gradient-to-b from-blue-900/80 to-blue-800/80 hover:from-blue-800/90 hover:to-blue-700/90' : 'bg-gradient-to-b from-blue-100/80 to-blue-200/80 hover:from-blue-200/90 hover:to-blue-300/90'} hover:border-blue-400`
                       : `${darkMode ? 'bg-gray-800/70 hover:bg-gradient-to-br hover:from-gray-800/80 hover:to-gray-900/80 border border-gray-700/50' : 'bg-white/80 hover:bg-gradient-to-br hover:from-blue-50/90 hover:to-gray-50/90 border border-white/50'} hover:border-2 hover:border-blue-500/30`
