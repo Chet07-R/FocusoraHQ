@@ -160,6 +160,16 @@ const Notes = ({ addNotification = () => {} }) => {
     load();
     if (window.speechSynthesis)
       window.speechSynthesis.onvoiceschanged = load;
+
+    // Cleanup on unmount
+    return () => {
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+      }
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch {}
+      }
+    };
   }, []);
 
   const formatText = (cmd) => {
@@ -197,6 +207,8 @@ const Notes = ({ addNotification = () => {} }) => {
     setActiveAlign(align);
   };
 
+  const silenceTimerRef = useRef(null);
+
   const startDictation = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -213,7 +225,14 @@ const Notes = ({ addNotification = () => {} }) => {
     rec.interimResults = true;
     rec.continuous = true;
     let finalTranscript = '';
+    
     rec.onresult = (ev) => {
+      // Clear silence timer on any speech detected
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+
       let interimTranscript = '';
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
         const res = ev.results[i];
@@ -233,10 +252,34 @@ const Notes = ({ addNotification = () => {} }) => {
         el.innerText = (current + sep + processed).trim();
         setNotes(el.innerHTML);
         finalTranscript = '';
+
+        // Start silence timer after getting final result
+        silenceTimerRef.current = setTimeout(() => {
+          if (recognitionRef.current) {
+            recognitionRef.current.stop();
+            recognitionRef.current = null;
+            setIsRecording(false);
+            addNotification('⏹️ Stopped (silence detected)');
+          }
+        }, 2000); // Stop after 2 seconds of silence
       }
     };
-    rec.onerror = () => addNotification("❌ Dictation error");
-    rec.onend = () => setIsRecording(false);
+    
+    rec.onerror = (event) => {
+      if (event.error !== 'no-speech') {
+        addNotification("❌ Dictation error");
+      }
+      setIsRecording(false);
+    };
+    
+    rec.onend = () => {
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+      setIsRecording(false);
+    };
+    
     recognitionRef.current = rec;
     rec.start();
     setIsRecording(true);
@@ -244,6 +287,10 @@ const Notes = ({ addNotification = () => {} }) => {
   };
 
   const stopDictation = () => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
     try { recognitionRef.current?.stop(); } catch {}
     recognitionRef.current = null;
     setIsRecording(false);
@@ -503,16 +550,15 @@ const Notes = ({ addNotification = () => {} }) => {
             Auto punctuation
           </label>
           <button
-            onClick={startDictation}
-            disabled={isRecording}
+            onClick={isRecording ? stopDictation : startDictation}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
               isRecording
-                ? 'bg-red-600 cursor-not-allowed'
+                ? 'bg-red-600 hover:bg-red-500'
                 : 'bg-orange-600 hover:bg-orange-500'
             }`}
           >
             <Mic className="w-4 h-4" />
-            {isRecording ? 'Listening...' : 'Dictate'}
+            {isRecording ? 'Stop' : 'Dictate'}
           </button>
           <div className="text-sm text-white/70">
             {chars} chars • {words} words • {minutes} min read
@@ -535,6 +581,7 @@ const Notes = ({ addNotification = () => {} }) => {
             type="file"
             id="fileUpload"
             onChange={handleFileUpload}
+            // accept=".txt,.md,text/plain,text/markdown"
             className="hidden"
           />
           <label
