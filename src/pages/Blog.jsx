@@ -415,37 +415,45 @@ const Blog = () => {
       </section>
 
       {}
-      <section className="bg-gradient-to-r from-gray-900 via-gray-800 to-black dark:bg-gray-900 relative overflow-hidden">
-        {}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-          <div
-            className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"
-            style={{ animationDelay: '1s' }}
-          ></div>
-        </div>
+<section className="relative overflow-hidden py-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
 
-        <div className="container mx-auto px-6 py-20 text-center relative z-10">
-          <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
-            Ready to Transform Your Productivity?
-          </h2>
-          <p className="mt-4 text-lg text-gray-300 dark:text-gray-400 max-w-2xl mx-auto mb-4">
-            Join thousands who've transformed their work and life with our proven systems and strategies.
-          </p>
-          <Link
-            to="/signup"
-            className="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg m-3"
-          >
-            Start Your Journey
-          </Link>
-          <a
-            href="#latest-articles"
-            className="inline-block bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-indigo-700 transform hover:scale-105 transition-all duration-300 m-3"
-          >
-            Browse All Articles
-          </a>
-        </div>
-      </section>
+  {/* Pastel / Neon Blobs */}
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute -top-40 left-1/4 w-96 h-96 bg-cyan-300 dark:bg-cyan-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+
+    <div 
+      className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"
+      style={{ animationDelay: '1s' }}
+    ></div>
+  </div>
+
+  {/* Content */}
+  <div className="container mx-auto px-6 py-20 text-center relative z-10">
+    <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+      Ready to Transform Your Productivity?
+    </h2>
+
+    <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">
+      Join thousands who've transformed their work and life with our proven systems and strategies.
+    </p>
+
+    <Link
+      to="/signup"
+      className="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg m-3"
+    >
+      Start Your Journey
+    </Link>
+
+    <a
+      href="#latest-articles"
+      className="inline-block bg-transparent border-2 border-gray-700 text-gray-700 dark:border-white dark:text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 dark:hover:bg-white dark:hover:text-indigo-700 transform hover:scale-105 transition-all duration-300 m-3"
+    >
+      Browse All Articles
+    </a>
+  </div>
+
+</section>
+
     </>
   );
 };

@@ -73,7 +73,6 @@ const SignUp = () => {
           <div className="flex justify-center mb-6">
             <div className="relative">
               <img src="../images/transparent.png" alt="Logo" className="w-20 h-20 hover:rotate-12 transition-transform duration-300 dark:invert-0 invert" />
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-md opacity-50 animate-pulse"></div>
             </div>
           </div>
 

@@ -59,7 +59,6 @@ return (
       <div className="flex justify-center mb-6">
         <div className="relative">
           <img src="../images/transparent.png" alt="Logo" className="w-20 h-20 hover:scale-110 transition-transform duration-300 dark:invert-0 invert" />
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full blur-md opacity-50 animate-pulse"></div>
         </div>
       </div>
 

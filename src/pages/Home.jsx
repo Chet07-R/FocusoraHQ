@@ -157,7 +157,7 @@ const Home = () => {
                 <div className="absolute bottom-0 left-0 w-1 bg-gradient-to-t from-blue-500 to-cyan-500 h-0 group-hover:h-full transition-all duration-700 ease-out delay-1000"></div>
               </div>
 
-              <div className="bg-gray-100 dark:bg-gray-700 p-2 sm:p-4 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-600 relative transition-all duration-300 group-hover:shadow-3xl group-hover:shadow-cyan-500/20">
+              <div className="bg-gray-100 dark:bg-gray-700 p-2 sm:p-4 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-600 relative transition-all duration-300 group-hover:shadow-3xl group-hover:shadow-cyan-500/20 ">
                 <img src="/images/my_space.png" alt="Personal Workspace UI" className="rounded-lg w-full h-auto object-cover" />
               </div>
             </div>
