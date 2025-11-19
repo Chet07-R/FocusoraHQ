@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -9,6 +10,7 @@ const SignIn = () => {
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [rememberMe, setRememberMe] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
 const [submitting, setSubmitting] = useState(false);
 const [error, setError] = useState('');
 const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -104,12 +106,12 @@ return (
           />
         </div>
 
-        <div>
+<div className="relative">
           <label className={`block text-xs font-semibold uppercase tracking-wider mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`} style={{ fontFamily: 'Inter, system-ui, sans-serif', letterSpacing: '0.05em' }}>
             Password
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
@@ -117,6 +119,32 @@ return (
             style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
             required
           />
+<button
+  type="button"
+  tabIndex={-1}
+  onClick={() => setShowPassword(prev => !prev)}
+  className="
+    absolute
+    right-4
+    top-0 
+    bottom-0 
+    mt-[1.75rem] {/* Adjusted margin-top to account for the label and its margin */}
+    flex 
+    items-center 
+    justify-center
+    bg-transparent
+    cursor-pointer
+  "
+  aria-label={showPassword ? 'Hide password' : 'Show password'}
+>
+  {showPassword ? (
+    <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+  ) : (
+    <EyeIcon className="h-5 w-5 text-gray-400" />
+  )}
+</button>
+
+
         </div>
 
         {}

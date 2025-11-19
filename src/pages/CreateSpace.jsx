@@ -14,7 +14,21 @@ const CreateSpace = () => {
     description: "",
     isPublic: true, 
     maxParticipants: 10,
-  });
+  });<button
+  type="button"
+  onClick={() => handlePrivacyChange(true)}
+  className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
+    formData.isPublic
+      ? "border-blue-500 bg-blue-500/10"
+      : "border-white/20 dark:border-white/10 hover:border-blue-400"
+  }`}
+>
+  <Globe className="w-6 h-6 mb-2 text-gray-700 dark:text-white" />
+  <span className="font-semibold text-blue-900 dark:text-white">Public</span>
+  <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">
+    Anyone can join your space
+  </span>
+</button>
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -127,13 +141,13 @@ const CreateSpace = () => {
                       : "border-white/20 dark:border-white/10 hover:border-blue-400"
                   }`}
                 >
-                  <Globe className="w-6 h-6 mb-2" />
-                  <span className="font-semibold">Public</span>
-                  <span className="text-xs text-gray-400 mt-1 text-center">
+                  <Globe className="w-6 h-6 mb-2 text-gray-700 dark:text-white" />
+                  <span className="font-semibold text-blue-900 dark:text-white">Public</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">
                     Anyone can join your space
                   </span>
                 </button>
-                {}
+                  {}
                 <button
                   type="button"
                   onClick={() => handlePrivacyChange(false)}
@@ -143,12 +157,13 @@ const CreateSpace = () => {
                       : "border-white/20 dark:border-white/10 hover:border-blue-400"
                   }`}
                 >
-                  <Lock className="w-6 h-6 mb-2" />
-                  <span className="font-semibold">Private</span>
-                  <span className="text-xs text-gray-400 mt-1 text-center">
+                  <Lock className="w-6 h-6 mb-2 text-gray-700 dark:text-white" />
+                  <span className="font-semibold text-blue-900 dark:text-white">Private</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">
                     Only invited users can join
                   </span>
                 </button>
+
               </div>
             </div>
 

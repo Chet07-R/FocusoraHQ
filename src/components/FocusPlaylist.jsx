@@ -171,7 +171,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
             ✖
           </button>
         </div>
-        {/* Responsive grid for playlist buttons */}
+    
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button
             onClick={() => changeMusic("37i9dQZF1DZ06evO0FDzS8")}

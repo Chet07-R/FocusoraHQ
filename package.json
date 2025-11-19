@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.17",
     "firebase": "^12.6.0",
     "lucide-react": "^0.553.0",

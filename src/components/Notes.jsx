@@ -161,7 +161,7 @@ const Notes = ({ addNotification = () => {} }) => {
     if (window.speechSynthesis)
       window.speechSynthesis.onvoiceschanged = load;
 
-    // Cleanup on unmount
+  
     return () => {
       if (silenceTimerRef.current) {
         clearTimeout(silenceTimerRef.current);
@@ -227,7 +227,7 @@ const Notes = ({ addNotification = () => {} }) => {
     let finalTranscript = '';
     
     rec.onresult = (ev) => {
-      // Clear silence timer on any speech detected
+  
       if (silenceTimerRef.current) {
         clearTimeout(silenceTimerRef.current);
         silenceTimerRef.current = null;
@@ -253,7 +253,7 @@ const Notes = ({ addNotification = () => {} }) => {
         setNotes(el.innerHTML);
         finalTranscript = '';
 
-        // Start silence timer after getting final result
+
         silenceTimerRef.current = setTimeout(() => {
           if (recognitionRef.current) {
             recognitionRef.current.stop();
@@ -261,7 +261,7 @@ const Notes = ({ addNotification = () => {} }) => {
             setIsRecording(false);
             addNotification('⏹️ Stopped (silence detected)');
           }
-        }, 2000); // Stop after 2 seconds of silence
+        }, 2000); 
       }
     };
     

@@ -44,7 +44,7 @@ const BackgroundSelector = ({ bgPanelOpen, setBgPanelOpen, addNotification }) =>
         </button>
       </div>
 
-      {/* Responsive grid for background buttons */}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {backgrounds.map((bg) => (
           <button
