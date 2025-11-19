@@ -217,6 +217,13 @@ const StudyRoom1 = () => {
       `}</style>
 
       {}
+      {openPanel && (
+        <div
+          onClick={closePanel}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300"
+          aria-label="Close side panel"
+        />
+      )}
       <div
         className="fixed inset-0 bg-cover bg-center bg-fixed transition-all duration-700 z-0 filter saturate-90"
         style={{ backgroundImage: `url('${bgUrl}')` }}
@@ -299,11 +306,17 @@ const StudyRoom1 = () => {
       </div>
 
       {}
-      <aside className={cx("fixed top-0 right-0 h-full w-full sm:w-80 z-50 transition-transform duration-300", openPanel === "participants" ? "translate-x-0" : "translate-x-full")}>
-        <div className="h-full bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-xl p-3 sm:p-4 border-l border-white/10 overflow-y-auto">
+      <aside className={cx("fixed top-0 right-0 h-full w-[85vw] xs:w-[70vw] sm:w-80 md:w-96 z-[120] transition-transform duration-300", openPanel === "participants" ? "translate-x-0" : "translate-x-full")}>
+        <div className="h-full bg-gradient-to-br from-white/10 via-white/5 to-white/10 backdrop-blur-xl p-3 sm:p-4 border-l border-white/10 overflow-y-auto rounded-l-2xl shadow-2xl">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-white text-sm sm:text-base font-semibold">Users ({participants?.length || 0})</h4>
-            <button onClick={closePanel} className="text-white"><X className="w-5 h-5" /></button>
+            <button
+              onClick={closePanel}
+              aria-label="Close panel"
+              className="text-white bg-black/40 hover:bg-black/60 rounded-full p-1.5 ring-1 ring-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
           <div className="space-y-2">
             {participants && participants.length > 0 ? (
@@ -328,11 +341,17 @@ const StudyRoom1 = () => {
       </aside>
 
       {}
-      <aside className={cx("fixed top-0 right-0 h-full w-full sm:w-80 z-50 transition-transform duration-300", openPanel === "chat" ? "translate-x-0" : "translate-x-full")}>
-        <div className="h-full flex flex-col bg-black/80 backdrop-blur-xl p-3 border-l border-white/10">
+      <aside className={cx("fixed top-0 right-0 h-full w-[85vw] xs:w-[70vw] sm:w-80 md:w-96 z-[120] transition-transform duration-300", openPanel === "chat" ? "translate-x-0" : "translate-x-full")}>
+        <div className="h-full flex flex-col bg-black/80 backdrop-blur-xl p-3 border-l border-white/10 rounded-l-2xl shadow-2xl">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-white text-sm sm:text-base font-semibold">Chat</h4>
-            <button onClick={closePanel} className="text-white"><X className="w-5 h-5" /></button>
+            <button
+              onClick={closePanel}
+              aria-label="Close panel"
+              className="text-white bg-black/40 hover:bg-black/60 rounded-full p-1.5 ring-1 ring-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           <div className="flex-1 overflow-auto space-y-1.5 custom-scrollbar">
