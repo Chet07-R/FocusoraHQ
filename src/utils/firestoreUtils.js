@@ -21,11 +21,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
-// ==================== USER PROFILES ====================
 
-/**
- * Create or update user profile in Firestore
- */
 export const createUserProfile = async (userId, profileData) => {
   const userRef = doc(db, 'users', userId);
   await setDoc(userRef, {
@@ -39,18 +35,14 @@ export const createUserProfile = async (userId, profileData) => {
   }, { merge: true });
 };
 
-/**
- * Get user profile
- */
+
 export const getUserProfile = async (userId) => {
   const userRef = doc(db, 'users', userId);
   const docSnap = await getDoc(userRef);
   return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
 };
 
-/**
- * Update user profile
- */
+
 export const updateUserProfile = async (userId, updates) => {
   const userRef = doc(db, 'users', userId);
   await updateDoc(userRef, {
@@ -59,9 +51,7 @@ export const updateUserProfile = async (userId, updates) => {
   });
 };
 
-/**
- * Subscribe to user profile changes (real-time)
- */
+
 export const subscribeToUserProfile = (userId, callback) => {
   const userRef = doc(db, 'users', userId);
   return onSnapshot(userRef, (doc) => {
@@ -71,11 +61,7 @@ export const subscribeToUserProfile = (userId, callback) => {
   });
 };
 
-// ==================== STUDY SESSIONS ====================
 
-/**
- * Create a new study session
- */
 export const createStudySession = async (userId, sessionData) => {
   const sessionRef = doc(collection(db, 'studySessions'));
   await setDoc(sessionRef, {
@@ -90,9 +76,7 @@ export const createStudySession = async (userId, sessionData) => {
   return sessionRef.id;
 };
 
-/**
- * End a study session and update user stats
- */
+
 export const endStudySession = async (sessionId, userId, durationMinutes) => {
   const sessionRef = doc(db, 'studySessions', sessionId);
   const userRef = doc(db, 'users', userId);
@@ -104,18 +88,15 @@ export const endStudySession = async (sessionId, userId, durationMinutes) => {
     active: false,
   });
 
-  // Update user stats
+
   await updateDoc(userRef, {
     totalStudyTime: increment(durationMinutes),
     studySessions: increment(1),
-    points: increment(Math.floor(durationMinutes / 5)), // 1 point per 5 mins
+    points: increment(Math.floor(durationMinutes / 5)), 
     updatedAt: serverTimestamp(),
   });
 };
 
-/**
- * Get user's study history
- */
 export const getUserStudySessions = (userId, callback, limitCount = 20) => {
   const q = query(
     collection(db, 'studySessions'),
@@ -129,15 +110,11 @@ export const getUserStudySessions = (userId, callback, limitCount = 20) => {
   });
 };
 
-// ==================== STUDY ROOMS ====================
 
-/**
- * Create a study room
- */
 export const createStudyRoom = async (roomData) => {
-  // Generate custom id like SR-A7F (random 3-char alphanumeric) with retries to avoid collisions
+
   const makeId = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no confusing O/0/I/1
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
     let code = '';
     for (let i = 0; i < 3; i++) {
       code += chars[Math.floor(Math.random() * chars.length)];
@@ -164,7 +141,7 @@ export const createStudyRoom = async (roomData) => {
     attempts += 1;
     id = makeId();
   }
-  // Fallback to Firestore auto-id if repeated collisions (extremely unlikely)
+
   const autoRef = doc(collection(db, 'studyRooms'));
   await setDoc(autoRef, {
     ...roomData,
@@ -177,21 +154,19 @@ export const createStudyRoom = async (roomData) => {
   return autoRef.id;
 };
 
-/**
- * Join a study room
- */
+
 export const joinStudyRoom = async (roomId, userData) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   const presenceRef = doc(db, 'studyRooms', roomId, 'presence', userData.userId);
 
-  // Add to participants array
+
   await updateDoc(roomRef, {
     participants: arrayUnion(userData.userId),
     participantCount: increment(1),
     updatedAt: serverTimestamp(),
   });
 
-  // Set presence document
+
   await setDoc(presenceRef, {
     userId: userData.userId,
     displayName: userData.displayName,
@@ -202,27 +177,23 @@ export const joinStudyRoom = async (roomId, userData) => {
   });
 };
 
-/**
- * Leave a study room
- */
+
 export const leaveStudyRoom = async (roomId, userId) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   const presenceRef = doc(db, 'studyRooms', roomId, 'presence', userId);
 
-  // Remove from participants
+
   await updateDoc(roomRef, {
     participants: arrayRemove(userId),
     participantCount: increment(-1),
     updatedAt: serverTimestamp(),
   });
 
-  // Delete presence
+
   await deleteDoc(presenceRef);
 };
 
-/**
- * Update user presence in study room (heartbeat)
- */
+
 export const updateRoomPresence = async (roomId, userId) => {
   const presenceRef = doc(db, 'studyRooms', roomId, 'presence', userId);
   await updateDoc(presenceRef, {
@@ -231,9 +202,7 @@ export const updateRoomPresence = async (roomId, userId) => {
   });
 };
 
-/**
- * Update presence status explicitly (e.g., 'active' | 'inactive' | 'away')
- */
+
 export const setRoomPresenceStatus = async (roomId, userId, status) => {
   const presenceRef = doc(db, 'studyRooms', roomId, 'presence', userId);
   const update = { status };
@@ -241,13 +210,10 @@ export const setRoomPresenceStatus = async (roomId, userId, status) => {
   await updateDoc(presenceRef, update);
 };
 
-/**
- * Delete/close a study room (only creator can do this)
- */
 export const deleteStudyRoom = async (roomId) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   
-  // Set room to inactive and clear participants
+
   await updateDoc(roomRef, {
     active: false,
     participants: [],
@@ -257,9 +223,7 @@ export const deleteStudyRoom = async (roomId) => {
   });
 };
 
-/**
- * Subscribe to study room updates (real-time)
- */
+
 export const subscribeToStudyRoom = (roomId, callback) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   return onSnapshot(roomRef, (doc) => {
@@ -269,9 +233,6 @@ export const subscribeToStudyRoom = (roomId, callback) => {
   });
 };
 
-/**
- * Subscribe to study room participants (real-time)
- */
 export const subscribeToRoomParticipants = (roomId, callback) => {
   const presenceCollection = collection(db, 'studyRooms', roomId, 'presence');
   return onSnapshot(presenceCollection, (snapshot) => {
@@ -280,9 +241,7 @@ export const subscribeToRoomParticipants = (roomId, callback) => {
   });
 };
 
-/**
- * Update study room timer (shared timer)
- */
+
 export const updateRoomTimer = async (roomId, timerData) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   await updateDoc(roomRef, {
@@ -291,9 +250,7 @@ export const updateRoomTimer = async (roomId, timerData) => {
   });
 };
 
-/**
- * Get all active study rooms
- */
+
 export const getActiveStudyRooms = (callback) => {
   const q = query(
     collection(db, 'studyRooms'),
@@ -309,11 +266,7 @@ export const getActiveStudyRooms = (callback) => {
   });
 };
 
-// ==================== ROOM CHAT ====================
 
-/**
- * Send a chat message to the room
- */
 export const sendRoomChatMessage = async (roomId, userId, displayName, message) => {
   const messagesRef = collection(db, 'studyRooms', roomId, 'messages');
   await addDoc(messagesRef, {
@@ -324,9 +277,7 @@ export const sendRoomChatMessage = async (roomId, userId, displayName, message) 
   });
 };
 
-/**
- * Subscribe to room chat messages (real-time)
- */
+
 export const subscribeToRoomChat = (roomId, callback) => {
   const messagesRef = collection(db, 'studyRooms', roomId, 'messages');
   const q = query(messagesRef, orderBy('timestamp', 'asc'), limit(100));
@@ -337,11 +288,6 @@ export const subscribeToRoomChat = (roomId, callback) => {
   });
 };
 
-// ==================== ROOM NOTES ====================
-
-/**
- * Update room notes (shared by all participants)
- */
 export const updateRoomNotes = async (roomId, notes, updatedById = null, updatedByName = null) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   await updateDoc(roomRef, {
@@ -352,11 +298,7 @@ export const updateRoomNotes = async (roomId, notes, updatedById = null, updated
   });
 };
 
-// ==================== ROOM TODOS ====================
 
-/**
- * Add a todo to the room
- */
 export const addRoomTodo = async (roomId, todoText, createdById, createdByName, createdByPhotoURL = null) => {
   const todosRef = collection(db, 'studyRooms', roomId, 'todos');
   await addDoc(todosRef, {
@@ -369,9 +311,6 @@ export const addRoomTodo = async (roomId, todoText, createdById, createdByName, 
   });
 };
 
-/**
- * Toggle todo completion status
- */
 export const toggleRoomTodo = async (roomId, todoId, completed) => {
   const todoRef = doc(db, 'studyRooms', roomId, 'todos', todoId);
   await updateDoc(todoRef, {
@@ -380,17 +319,13 @@ export const toggleRoomTodo = async (roomId, todoId, completed) => {
   });
 };
 
-/**
- * Delete a room todo
- */
+
 export const deleteRoomTodo = async (roomId, todoId) => {
   const todoRef = doc(db, 'studyRooms', roomId, 'todos', todoId);
   await deleteDoc(todoRef);
 };
 
-/**
- * Subscribe to room todos (real-time)
- */
+
 export const subscribeToRoomTodos = (roomId, callback) => {
   const todosRef = collection(db, 'studyRooms', roomId, 'todos');
   const q = query(todosRef, orderBy('createdAt', 'asc'));
@@ -401,11 +336,7 @@ export const subscribeToRoomTodos = (roomId, callback) => {
   });
 };
 
-// ==================== ROOM PLAYLIST ====================
 
-/**
- * Update room's shared playlist URL
- */
 export const updateRoomPlaylist = async (roomId, spotifyUrl, updatedById = null, updatedByName = null) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   await updateDoc(roomRef, {
@@ -416,9 +347,7 @@ export const updateRoomPlaylist = async (roomId, spotifyUrl, updatedById = null,
   });
 };
 
-/**
- * Update room background (shared)
- */
+
 export const updateRoomBackground = async (roomId, backgroundUrl, updatedById = null, updatedByName = null) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   await updateDoc(roomRef, {
@@ -429,9 +358,7 @@ export const updateRoomBackground = async (roomId, backgroundUrl, updatedById = 
   });
 };
 
-/**
- * Signal shared playback action (e.g., 'play' | 'pause')
- */
+
 export const signalRoomPlayback = async (roomId, action, updatedById = null, updatedByName = null) => {
   const roomRef = doc(db, 'studyRooms', roomId);
   await updateDoc(roomRef, {
@@ -443,11 +370,6 @@ export const signalRoomPlayback = async (roomId, action, updatedById = null, upd
   });
 };
 
-// ==================== ROOM FILES (UPLOAD NOTES) ====================
-
-/**
- * Add file metadata to room (for real-time list). For actual file storage, integrate Firebase Storage.
- */
 export const addRoomFileMetadata = async (roomId, file) => {
   const filesRef = collection(db, 'studyRooms', roomId, 'files');
   await addDoc(filesRef, {
@@ -474,9 +396,7 @@ export const deleteRoomFile = async (roomId, fileId) => {
   await deleteDoc(fileRef);
 };
 
-/**
- * Backfill legacy todos without creator fields by assigning to current user
- */
+
 export const backfillRoomTodosCreators = async (roomId, userId, displayName, photoURL = null) => {
   const todosRef = collection(db, 'studyRooms', roomId, 'todos');
   const snap = await getDocs(todosRef);
@@ -502,11 +422,7 @@ export const backfillRoomTodosCreators = async (roomId, userId, displayName, pho
   return count;
 };
 
-// ==================== LEADERBOARD ====================
 
-/**
- * Get top users by points (real-time leaderboard)
- */
 export const getLeaderboard = (callback, limitCount = 50) => {
   const q = query(
     collection(db, 'users'),
@@ -523,9 +439,6 @@ export const getLeaderboard = (callback, limitCount = 50) => {
   });
 };
 
-/**
- * Get top users by study time
- */
 export const getLeaderboardByStudyTime = (callback, limitCount = 50) => {
   const q = query(
     collection(db, 'users'),
@@ -542,11 +455,7 @@ export const getLeaderboardByStudyTime = (callback, limitCount = 50) => {
   });
 };
 
-// ==================== NOTES & TODOS ====================
 
-/**
- * Save user note
- */
 export const saveNote = async (userId, noteData) => {
   const noteRef = doc(collection(db, 'users', userId, 'notes'));
   await setDoc(noteRef, {
@@ -557,9 +466,7 @@ export const saveNote = async (userId, noteData) => {
   return noteRef.id;
 };
 
-/**
- * Update note
- */
+
 export const updateNote = async (userId, noteId, updates) => {
   const noteRef = doc(db, 'users', userId, 'notes', noteId);
   await updateDoc(noteRef, {
@@ -568,17 +475,12 @@ export const updateNote = async (userId, noteId, updates) => {
   });
 };
 
-/**
- * Delete note
- */
 export const deleteNote = async (userId, noteId) => {
   const noteRef = doc(db, 'users', userId, 'notes', noteId);
   await deleteDoc(noteRef);
 };
 
-/**
- * Subscribe to user notes (real-time)
- */
+
 export const subscribeToNotes = (userId, callback) => {
   const q = query(
     collection(db, 'users', userId, 'notes'),
@@ -590,9 +492,7 @@ export const subscribeToNotes = (userId, callback) => {
   });
 };
 
-/**
- * Save todo item
- */
+
 export const saveTodo = async (userId, todoData) => {
   const todoRef = doc(collection(db, 'users', userId, 'todos'));
   await setDoc(todoRef, {
@@ -604,9 +504,6 @@ export const saveTodo = async (userId, todoData) => {
   return todoRef.id;
 };
 
-/**
- * Update todo
- */
 export const updateTodo = async (userId, todoId, updates) => {
   const todoRef = doc(db, 'users', userId, 'todos', todoId);
   await updateDoc(todoRef, {
@@ -615,17 +512,13 @@ export const updateTodo = async (userId, todoId, updates) => {
   });
 };
 
-/**
- * Delete todo
- */
+
 export const deleteTodo = async (userId, todoId) => {
   const todoRef = doc(db, 'users', userId, 'todos', todoId);
   await deleteDoc(todoRef);
 };
 
-/**
- * Subscribe to user todos (real-time)
- */
+
 export const subscribeToTodos = (userId, callback) => {
   const q = query(
     collection(db, 'users', userId, 'todos'),
@@ -637,22 +530,9 @@ export const subscribeToTodos = (userId, callback) => {
   });
 };
 
-// ==================== ACCOUNT CLEANUP ====================
 
-/**
- * Delete a user's Firestore footprint so they no longer appear on the leaderboard.
- * This removes:
- * - users/{userId}
- * - users/{userId}/notes/*
- * - users/{userId}/todos/*
- * - studySessions where userId == {userId}
- * - presence documents across rooms (best-effort via collection group)
- *
- * Note: Large accounts may exceed a single batch; current implementation is best-effort
- * and suitable for typical personal usage sizes.
- */
 export const deleteUserData = async (userId) => {
-  // Collect deletes in batches of up to ~400 ops per commit to stay safe
+
   const commitBatches = async (ops) => {
     let batch = writeBatch(db);
     let count = 0;
@@ -672,28 +552,28 @@ export const deleteUserData = async (userId) => {
 
   const ops = [];
 
-  // Subcollections: notes and todos
+  
   const notesSnap = await getDocs(collection(db, 'users', userId, 'notes'));
   notesSnap.forEach((d) => ops.push(doc(db, 'users', userId, 'notes', d.id)));
 
   const todosSnap = await getDocs(collection(db, 'users', userId, 'todos'));
   todosSnap.forEach((d) => ops.push(doc(db, 'users', userId, 'todos', d.id)));
 
-  // Top-level study sessions for this user
+
   const ssQuery = query(collection(db, 'studySessions'), where('userId', '==', userId));
   const ssSnap = await getDocs(ssQuery);
   ssSnap.forEach((d) => ops.push(doc(db, 'studySessions', d.id)));
 
-  // Presence docs across rooms (collection group)
+
   try {
     const presenceGroup = collectionGroup(db, 'presence');
     const presenceSnap = await getDocs(query(presenceGroup, where('userId', '==', userId)));
     presenceSnap.forEach((d) => ops.push(d.ref));
   } catch {
-    // collectionGroup might fail if not indexed; ignore best-effort
+
   }
 
-  // Finally, the user profile document itself
+
   ops.push(doc(db, 'users', userId));
 
   await commitBatches(ops);
