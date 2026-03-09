@@ -124,3 +124,4 @@ Key modules:
 - Chetan Ajmani — [@Chet07-R](https://github.com/Chet07-R)
 - Tanish Mehta — [@TanishMehta23](https://github.com/TanishMehta23)
 - Vansh Thakur — [@Vans30m](https://github.com/Vans30m)
+- Bhavya Jain — [@Bhavya-0016](https://github.com/Bhavya00-16)
