@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile, updateUserProfile } from "../utils/firestoreUtils";
-import { auth } from "../firebaseConfig";
-import { updateProfile as updateAuthProfile } from "firebase/auth";
 
 const DEFAULT_PROFILE = "/images/Profile_Icon.png";
 
@@ -80,21 +78,6 @@ const EditProfile = () => {
     };
     try {
       await updateUserProfile(user.uid, updates);
-      let authSyncOk = true;
-      if (auth.currentUser) {
-        try {
-          await updateAuthProfile(auth.currentUser, {
-            displayName: username,
-            photoURL: profilePic,
-          });
-        } catch (syncErr) {
-          authSyncOk = false;
-          console.warn("Saved to Firestore, but Auth sync failed:", syncErr);
-        }
-      }
-      if (!authSyncOk) {
-        console.warn("Auth profile not fully synced yet; UI will update from Firestore.");
-      }
       try {
         const fresh = await getUserProfile(user.uid);
         console.debug("Profile saved, fresh Firestore profile:", fresh);

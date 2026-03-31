@@ -51,6 +51,11 @@ coverage
 .env*
 !*.example
 
+# Backend env files (explicit)
+backend/.env
+backend/.env.*
+!backend/.env.example
+
 # Firebase
 firebase-debug.log*
 .firebase

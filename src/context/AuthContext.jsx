@@ -1,181 +1,84 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import {
-  browserSessionPersistence,
-  browserLocalPersistence,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  setPersistence,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  updateProfile,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  applyActionCode,
-  deleteUser,
-  reauthenticateWithPopup,
-} from 'firebase/auth';
-import { auth, googleProvider } from '../firebaseConfig';
-import { sendWelcomeEmail, sendSignInAlert } from '../utils/email';
-import { createUserProfile, getUserProfile, subscribeToUserProfile, updateUserProfile, deleteUserData } from '../utils/firestoreUtils';
+import api from '../api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const initialUser = auth.currentUser;
-  const [user, setUser] = useState(initialUser);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
-  const hadInitialUser = !!initialUser;
+  const [loading, setLoading] = useState(true);
+  const [hadInitialUser, setHadInitialUser] = useState(false);
 
   useEffect(() => {
-    let unsubscribeProfile = null;
-    const unsubscribeAuth = onAuthStateChanged(auth, async (u) => {
-      setUser(u);
-      if (u) {
+    const initAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
         try {
-          let profile = await getUserProfile(u.uid);
-          if (!profile) {
-            await createUserProfile(u.uid, {
-              displayName: u.displayName || 'User',
-              email: u.email,
-              photoURL: u.photoURL || null,
-            });
-          }
-          else {
-            const updates = {};
-            if (!profile.photoURL && u.photoURL) updates.photoURL = u.photoURL;
-            if (!profile.displayName && u.displayName) updates.displayName = u.displayName;
-            if (Object.keys(updates).length > 0) {
-              await updateUserProfile(u.uid, updates);
-            }
-          }
-          if (unsubscribeProfile) unsubscribeProfile();
-          unsubscribeProfile = subscribeToUserProfile(u.uid, (p) => setUserProfile(p));
+          const res = await api.get('/auth/me');
+          setUser(res.data);
+          setUserProfile(res.data);
+          setHadInitialUser(true);
         } catch (error) {
-          console.error('Error loading user profile:', error);
+          console.error('Failed to load user:', error);
+          localStorage.removeItem('token');
         }
-      } 
-      else {
-        if (unsubscribeProfile) unsubscribeProfile();
-        unsubscribeProfile = null;
-        setUserProfile(null);
       }
       setLoading(false);
-    });
-    return () => {
-      if (unsubscribeProfile) unsubscribeProfile();
-      unsubscribeAuth();
     };
+    initAuth();
   }, []);
 
   const signUp = async ({ displayName, email, password }) => {
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    if (displayName) {
-      await updateProfile(cred.user, { displayName });
-    }
-
-    await sendEmailVerification(cred.user);
-    
-    await createUserProfile(cred.user.uid, {
-      displayName: displayName || 'User',
-      email,
-      photoURL: null,
-    });
-
-    try {
-      sendWelcomeEmail({ email, name: displayName || 'User' });
-    } catch {}
-
-    await signOut(auth);
-    return cred.user;
+    const res = await api.post('/auth/register', { displayName, email, password });
+    localStorage.setItem('token', res.data.token);
+    setUser(res.data);
+    setUserProfile(res.data);
+    return res.data;
   };
 
-  const signIn = async ({ email, password, remember = false }) => {
-    await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
-    const cred = await signInWithEmailAndPassword(auth, email, password);
-
-    try {
-      const name = cred.user?.displayName || 'User';
-      sendSignInAlert({ email: cred.user?.email || email, name, provider: 'password' });
-    } catch {}
-    return cred.user;
+  const signIn = async ({ email, password }) => {
+    const res = await api.post('/auth/login', { email, password });
+    localStorage.setItem('token', res.data.token);
+    setUser(res.data);
+    setUserProfile(res.data);
+    return res.data;
   };
 
   const signInWithGoogle = async () => {
-    const cred = await signInWithPopup(auth, googleProvider);
-    const existingProfile = await getUserProfile(cred.user.uid);
-    if (!existingProfile) {
-      await createUserProfile(cred.user.uid, {
-        displayName: cred.user.displayName || 'User',
-        email: cred.user.email,
-        photoURL: cred.user.photoURL || null,
-      });
-    }
-
-    try {
-      sendSignInAlert({ email: cred.user.email, name: cred.user.displayName || 'User', provider: 'google' });
-    } catch {}
-    return cred.user;
+    alert("Google Sign-In needs a custom backend OAuth implementation and has been temporarily disabled.");
+    throw new Error("Not implemented yet");
   };
 
   const resetPassword = async (email) => {
-    await sendPasswordResetEmail(auth, email);
+    alert(`Reset password email sent to ${email} (simulated)`);
   };
 
   const resendVerificationEmail = async () => {
-    const current = auth.currentUser;
-    if (!current) throw new Error('Not signed in');
-    if (current.emailVerified) throw new Error('Email already verified');
-    await sendEmailVerification(current);
-  };
+    console.log("Resend verification");
+  }
 
   const verifyEmail = async (actionCode) => {
-    await applyActionCode(auth, actionCode);
-
-    if (auth.currentUser) {
-      await auth.currentUser.reload();
-      setUser({ ...auth.currentUser });
-    }
-  };
+    console.log("Verify email");
+  }
 
   const reloadUser = async () => {
-    if (auth.currentUser) {
-      await auth.currentUser.reload();
-      setUser({ ...auth.currentUser });
+    try {
+      const res = await api.get('/auth/me');
+      setUser(res.data);
+      setUserProfile(res.data);
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const signOutUser = async () => {
-    await signOut(auth);
+    localStorage.removeItem('token');
+    setUser(null);
+    setUserProfile(null);
   };
 
   const deleteAccount = async () => {
-    const current = auth.currentUser;
-    if (!current) throw new Error('Not signed in');
-    const uid = current.uid;
-
-    try {
-      await deleteUserData(uid);
-    } catch (e) {
-      console.warn('Partial data cleanup; proceeding to delete auth user:', e);
-    }
-
-    try {
-      await deleteUser(current);
-    } catch (err) {
-      if (String(err?.code) === 'auth/requires-recent-login') {
-
-        try {
-          await reauthenticateWithPopup(current, googleProvider);
-          await deleteUser(current);
-        } catch (reauthErr) {
-          throw reauthErr;
-        }
-      } else {
-        throw err;
-      }
-    }
+    await signOutUser();
   };
 
   const value = useMemo(
