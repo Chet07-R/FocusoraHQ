@@ -8,5 +8,6 @@ const router = express.Router();
 router.get('/', asyncHandler(roomsController.listRooms));
 router.get('/:id', asyncHandler(roomsController.getRoom));
 router.post('/', authGuard, asyncHandler(roomsController.createRoom));
+router.delete('/:id', authGuard, asyncHandler(roomsController.deleteRoom));
 
 module.exports = router;

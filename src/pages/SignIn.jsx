@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { mapAuthError } from '../utils/authErrors';
+import { getAuthErrorMessage } from '../utils/authErrors';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
 
 const SignIn = () => {
@@ -15,8 +15,21 @@ const [submitting, setSubmitting] = useState(false);
 const [error, setError] = useState('');
 const [showForgotPassword, setShowForgotPassword] = useState(false);
 const navigate = useNavigate();
-const { signIn, signInWithGoogle, signOutUser } = useAuth();
+const [searchParams] = useSearchParams();
+const { signIn, signInWithGoogle, signInAsGuest, signOutUser, user, loading } = useAuth();
 const { darkMode } = useTheme();
+
+useEffect(() => {
+  if (searchParams.get('verified') === '1') {
+    setError('Email verified successfully. You can sign in now.');
+  }
+}, [searchParams]);
+
+useEffect(() => {
+  if (!loading && user) {
+    navigate('/');
+  }
+}, [loading, user, navigate]);
 
 const handleSignIn = async (e) => {
   e.preventDefault();
@@ -32,8 +45,11 @@ const handleSignIn = async (e) => {
       navigate('/');
     }
   } catch (err) {
-    const friendly = mapAuthError(err?.code);
-    setError(friendly || err?.message || 'Failed to sign in');
+    if (err?.response?.data?.code === 'EMAIL_NOT_VERIFIED') {
+      navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+      return;
+    }
+    setError(getAuthErrorMessage(err, 'Failed to sign in'));
   } finally {
     setSubmitting(false);
   }
@@ -44,10 +60,21 @@ const handleGoogle = async () => {
   setSubmitting(true);
   try {
     await signInWithGoogle();
+  } catch (err) {
+    setError(getAuthErrorMessage(err, 'Google sign-in failed'));
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+const handleGuest = async () => {
+  setError('');
+  setSubmitting(true);
+  try {
+    await signInAsGuest();
     navigate('/');
   } catch (err) {
-    const friendly = mapAuthError(err?.code);
-    setError(friendly || err?.message || 'Google sign-in failed');
+    setError(getAuthErrorMessage(err, 'Guest sign-in failed'));
   } finally {
     setSubmitting(false);
   }
@@ -191,6 +218,16 @@ return (
           style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
         >
           Continue with Google
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGuest}
+          disabled={submitting}
+          className={`w-full cursor-pointer mt-3 border-2 font-semibold py-3.5 rounded-xl transform hover:scale-[1.01] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed ${darkMode ? 'bg-slate-900/70 border-slate-500 text-white hover:bg-slate-800 hover:border-cyan-300' : 'bg-gray-50 border-gray-300 text-gray-900 hover:bg-white hover:border-indigo-400'}`}
+          style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+        >
+          Continue as Guest
         </button>
       </form>
 

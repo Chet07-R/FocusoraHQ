@@ -4,10 +4,31 @@ const { env } = require('../config/env');
 
 let ioInstance = null;
 
+const localhostOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
+const privateNetworkOriginPattern = /^https?:\/\/(10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/i;
+const configuredOrigins = new Set(
+  String(env.clientUrl || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+
 const initSocketServer = (httpServer) => {
   ioInstance = new Server(httpServer, {
     cors: {
-      origin: [env.clientUrl, 'http://localhost:5173'],
+      origin(origin, callback) {
+        if (!origin) {
+          return callback(null, true);
+        }
+
+        const allowPrivateDevOrigin = env.nodeEnv !== 'production' && privateNetworkOriginPattern.test(origin);
+
+        if (configuredOrigins.has(origin) || localhostOriginPattern.test(origin) || allowPrivateDevOrigin) {
+          return callback(null, true);
+        }
+
+        return callback(new Error(`Socket CORS blocked origin: ${origin}`));
+      },
       methods: ['GET', 'POST'],
     },
   });
@@ -73,6 +94,18 @@ const initSocketServer = (httpServer) => {
       }
     });
 
+    socket.on('todo-toggled', ({ roomId, todoId, completed }) => {
+      if (roomId && todoId) {
+        ioInstance.to(roomId).emit('todo-toggled-received', { todoId, completed });
+      }
+    });
+
+    socket.on('todo-deleted', ({ roomId, todoId }) => {
+      if (roomId && todoId) {
+        ioInstance.to(roomId).emit('todo-deleted-received', { todoId });
+      }
+    });
+
     socket.on('update-playlist', ({ roomId, spotifyUrl }) => {
       if (roomId) {
         socket.to(roomId).emit('update-playlist', { roomId, spotifyUrl });
@@ -82,6 +115,12 @@ const initSocketServer = (httpServer) => {
     socket.on('update-background', ({ roomId, backgroundUrl }) => {
       if (roomId) {
         socket.to(roomId).emit('update-background', { roomId, backgroundUrl });
+      }
+    });
+
+    socket.on('sync-playback', ({ roomId, action, updatedById, updatedByName }) => {
+      if (roomId && action) {
+        socket.to(roomId).emit('sync-playback', { roomId, action, updatedById, updatedByName, at: Date.now() });
       }
     });
 

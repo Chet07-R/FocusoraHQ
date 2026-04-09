@@ -12,6 +12,9 @@ const router = express.Router();
 
 router.post('/register', registerValidator, validate, asyncHandler(authController.register));
 router.post('/login', loginValidator, validate, asyncHandler(authController.login));
+router.post('/guest', asyncHandler(authController.guestLogin));
+router.get('/verify-email', asyncHandler(authController.verifyEmail));
+router.post('/resend-verification', asyncHandler(authController.resendVerificationEmail));
 router.get('/me', authGuard, asyncHandler(authController.me));
 
 router.get('/google', (req, res, next) => {

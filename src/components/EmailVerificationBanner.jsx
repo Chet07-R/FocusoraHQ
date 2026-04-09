@@ -16,7 +16,7 @@ const EmailVerificationBanner = () => {
   const handleResend = async () => {
     try {
       setSending(true);
-      await resendVerificationEmail();
+      await resendVerificationEmail(user.email);
       setMessage('Verification email sent! Check your inbox.');
       setTimeout(() => setMessage(''), 5000);
     } catch (error) {

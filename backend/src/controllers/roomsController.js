@@ -35,4 +35,23 @@ const getRoom = async (req, res) => {
   return ok(res, room);
 };
 
-module.exports = { createRoom, listRooms, getRoom };
+const deleteRoom = async (req, res) => {
+  const room = await StudyRoom.findById(req.params.id);
+
+  if (!room) {
+    return fail(res, 404, 'ROOM_NOT_FOUND', 'Room not found');
+  }
+
+  if (String(room.createdBy) !== String(req.user._id)) {
+    return fail(res, 403, 'FORBIDDEN', 'Only the room creator can delete this room');
+  }
+
+  room.active = false;
+  room.participants = [];
+  room.participantCount = 0;
+  await room.save();
+
+  return ok(res, { success: true, roomId: room._id });
+};
+
+module.exports = { createRoom, listRooms, getRoom, deleteRoom };

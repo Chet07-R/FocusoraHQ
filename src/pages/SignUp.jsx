@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { mapAuthError } from '../utils/authErrors';
+import { getAuthErrorMessage } from '../utils/authErrors';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, signInAsGuest } = useAuth();
   const { darkMode } = useTheme();
 
   const handleChange = (e) => {
@@ -41,11 +41,10 @@ const SignUp = () => {
         email: formData.email,
         password: formData.password,
       });
-      
-      navigate('/verify-email');
+
+      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
-      const friendly = mapAuthError(err?.code);
-      setError(friendly || err?.message || 'Failed to create account');
+      setError(getAuthErrorMessage(err, 'Failed to create account'));
     } finally {
       setSubmitting(false);
     }
@@ -56,10 +55,21 @@ const SignUp = () => {
     setSubmitting(true);
     try {
       await signInWithGoogle();
+    } catch (err) {
+        setError(getAuthErrorMessage(err, 'Google sign-up failed'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGuest = async () => {
+    setError('');
+    setSubmitting(true);
+    try {
+      await signInAsGuest();
       navigate('/');
     } catch (err) {
-      const friendly = mapAuthError(err?.code);
-      setError(friendly || err?.message || 'Google sign-up failed');
+      setError(getAuthErrorMessage(err, 'Guest sign-up failed'));
     } finally {
       setSubmitting(false);
     }
@@ -203,6 +213,15 @@ const SignUp = () => {
               className={`w-full mt-3 cursor-pointer border-2 font-semibold py-3 rounded-xl transform hover:scale-[1.01] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed ${darkMode ? 'bg-slate-700/60 border-blue-500/30 text-white hover:bg-slate-700 hover:border-purple-400' : 'bg-white/90 border-blue-400/40 text-gray-900 hover:bg-white hover:border-purple-500'}`}
             >
               Continue with Google
+            </button>
+
+            <button
+              type="button"
+              onClick={handleGuest}
+              disabled={submitting}
+              className={`w-full mt-3 cursor-pointer border-2 font-semibold py-3 rounded-xl transform hover:scale-[1.01] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed ${darkMode ? 'bg-slate-900/70 border-slate-500 text-white hover:bg-slate-800 hover:border-cyan-300' : 'bg-gray-50 border-gray-300 text-gray-900 hover:bg-white hover:border-indigo-400'}`}
+            >
+              Continue as Guest
             </button>
           </form>
 
