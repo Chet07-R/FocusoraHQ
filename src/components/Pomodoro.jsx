@@ -108,7 +108,7 @@ const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {
 
   const handleWorkDurationChange = (e) => {
     const minutes = parseInt(e.target.value, 10);
-    if (!isNaN(minutes) && minutes >= 0 && minutes <= 60) {
+    if (!isNaN(minutes) && minutes >= 1 && minutes <= 60) {
       setWorkDuration(minutes);
       if (!isRunning && !onBreak) {
         setTimeLeft(minutes * 60);
@@ -248,7 +248,7 @@ const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {
             <input
               id="workInput"
               type="number"
-              min="0"
+              min="1"
               max="60"
               value={workDuration}
               onChange={handleWorkDurationChange}

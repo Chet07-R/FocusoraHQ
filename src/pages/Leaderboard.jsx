@@ -3,6 +3,7 @@ import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { getLeaderboard } from "../utils/firestoreUtils";
+import { POINT_RULES } from "../constants/pointsSystem";
 
 const getBadgeMeta = (points, streak, sessions) => {
   if (points <= 0) return { label: "Newcomer", color: "slate" };
@@ -327,10 +328,10 @@ const App = () => {
         <section className="py-20 px-6 md:px-20">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className={`text-3xl md:text-4xl font-extrabold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              How to Earn Points
+              How Points Are Calculated
             </h2>
             <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Understanding the point system to climb the leaderboard
+              These are the live scoring rules used for leaderboard updates
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -343,16 +344,16 @@ const App = () => {
                 <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Focus Sessions</h3>
                 <ul className="space-y-3 text-left">
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
-                    <span>25min session</span>
-                    <span className="text-blue-300 font-semibold">+10 pts</span>
+                    <span>Per focused minute</span>
+                    <span className="text-blue-300 font-semibold">+{POINT_RULES.pomodoroPerMinute} pt</span>
                   </li>
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
-                    <span>50min session</span>
-                    <span className="text-blue-300 font-semibold">+15 pts</span>
+                    <span>25min session</span>
+                    <span className="text-blue-300 font-semibold">+{25 * POINT_RULES.pomodoroPerMinute} pts</span>
                   </li>
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-cyan-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-cyan-100 to-transparent text-gray-700'}`}>
-                    <span>4 sessions/day</span>
-                    <span className="text-teal-300 font-semibold">+50 bonus</span>
+                    <span>50min session</span>
+                    <span className="text-teal-300 font-semibold">+{50 * POINT_RULES.pomodoroPerMinute} pts</span>
                   </li>
                 </ul>
               </div>
@@ -363,19 +364,19 @@ const App = () => {
                     <CheckCircle className="w-8 h-8" />
                   </div>
                 </div>
-                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Task Completion</h3>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Tasks & Notes</h3>
                 <ul className="space-y-3 text-left">
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
-                    <span>Per task completed</span>
-                    <span className="text-cyan-200 font-semibold">+5 pts</span>
+                    <span>Notes save</span>
+                    <span className="text-cyan-200 font-semibold">+{POINT_RULES.notesSave} pt</span>
                   </li>
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
-                    <span>Daily goal achieved</span>
-                    <span className="text-cyan-200 font-semibold">+20 pts</span>
+                    <span>Add new task</span>
+                    <span className="text-cyan-200 font-semibold">+{POINT_RULES.taskAdded} pt</span>
                   </li>
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-purple-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-purple-100 to-transparent text-gray-700'}`}>
-                    <span>Weekly goals met</span>
-                    <span className="text-pink-300 font-semibold">+100 bonus</span>
+                    <span>Complete task</span>
+                    <span className="text-pink-300 font-semibold">+{POINT_RULES.taskCompleted} pts</span>
                   </li>
                 </ul>
               </div>
@@ -386,19 +387,19 @@ const App = () => {
                     <Zap className="w-8 h-8" />
                   </div>
                 </div>
-                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Streaks</h3>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Consistency & Rank</h3>
                 <ul className="space-y-3 text-left">
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
-                    <span>Daily streak bonus</span>
-                    <span className="text-yellow-300 font-semibold">+25 pts</span>
+                    <span>Any scoring action</span>
+                    <span className="text-yellow-300 font-semibold">Updates streak</span>
                   </li>
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 border border-orange-700 ${darkMode ? 'bg-[#2b1a10] text-gray-300' : 'bg-orange-50 text-gray-700'}`}>
-                    <span>7-day streak</span>
-                    <span className="text-orange-300 font-semibold">+100 pts</span>
+                    <span>Leaderboard refresh</span>
+                    <span className="text-orange-300 font-semibold">Every 5 seconds</span>
                   </li>
                   <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-pink-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-pink-100 to-transparent text-gray-700'}`}>
-                    <span>30-day streak</span>
-                    <span className="text-pink-300 font-semibold">+500 bonus</span>
+                    <span>Badges</span>
+                    <span className="text-pink-300 font-semibold">Based on points/streak</span>
                   </li>
                 </ul>
               </div>

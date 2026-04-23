@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
+import { POINT_RULES } from "../constants/pointsSystem";
 
 const HelpCenter = () => {
   const { darkMode } = useTheme();
@@ -63,7 +64,7 @@ const HelpCenter = () => {
     },
     {
       question: "How does the leaderboard work?",
-      answer: "The leaderboard tracks your study time and productivity. Points are earned through consistent study sessions, completing tasks, and maintaining focus streaks."
+      answer: `Points update from your actions: +${POINT_RULES.pomodoroPerMinute} point per focused minute, +${POINT_RULES.notesSave} for saving notes, +${POINT_RULES.taskAdded} for adding a task, and +${POINT_RULES.taskCompleted} for completing a task. Rankings refresh automatically every few seconds.`
     },
     {
       question: "Is my data secure?",

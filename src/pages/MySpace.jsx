@@ -7,6 +7,7 @@ import BackgroundSelector from "../components/BackgroundSelector";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { awardUserPoints } from "../utils/firestoreUtils";
+import { POINT_RULES, getPomodoroPoints } from "../constants/pointsSystem";
 
 const MySpace = () => {
   const { darkMode } = useTheme();
@@ -79,25 +80,35 @@ const MySpace = () => {
   };
 
   const handlePomodoroComplete = async ({ durationMinutes }) => {
-    const awardedPoints = Math.max(1, Math.floor(Number(durationMinutes || 0)));
+    const safeDuration = Math.max(0, Math.floor(Number(durationMinutes || 0)));
+    const awardedPoints = getPomodoroPoints(safeDuration);
     await awardPoints({
       points: awardedPoints,
-      studyMinutes: Math.max(0, Math.floor(Number(durationMinutes || 0))),
-      sessionsCount: 1,
-      message: `+${awardedPoints} points from Pomodoro`,
+      studyMinutes: safeDuration,
+      sessionsCount: safeDuration > 0 ? 1 : 0,
+      message: awardedPoints > 0 ? `+${awardedPoints} points from Pomodoro` : "",
     });
   };
 
   const handleNotesSaved = async () => {
-    await awardPoints({ points: 1, message: "+1 point from Notes" });
+    await awardPoints({
+      points: POINT_RULES.notesSave,
+      message: `+${POINT_RULES.notesSave} point${POINT_RULES.notesSave === 1 ? "" : "s"} from Notes`,
+    });
   };
 
   const handleTaskAdded = async () => {
-    await awardPoints({ points: 1, message: "+1 point for new task" });
+    await awardPoints({
+      points: POINT_RULES.taskAdded,
+      message: `+${POINT_RULES.taskAdded} point${POINT_RULES.taskAdded === 1 ? "" : "s"} for new task`,
+    });
   };
 
   const handleTaskCompleted = async () => {
-    await awardPoints({ points: 2, message: "+2 points for completed task" });
+    await awardPoints({
+      points: POINT_RULES.taskCompleted,
+      message: `+${POINT_RULES.taskCompleted} points for completed task`,
+    });
   };
 
   return (
