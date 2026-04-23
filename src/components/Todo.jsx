@@ -3,7 +3,7 @@ import { PlusCircle, Trash2, CheckCircle } from "lucide-react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
 
-const Todo = ({ addNotification = () => {} }) => {
+const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskCompleted = () => {} }) => {
   const { currentRoom, roomTodos, participants, addTodo, toggleTodo, deleteTodo, fixUnknownTodoCreators } = useStudyRoom();
   const { user, userProfile } = useAuth();
   const prevTodosRef = React.useRef(null);
@@ -36,6 +36,7 @@ const Todo = ({ addNotification = () => {} }) => {
         await addTodo(t);
         setNewTask("");
         addNotification("✅ Task added");
+        await onTaskAdded();
       } catch (e) {
         addNotification("❌ Failed to add task");
         console.error(e);
@@ -53,6 +54,7 @@ const Todo = ({ addNotification = () => {} }) => {
       setLocalTodos(prev => [...prev, newTodo]);
       setNewTask("");
       addNotification("✅ Task added");
+      await onTaskAdded();
     }
   };
 
@@ -60,6 +62,9 @@ const Todo = ({ addNotification = () => {} }) => {
     if (currentRoom) {
       try {
         await toggleTodo(todo.id, !todo.completed);
+        if (!todo.completed) {
+          await onTaskCompleted();
+        }
       } catch (e) {
         console.error(e);
       }
@@ -67,6 +72,9 @@ const Todo = ({ addNotification = () => {} }) => {
       setLocalTodos(prev => prev.map(t => 
         t.id === todo.id ? { ...t, completed: !t.completed } : t
       ));
+      if (!todo.completed) {
+        await onTaskCompleted();
+      }
     }
   };
 

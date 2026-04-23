@@ -4,10 +4,54 @@ import { useAuth } from "../context/AuthContext";
 import { getUserProfile, updateUserProfile } from "../utils/firestoreUtils";
 
 const DEFAULT_PROFILE = "/images/Profile_Icon.png";
+const PROFILE_IMAGE_MAX_SIZE = 360;
+const PROFILE_IMAGE_QUALITY = 0.85;
+
+const optimizeProfileImage = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = PROFILE_IMAGE_MAX_SIZE;
+        canvas.height = PROFILE_IMAGE_MAX_SIZE;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas is not supported"));
+          return;
+        }
+
+        const sourceSize = Math.min(img.width, img.height);
+        const sx = Math.max(0, Math.floor((img.width - sourceSize) / 2));
+        const sy = Math.max(0, Math.floor((img.height - sourceSize) / 2));
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+          img,
+          sx,
+          sy,
+          sourceSize,
+          sourceSize,
+          0,
+          0,
+          PROFILE_IMAGE_MAX_SIZE,
+          PROFILE_IMAGE_MAX_SIZE
+        );
+
+        const dataUrl = canvas.toDataURL("image/jpeg", PROFILE_IMAGE_QUALITY);
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error("Could not read selected image"));
+      img.src = String(reader.result || "");
+    };
+    reader.onerror = () => reject(new Error("Could not load selected file"));
+    reader.readAsDataURL(file);
+  });
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const { user, userProfile, deleteAccount } = useAuth();
+  const { user, userProfile, deleteAccount, reloadUser } = useAuth();
 
   const [profilePic, setProfilePic] = useState(DEFAULT_PROFILE);
   const [username, setUsername] = useState("");
@@ -49,12 +93,20 @@ const EditProfile = () => {
     load();
   }, [user, userProfile]);
 
-  const onPickProfile = (e) => {
+  const onPickProfile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setProfilePic(String(ev.target?.result || DEFAULT_PROFILE));
-    reader.readAsDataURL(file);
+    if (!file.type.startsWith("image/")) {
+      alert("Please choose an image file.");
+      return;
+    }
+    try {
+      const optimized = await optimizeProfileImage(file);
+      setProfilePic(optimized);
+    } catch (error) {
+      console.error(error);
+      alert("Could not process image. Please try a different one.");
+    }
   };
 
   const onSubmit = async (e) => {
@@ -78,10 +130,7 @@ const EditProfile = () => {
     };
     try {
       await updateUserProfile(user.uid, updates);
-      try {
-        const fresh = await getUserProfile(user.uid);
-        console.debug("Profile saved, fresh Firestore profile:", fresh);
-      } catch {}
+      await reloadUser();
       navigate("/profile");
     } catch (err) {
       console.error(err);

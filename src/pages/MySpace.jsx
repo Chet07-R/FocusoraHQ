@@ -5,9 +5,12 @@ import Todo from "../components/Todo";
 import FocusPlaylist from "../components/FocusPlaylist";
 import BackgroundSelector from "../components/BackgroundSelector";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import { awardUserPoints } from "../utils/firestoreUtils";
 
 const MySpace = () => {
   const { darkMode } = useTheme();
+  const { user, reloadUser } = useAuth();
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
   const [notification, setNotification] = useState({
     show: false,
@@ -61,6 +64,42 @@ const MySpace = () => {
     setNotification((prev) => ({ ...prev, show: false }));
   };
 
+  const awardPoints = async ({ points = 0, studyMinutes = 0, sessionsCount = 0, message = "" }) => {
+    if (!user) return;
+    if (points <= 0 && studyMinutes <= 0 && sessionsCount <= 0) return;
+    try {
+      await awardUserPoints(user.uid, { points, studyMinutes, sessionsCount });
+      await reloadUser();
+      if (message) {
+        addNotification(message, "Points", "⭐");
+      }
+    } catch (error) {
+      console.error("Failed to award points", error);
+    }
+  };
+
+  const handlePomodoroComplete = async ({ durationMinutes }) => {
+    const awardedPoints = Math.max(1, Math.floor(Number(durationMinutes || 0)));
+    await awardPoints({
+      points: awardedPoints,
+      studyMinutes: Math.max(0, Math.floor(Number(durationMinutes || 0))),
+      sessionsCount: 1,
+      message: `+${awardedPoints} points from Pomodoro`,
+    });
+  };
+
+  const handleNotesSaved = async () => {
+    await awardPoints({ points: 1, message: "+1 point from Notes" });
+  };
+
+  const handleTaskAdded = async () => {
+    await awardPoints({ points: 1, message: "+1 point for new task" });
+  };
+
+  const handleTaskCompleted = async () => {
+    await awardPoints({ points: 2, message: "+2 points for completed task" });
+  };
+
   return (
     <div className="min-h-screen w-screen overflow-x-hidden pb-6">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pb-4 pt-16 sm:pt-18 md:pt-20">
@@ -68,21 +107,25 @@ const MySpace = () => {
           {}
           <div className="xl:col-span-3 md:col-span-2 min-h-[500px] md:min-h-0">
             <div className="h-full">
-              <Pomodoro addNotification={addNotification} />
+              <Pomodoro addNotification={addNotification} onWorkSessionComplete={handlePomodoroComplete} />
             </div>
           </div>
 
           {}
           <div className="xl:col-span-5 md:col-span-2 min-h-[500px] md:min-h-0">
             <div className="h-full">
-              <Notes addNotification={addNotification} />
+              <Notes addNotification={addNotification} onNotesSaved={handleNotesSaved} />
             </div>
           </div>
 
           {}
           <div className="xl:col-span-4 md:col-span-2 min-h-[500px] md:min-h-0">
             <div className="h-full">
-              <Todo addNotification={addNotification} />
+              <Todo
+                addNotification={addNotification}
+                onTaskAdded={handleTaskAdded}
+                onTaskCompleted={handleTaskCompleted}
+              />
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const Pomodoro = ({ addNotification = () => { } }) => {
+const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {} }) => {
   const [workDuration, setWorkDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -15,6 +15,7 @@ const Pomodoro = ({ addNotification = () => { } }) => {
   const [autoStartNext, setAutoStartNext] = useState(true);
 
   const intervalRef = useRef(null);
+  const hasAwardedCurrentWorkRef = useRef(false);
   const beepSound = useRef(
     new Audio("https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3")
   );
@@ -44,8 +45,17 @@ const Pomodoro = ({ addNotification = () => { } }) => {
             if (!onBreak) {
               setSessionsCompleted((s) => s + 1);
               addNotification("🎉 Work session complete!");
+              if (!hasAwardedCurrentWorkRef.current) {
+                hasAwardedCurrentWorkRef.current = true;
+                Promise.resolve(
+                  onWorkSessionComplete({ durationMinutes: workDuration })
+                ).catch((error) => {
+                  console.error("Failed to award pomodoro points", error);
+                });
+              }
             } else {
               addNotification("✅ Break complete!");
+              hasAwardedCurrentWorkRef.current = false;
             }
 
             setOnBreak(!onBreak);
@@ -66,7 +76,7 @@ const Pomodoro = ({ addNotification = () => { } }) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isRunning, onBreak, workDuration, breakDuration, addNotification, soundOn, autoStartNext]);
+  }, [isRunning, onBreak, workDuration, breakDuration, addNotification, onWorkSessionComplete, soundOn, autoStartNext]);
 
   useEffect(() => {
     if ("Notification" in window) {
@@ -93,6 +103,7 @@ const Pomodoro = ({ addNotification = () => { } }) => {
     setOnBreak(false);
     setTimeLeft(workDuration * 60);
     setSessionsCompleted(0);
+    hasAwardedCurrentWorkRef.current = false;
   };
 
   const handleWorkDurationChange = (e) => {

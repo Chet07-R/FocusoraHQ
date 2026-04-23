@@ -35,6 +35,10 @@ export const getUserProfile = async (userId) => {
 export const updateUserProfile = async (userId, updates) => {
   await api.put('/users/profile', updates);
 };
+export const awardUserPoints = async (userId, { points = 0, studyMinutes = 0, sessionsCount = 0 } = {}) => {
+  const res = await api.post('/users/points', { points, studyMinutes, sessionsCount });
+  return res.data;
+};
 export const subscribeToUserProfile = (userId, callback) => {
   api.get('/users/profile').then(res => callback(res.data)).catch(() => {});
   return () => {}; 
@@ -220,12 +224,18 @@ export const backfillRoomTodosCreators = async () => 0;
 
 // --- LEADERBOARD ---
 export const getLeaderboard = (callback, limitCount = 50) => {
-  api.get(`/users/leaderboard?sortBy=points&limit=${limitCount}`).then(res => callback(res.data)).catch(() => {});
-  return () => {};
+  const fetchLeaderboard = () =>
+    api.get(`/users/leaderboard?sortBy=points&limit=${limitCount}`).then(res => callback(res.data)).catch(() => {});
+  fetchLeaderboard();
+  const interval = setInterval(fetchLeaderboard, 5000);
+  return () => clearInterval(interval);
 };
 export const getLeaderboardByStudyTime = (callback, limitCount = 50) => {
-  api.get(`/users/leaderboard?sortBy=time&limit=${limitCount}`).then(res => callback(res.data)).catch(() => {});
-  return () => {};
+  const fetchLeaderboard = () =>
+    api.get(`/users/leaderboard?sortBy=time&limit=${limitCount}`).then(res => callback(res.data)).catch(() => {});
+  fetchLeaderboard();
+  const interval = setInterval(fetchLeaderboard, 5000);
+  return () => clearInterval(interval);
 };
 
 // --- PERSONAL NOTES ---

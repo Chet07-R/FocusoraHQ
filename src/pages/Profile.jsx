@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
+const BADGE_DEFS = [
+  { id: "first-session", label: "First Focus", icon: "🎯", unlocked: (d) => d.sessions >= 1 },
+  { id: "session-10", label: "10 Sessions", icon: "📚", unlocked: (d) => d.sessions >= 10 },
+  { id: "hours-25", label: "25 Hours", icon: "⏱️", unlocked: (d) => d.totalMinutes >= 25 * 60 },
+  { id: "hours-100", label: "100 Hours", icon: "🏆", unlocked: (d) => d.totalMinutes >= 100 * 60 },
+  { id: "streak-7", label: "7-Day Streak", icon: "🔥", unlocked: (d) => d.streak >= 7 },
+  { id: "streak-30", label: "30-Day Streak", icon: "🌟", unlocked: (d) => d.streak >= 30 },
+];
+
 const Profile = () => {
   const { user, userProfile } = useAuth();
   const { darkMode } = useTheme();
@@ -11,13 +20,20 @@ const Profile = () => {
     const name = userProfile?.displayName || user?.displayName || "John Doe";
     const bio = userProfile?.bio || "Focus. Study. Thrive. 🎯";
     const photo = userProfile?.photoURL || user?.photoURL || "/images/Profile_Icon.png";
-    const totalMinutes = Number(userProfile?.totalStudyTime || 0);
+    const totalMinutes = Number(userProfile?.totalStudyMinutes || 0);
     const totalHours = (totalMinutes / 60).toFixed(1);
-    const sessions = Number(userProfile?.studySessions || 0);
+    const sessions = Number(userProfile?.sessionsCount || 0);
     const points = Number(userProfile?.points || 0);
+    const streak = Number(userProfile?.focusStreak || 0);
+    const bestStreak = Number(userProfile?.bestFocusStreak || 0);
     const pomodoros = Math.max(0, Math.floor(totalMinutes / 25));
-    return { name, bio, photo, totalHours, sessions, points, pomodoros };
+    return { name, bio, photo, totalMinutes, totalHours, sessions, points, streak, bestStreak, pomodoros };
   }, [userProfile, user]);
+
+  const badges = useMemo(
+    () => BADGE_DEFS.map((badge) => ({ ...badge, isUnlocked: badge.unlocked(display) })),
+    [display]
+  );
 
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300 pt-16">
@@ -89,7 +105,7 @@ const Profile = () => {
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12.001 2c.6 2.4-.3 3.9-1.2 4.9-.9 1-1.7 2.1-.6 3.9.9-1.1 2.4-1.6 3.6-1.2 2 .7 3.1 3 2.3 5.1-.9 2.3-3.5 3.5-6 2.7-2.2-.7-3.7-2.7-3.7-5 0-3.6 2.7-5.7 3.6-6.8C10.6 4.1 11.2 3.2 12 2z" />
                 </svg>
-                <span>7 Day Streak</span>
+                <span>{display.streak} Day Streak</span>
               </div>
             </div>
           </div>
@@ -133,35 +149,21 @@ const Profile = () => {
             </h2>
 
             <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-              <div className="bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900/50 dark:to-indigo-800/50 border-2 border-indigo-500 dark:border-indigo-400 rounded-2xl p-4 text-center hover:scale-105 transition-transform">
-                <svg className="w-10 h-10 mx-auto text-indigo-600 dark:text-indigo-300 mb-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2c.6 2.4-.3 3.9-1.2 4.9-.9 1-1.7 2.1-.6 3.9.9-1.1 2.4-1.6 3.6-1.2 2 .7 3.1 3 2.3 5.1-.9 2.3-3.5 3.5-6 2.7-2.2-.7-3.7-2.7-3.7-5 0-3.6 2.7-5.7 3.6-6.8C10.6 4.1 11.2 3.2 12 2z"/></svg>
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">7-Day Streak</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/50 dark:to-purple-800/50 border-2 border-purple-500 dark:border-purple-400 rounded-2xl p-4 text-center hover:scale-105 transition-transform">
-                <svg className="w-10 h-10 mx-auto text-purple-600 dark:text-purple-300 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">100 Hours</p>
-              </div>
-
-              <div className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/50 dark:to-pink-800/50 border-2 border-pink-500 dark:border-pink-400 rounded-2xl p-4 text-center hover:scale-105 transition-transform">
-                <svg className="w-10 h-10 mx-auto text-pink-600 dark:text-pink-300 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3"/><path d="M12 7v5l3 3"/></svg>
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100">Night Owl</p>
-              </div>
-
-              <div className="bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-2xl p-4 text-center opacity-50">
-                <svg className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15 10 23 10 17 14 19 22 12 18 5 22 7 14 1 10 9 10 12 2"/></svg>
-                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400">30-Day Streak</p>
-              </div>
-
-              <div className="bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-2xl p-4 text-center opacity-50">
-                <svg className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8"/><path d="M12 17a4 4 0 0 0 4-4V5H8v8a4 4 0 0 0 4 4z"/><path d="M7 5H5a2 2 0 0 0-2 2v1a5 5 0 0 0 5 5"/><path d="M17 5h2a2 2 0 0 1 2 2v1a5 5 0 0 1-5 5"/></svg>
-                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400">Top 100</p>
-              </div>
-
-              <div className="bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-2xl p-4 text-center opacity-50">
-                <svg className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 22l6-20 6 20"/></svg>
-                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400">500 Hours</p>
-              </div>
+              {badges.map((badge) => (
+                <div
+                  key={badge.id}
+                  className={
+                    badge.isUnlocked
+                      ? "bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900/50 dark:to-indigo-800/50 border-2 border-indigo-500 dark:border-indigo-400 rounded-2xl p-4 text-center hover:scale-105 transition-transform"
+                      : "bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-2xl p-4 text-center opacity-50"
+                  }
+                >
+                  <div className="text-3xl mb-2">{badge.icon}</div>
+                  <p className={badge.isUnlocked ? "text-xs font-semibold text-gray-900 dark:text-gray-100" : "text-xs font-semibold text-gray-600 dark:text-gray-400"}>
+                    {badge.label}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 

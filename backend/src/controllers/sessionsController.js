@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const StudySession = require('../models/StudySession');
 const { ok, fail } = require('../utils/apiResponse');
+const { applyFocusProgress } = require('../utils/userProgress');
 
 const createSession = async (req, res) => {
   const session = await StudySession.create({
@@ -22,20 +23,25 @@ const endSession = async (req, res) => {
   }
 
   const duration = Math.max(Number(req.body.duration || 0), 0);
-  const points = Math.floor(duration / 5);
+  const points = Math.floor(duration / 1);
 
   session.duration = duration;
   session.endTime = new Date();
   session.active = false;
   await session.save();
 
-  await User.findByIdAndUpdate(req.user._id, {
-    $inc: {
-      totalStudyMinutes: duration,
-      sessionsCount: 1,
-      points,
-    },
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return fail(res, 404, 'USER_NOT_FOUND', 'User not found');
+  }
+
+  applyFocusProgress(user, {
+    points,
+    studyMinutes: duration,
+    sessionsCount: 1,
+    eventAt: session.endTime,
   });
+  await user.save();
 
   return ok(res, session);
 };

@@ -1,11 +1,19 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { getLeaderboard } from "../utils/firestoreUtils";
 
+const getBadgeMeta = (points, streak, sessions) => {
+  if (points <= 0) return { label: "Newcomer", color: "slate" };
+  if (streak >= 30) return { label: "Legend", color: "purple" };
+  if (streak >= 10) return { label: "Hot Streak", color: "green" };
+  if (sessions >= 10) return { label: "Rising Star", color: "blue" };
+  return { label: "Steady", color: "gray" };
+};
+
 const App = () => {
-  const { user, userProfile } = useAuth();
+  const { user } = useAuth();
   const { darkMode } = useTheme();
   const [stats, setStats] = useState({
     users: 0,
@@ -14,179 +22,8 @@ const App = () => {
     goalRate: 0,
   });
 
-  const leaderboardData = [
-    {
-      rank: 1,
-      name: "Chetan Ajmani",
-      location: "us New York",
-      points: 9876,
-      today: "+356 today",
-      sessions: 156,
-      time: "142h 30m",
-      streak: 25,
-      badge: { label: "Champion", color: "green" },
-      img: "/images/People/5.jpg",
-    },
-    {
-      rank: 2,
-      name: "Tanish Mehta",
-      location: "us San Francisco",
-      points: 8245,
-      today: "+298 today",
-      sessions: 127,
-      time: "89h 15m",
-      streak: 12,
-      badge: { label: "Hot Streak", color: "green" },
-      img: "/images/People/4.jpg",
-    },
-    {
-      rank: 3,
-      name: "Vansh Thakur",
-      location: "ru Moscow",
-      points: 7892,
-      today: "+267 today",
-      sessions: 101,
-      time: "76h 45m",
-      streak: 8,
-      badge: { label: "Rising Star", color: "blue" },
-      img: "/images/People/6.jpeg",
-    },
-    {
-      rank: 4,
-      name: "Aryan Garg",
-      location: "us San Francisco",
-      points: 6543,
-      today: "+245 today",
-      sessions: 84,
-      time: "67h 23m",
-      streak: 12,
-      badge: { label: "Hot Streak", color: "green" },
-      img: "/images/People/7.jpg",
-    },
-    {
-      rank: 5,
-      name: "Arush Mittal",
-      location: "us California",
-      points: 6543,
-      today: "+245 today",
-      sessions: 84,
-      time: "67h 23m",
-      streak: 12,
-      badge: { label: "Hot Streak", color: "green" },
-      img: "/images/People/15.jpg",
-    },
-    {
-      rank: 6,
-      name: "Pratham Gupta",
-      location: "gb London",
-      points: 5987,
-      today: "+189 today",
-      sessions: 72,
-      time: "58h 15m",
-      streak: 8,
-      badge: { label: "Bookworm", color: "blue" },
-      img: "/images/People/8.png",
-    },
-    {
-      rank: 7,
-      name: "Pratibha",
-      location: "ca Toronto",
-      points: 5234,
-      today: "+156 today",
-      sessions: 65,
-      time: "52h 8m",
-      streak: 5,
-      badge: { label: "Speed Demon", color: "purple" },
-      img: "/images/People/9.enc",
-    },
-    {
-      rank: 8,
-      name: "Vaibhav Garg",
-      location: "sg Singapore",
-      points: 4892,
-      today: "+134 today",
-      sessions: 61,
-      time: "48h 32m",
-      streak: 15,
-      badge: { label: "Consistent", color: "orange" },
-      img: "/images/People/10.jpg",
-    },
-    {
-      rank: 9,
-      name: "Bhoomi Kataria",
-      location: "us Mississippi",
-      points: 4892,
-      today: "+134 today",
-      sessions: 61,
-      time: "48h 32m",
-      streak: 15,
-      badge: { label: "Consistent", color: "orange" },
-      img: "/images/People/16.jpg",
-    },
-    {
-      rank: 10,
-      name: "Bhavya Kaushal",
-      location: "eng Manchester",
-      points: 3120,
-      today: "+78 today",
-      sessions: 41,
-      time: "25h 12m",
-      streak: 3,
-      badge: { label: "Newcomer", color: "slate" },
-      img: "/images/People/12.enc",
-    },
-    {
-      rank: 11,
-      name: "Ishween",
-      location: "br São Paulo",
-      points: 3770,
-      today: "+67 today",
-      sessions: 48,
-      time: "32h 15m",
-      streak: 2,
-      badge: { label: "Steady", color: "gray" },
-      img: "/images/People/11.enc",
-    },
-    {
-      rank: 12,
-      name: "Arnav",
-      location: "us California",
-      points: 3247,
-      today: "+89 today",
-      sessions: 45,
-      time: "28h 45m",
-      streak: 3,
-      badge: { label: "Rising Star", color: "blue" },
-      img: "/images/People/13.enc",
-    },
-    {
-      rank: 13,
-      name: "Akaash Grover",
-      location: "kr Seoul",
-      points: 3156,
-      today: "+78 today",
-      sessions: 41,
-      time: "25h 12m",
-      streak: 0,
-      badge: { label: "Newcomer", color: "slate" },
-      img: "/images/People/14.enc",
-    },
-  ];
-
   const [visibleCount] = useState(10);
-  const idRef = useRef(leaderboardData.length + 1);
-  
-  const currentUserEmail = user?.email;
-  const currentUserName = userProfile?.displayName || user?.displayName || "You";
-  const currentUserPhoto = userProfile?.photoURL || user?.photoURL || "/images/People/default-avatar.png";
-  
-  function namesMatch(name1, name2) {
-    if (!name1 || !name2) return false;
-    const n1 = name1.toLowerCase().trim();
-    const n2 = name2.toLowerCase().trim();
-    return n1 === n2 || n1.includes(n2) || n2.includes(n1);
-  }
-  
+
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
   const [rows, setRows] = useState([]);
@@ -209,45 +46,28 @@ const App = () => {
   };
 
   useEffect(() => {
-    const animateValue = (key, end, duration) => {
-      let start = 0;
-      const increment = Math.ceil(end / 500);
-      const stepTime = Math.floor(duration / 500);
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setStats((prev) => ({ ...prev, [key]: end }));
-          clearInterval(timer);
-        } else {
-          setStats((prev) => ({ ...prev, [key]: start }));
-        }
-      }, stepTime);
-    };
-    animateValue("users", 2847, 800);
-    animateValue("points", 156, 800);
-    animateValue("sessions", 8392, 800);
-    animateValue("goalRate", 94, 800);
-  }, []);
-
-  useEffect(() => {
     const unsubscribe = getLeaderboard((users) => {
       const mapped = users.map((u) => ({
-        id: u.id,
+        id: String(u.uid || u._id || u.id || ''),
         name: u.displayName || "User",
         location: u.location || u.country || "Your Location",
         points: typeof u.points === 'number' ? u.points : 0,
-        today: u.todayIncrement ? `+${u.todayIncrement} today` : "+0 today",
-        sessions: u.studySessions || 0,
+        today: u.todayIncrement ? `+${u.todayIncrement} today` : "",
+        sessions: u.sessionsCount || u.studySessions || 0,
         time: (() => {
-          const mins = u.totalStudyTime || 0;
+          const mins = u.totalStudyMinutes || u.totalStudyTime || 0;
           const h = Math.floor(mins / 60);
           const m = mins % 60;
           return `${h}h ${m}m`;
         })(),
-        streak: u.streak || 0,
-        badge: { label: (u.points || 0) === 0 ? "Newcomer" : (u.streak || 0) >= 10 ? "Hot Streak" : "Steady", color: (u.points || 0) === 0 ? "slate" : (u.streak || 0) >= 10 ? "green" : "gray" },
+        streak: u.focusStreak || u.streak || 0,
+        badge: getBadgeMeta(
+          typeof u.points === 'number' ? u.points : 0,
+          u.focusStreak || u.streak || 0,
+          u.sessionsCount || u.studySessions || 0
+        ),
         img: u.photoURL || "/images/People/default-avatar.png",
-        you: user && u.id === user.uid,
+        you: user && String(u.uid || u._id || u.id || '') === String(user.uid || user._id || ''),
       }));
       setDynamicUsers(mapped);
     }, 500);
@@ -255,21 +75,24 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    const staticNames = new Set(leaderboardData.map(u => (u.name || '').toLowerCase()));
-    const filteredDynamic = dynamicUsers.filter(d => !staticNames.has((d.name || '').toLowerCase()));
-    const merged = [...leaderboardData, ...filteredDynamic];
-    merged.sort((a, b) => (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name)));
-
-    const ranked = merged.map((u, idx) => ({ ...u, rank: idx + 1, _id: idx + 1 }));
+    const ranked = [...dynamicUsers]
+      .sort((a, b) => (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name)))
+      .map((u, idx) => ({ ...u, rank: idx + 1, _id: String(u.id || idx + 1) }));
     setAllRows(ranked);
-    setRows((prev) => hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
-  }, [dynamicUsers, hasLoadedMore]);
+    setRows(hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
 
-  useEffect(() => {
-    const initial = leaderboardData.slice(0, visibleCount).map((u, idx) => ({ ...u, _id: idx + 1 }));
-    setRows(initial);
-    setAllRows(leaderboardData.map((u, idx) => ({ ...u, _id: idx + 1 })));
-  }, []);
+    const usersCount = ranked.length;
+    const pointsTotal = ranked.reduce((sum, row) => sum + (Number(row.points) || 0), 0);
+    const sessionsTotal = ranked.reduce((sum, row) => sum + (Number(row.sessions) || 0), 0);
+    const activeUsers = ranked.filter((row) => (Number(row.sessions) || 0) > 0).length;
+    const goalRate = usersCount > 0 ? Math.round((activeUsers / usersCount) * 100) : 0;
+    setStats({
+      users: usersCount,
+      points: pointsTotal,
+      sessions: sessionsTotal,
+      goalRate,
+    });
+  }, [dynamicUsers, hasLoadedMore, visibleCount]);
 
   return (
     <div className={`min-h-screen pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
@@ -310,8 +133,8 @@ const App = () => {
             <div className="flex justify-center mb-4 text-pink-500">
               <Zap className="w-10 h-10" />
             </div>
-            <h3 className="text-3xl font-bold text-pink-400">{stats.points}K</h3>
-            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Points Today</p>
+            <h3 className="text-3xl font-bold text-pink-400">{stats.points.toLocaleString()}</h3>
+            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Points</p>
           </div>
           <div className={`p-8 rounded-2xl shadow-lg hover:shadow-yellow-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
             <div className="flex justify-center mb-4 text-yellow-400">
@@ -345,10 +168,10 @@ const App = () => {
           <h2 className={`text-3xl md:text-4xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hall of Champions</h2>
           <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>This month's top performers</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
             {(allRows.length >= 3
               ? [allRows[1], allRows[0], allRows[2]]
-              : (allRows.length ? allRows.slice(0, 3) : leaderboardData.slice(0,3))
+              : allRows.slice(0, 3)
             ).map((u, displayIdx) => {
               if (!u) return null;
               const isChampion = displayIdx === 1; 
@@ -464,9 +287,7 @@ const App = () => {
                     </td>
                     <td className="px-6 py-4 text-blue-400 font-semibold">
                       {user.points.toLocaleString()}
-                      <span className="text-xs text-green-400 ml-1">
-                        {user.today}
-                      </span>
+                      {user.today && <span className="text-xs text-green-400 ml-1">{user.today}</span>}
                     </td>
                     <td className="px-6 py-4">{user.sessions}</td>
                     <td className="px-6 py-4">{user.time}</td>

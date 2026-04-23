@@ -3,7 +3,7 @@ import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, Alig
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
 
-const Notes = ({ addNotification = () => {} }) => {
+const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
   const { roomData, updateNotes, currentRoom } = useStudyRoom();
   const { user, userProfile } = useAuth();
   const [notes, setNotes] = useState("");
@@ -431,7 +431,7 @@ const Notes = ({ addNotification = () => {} }) => {
     return { chars, words, minutes };
   };
 
-  const saveLocalNotes = () => {
+  const saveLocalNotes = async () => {
     try {
       if (currentRoom) {
         updateNotes(notes);
@@ -440,6 +440,7 @@ const Notes = ({ addNotification = () => {} }) => {
         localStorage.setItem("sr_notes", notes);
         addNotification("💾 Notes saved");
       }
+      await onNotesSaved();
     } catch {
       addNotification("❌ Could not save notes");
     }
