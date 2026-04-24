@@ -2,10 +2,28 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile, updateUserProfile } from "../utils/firestoreUtils";
+import api from "../api";
 
 const DEFAULT_PROFILE = "/images/Profile_Icon.png";
 const PROFILE_IMAGE_MAX_SIZE = 360;
 const PROFILE_IMAGE_QUALITY = 0.85;
+
+const toNumber = (value, fallback = 0) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const formatStudyTime = (minutes) => {
+  const safeMinutes = Math.max(0, Math.floor(toNumber(minutes)));
+  const hours = Math.floor(safeMinutes / 60);
+  const remMinutes = safeMinutes % 60;
+
+  if (hours === 0) {
+    return `0h ${remMinutes}min`;
+  }
+
+  return remMinutes > 0 ? `${hours}h ${remMinutes}min` : `${hours}h`;
+};
 
 const optimizeProfileImage = (file) =>
   new Promise((resolve, reject) => {
@@ -71,8 +89,30 @@ const EditProfile = () => {
   useEffect(() => {
     const load = async () => {
       if (!user) return;
-      const p = userProfile || (await getUserProfile(user.uid));
+
+      const [latestProfile, sessions] = await Promise.all([
+        getUserProfile(user.uid),
+        api
+          .get("/sessions?limit=100")
+          .then((res) => (Array.isArray(res.data) ? res.data : []))
+          .catch(() => []),
+      ]);
+
+      const p = latestProfile || userProfile;
       if (!p) return;
+
+      const completedSessions = sessions.filter((session) => Math.max(0, toNumber(session?.duration, 0)) > 0);
+      const totalMinutesFromSessions = completedSessions.reduce(
+        (sum, session) => sum + Math.max(0, toNumber(session?.duration, 0)),
+        0
+      );
+      const totalMinutesFromProfile = Math.max(
+        0,
+        toNumber(p.totalStudyMinutes, toNumber(p.totalStudyTime, 0))
+      );
+      const totalMinutes = Math.max(totalMinutesFromProfile, totalMinutesFromSessions);
+      const streakValue = Math.max(0, Math.floor(toNumber(p.focusStreak, toNumber(p.streak, 0))));
+
       setUsername(p.displayName || "");
       setEmail(p.email || "");
       setBio(p.bio || "");
@@ -82,12 +122,8 @@ const EditProfile = () => {
       setShowOnLeaderboard(Boolean(p.showOnLeaderboard ?? true));
       setAllowMessages(Boolean(p.allowMessages ?? true));
       setNotifications(Boolean(p.notifications ?? true));
-      setTotalFocusTime(
-        typeof p.totalStudyTime === "number" ? `${p.totalStudyTime}m` : p.totalFocusTime || "0h"
-      );
-      setCurrentStreak(
-        typeof p.streak === "number" ? `${p.streak} days` : p.currentStreak || "0 days"
-      );
+      setTotalFocusTime(formatStudyTime(totalMinutes));
+      setCurrentStreak(`${streakValue} day${streakValue === 1 ? "" : "s"}`);
       setProfilePic(p.photoURL || user?.photoURL || DEFAULT_PROFILE);
     };
     load();
@@ -138,10 +174,6 @@ const EditProfile = () => {
     } finally {
       setSaving(false);
     }
-  };
-
-  const onCancel = () => {
-    if (confirm("Discard changes?")) navigate(-1);
   };
 
   const onDeleteAccount = async () => {

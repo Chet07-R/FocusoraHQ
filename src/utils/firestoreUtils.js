@@ -35,8 +35,11 @@ export const getUserProfile = async (userId) => {
 export const updateUserProfile = async (userId, updates) => {
   await api.put('/users/profile', updates);
 };
-export const awardUserPoints = async (userId, { points = 0, studyMinutes = 0, sessionsCount = 0 } = {}) => {
-  const res = await api.post('/users/points', { points, studyMinutes, sessionsCount });
+export const awardUserPoints = async (
+  userId,
+  { points = 0, studyMinutes = 0, sessionsCount = 0, subject = '', roomId = null } = {}
+) => {
+  const res = await api.post('/users/points', { points, studyMinutes, sessionsCount, subject, roomId });
   return res.data;
 };
 export const subscribeToUserProfile = (userId, callback) => {

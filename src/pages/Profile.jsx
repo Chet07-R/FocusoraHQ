@@ -1,39 +1,266 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import api from "../api";
 
 const BADGE_DEFS = [
-  { id: "first-session", label: "First Focus", icon: "🎯", unlocked: (d) => d.sessions >= 1 },
-  { id: "session-10", label: "10 Sessions", icon: "📚", unlocked: (d) => d.sessions >= 10 },
-  { id: "hours-25", label: "25 Hours", icon: "⏱️", unlocked: (d) => d.totalMinutes >= 25 * 60 },
-  { id: "hours-100", label: "100 Hours", icon: "🏆", unlocked: (d) => d.totalMinutes >= 100 * 60 },
-  { id: "streak-7", label: "7-Day Streak", icon: "🔥", unlocked: (d) => d.streak >= 7 },
-  { id: "streak-30", label: "30-Day Streak", icon: "🌟", unlocked: (d) => d.streak >= 30 },
+  { id: "first-session", label: "First Focus", icon: "🎯", metric: "sessions", target: 1 },
+  { id: "session-10", label: "10 Sessions", icon: "📚", metric: "sessions", target: 10 },
+  { id: "hours-25", label: "25 Hours", icon: "⏱️", metric: "totalMinutes", target: 25 * 60 },
+  { id: "hours-100", label: "100 Hours", icon: "🏆", metric: "totalMinutes", target: 100 * 60 },
+  { id: "streak-7", label: "7-Day Streak", icon: "🔥", metric: "streak", target: 7 },
+  { id: "streak-30", label: "30-Day Streak", icon: "🌟", metric: "streak", target: 30 },
 ];
+
+const WEEK_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const RECENT_ACTIVITY_STYLES = [
+  {
+    card: "bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800",
+    icon: "bg-green-500 dark:bg-green-600",
+  },
+  {
+    card: "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800",
+    icon: "bg-blue-500 dark:bg-blue-600",
+  },
+  {
+    card: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-100 dark:border-yellow-800",
+    icon: "bg-yellow-500 dark:bg-yellow-600",
+  },
+];
+
+const toNumber = (value, fallback = 0) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const getSessionDate = (session) => {
+  const raw = session?.endTime || session?.startTime || session?.updatedAt || session?.createdAt;
+  if (!raw) return null;
+
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const getWeekStart = (dateValue) => {
+  const date = new Date(dateValue);
+  date.setHours(0, 0, 0, 0);
+  const dayIndex = date.getDay();
+  const mondayOffset = dayIndex === 0 ? -6 : 1 - dayIndex;
+  date.setDate(date.getDate() + mondayOffset);
+  return date;
+};
+
+const formatStudyTime = (minutes) => {
+  const safeMinutes = Math.max(0, Math.floor(toNumber(minutes)));
+  const hours = Math.floor(safeMinutes / 60);
+  const remMinutes = safeMinutes % 60;
+
+  if (hours === 0) {
+    return `0h ${remMinutes}mins`;
+  }
+
+  return remMinutes > 0 ? `${hours}h ${remMinutes}mins` : `${hours}h`;
+};
+
+const formatBadgeProgress = (badge, currentValue) => {
+  const safeCurrent = Math.max(0, Math.floor(toNumber(currentValue)));
+  const clamped = Math.min(safeCurrent, badge.target);
+
+  if (badge.metric === "totalMinutes") {
+    return `${formatStudyTime(clamped)} / ${formatStudyTime(badge.target)}`;
+  }
+
+  if (badge.metric === "streak") {
+    return `${clamped}/${badge.target} days`;
+  }
+
+  return `${clamped}/${badge.target} sessions`;
+};
+
+const formatDuration = (minutes) => {
+  const safeMinutes = Math.max(0, Math.floor(toNumber(minutes)));
+  if (safeMinutes < 60) {
+    return `${safeMinutes} min`;
+  }
+
+  const hours = Math.floor(safeMinutes / 60);
+  const remMinutes = safeMinutes % 60;
+  return remMinutes > 0 ? `${hours}h ${remMinutes}m` : `${hours}h`;
+};
+
+const formatRelativeTime = (dateValue) => {
+  const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return "Recently";
+
+  const diffMs = Date.now() - date.getTime();
+  const diffMinutes = Math.max(0, Math.floor(diffMs / (1000 * 60)));
+
+  if (diffMinutes < 1) return "Just now";
+  if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes === 1 ? "" : "s"} ago`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+};
 
 const Profile = () => {
   const { user, userProfile } = useAuth();
   const { darkMode } = useTheme();
+  const [profileData, setProfileData] = useState(null);
+  const [sessionData, setSessionData] = useState([]);
+
+  const trackedUserId = userProfile?._id || userProfile?.uid || user?._id || user?.uid || null;
+
+  useEffect(() => {
+    if (!trackedUserId || !localStorage.getItem("token")) {
+      setProfileData(null);
+      setSessionData([]);
+      return undefined;
+    }
+
+    let active = true;
+
+    const fetchProfileInsights = async () => {
+      try {
+        const [profileRes, sessionsRes] = await Promise.all([
+          api.get("/users/profile"),
+          api.get("/sessions?limit=50"),
+        ]);
+
+        if (!active) return;
+
+        setProfileData(profileRes.data || null);
+        setSessionData(Array.isArray(sessionsRes.data) ? sessionsRes.data : []);
+      } catch (error) {
+        if (!active) return;
+        console.error("Failed to load profile insights", error);
+      }
+    };
+
+    fetchProfileInsights();
+    const intervalId = window.setInterval(fetchProfileInsights, 30000);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
+  }, [trackedUserId]);
 
   const display = useMemo(() => {
-    const name = userProfile?.displayName || user?.displayName || "John Doe";
-    const bio = userProfile?.bio || "Focus. Study. Thrive. 🎯";
-    const photo = userProfile?.photoURL || user?.photoURL || "/images/Profile_Icon.png";
-    const totalMinutes = Number(userProfile?.totalStudyMinutes || 0);
-    const totalHours = (totalMinutes / 60).toFixed(1);
-    const sessions = Number(userProfile?.sessionsCount || 0);
-    const points = Number(userProfile?.points || 0);
-    const streak = Number(userProfile?.focusStreak || 0);
-    const bestStreak = Number(userProfile?.bestFocusStreak || 0);
-    const pomodoros = Math.max(0, Math.floor(totalMinutes / 25));
-    return { name, bio, photo, totalMinutes, totalHours, sessions, points, streak, bestStreak, pomodoros };
-  }, [userProfile, user]);
+    const source = profileData || userProfile || user || {};
+    const name = source.displayName || "John Doe";
+    const bio = source.bio || "Focus. Study. Thrive. 🎯";
+    const photo = source.photoURL || "/images/Profile_Icon.png";
+    const completedSessions = sessionData.filter((session) => Math.max(0, toNumber(session?.duration, 0)) > 0);
+    const totalMinutesFromSessions = completedSessions.reduce(
+      (sum, session) => sum + Math.max(0, toNumber(session?.duration, 0)),
+      0
+    );
+    const totalMinutes = Math.max(
+      0,
+      toNumber(source.totalStudyMinutes, toNumber(source.totalStudyTime, 0)),
+      totalMinutesFromSessions
+    );
+    const totalHours = formatStudyTime(totalMinutes);
+    const sessions = Math.max(
+      0,
+      toNumber(source.sessionsCount, toNumber(source.studySessions, 0)),
+      completedSessions.length
+    );
+    const points = Math.max(0, toNumber(source.points, 0));
+    const streak = Math.max(0, toNumber(source.focusStreak, 0));
+    const bestStreak = Math.max(0, toNumber(source.bestFocusStreak, 0));
+    const pomodoroSessions = completedSessions.filter((session) =>
+      String(session?.subject || "").toLowerCase().includes("pomodoro")
+    );
+    const pomodoros =
+      pomodoroSessions.length > 0
+        ? pomodoroSessions.length
+        : completedSessions.length > 0
+          ? completedSessions.length
+          : sessions;
 
-  const badges = useMemo(
-    () => BADGE_DEFS.map((badge) => ({ ...badge, isUnlocked: badge.unlocked(display) })),
-    [display]
-  );
+    return { name, bio, photo, totalMinutes, totalHours, sessions, points, streak, bestStreak, pomodoros };
+  }, [profileData, userProfile, user, sessionData]);
+
+  const weeklyActivity = useMemo(() => {
+    const weekStart = getWeekStart(new Date());
+    const rows = WEEK_DAYS.map((day, index) => ({
+      day,
+      dayStart: new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + index),
+      minutes: 0,
+    }));
+
+    sessionData.forEach((session) => {
+      const sessionDate = getSessionDate(session);
+      if (!sessionDate) return;
+
+      const sessionDayStart = new Date(sessionDate.getFullYear(), sessionDate.getMonth(), sessionDate.getDate());
+      const dayOffset = Math.floor((sessionDayStart.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000));
+
+      if (dayOffset < 0 || dayOffset >= 7) return;
+
+      rows[dayOffset].minutes += Math.max(0, toNumber(session.duration, 0));
+    });
+
+    const maxMinutes = Math.max(...rows.map((row) => row.minutes), 1);
+
+    return rows.map((row) => ({
+      day: row.day,
+      hours: formatStudyTime(row.minutes),
+      width: row.minutes > 0 ? `${Math.max((row.minutes / maxMinutes) * 100, 4)}%` : "0%",
+      hasValue: row.minutes > 0,
+    }));
+  }, [sessionData]);
+
+  const recentActivity = useMemo(() => {
+    return sessionData
+      .map((session, index) => {
+        const when = getSessionDate(session);
+        if (!when) return null;
+
+        const durationMinutes = Math.max(0, Math.floor(toNumber(session.duration, 0)));
+        const subject = String(session.subject || "").trim();
+
+        return {
+          id: String(session._id || session.id || `${when.toISOString()}-${index}`),
+          when,
+          durationMinutes,
+          title:
+            durationMinutes > 0
+              ? `Completed ${formatDuration(durationMinutes)} focus session${subject ? ` on ${subject}` : ""}`
+              : `Started a focus session${subject ? ` on ${subject}` : ""}`,
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.when.getTime() - a.when.getTime())
+      .slice(0, 5)
+      .map((activity) => ({
+        ...activity,
+        timeLabel: formatRelativeTime(activity.when),
+      }));
+  }, [sessionData]);
+
+  const badges = useMemo(() => {
+    const metricMap = {
+      sessions: display.sessions,
+      totalMinutes: display.totalMinutes,
+      streak: display.streak,
+    };
+
+    return BADGE_DEFS.map((badge) => {
+      const current = metricMap[badge.metric] ?? 0;
+      return {
+        ...badge,
+        isUnlocked: current >= badge.target,
+        progress: formatBadgeProgress(badge, current),
+      };
+    });
+  }, [display]);
 
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300 pt-16">
@@ -162,6 +389,9 @@ const Profile = () => {
                   <p className={badge.isUnlocked ? "text-xs font-semibold text-gray-900 dark:text-gray-100" : "text-xs font-semibold text-gray-600 dark:text-gray-400"}>
                     {badge.label}
                   </p>
+                  <p className={badge.isUnlocked ? "text-[10px] mt-1 text-gray-700 dark:text-gray-200" : "text-[10px] mt-1 text-gray-500 dark:text-gray-500"}>
+                    {badge.progress}
+                  </p>
                 </div>
               ))}
             </div>
@@ -174,15 +404,7 @@ const Profile = () => {
               This Week's Activity
             </h2>
 
-            {[
-              { day: "Monday", hours: "3.5h", width: "70%" },
-              { day: "Tuesday", hours: "4.2h", width: "79%" },
-              { day: "Wednesday", hours: "2.8h", width: "56%" },
-              { day: "Thursday", hours: "5.0h", width: "85%" },
-              { day: "Friday", hours: "3.0h", width: "60%" },
-              { day: "Saturday", hours: "4.5h", width: "82%" },
-              { day: "Sunday", hours: "6.0h", width: "100%" },
-            ].map((row) => (
+            {weeklyActivity.map((row) => (
               <div key={row.day} className="space-y-2 mb-4 last:mb-0">
                 <div className="flex justify-between text-sm">
                   <span className="font-semibold text-gray-700 dark:text-gray-300">{row.day}</span>
@@ -191,7 +413,7 @@ const Profile = () => {
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div
                     className="h-3 rounded-full transition-all duration-500 bg-indigo-500 dark:bg-indigo-400 bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-400 dark:to-purple-400"
-                    style={{ width: row.width, minWidth: '4%' }}
+                    style={{ width: row.width, minWidth: row.hasValue ? "4%" : "0%" }}
                     aria-hidden="true"
                   />
                 </div>
@@ -207,35 +429,40 @@ const Profile = () => {
             </h2>
 
             <div className="space-y-4">
-              <div className="flex items-start gap-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-xl hover:shadow-md transition-shadow border border-green-100 dark:border-green-800">
-                <div className="w-12 h-12 bg-green-500 dark:bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              {recentActivity.length === 0 && (
+                <div className="bg-gray-100 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">No recent activity yet</p>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Complete a study session to see it here.</span>
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">Completed "Java Assignment"</p>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">2 hours ago</span>
-                </div>
-              </div>
+              )}
 
-              <div className="flex items-start gap-4 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl hover:shadow-md transition-shadow border border-blue-100 dark:border-blue-800">
-                <div className="w-12 h-12 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"/><path d="M7 14a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"/><path d="M5 20a7 7 0 0 1 7-7"/><path d="M16 21a5 5 0 0 1 5-5"/></svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">Joined "Data Structures Study Room"</p>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">5 hours ago</span>
-                </div>
-              </div>
+              {recentActivity.map((activity, index) => {
+                const style = RECENT_ACTIVITY_STYLES[index % RECENT_ACTIVITY_STYLES.length];
 
-              <div className="flex items-start gap-4 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl hover:shadow-md transition-shadow border border-yellow-100 dark:border-yellow-800">
-                <div className="w-12 h-12 bg-yellow-500 dark:bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8"/><path d="M12 17a4 4 0 0 0 4-4V5H8v8a4 4 0 0 0 4 4z"/><path d="M7 5H5a2 2 0 0 0-2 2v1a5 5 0 0 0 5 5"/><path d="M17 5h2a2 2 0 0 1 2 2v1a5 5 0 0 1-5 5"/></svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900 dark:text-white">Earned "Night Owl" badge</p>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">1 day ago</span>
-                </div>
-              </div>
+                return (
+                  <div
+                    key={activity.id}
+                    className={`flex items-start gap-4 p-4 rounded-xl hover:shadow-md transition-shadow border ${style.card}`}
+                  >
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${style.icon}`}>
+                      <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        {activity.durationMinutes > 0 ? (
+                          <path d="M20 6L9 17l-5-5" />
+                        ) : (
+                          <>
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 8v4l3 3" />
+                          </>
+                        )}
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 dark:text-white">{activity.title}</p>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{activity.timeLabel}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

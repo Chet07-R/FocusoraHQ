@@ -6,6 +6,17 @@ const StudyRoom = require('../models/StudyRoom');
 const { ok, fail } = require('../utils/apiResponse');
 const { applyFocusProgress } = require('../utils/userProgress');
 
+const ALLOWED_THEMES = new Set(['forest', 'ocean', 'rain', 'cafe', 'library']);
+
+const clampMinutes = (value, fallback) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(60, Math.max(1, Math.floor(parsed)));
+};
+
 const toUserPayload = (user) => ({
   _id: user._id,
   uid: String(user._id),
@@ -18,6 +29,13 @@ const toUserPayload = (user) => ({
   focusStreak: user.focusStreak || 0,
   bestFocusStreak: user.bestFocusStreak || 0,
   lastFocusDate: user.lastFocusDate || null,
+  bio: user.bio || '',
+  pomodoroWork: user.pomodoroWork || 25,
+  pomodoroBreak: user.pomodoroBreak || 5,
+  theme: user.theme || 'forest',
+  showOnLeaderboard: typeof user.showOnLeaderboard === 'boolean' ? user.showOnLeaderboard : true,
+  allowMessages: typeof user.allowMessages === 'boolean' ? user.allowMessages : true,
+  notifications: typeof user.notifications === 'boolean' ? user.notifications : true,
   provider: user.provider,
   isEmailVerified: user.isEmailVerified,
 });
@@ -37,14 +55,45 @@ const updateProfile = async (req, res) => {
     updates.photoURL = req.body.photoURL;
   }
 
+  if (typeof req.body.bio === 'string') {
+    updates.bio = req.body.bio.trim().slice(0, 300);
+  }
+
+  if (req.body.pomodoroWork !== undefined) {
+    updates.pomodoroWork = clampMinutes(req.body.pomodoroWork, 25);
+  }
+
+  if (req.body.pomodoroBreak !== undefined) {
+    updates.pomodoroBreak = clampMinutes(req.body.pomodoroBreak, 5);
+  }
+
+  if (typeof req.body.theme === 'string') {
+    const normalizedTheme = req.body.theme.trim().toLowerCase();
+    updates.theme = ALLOWED_THEMES.has(normalizedTheme) ? normalizedTheme : 'forest';
+  }
+
+  if (typeof req.body.showOnLeaderboard === 'boolean') {
+    updates.showOnLeaderboard = req.body.showOnLeaderboard;
+  }
+
+  if (typeof req.body.allowMessages === 'boolean') {
+    updates.allowMessages = req.body.allowMessages;
+  }
+
+  if (typeof req.body.notifications === 'boolean') {
+    updates.notifications = req.body.notifications;
+  }
+
   const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
-  return ok(res, user);
+  return ok(res, toUserPayload(user));
 };
 
 const grantPoints = async (req, res) => {
   const rawPoints = req.body?.points;
   const rawStudyMinutes = req.body?.studyMinutes;
   const rawSessionsCount = req.body?.sessionsCount;
+  const rawSubject = req.body?.subject;
+  const rawRoomId = req.body?.roomId;
 
   const points = Number.isFinite(Number(rawPoints)) ? Math.floor(Number(rawPoints)) : NaN;
   const studyMinutes = Number.isFinite(Number(rawStudyMinutes)) ? Math.floor(Number(rawStudyMinutes)) : NaN;
@@ -67,12 +116,31 @@ const grantPoints = async (req, res) => {
     return fail(res, 404, 'USER_NOT_FOUND', 'User not found');
   }
 
+  const eventAt = new Date();
+
   applyFocusProgress(user, {
     points: safePoints,
     studyMinutes: safeStudyMinutes,
     sessionsCount: safeSessionsCount,
-    eventAt: new Date(),
+    eventAt,
   });
+
+  if (safeStudyMinutes > 0 || safeSessionsCount > 0) {
+    const subject = typeof rawSubject === 'string' ? rawSubject.trim() : '';
+    const roomId = typeof rawRoomId === 'string' ? rawRoomId.trim() : null;
+    const startTime = new Date(eventAt.getTime() - Math.max(0, safeStudyMinutes) * 60 * 1000);
+
+    await StudySession.create({
+      userId: req.user._id,
+      roomId: roomId || null,
+      subject: subject || 'Focus Session',
+      startTime,
+      endTime: eventAt,
+      duration: Math.max(0, safeStudyMinutes),
+      active: false,
+    });
+  }
+
   await user.save();
 
   return ok(res, toUserPayload(user));

@@ -9,9 +9,27 @@ import { useAuth } from "../context/AuthContext";
 import { awardUserPoints } from "../utils/firestoreUtils";
 import { POINT_RULES, getPomodoroPoints } from "../constants/pointsSystem";
 
+const DEFAULT_MYSPACE_BACKGROUND = "https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg";
+
+const THEME_BACKGROUNDS = {
+  forest: "https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg",
+  ocean: "https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg",
+  rain: "https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg",
+  cafe: "https://images.pexels.com/photos/3747579/pexels-photo-3747579.jpeg",
+  library: "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg",
+};
+
+const applyBodyBackground = (url) => {
+  document.body.style.backgroundImage = `url('${url}')`;
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundRepeat = "no-repeat";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundAttachment = "fixed";
+};
+
 const MySpace = () => {
   const { darkMode } = useTheme();
-  const { user, reloadUser } = useAuth();
+  const { user, userProfile, reloadUser } = useAuth();
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
   const [notification, setNotification] = useState({
     show: false,
@@ -23,26 +41,23 @@ const MySpace = () => {
   
   useEffect(() => {
     const savedBg = localStorage.getItem("myspace_background");
-    if (savedBg) {
-      document.body.style.backgroundImage = `url('${savedBg}')`;
-      document.body.style.backgroundSize = "cover";
-      document.body.style.backgroundRepeat = "no-repeat";
-      document.body.style.backgroundPosition = "center";
-      document.body.style.backgroundAttachment = "fixed";
-    } else {
-      
-      document.body.style.backgroundImage = "url(https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg)";
-      document.body.style.backgroundSize = "cover";
-      document.body.style.backgroundRepeat = "no-repeat";
-      document.body.style.backgroundPosition = "center";
-      document.body.style.backgroundAttachment = "fixed";
+    const savedBgSource = localStorage.getItem("myspace_background_source");
+    const preferredTheme = String(userProfile?.theme || "forest").toLowerCase();
+    const preferredThemeBackground = THEME_BACKGROUNDS[preferredTheme] || DEFAULT_MYSPACE_BACKGROUND;
+    const shouldUseManualBackground = Boolean(savedBg) && savedBgSource === "manual";
+    const nextBackground = shouldUseManualBackground ? savedBg : preferredThemeBackground;
+
+    applyBodyBackground(nextBackground);
+
+    if (!shouldUseManualBackground) {
+      localStorage.setItem("myspace_background", nextBackground);
+      localStorage.setItem("myspace_background_source", "profile-theme");
     }
 
-    
     return () => {
       document.body.style.backgroundImage = "";
     };
-  }, []);
+  }, [userProfile?.theme]);
 
   const addNotification = (message, title = "Success", icon = "✅") => {
     setNotification({ show: true, icon, title, message });
@@ -57,7 +72,7 @@ const MySpace = () => {
     const prev = sel.style.display;
     sel.style.display = 'none';
     return () => {
-      try { sel.style.display = prev || ''; } catch (e) {  }
+      sel.style.display = prev || '';
     };
   }, []);
 
@@ -65,11 +80,11 @@ const MySpace = () => {
     setNotification((prev) => ({ ...prev, show: false }));
   };
 
-  const awardPoints = async ({ points = 0, studyMinutes = 0, sessionsCount = 0, message = "" }) => {
+  const awardPoints = async ({ points = 0, studyMinutes = 0, sessionsCount = 0, subject = "", roomId = null, message = "" }) => {
     if (!user) return;
     if (points <= 0 && studyMinutes <= 0 && sessionsCount <= 0) return;
     try {
-      await awardUserPoints(user.uid, { points, studyMinutes, sessionsCount });
+      await awardUserPoints(user.uid, { points, studyMinutes, sessionsCount, subject, roomId });
       await reloadUser();
       if (message) {
         addNotification(message, "Points", "⭐");
@@ -86,6 +101,7 @@ const MySpace = () => {
       points: awardedPoints,
       studyMinutes: safeDuration,
       sessionsCount: safeDuration > 0 ? 1 : 0,
+      subject: "Pomodoro",
       message: awardedPoints > 0 ? `+${awardedPoints} points from Pomodoro` : "",
     });
   };
@@ -118,7 +134,12 @@ const MySpace = () => {
           {}
           <div className="xl:col-span-3 md:col-span-2 min-h-[500px] md:min-h-0">
             <div className="h-full">
-              <Pomodoro addNotification={addNotification} onWorkSessionComplete={handlePomodoroComplete} />
+              <Pomodoro
+                addNotification={addNotification}
+                onWorkSessionComplete={handlePomodoroComplete}
+                defaultWorkDuration={Number(userProfile?.pomodoroWork ?? 25)}
+                defaultBreakDuration={Number(userProfile?.pomodoroBreak ?? 5)}
+              />
             </div>
           </div>
 

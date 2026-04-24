@@ -2,17 +2,29 @@ import React, { useState, useEffect, useRef } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {} }) => {
-  const [workDuration, setWorkDuration] = useState(25);
-  const [breakDuration, setBreakDuration] = useState(5);
-  const [timeLeft, setTimeLeft] = useState(25 * 60);
+const clampDuration = (value, fallback) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(60, Math.max(1, Math.floor(parsed)));
+};
+
+const Pomodoro = ({
+  addNotification = () => { },
+  onWorkSessionComplete = () => {},
+  defaultWorkDuration = 25,
+  defaultBreakDuration = 5,
+}) => {
+  const safeDefaultWorkDuration = clampDuration(defaultWorkDuration, 25);
+  const safeDefaultBreakDuration = clampDuration(defaultBreakDuration, 5);
+
+  const [workDuration, setWorkDuration] = useState(safeDefaultWorkDuration);
+  const [breakDuration, setBreakDuration] = useState(safeDefaultBreakDuration);
+  const [timeLeft, setTimeLeft] = useState(safeDefaultWorkDuration * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [onBreak, setOnBreak] = useState(false);
-  const [sessionsCompleted, setSessionsCompleted] = useState(0);
-  const [soundOn, setSoundOn] = useState(true);
-  const [goal, setGoal] = useState(4);
-  const [theme, setTheme] = useState("dark");
-  const [autoStartNext, setAutoStartNext] = useState(true);
+  const soundOn = true;
+  const theme = "dark";
+  const autoStartNext = true;
 
   const intervalRef = useRef(null);
   const hasAwardedCurrentWorkRef = useRef(false);
@@ -43,7 +55,6 @@ const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {
             }
 
             if (!onBreak) {
-              setSessionsCompleted((s) => s + 1);
               addNotification("🎉 Work session complete!");
               if (!hasAwardedCurrentWorkRef.current) {
                 hasAwardedCurrentWorkRef.current = true;
@@ -84,6 +95,20 @@ const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {
     }
   }, []);
 
+  useEffect(() => {
+    setWorkDuration(safeDefaultWorkDuration);
+    if (!isRunning && !onBreak) {
+      setTimeLeft(safeDefaultWorkDuration * 60);
+    }
+  }, [safeDefaultWorkDuration, isRunning, onBreak]);
+
+  useEffect(() => {
+    setBreakDuration(safeDefaultBreakDuration);
+    if (!isRunning && onBreak) {
+      setTimeLeft(safeDefaultBreakDuration * 60);
+    }
+  }, [safeDefaultBreakDuration, isRunning, onBreak]);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -102,7 +127,6 @@ const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {
     setIsRunning(false);
     setOnBreak(false);
     setTimeLeft(workDuration * 60);
-    setSessionsCompleted(0);
     hasAwardedCurrentWorkRef.current = false;
   };
 
@@ -125,25 +149,6 @@ const Pomodoro = ({ addNotification = () => { }, onWorkSessionComplete = () => {
         setTimeLeft(minutes * 60);
       }
     }
-  };
-
-  const handleGoalChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value) && value >= 1 && value <= 12) {
-      setGoal(value);
-    }
-  };
-
-  const toggleSound = () => {
-    setSoundOn((prev) => !prev);
-  };
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
-  const toggleAutoStart = () => {
-    setAutoStartNext((prev) => !prev);
   };
 
   const sessionTotal = onBreak ? breakDuration * 60 : workDuration * 60;
