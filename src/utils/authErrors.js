@@ -3,7 +3,7 @@ import api from '../api';
 export const mapAuthError = (code) => {
   switch (code) {
     case 'ERR_NETWORK':
-      return 'Cannot reach the backend server. Start backend with: cd backend && npm run dev.';
+      return 'Cannot reach the backend server. Check your deployed backend URL and VITE_API_URL in Vercel.';
     case 'ECONNABORTED':
       return 'Request timed out. Check your backend server and internet connection.';
     case 'EMAIL_TAKEN':
@@ -60,8 +60,8 @@ export const getAuthErrorMessage = (error, fallback = 'Authentication failed') =
   if (genericCode === 'ERR_NETWORK') {
     const baseUrl = String(api.defaults.baseURL || '').replace(/\/$/, '');
     return baseUrl
-      ? `Cannot reach the backend server at ${baseUrl}. Check that backend is running and the browser can reach that address.`
-      : 'Cannot reach the backend server. Check that backend is running and the browser can reach it.';
+      ? `Cannot reach the backend server at ${baseUrl}. Check that the Render service is live and that VITE_API_URL points to the deployed API.`
+      : 'Cannot reach the backend server. Check that VITE_API_URL is set in Vercel and that the Render service is live.';
   }
 
   return error?.message || fallback;
