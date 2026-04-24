@@ -2,14 +2,13 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const vercelClientUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : undefined;
-
 const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 5000),
-  clientUrl: process.env.CLIENT_URL || process.env.FRONTEND_URL || vercelClientUrl || 'http://localhost:5173',
+  clientUrl:
+    process.env.CLIENT_URL ||
+    process.env.FRONTEND_URL ||
+    (process.env.NODE_ENV !== 'production' ? 'http://localhost:5173' : ''),
   mongoUri: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',

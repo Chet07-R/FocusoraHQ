@@ -97,6 +97,29 @@ Key modules:
 
 ---
 
+**Backend On Vercel**
+
+- Deploy the backend as a separate Vercel project with the project root set to `backend/`.
+- Vercel will use `backend/api/index.js` as the serverless entrypoint.
+- Add these environment variables in the Vercel project settings:
+	- `MONGODB_URI`
+	- `JWT_SECRET`
+	- `JWT_EXPIRES_IN`
+	- `CLIENT_URL` or `FRONTEND_URL` set to your frontend Vercel domain
+	- `GOOGLE_CLIENT_ID`
+	- `GOOGLE_CLIENT_SECRET`
+	- `GOOGLE_CALLBACK_URL`
+	- `SMTP_HOST`
+	- `SMTP_PORT`
+	- `SMTP_SECURE`
+	- `SMTP_USER`
+	- `SMTP_PASS`
+	- `EMAIL_FROM`
+- Do not rely on the backend deployment URL for CORS. Set `CLIENT_URL` explicitly to the frontend origin.
+- The REST API works on Vercel, but the Socket.IO room server is not a good fit for Vercel serverless functions. Keep realtime sockets on a persistent host if you need them.
+
+---
+
 **Build and Preview**
 
 - Production build:
