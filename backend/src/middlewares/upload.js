@@ -1,9 +1,6 @@
-const fs = require('fs');
-const path = require('path');
 const multer = require('multer');
 
 const MAX_COVER_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
-const coversDir = path.join(__dirname, '../../uploads/blog-covers');
 
 const allowedMimeTypes = new Set([
   'image/jpeg',
@@ -12,28 +9,8 @@ const allowedMimeTypes = new Set([
   'image/gif',
 ]);
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    fs.mkdirSync(coversDir, { recursive: true });
-    cb(null, coversDir);
-  },
-  filename(req, file, cb) {
-    const originalExt = path.extname(file.originalname || '').toLowerCase();
-    const extension = originalExt || '.jpg';
-    const safeBaseName = path
-      .basename(file.originalname || 'cover', originalExt)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 50) || 'cover';
-
-    const uniquePrefix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${uniquePrefix}-${safeBaseName}${extension}`);
-  },
-});
-
 const uploader = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: MAX_COVER_IMAGE_SIZE_BYTES },
   fileFilter(req, file, cb) {
     if (!allowedMimeTypes.has(file.mimetype)) {

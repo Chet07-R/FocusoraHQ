@@ -11,17 +11,13 @@ const normalizeReadTime = (content) => {
   return `${Math.max(1, Math.ceil(words / 220))} min read`;
 };
 
-const resolveUploadedCoverImageUrl = (req) => {
-  if (!req.file?.filename) {
+const resolveUploadedCoverImageDataUri = (req) => {
+  if (!req.file?.buffer || !req.file?.mimetype) {
     return '';
   }
 
-  const host = req.get('host');
-  if (!host) {
-    return `/uploads/blog-covers/${req.file.filename}`;
-  }
-
-  return `${req.protocol}://${host}/uploads/blog-covers/${req.file.filename}`;
+  const imageBase64 = req.file.buffer.toString('base64');
+  return `data:${req.file.mimetype};base64,${imageBase64}`;
 };
 
 const toBlogPayload = (blog) => ({
@@ -48,11 +44,11 @@ const createBlog = async (req, res) => {
   const excerpt = String(req.body.excerpt || '').trim();
   const content = String(req.body.content || '').trim();
   const coverImage = String(req.body.coverImage || '').trim();
-  const uploadedCoverImage = resolveUploadedCoverImageUrl(req);
+  const uploadedCoverImage = resolveUploadedCoverImageDataUri(req);
   const authorNameFromBody = String(req.body.authorName || '').trim();
   const authorEmailFromBody = String(req.body.authorEmail || '').trim().toLowerCase();
 
-  const authorName = req.user?.displayName || authorNameFromBody || 'Focusora Member';
+  const authorName = req.user?.displayName || authorNameFromBody || 'FocusoraHQ Member';
   const authorEmail = req.user?.email || authorEmailFromBody;
 
   if (!title || !excerpt || !content) {
