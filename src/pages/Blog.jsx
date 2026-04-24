@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { getAuthErrorMessage } from '../utils/authErrors';
+import { createBlog as createBlogApi, defaultBlogCoverImage, listBlogs } from '../utils/blogsApi';
+
+const MAX_COVER_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 
 const Blog = () => {
+  const { user } = useAuth();
+  const coverImageInputRef = useRef(null);
+
   const allArticles = [
     {
       id: 1,
@@ -114,6 +122,23 @@ const Blog = () => {
   ];
 
   const [visibleCount, setVisibleCount] = useState(6);
+  const [communityBlogs, setCommunityBlogs] = useState([]);
+  const [communityLoading, setCommunityLoading] = useState(true);
+  const [communityError, setCommunityError] = useState('');
+  const [submitPending, setSubmitPending] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState('');
+  const [blogForm, setBlogForm] = useState({
+    authorName: '',
+    authorEmail: '',
+    title: '',
+    category: 'Focus',
+    excerpt: '',
+    content: '',
+    coverImage: '',
+    coverImageFile: null,
+  });
+
   const articles = allArticles.slice(0, visibleCount);
 
   const loadMoreArticles = () => {
@@ -127,6 +152,130 @@ const Blog = () => {
     Goals: 'bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400',
     Habits: 'bg-sky-100 dark:bg-sky-900 text-sky-600 dark:text-sky-400',
     Energy: 'bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-400',
+  };
+
+  const loadCommunityBlogs = useCallback(async () => {
+    setCommunityLoading(true);
+    setCommunityError('');
+
+    try {
+      const data = await listBlogs(30);
+      setCommunityBlogs(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setCommunityError(error?.response?.data?.message || 'Unable to load community blogs right now.');
+    } finally {
+      setCommunityLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCommunityBlogs();
+  }, [loadCommunityBlogs]);
+
+  const handleCommunityInputChange = (event) => {
+    const { name, value } = event.target;
+    setBlogForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCoverImageFileChange = (event) => {
+    const selectedFile = event.target.files?.[0] || null;
+
+    if (!selectedFile) {
+      setBlogForm((prev) => ({ ...prev, coverImageFile: null }));
+      return;
+    }
+
+    if (!selectedFile.type.startsWith('image/')) {
+      setSubmitError('Please choose a valid image file for cover upload.');
+      event.target.value = '';
+      return;
+    }
+
+    if (selectedFile.size > MAX_COVER_FILE_SIZE_BYTES) {
+      setSubmitError('Cover image file must be 2MB or smaller.');
+      event.target.value = '';
+      return;
+    }
+
+    setSubmitError('');
+    setBlogForm((prev) => ({ ...prev, coverImageFile: selectedFile }));
+  };
+
+  const clearSelectedCoverImageFile = () => {
+    setBlogForm((prev) => ({ ...prev, coverImageFile: null }));
+    if (coverImageInputRef.current) {
+      coverImageInputRef.current.value = '';
+    }
+  };
+
+  const handleCommunitySubmit = async (event) => {
+    event.preventDefault();
+    setSubmitError('');
+    setSubmitSuccess('');
+
+    if (!blogForm.title.trim() || !blogForm.excerpt.trim() || !blogForm.content.trim()) {
+      setSubmitError('Title, excerpt, and content are required.');
+      return;
+    }
+
+    if (!user && !blogForm.authorName.trim()) {
+      setSubmitError('Please add your name to publish as a community member.');
+      return;
+    }
+
+    const payload = {
+      title: blogForm.title.trim(),
+      category: blogForm.category,
+      excerpt: blogForm.excerpt.trim(),
+      content: blogForm.content.trim(),
+      coverImage: blogForm.coverImage.trim(),
+    };
+
+    if (blogForm.coverImageFile) {
+      payload.coverImageFile = blogForm.coverImageFile;
+    }
+
+    if (!user) {
+      payload.authorName = blogForm.authorName.trim();
+      payload.authorEmail = blogForm.authorEmail.trim();
+    }
+
+    setSubmitPending(true);
+
+    try {
+      const createdBlog = await createBlogApi(payload);
+      setCommunityBlogs((prev) => [createdBlog, ...prev]);
+      setSubmitSuccess('Your blog is now published in the community section.');
+      setBlogForm((prev) => ({
+        ...prev,
+        title: '',
+        category: 'Focus',
+        excerpt: '',
+        content: '',
+        coverImage: '',
+        coverImageFile: null,
+      }));
+      if (coverImageInputRef.current) {
+        coverImageInputRef.current.value = '';
+      }
+    } catch (error) {
+      setSubmitError(getAuthErrorMessage(error, 'Unable to publish your blog right now.'));
+    } finally {
+      setSubmitPending(false);
+    }
+  };
+
+  const formatBlogDate = (dateValue) => {
+    if (!dateValue) {
+      return 'Recently posted';
+    }
+
+    const parsedDate = new Date(dateValue);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return 'Recently posted';
+    }
+
+    return parsedDate.toLocaleDateString();
   };
 
   return (
@@ -284,6 +433,286 @@ const Blog = () => {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {}
+      <section className="py-16 bg-gradient-to-b from-white to-slate-50 dark:from-gray-900 dark:to-slate-950">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Community Blogs
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Stories and productivity systems shared by Focusora members.
+            </p>
+          </div>
+
+          {communityLoading && (
+            <div className="flex items-center justify-center py-14">
+              <div className="text-center">
+                <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+                <p className="mt-4 text-gray-600 dark:text-gray-300">Loading community blogs...</p>
+              </div>
+            </div>
+          )}
+
+          {!communityLoading && communityError && (
+            <div className="max-w-2xl mx-auto rounded-2xl border border-red-200 bg-red-50 dark:border-red-500/40 dark:bg-red-950/40 p-6 text-center">
+              <p className="text-red-700 dark:text-red-300 font-medium mb-4">{communityError}</p>
+              <button
+                type="button"
+                onClick={loadCommunityBlogs}
+                className="inline-flex items-center rounded-full bg-blue-700 px-6 py-2 text-white font-semibold hover:bg-blue-800 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {!communityLoading && !communityError && communityBlogs.length === 0 && (
+            <div className="max-w-3xl mx-auto rounded-3xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 text-center shadow-lg">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Be the first community author</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                Publish your first article below and it will appear here instantly.
+              </p>
+              <a
+                href="#community-write"
+                className="inline-flex items-center rounded-full bg-blue-700 px-7 py-3 text-white font-semibold hover:bg-blue-800 transition-colors"
+              >
+                Write Your Blog
+              </a>
+            </div>
+          )}
+
+          {!communityLoading && !communityError && communityBlogs.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {communityBlogs.slice(0, 9).map((communityBlog) => (
+                <article
+                  key={communityBlog.id || communityBlog._id}
+                  className="group overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                >
+                  <Link to={`/blog/community/${communityBlog.id || communityBlog._id}`}>
+                    <img
+                      src={communityBlog.coverImage || defaultBlogCoverImage}
+                      alt={communityBlog.title}
+                      className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="p-6">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <span className={`${categoryColors[communityBlog.category] || categoryColors.Focus} px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide`}>
+                          {communityBlog.category || 'Focus'}
+                        </span>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">{communityBlog.readTime || '1 min read'}</span>
+                      </div>
+
+                      <h3 className="mb-2 text-xl font-bold leading-tight text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400">
+                        {communityBlog.title}
+                      </h3>
+
+                      <p className="mb-4 text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
+                        {communityBlog.excerpt}
+                      </p>
+
+                      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                        <span>By {communityBlog.authorName || 'Focusora Member'}</span>
+                        <span>{formatBlogDate(communityBlog.createdAt)}</span>
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {}
+      <section id="community-write" className="py-16 bg-gradient-to-r from-indigo-100 via-cyan-50 to-white dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto max-w-4xl rounded-3xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/80 p-8 sm:p-10 shadow-2xl backdrop-blur">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
+                Add Your Own Blog
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300">
+                Keep the Focusora community growing by sharing your best productivity ideas.
+              </p>
+            </div>
+
+            <form className="space-y-5" onSubmit={handleCommunitySubmit}>
+              {!user && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="authorName">
+                      Your Name
+                    </label>
+                    <input
+                      id="authorName"
+                      name="authorName"
+                      type="text"
+                      value={blogForm.authorName}
+                      onChange={handleCommunityInputChange}
+                      placeholder="Jane Doe"
+                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="authorEmail">
+                      Your Email (optional)
+                    </label>
+                    <input
+                      id="authorEmail"
+                      name="authorEmail"
+                      type="email"
+                      value={blogForm.authorEmail}
+                      onChange={handleCommunityInputChange}
+                      placeholder="you@example.com"
+                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="title">
+                  Blog Title
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  value={blogForm.title}
+                  onChange={handleCommunityInputChange}
+                  placeholder="How I built a distraction-free study routine"
+                  className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="category">
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={blogForm.category}
+                    onChange={handleCommunityInputChange}
+                    className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                  >
+                    {Object.keys(categoryColors).map((category) => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="coverImage">
+                      Cover Image URL (optional)
+                    </label>
+                    <input
+                      id="coverImage"
+                      name="coverImage"
+                      type="url"
+                      value={blogForm.coverImage}
+                      onChange={handleCommunityInputChange}
+                      placeholder="https://images.unsplash.com/..."
+                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="coverImageFile">
+                      Choose Cover Image File (optional)
+                    </label>
+                    <input
+                      ref={coverImageInputRef}
+                      id="coverImageFile"
+                      name="coverImageFile"
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      onChange={handleCoverImageFileChange}
+                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-blue-700 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-800"
+                    />
+
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                      <span>{blogForm.coverImageFile ? `Selected: ${blogForm.coverImageFile.name}` : 'No file selected'}</span>
+                      {blogForm.coverImageFile && (
+                        <button
+                          type="button"
+                          onClick={clearSelectedCoverImageFile}
+                          className="rounded-full border border-gray-300 dark:border-slate-600 px-3 py-1 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                        >
+                          Remove file
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Both options are available. If you provide both URL and file, uploaded file is used as cover image.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="excerpt">
+                  Short Excerpt
+                </label>
+                <textarea
+                  id="excerpt"
+                  name="excerpt"
+                  rows={3}
+                  value={blogForm.excerpt}
+                  onChange={handleCommunityInputChange}
+                  placeholder="Give readers a quick summary of your article..."
+                  className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="content">
+                  Full Content
+                </label>
+                <textarea
+                  id="content"
+                  name="content"
+                  rows={8}
+                  value={blogForm.content}
+                  onChange={handleCommunityInputChange}
+                  placeholder="Write your complete blog here..."
+                  className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
+                />
+              </div>
+
+              {submitError && (
+                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-500/40 dark:bg-red-950/40 dark:text-red-300">
+                  {submitError}
+                </p>
+              )}
+
+              {submitSuccess && (
+                <p className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 dark:border-green-500/40 dark:bg-green-950/40 dark:text-green-300">
+                  {submitSuccess}
+                </p>
+              )}
+
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {user ? `Publishing as ${user.displayName || user.email || 'community member'}.` : 'Publishing as a community guest.'}
+                </p>
+                <button
+                  type="submit"
+                  disabled={submitPending}
+                  className="inline-flex items-center rounded-full bg-blue-700 px-8 py-3 text-white font-semibold transition-all duration-300 hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {submitPending ? 'Publishing...' : 'Publish Blog'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </section>
 

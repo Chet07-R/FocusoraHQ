@@ -3,14 +3,20 @@ const User = require('../models/User');
 const { env } = require('../config/env');
 const { fail } = require('../utils/apiResponse');
 
-const authGuard = async (req, res, next) => {
-  const authHeader = req.headers.authorization || '';
-
-  if (!authHeader.startsWith('Bearer ')) {
-    return fail(res, 401, 'UNAUTHORIZED', 'Missing bearer token');
+const resolveBearerToken = (authHeader = '') => {
+  if (!String(authHeader).startsWith('Bearer ')) {
+    return '';
   }
 
-  const token = authHeader.slice(7);
+  return String(authHeader).slice(7);
+};
+
+const authGuard = async (req, res, next) => {
+  const token = resolveBearerToken(req.headers.authorization || '');
+
+  if (!token) {
+    return fail(res, 401, 'UNAUTHORIZED', 'Missing bearer token');
+  }
 
   try {
     const payload = jwt.verify(token, env.jwtSecret);
@@ -27,4 +33,25 @@ const authGuard = async (req, res, next) => {
   }
 };
 
-module.exports = { authGuard };
+const optionalAuth = async (req, res, next) => {
+  const token = resolveBearerToken(req.headers.authorization || '');
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const payload = jwt.verify(token, env.jwtSecret);
+    const user = await User.findById(payload.sub);
+
+    if (user) {
+      req.user = user;
+    }
+  } catch (error) {
+    // Treat invalid/expired token as anonymous for community submissions.
+  }
+
+  return next();
+};
+
+module.exports = { authGuard, optionalAuth };

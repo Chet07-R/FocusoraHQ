@@ -28,6 +28,28 @@ export const getBlogById = async (blogId) => {
 };
 
 export const createBlog = async (payload) => {
+  const hasCoverImageFile = typeof File !== 'undefined' && payload?.coverImageFile instanceof File;
+
+  if (hasCoverImageFile) {
+    const formData = new FormData();
+
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') {
+        return;
+      }
+
+      if (key === 'coverImageFile') {
+        formData.append('coverImageFile', value);
+        return;
+      }
+
+      formData.append(key, String(value));
+    });
+
+    const res = await api.post('/blogs', formData);
+    return normalizeBlog(res.data);
+  }
+
   const res = await api.post('/blogs', payload);
   return normalizeBlog(res.data);
 };

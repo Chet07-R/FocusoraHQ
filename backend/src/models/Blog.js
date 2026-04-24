@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema(
   {
-    authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    authorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
     authorName: { type: String, required: true, trim: true },
-    authorEmail: { type: String, required: true, trim: true, lowercase: true },
+    authorEmail: { type: String, default: '', trim: true, lowercase: true },
     title: { type: String, required: true, trim: true },
     category: { type: String, default: 'Focus', trim: true },
     excerpt: { type: String, required: true, trim: true },

@@ -6,6 +6,7 @@ import EmailVerificationBanner from "./components/EmailVerificationBanner";
 import Blog from "./pages/Blog";
 import Blog1 from "./pages/Blog1";
 import Blog2 from "./pages/Blog2";
+import BlogCustom from "./pages/BlogCustom";
 import Leaderboard from "./pages/Leaderboard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
@@ -39,6 +40,7 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog1" element={<Blog1 />} />
         <Route path="/blog2" element={<Blog2 />} />
+        <Route path="/blog/community/:blogId" element={<BlogCustom />} />
         <Route path="/community" element={<Community />} />
         <Route path="/my-space" element={<MySpace />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
