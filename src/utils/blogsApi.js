@@ -2,6 +2,34 @@ import api from '../api';
 
 const DEFAULT_COVER_IMAGE = 'https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80';
 
+const resolveCoverImageUrl = (coverImage) => {
+  const value = String(coverImage || '').trim();
+
+  if (!value) {
+    return DEFAULT_COVER_IMAGE;
+  }
+
+  if (/^https?:\/\//i.test(value) || value.startsWith('data:')) {
+    return value;
+  }
+
+  if (!value.startsWith('/')) {
+    return value;
+  }
+
+  const apiBaseUrl = String(api.defaults.baseURL || '').trim();
+
+  if (!apiBaseUrl || apiBaseUrl.startsWith('/')) {
+    return value;
+  }
+
+  try {
+    return `${new URL(apiBaseUrl).origin}${value}`;
+  } catch {
+    return value;
+  }
+};
+
 const normalizeBlog = (blog) => {
   if (!blog) return blog;
 
@@ -12,7 +40,7 @@ const normalizeBlog = (blog) => {
     authorId: blog.authorId || '',
     authorName: blog.authorName || 'Focusora Member',
     authorEmail: blog.authorEmail || '',
-    coverImage: blog.coverImage || DEFAULT_COVER_IMAGE,
+    coverImage: resolveCoverImageUrl(blog.coverImage),
     isCommunity: typeof blog.isCommunity === 'boolean' ? blog.isCommunity : true,
   };
 };

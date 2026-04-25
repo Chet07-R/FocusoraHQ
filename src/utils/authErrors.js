@@ -46,6 +46,14 @@ export const mapAuthError = (code) => {
 export const getAuthErrorMessage = (error, fallback = 'Authentication failed') => {
   const backendCode = error?.response?.data?.code;
   const genericCode = error?.code;
+  const validationDetails = error?.response?.data?.details;
+
+  if (backendCode === 'VALIDATION_ERROR' && Array.isArray(validationDetails) && validationDetails.length > 0) {
+    const firstDetailMessage = validationDetails[0]?.msg;
+    if (firstDetailMessage) {
+      return String(firstDetailMessage);
+    }
+  }
 
   const mapped = mapAuthError(backendCode) || mapAuthError(genericCode);
   if (mapped) {

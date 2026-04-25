@@ -6,7 +6,8 @@ const resolveApiBaseUrl = () => {
     return '/api';
   }
 
-  const envBaseUrl = String(import.meta.env.VITE_API_URL || '').trim();
+  const envBaseUrl = String(import.meta.env.
+    VITE_API_URL || '').trim();
   if (envBaseUrl) {
     return envBaseUrl;
   }

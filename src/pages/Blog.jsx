@@ -5,6 +5,12 @@ import { getAuthErrorMessage } from '../utils/authErrors';
 import { createBlog as createBlogApi, defaultBlogCoverImage, listBlogs } from '../utils/blogsApi';
 
 const MAX_COVER_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+const BLOG_TITLE_MIN_LENGTH = 3;
+const BLOG_TITLE_MAX_LENGTH = 140;
+const BLOG_EXCERPT_MIN_LENGTH = 20;
+const BLOG_EXCERPT_MAX_LENGTH = 500;
+const BLOG_CONTENT_MIN_LENGTH = 50;
+const BLOG_CONTENT_MAX_LENGTH = 20000;
 
 const Blog = () => {
   const { user } = useAuth();
@@ -213,8 +219,27 @@ const Blog = () => {
     setSubmitError('');
     setSubmitSuccess('');
 
-    if (!blogForm.title.trim() || !blogForm.excerpt.trim() || !blogForm.content.trim()) {
+    const title = blogForm.title.trim();
+    const excerpt = blogForm.excerpt.trim();
+    const content = blogForm.content.trim();
+
+    if (!title || !excerpt || !content) {
       setSubmitError('Title, excerpt, and content are required.');
+      return;
+    }
+
+    if (title.length < BLOG_TITLE_MIN_LENGTH || title.length > BLOG_TITLE_MAX_LENGTH) {
+      setSubmitError(`Title must be between ${BLOG_TITLE_MIN_LENGTH} and ${BLOG_TITLE_MAX_LENGTH} characters.`);
+      return;
+    }
+
+    if (excerpt.length < BLOG_EXCERPT_MIN_LENGTH || excerpt.length > BLOG_EXCERPT_MAX_LENGTH) {
+      setSubmitError(`Excerpt must be between ${BLOG_EXCERPT_MIN_LENGTH} and ${BLOG_EXCERPT_MAX_LENGTH} characters.`);
+      return;
+    }
+
+    if (content.length < BLOG_CONTENT_MIN_LENGTH || content.length > BLOG_CONTENT_MAX_LENGTH) {
+      setSubmitError(`Content must be between ${BLOG_CONTENT_MIN_LENGTH} and ${BLOG_CONTENT_MAX_LENGTH} characters.`);
       return;
     }
 
@@ -224,10 +249,10 @@ const Blog = () => {
     }
 
     const payload = {
-      title: blogForm.title.trim(),
+      title,
       category: blogForm.category,
-      excerpt: blogForm.excerpt.trim(),
-      content: blogForm.content.trim(),
+      excerpt,
+      content,
       coverImage: blogForm.coverImage.trim(),
     };
 
@@ -665,6 +690,8 @@ const Blog = () => {
                   id="excerpt"
                   name="excerpt"
                   rows={3}
+                  minLength={BLOG_EXCERPT_MIN_LENGTH}
+                  maxLength={BLOG_EXCERPT_MAX_LENGTH}
                   value={blogForm.excerpt}
                   onChange={handleCommunityInputChange}
                   placeholder="Give readers a quick summary of your article..."
@@ -680,11 +707,16 @@ const Blog = () => {
                   id="content"
                   name="content"
                   rows={8}
+                  minLength={BLOG_CONTENT_MIN_LENGTH}
+                  maxLength={BLOG_CONTENT_MAX_LENGTH}
                   value={blogForm.content}
                   onChange={handleCommunityInputChange}
                   placeholder="Write your complete blog here..."
                   className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
                 />
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tip: add headings like ## Morning Planning or ## Deep Work Block in your content to generate a cleaner table of contents.
+                </p>
               </div>
 
               {submitError && (

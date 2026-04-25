@@ -1,3 +1,5 @@
+const fs = require('fs/promises');
+const path = require('path');
 const Blog = require('../models/Blog');
 const { ok, fail } = require('../utils/apiResponse');
 
@@ -11,13 +13,26 @@ const normalizeReadTime = (content) => {
   return `${Math.max(1, Math.ceil(words / 220))} min read`;
 };
 
-const resolveUploadedCoverImageDataUri = (req) => {
-  if (!req.file?.buffer || !req.file?.mimetype) {
+const resolveUploadedCoverImageUrl = (req) => {
+  if (!req.uploadedCoverPath) {
     return '';
   }
 
-  const imageBase64 = req.file.buffer.toString('base64');
-  return `data:${req.file.mimetype};base64,${imageBase64}`;
+  return req.uploadedCoverPath;
+};
+
+const isManagedUploadPath = (coverImageValue) => {
+  return String(coverImageValue || '').startsWith('/uploads/blog-covers/');
+};
+
+const deleteManagedCoverImage = async (coverImageValue) => {
+  if (!isManagedUploadPath(coverImageValue)) {
+    return;
+  }
+
+  const relativeUploadPath = String(coverImageValue).replace(/^\//, '');
+  const absoluteUploadPath = path.join(__dirname, '../../', relativeUploadPath);
+  await fs.unlink(absoluteUploadPath).catch(() => {});
 };
 
 const toBlogPayload = (blog) => ({
@@ -44,7 +59,7 @@ const createBlog = async (req, res) => {
   const excerpt = String(req.body.excerpt || '').trim();
   const content = String(req.body.content || '').trim();
   const coverImage = String(req.body.coverImage || '').trim();
-  const uploadedCoverImage = resolveUploadedCoverImageDataUri(req);
+  const uploadedCoverImage = resolveUploadedCoverImageUrl(req);
   const authorNameFromBody = String(req.body.authorName || '').trim();
   const authorEmailFromBody = String(req.body.authorEmail || '').trim().toLowerCase();
 
@@ -52,10 +67,12 @@ const createBlog = async (req, res) => {
   const authorEmail = req.user?.email || authorEmailFromBody;
 
   if (!title || !excerpt || !content) {
+    await deleteManagedCoverImage(uploadedCoverImage);
     return fail(res, 400, 'BLOG_VALIDATION_ERROR', 'Title, excerpt, and content are required');
   }
 
   if (!req.user && !authorNameFromBody) {
+    await deleteManagedCoverImage(uploadedCoverImage);
     return fail(res, 400, 'BLOG_VALIDATION_ERROR', 'Name is required for community blog publishing');
   }
 
@@ -104,6 +121,8 @@ const deleteBlog = async (req, res) => {
   if (!blog) {
     return fail(res, 404, 'BLOG_NOT_FOUND', 'Blog not found');
   }
+
+  await deleteManagedCoverImage(blog.coverImage);
 
   return ok(res, { success: true });
 };
