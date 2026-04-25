@@ -50,6 +50,11 @@ export const listBlogs = async (limit = 50) => {
   return Array.isArray(res.data) ? res.data.map(normalizeBlog) : [];
 };
 
+export const listMyBlogs = async (limit = 100) => {
+  const res = await api.get('/blogs/mine', { params: { limit } });
+  return Array.isArray(res.data) ? res.data.map(normalizeBlog) : [];
+};
+
 export const getBlogById = async (blogId) => {
   const res = await api.get(`/blogs/${blogId}`);
   return normalizeBlog(res.data);

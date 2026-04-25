@@ -9,6 +9,7 @@ const blogsController = require('../controllers/blogsController');
 const router = express.Router();
 
 router.get('/', asyncHandler(blogsController.listBlogs));
+router.get('/mine', authGuard, asyncHandler(blogsController.listMyBlogs));
 router.get('/:id', asyncHandler(blogsController.getBlogById));
 router.post('/', optionalAuth, uploadBlogCover, createBlogValidator, validate, asyncHandler(blogsController.createBlog));
 router.delete('/:id', authGuard, asyncHandler(blogsController.deleteBlog));

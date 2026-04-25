@@ -102,6 +102,15 @@ const listBlogs = async (req, res) => {
   return ok(res, blogs.map(toBlogPayload));
 };
 
+const listMyBlogs = async (req, res) => {
+  const limit = Math.max(1, Math.min(Number(req.query.limit || 100), 200));
+  const blogs = await Blog.find({ authorId: req.user._id })
+    .sort({ createdAt: -1 })
+    .limit(limit);
+
+  return ok(res, blogs.map(toBlogPayload));
+};
+
 const getBlogById = async (req, res) => {
   const blog = await Blog.findOne({ _id: req.params.id, status: 'published' });
 
@@ -130,6 +139,7 @@ const deleteBlog = async (req, res) => {
 module.exports = {
   createBlog,
   listBlogs,
+  listMyBlogs,
   getBlogById,
   deleteBlog,
 };

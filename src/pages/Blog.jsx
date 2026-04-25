@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getAuthErrorMessage } from '../utils/authErrors';
-import { createBlog as createBlogApi, defaultBlogCoverImage, listBlogs } from '../utils/blogsApi';
+import { createBlog as createBlogApi, defaultBlogCoverImage, deleteBlog as deleteBlogApi, listBlogs } from '../utils/blogsApi';
 
 const MAX_COVER_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 const BLOG_TITLE_MIN_LENGTH = 3;
@@ -132,6 +132,7 @@ const Blog = () => {
   const [communityLoading, setCommunityLoading] = useState(true);
   const [communityError, setCommunityError] = useState('');
   const [submitPending, setSubmitPending] = useState(false);
+  const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
   const [blogForm, setBlogForm] = useState({
@@ -301,6 +302,25 @@ const Blog = () => {
     }
 
     return parsedDate.toLocaleDateString();
+  };
+
+  const handleDeleteCommunityBlog = async (blogId) => {
+    const confirmed = window.confirm('Delete this blog post? This cannot be undone.');
+    if (!confirmed) return;
+
+    setDeletePendingBlogId(String(blogId));
+    setSubmitError('');
+    setSubmitSuccess('');
+
+    try {
+      await deleteBlogApi(blogId);
+      setCommunityBlogs((prev) => prev.filter((blog) => String(blog.id || blog._id) !== String(blogId)));
+      setSubmitSuccess('Blog deleted successfully.');
+    } catch (error) {
+      setSubmitError(getAuthErrorMessage(error, 'Unable to delete this blog right now.'));
+    } finally {
+      setDeletePendingBlogId('');
+    }
   };
 
   return (
@@ -545,6 +565,19 @@ const Blog = () => {
                       </div>
                     </div>
                   </Link>
+
+                  {user && String(communityBlog.authorId) === String(user.uid) && (
+                    <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCommunityBlog(communityBlog.id || communityBlog._id)}
+                        disabled={deletePendingBlogId === String(communityBlog.id || communityBlog._id)}
+                        className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {deletePendingBlogId === String(communityBlog.id || communityBlog._id) ? 'Deleting...' : 'Delete My Blog'}
+                      </button>
+                    </div>
+                  )}
                 </article>
               ))}
             </div>

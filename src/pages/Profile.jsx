@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import api from "../api";
+import { deleteBlog as deleteBlogApi, listMyBlogs } from "../utils/blogsApi";
 
 const BADGE_DEFS = [
   { id: "first-session", label: "First Focus", icon: "🎯", metric: "sessions", target: 1 },
@@ -112,6 +113,10 @@ const Profile = () => {
   const { darkMode } = useTheme();
   const [profileData, setProfileData] = useState(null);
   const [sessionData, setSessionData] = useState([]);
+  const [myBlogs, setMyBlogs] = useState([]);
+  const [myBlogsLoading, setMyBlogsLoading] = useState(false);
+  const [myBlogsError, setMyBlogsError] = useState('');
+  const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
 
   const trackedUserId = userProfile?._id || userProfile?.uid || user?._id || user?.uid || null;
 
@@ -119,6 +124,7 @@ const Profile = () => {
     if (!trackedUserId || !localStorage.getItem("token")) {
       setProfileData(null);
       setSessionData([]);
+      setMyBlogs([]);
       return undefined;
     }
 
@@ -126,18 +132,28 @@ const Profile = () => {
 
     const fetchProfileInsights = async () => {
       try {
+        setMyBlogsLoading(true);
+        setMyBlogsError('');
+
         const [profileRes, sessionsRes] = await Promise.all([
           api.get("/users/profile"),
           api.get("/sessions?limit=50"),
         ]);
 
+        const blogs = await listMyBlogs(100);
+
         if (!active) return;
 
         setProfileData(profileRes.data || null);
         setSessionData(Array.isArray(sessionsRes.data) ? sessionsRes.data : []);
+        setMyBlogs(Array.isArray(blogs) ? blogs : []);
       } catch (error) {
         if (!active) return;
         console.error("Failed to load profile insights", error);
+        setMyBlogsError('Unable to load your blogs right now.');
+      } finally {
+        if (!active) return;
+        setMyBlogsLoading(false);
       }
     };
 
@@ -149,6 +165,23 @@ const Profile = () => {
       window.clearInterval(intervalId);
     };
   }, [trackedUserId]);
+
+  const handleDeleteBlog = async (blogId) => {
+    const confirmed = window.confirm('Delete this blog post? This cannot be undone.');
+    if (!confirmed) return;
+
+    setDeletePendingBlogId(String(blogId));
+    setMyBlogsError('');
+
+    try {
+      await deleteBlogApi(blogId);
+      setMyBlogs((prev) => prev.filter((blog) => String(blog.id || blog._id) !== String(blogId)));
+    } catch (error) {
+      setMyBlogsError(error?.response?.data?.message || 'Unable to delete your blog right now.');
+    } finally {
+      setDeletePendingBlogId('');
+    }
+  };
 
   const display = useMemo(() => {
     const source = profileData || userProfile || user || {};
@@ -218,7 +251,7 @@ const Profile = () => {
   }, [sessionData]);
 
   const recentActivity = useMemo(() => {
-    return sessionData
+    const sessionActivities = sessionData
       .map((session, index) => {
         const when = getSessionDate(session);
         if (!when) return null;
@@ -227,7 +260,8 @@ const Profile = () => {
         const subject = String(session.subject || "").trim();
 
         return {
-          id: String(session._id || session.id || `${when.toISOString()}-${index}`),
+          id: `session-${String(session._id || session.id || `${when.toISOString()}-${index}`)}`,
+          type: 'session',
           when,
           durationMinutes,
           title:
@@ -236,14 +270,36 @@ const Profile = () => {
               : `Started a focus session${subject ? ` on ${subject}` : ""}`,
         };
       })
-      .filter(Boolean)
+      .filter(Boolean);
+
+    const blogActivities = myBlogs
+      .map((blog, index) => {
+        const rawDate = blog?.createdAt || blog?.updatedAt;
+        if (!rawDate) return null;
+
+        const when = new Date(rawDate);
+        if (Number.isNaN(when.getTime())) return null;
+
+        const title = String(blog?.title || '').trim() || 'Untitled blog';
+
+        return {
+          id: `blog-${String(blog.id || blog._id || `${when.toISOString()}-${index}`)}`,
+          type: 'blog',
+          when,
+          durationMinutes: 0,
+          title: `Published blog: ${title}`,
+        };
+      })
+      .filter(Boolean);
+
+    return [...sessionActivities, ...blogActivities]
       .sort((a, b) => b.when.getTime() - a.when.getTime())
       .slice(0, 5)
       .map((activity) => ({
         ...activity,
         timeLabel: formatRelativeTime(activity.when),
       }));
-  }, [sessionData]);
+  }, [myBlogs, sessionData]);
 
   const badges = useMemo(() => {
     const metricMap = {
@@ -446,7 +502,12 @@ const Profile = () => {
                   >
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${style.icon}`}>
                       <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        {activity.durationMinutes > 0 ? (
+                        {activity.type === 'blog' ? (
+                          <>
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                          </>
+                        ) : activity.durationMinutes > 0 ? (
                           <path d="M20 6L9 17l-5-5" />
                         ) : (
                           <>
@@ -514,6 +575,60 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="px-6 py-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+              <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              My Blogs
+            </h2>
+
+            {myBlogsError && (
+              <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-500/40 dark:bg-red-950/40 dark:text-red-300">
+                {myBlogsError}
+              </p>
+            )}
+
+            {myBlogsLoading && (
+              <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-4 py-6 text-center text-gray-600 dark:text-gray-300">
+                Loading your blogs...
+              </div>
+            )}
+
+            {!myBlogsLoading && myBlogs.length === 0 && (
+              <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-4 py-6 text-center">
+                <p className="font-semibold text-gray-800 dark:text-gray-200">No blogs published yet</p>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Head to Blogs and publish your first community post.</p>
+              </div>
+            )}
+
+            {!myBlogsLoading && myBlogs.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {myBlogs.map((blog) => (
+                  <article key={blog.id || blog._id} className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                    <Link to={`/blog/community/${blog.id || blog._id}`}>
+                      <img src={blog.coverImage} alt={blog.title} className="h-44 w-full object-cover" />
+                      <div className="p-4">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{blog.title}</h3>
+                        <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-300">{blog.excerpt}</p>
+                        <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">{new Date(blog.createdAt).toLocaleDateString()} • {blog.readTime || '1 min read'}</p>
+                      </div>
+                    </Link>
+
+                    <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteBlog(blog.id || blog._id)}
+                        disabled={deletePendingBlogId === String(blog.id || blog._id)}
+                        className="w-full rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {deletePendingBlogId === String(blog.id || blog._id) ? 'Deleting...' : 'Delete Blog'}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
 
           {}
