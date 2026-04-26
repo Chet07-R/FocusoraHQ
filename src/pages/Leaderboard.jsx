@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame, Trophy, Rocket, Target, Medal } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { getLeaderboard } from "../utils/firestoreUtils";
@@ -13,6 +13,31 @@ const getBadgeMeta = (points, streak, sessions) => {
   return { label: "Steady", color: "gray" };
 };
 
+const LEAGUES = [
+  { name: "Bronze", minPoints: 0, color: "from-amber-600 to-orange-700" },
+  { name: "Silver", minPoints: 500, color: "from-slate-400 to-slate-600" },
+  { name: "Gold", minPoints: 1200, color: "from-yellow-300 to-yellow-500" },
+  { name: "Platinum", minPoints: 2500, color: "from-cyan-300 to-blue-500" },
+  { name: "Diamond", minPoints: 5000, color: "from-fuchsia-400 to-violet-600" },
+];
+
+const getLeagueByPoints = (points = 0) => {
+  const safePoints = Number(points) || 0;
+  const league = [...LEAGUES].reverse().find((entry) => safePoints >= entry.minPoints);
+  return league || LEAGUES[0];
+};
+
+const getNextLeague = (points = 0) => {
+  const safePoints = Number(points) || 0;
+  return LEAGUES.find((entry) => safePoints < entry.minPoints) || null;
+};
+
+const getQuestProgress = (value, target) => {
+  const safeValue = Math.max(0, Number(value) || 0);
+  const safeTarget = Math.max(1, Number(target) || 1);
+  return Math.min(100, Math.round((safeValue / safeTarget) * 100));
+};
+
 const App = () => {
   const { user } = useAuth();
   const { darkMode } = useTheme();
@@ -24,6 +49,7 @@ const App = () => {
   });
 
   const [visibleCount] = useState(10);
+  const [sortMode, setSortMode] = useState("points");
 
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
@@ -77,7 +103,16 @@ const App = () => {
 
   useEffect(() => {
     const ranked = [...dynamicUsers]
-      .sort((a, b) => (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name)))
+      .sort((a, b) => {
+        if (sortMode === "streak") {
+          return (b.streak || 0) - (a.streak || 0) || (b.points || 0) - (a.points || 0) || String(a.name).localeCompare(String(b.name));
+        }
+        if (sortMode === "sessions") {
+          return (b.sessions || 0) - (a.sessions || 0) || (b.points || 0) - (a.points || 0) || String(a.name).localeCompare(String(b.name));
+        }
+
+        return (b.points || 0) - (a.points || 0) || (b.sessions || 0) - (a.sessions || 0) || String(a.name).localeCompare(String(b.name));
+      })
       .map((u, idx) => ({ ...u, rank: idx + 1, _id: String(u.id || idx + 1) }));
     setAllRows(ranked);
     setRows(hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
@@ -93,7 +128,60 @@ const App = () => {
       sessions: sessionsTotal,
       goalRate,
     });
-  }, [dynamicUsers, hasLoadedMore, visibleCount]);
+  }, [dynamicUsers, hasLoadedMore, sortMode, visibleCount]);
+
+  const currentUserRow = useMemo(() => {
+    if (!user) return null;
+    return allRows.find((row) => row.you) || null;
+  }, [allRows, user]);
+
+  const currentLeague = useMemo(() => getLeagueByPoints(currentUserRow?.points || 0), [currentUserRow]);
+  const nextLeague = useMemo(() => getNextLeague(currentUserRow?.points || 0), [currentUserRow]);
+  const pointsToNextLeague = Math.max(0, (nextLeague?.minPoints || 0) - (currentUserRow?.points || 0));
+  const leagueProgress = useMemo(() => {
+    if (!nextLeague) return 100;
+    const currentFloor = currentLeague?.minPoints || 0;
+    const currentPoints = Math.max(currentFloor, Number(currentUserRow?.points) || 0);
+    const span = Math.max(1, nextLeague.minPoints - currentFloor);
+    return Math.min(100, Math.round(((currentPoints - currentFloor) / span) * 100));
+  }, [currentLeague, currentUserRow, nextLeague]);
+
+  const questBoard = useMemo(() => {
+    const sessions = currentUserRow?.sessions || 0;
+    const streak = currentUserRow?.streak || 0;
+    const totalStudyMinutes = (() => {
+      const [hoursPart, minutesPart] = String(currentUserRow?.time || "0h 0m").split(" ");
+      const hours = Number(String(hoursPart || "0").replace("h", "")) || 0;
+      const minutes = Number(String(minutesPart || "0").replace("m", "")) || 0;
+      return (hours * 60) + minutes;
+    })();
+
+    return [
+      {
+        id: "quest-sessions",
+        label: "Complete 10 focus sessions",
+        reward: 60,
+        progress: getQuestProgress(sessions, 10),
+        done: sessions >= 10,
+      },
+      {
+        id: "quest-streak",
+        label: "Reach a 7-day streak",
+        reward: 120,
+        progress: getQuestProgress(streak, 7),
+        done: streak >= 7,
+      },
+      {
+        id: "quest-minutes",
+        label: "Accumulate 600 focus minutes",
+        reward: 200,
+        progress: getQuestProgress(totalStudyMinutes, 600),
+        done: totalStudyMinutes >= 600,
+      },
+    ];
+  }, [currentUserRow]);
+
+  const rankingLabel = sortMode === "streak" ? "Streak Masters" : sortMode === "sessions" ? "Session Sprinters" : "Points Ranking";
 
   return (
     <div className={`min-h-screen pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
@@ -110,6 +198,66 @@ const App = () => {
         <p className={`text-base md:text-lg max-w-xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
           Track your progress and compete with focused learners worldwide
         </p>
+      </section>
+
+      <section className="px-6 md:px-20 pt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className={`lg:col-span-2 rounded-2xl p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <p className={`text-sm uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your League</p>
+                <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{currentLeague.name}</h3>
+                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm mt-1`}>
+                  {currentUserRow
+                    ? (nextLeague
+                      ? `${pointsToNextLeague} points to ${nextLeague.name}`
+                      : "You are at the highest league")
+                    : "Sign in to track your personal progression"}
+                </p>
+              </div>
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${currentLeague.color} text-white flex items-center justify-center shadow-xl`}>
+                <Trophy className="w-7 h-7" />
+              </div>
+            </div>
+
+            <div className={`mt-5 h-3 rounded-full ${darkMode ? 'bg-gray-700/70' : 'bg-gray-200'}`}>
+              <div
+                className={`h-full rounded-full bg-gradient-to-r ${currentLeague.color} transition-all duration-700`}
+                style={{ width: `${leagueProgress}%` }}
+              />
+            </div>
+            <div className="mt-2 flex items-center justify-between text-xs">
+              <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{currentLeague.name}</span>
+              <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{nextLeague ? nextLeague.name : 'MAX'}</span>
+            </div>
+          </div>
+
+          <div className={`rounded-2xl p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
+            <div className="flex items-center gap-2 mb-4">
+              <Target className="w-5 h-5 text-cyan-400" />
+              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Focus Quest Board</h3>
+            </div>
+
+            <div className="space-y-3">
+              {questBoard.map((quest) => (
+                <div key={quest.id} className={`rounded-xl p-3 border ${darkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-gray-50/80'}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>{quest.label}</p>
+                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${quest.done ? 'bg-green-600 text-white' : 'bg-blue-600 text-white'}`}>
+                      {quest.done ? 'Done' : `+${quest.reward} XP`}
+                    </span>
+                  </div>
+                  <div className={`mt-2 h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                    <div
+                      className={`h-full rounded-full ${quest.done ? 'bg-green-500' : 'bg-cyan-500'} transition-all duration-500`}
+                      style={{ width: `${quest.progress}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="py-12 px-6 md:px-20 text-center">
@@ -167,7 +315,7 @@ const App = () => {
           </div>
 
           <h2 className={`text-3xl md:text-4xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hall of Champions</h2>
-          <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>This month's top performers</p>
+          <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{rankingLabel}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
             {(allRows.length >= 3
@@ -238,6 +386,22 @@ const App = () => {
             <p className="text-sm text-gray-200 font-normal">
               Track your progress among all users
             </p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[{ key: 'points', label: 'Points', icon: Star }, { key: 'streak', label: 'Streak', icon: Flame }, { key: 'sessions', label: 'Sessions', icon: Rocket }].map((mode) => (
+                <button
+                  key={mode.key}
+                  onClick={() => {
+                    setSortMode(mode.key);
+                    setHasLoadedMore(false);
+                  }}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition ${sortMode === mode.key ? 'bg-white text-blue-700 border-white' : 'bg-blue-800/40 text-blue-100 border-blue-300/30 hover:bg-blue-800/60'}`}
+                >
+                  <mode.icon className="w-3.5 h-3.5" />
+                  {mode.label}
+                </button>
+              ))}
+            </div>
           </div>
           
           <div className={`overflow-x-auto ${darkMode ? 'bg-gray-900/40' : 'bg-white/60'}`}>
@@ -250,6 +414,7 @@ const App = () => {
                   <th className="px-6 py-3">Sessions</th>
                   <th className="px-6 py-3">Focus Time</th>
                   <th className="px-6 py-3">Streak</th>
+                  <th className="px-6 py-3">League</th>
                   <th className="px-6 py-3">Badge</th>
                 </tr>
               </thead>
@@ -297,6 +462,11 @@ const App = () => {
                       {user.streak} days
                     </td>
                     <td className="px-6 py-4">
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full text-white bg-gradient-to-r ${getLeagueByPoints(user.points).color}`}>
+                        {getLeagueByPoints(user.points).name}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
                       <span
                         className={`text-white text-xs px-2 py-1 rounded-full ${getBadgeColor(
                           user.badge.color
@@ -313,15 +483,16 @@ const App = () => {
           <div className={`flex justify-center gap-4 py-6 rounded-b-2xl ${darkMode ? 'bg-gray-900/40' : 'bg-white/60 border-t border-gray-200/50'}`}>
             <button
               onClick={handleLoadMore}
+              disabled={hasLoadedMore || rows.length >= allRows.length}
               style={{ 
                 background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
                 boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
               }}
-              className="text-white cursor-pointer font-semibold px-8 py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300"
+              className="text-white cursor-pointer font-semibold px-8 py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:scale-100"
               onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
               onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
             >
-              Load More Rankings
+              {hasLoadedMore || rows.length >= allRows.length ? 'All Rankings Loaded' : 'Load More Rankings'}
             </button>
           </div>
         </div>

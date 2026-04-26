@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
-import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const { darkMode } = useTheme();
