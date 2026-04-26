@@ -28,7 +28,7 @@
   50% { opacity: 1; }
 }
 
-nav {
+.site-navbar {
   background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(17,24,39,0.85) 100%);
   position: fixed;
   top: 0;
@@ -36,7 +36,7 @@ nav {
   right: 0;
 }
 
-nav::after {
+.site-navbar::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -53,7 +53,7 @@ nav::after {
   );
 }
 
-.dark nav {
+.dark .site-navbar {
   background: linear-gradient(135deg, rgba(0,0,0,0.98) 0%, rgba(15,23,42,0.98) 100%);
 }
 

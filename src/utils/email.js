@@ -36,10 +36,18 @@ export async function sendEmail(params = {}, templateId) {
 }
 
 export function sendWelcomeEmail({ email, name }) {
+  const templateId = import.meta.env.VITE_EMAILJS_WELCOME_TEMPLATE_ID;
   // Templates commonly expect keys like user_email, user_name
-  return sendEmail({ user_email: email, user_name: name, email_type: 'welcome' });
+  return sendEmail(
+    { user_email: email, user_name: name, email_type: 'welcome' },
+    templateId
+  );
 }
 
 export function sendSignInAlert({ email, name, provider = 'password' }) {
-  return sendEmail({ user_email: email, user_name: name, provider, email_type: 'signin' });
+  const templateId = import.meta.env.VITE_EMAILJS_SIGNIN_TEMPLATE_ID;
+  return sendEmail(
+    { user_email: email, user_name: name, provider, email_type: 'signin' },
+    templateId
+  );
 }

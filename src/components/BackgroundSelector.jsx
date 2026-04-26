@@ -20,6 +20,18 @@ const BackgroundSelector = ({ bgPanelOpen, setBgPanelOpen, addNotification }) =>
     document.body.style.backgroundAttachment = "fixed";
     localStorage.setItem("myspace_background", url);
     localStorage.setItem("myspace_background_source", "manual");
+    localStorage.setItem("myspace_background_name", name);
+
+    window.dispatchEvent(
+      new CustomEvent("myspace-background-changed", {
+        detail: {
+          name,
+          url,
+          source: "manual",
+        },
+      })
+    );
+
     addNotification(`🎨 Ambience changed to ${name}`);
     setBgPanelOpen(false);
   };

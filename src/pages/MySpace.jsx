@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Pomodoro from "../components/Pomodoro";
 import Notes from "../components/Notes";
 import Todo from "../components/Todo";
@@ -8,29 +8,42 @@ import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { awardUserPoints } from "../utils/firestoreUtils";
 import { POINT_RULES, getPomodoroPoints } from "../constants/pointsSystem";
+import "./MySpace.css";
 
-const DEFAULT_MYSPACE_BACKGROUND = "https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg";
+const DEFAULT_MYSPACE_BACKGROUND =
+  "https://marketplace.canva.com/EAFekpb5NK0/1/0/1600w/canva-dark-modern-photo-mountain-and-sky-desktop-wallpaper-5ixgVU5XGxc.jpg";
 
 const THEME_BACKGROUNDS = {
-  forest: "https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg",
-  ocean: "https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg",
-  rain: "https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg",
-  cafe: "https://images.pexels.com/photos/3747579/pexels-photo-3747579.jpeg",
+  forest:  "https://images.pexels.com/photos/158063/bellingrath-gardens-alabama-landscape-scenic-158063.jpeg",
+  ocean:   "https://images.pexels.com/photos/237272/pexels-photo-237272.jpeg",
+  rain:    "https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg",
+  cafe:    "https://images.pexels.com/photos/3747579/pexels-photo-3747579.jpeg",
   library: "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg",
 };
 
 const applyBodyBackground = (url) => {
-  document.body.style.backgroundImage = `url('${url}')`;
-  document.body.style.backgroundSize = "cover";
-  document.body.style.backgroundRepeat = "no-repeat";
+  document.body.style.backgroundImage    = `url('${url}')`;
+  document.body.style.backgroundSize     = "cover";
+  document.body.style.backgroundRepeat   = "no-repeat";
   document.body.style.backgroundPosition = "center";
   document.body.style.backgroundAttachment = "fixed";
+};
+
+const formatThemeName = (theme) => {
+  const raw = String(theme || "forest").trim().toLowerCase();
+  return raw ? `${raw.charAt(0).toUpperCase()}${raw.slice(1)}` : "Forest";
+};
+
+const getSavedBackgroundName = () => {
+  if (typeof window === "undefined") return "";
+  return (localStorage.getItem("myspace_background_name") || "").trim();
 };
 
 const MySpace = () => {
   const { darkMode } = useTheme();
   const { user, userProfile, reloadUser } = useAuth();
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
+  const [navHeight, setNavHeight] = useState(64);
   const [notification, setNotification] = useState({
     show: false,
     icon: "✅",
@@ -38,178 +51,312 @@ const MySpace = () => {
     message: "Action completed",
   });
 
-  
+  const profileThemeLabel = useMemo(() => formatThemeName(userProfile?.theme), [userProfile?.theme]);
+  const [liveThemeLabel, setLiveThemeLabel] = useState(
+    () => getSavedBackgroundName() || profileThemeLabel
+  );
+  const safeWorkDuration  = Math.max(1, Math.floor(Number(userProfile?.pomodoroWork  ?? 25)));
+  const safeBreakDuration = Math.max(1, Math.floor(Number(userProfile?.pomodoroBreak ?? 5)));
+  const displayName       = userProfile?.displayName || user?.displayName || "Focusora learner";
+
+  const todayLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+      }).format(new Date()),
+    []
+  );
+
+  /* ── background sync ── */
   useEffect(() => {
-    const savedBg = localStorage.getItem("myspace_background");
+    const savedBg       = localStorage.getItem("myspace_background");
     const savedBgSource = localStorage.getItem("myspace_background_source");
-    const preferredTheme = String(userProfile?.theme || "forest").toLowerCase();
-    const preferredThemeBackground = THEME_BACKGROUNDS[preferredTheme] || DEFAULT_MYSPACE_BACKGROUND;
-    const shouldUseManualBackground = Boolean(savedBg) && savedBgSource === "manual";
-    const nextBackground = shouldUseManualBackground ? savedBg : preferredThemeBackground;
+    const themeLower    = String(userProfile?.theme || "forest").toLowerCase();
+    const themeBackground      = THEME_BACKGROUNDS[themeLower] || DEFAULT_MYSPACE_BACKGROUND;
+    const useManual            = Boolean(savedBg) && savedBgSource === "manual";
+    const nextBackground       = useManual ? savedBg : themeBackground;
 
     applyBodyBackground(nextBackground);
 
-    if (!shouldUseManualBackground) {
+    if (useManual) {
+      setLiveThemeLabel(getSavedBackgroundName() || "Custom");
+    } else {
       localStorage.setItem("myspace_background", nextBackground);
       localStorage.setItem("myspace_background_source", "profile-theme");
+      localStorage.setItem("myspace_background_name", profileThemeLabel);
+      setLiveThemeLabel(profileThemeLabel);
     }
 
-    return () => {
-      document.body.style.backgroundImage = "";
-    };
-  }, [userProfile?.theme]);
-
-  const addNotification = (message, title = "Success", icon = "✅") => {
-    setNotification({ show: true, icon, title, message });
-    setTimeout(() => {
-      setNotification((prev) => ({ ...prev, show: false }));
-    }, 3000);
-  };
+    return () => { document.body.style.backgroundImage = ""; };
+  }, [userProfile?.theme, profileThemeLabel]);
 
   useEffect(() => {
-    const sel = document.querySelector('footer, .footer, #footer, .site-footer');
-    if (!sel) return;
-    const prev = sel.style.display;
-    sel.style.display = 'none';
+    if (typeof window === "undefined") return undefined;
+
+    const navElement = document.querySelector(".site-navbar") || document.querySelector("nav");
+    if (!navElement) return undefined;
+
+    const syncNavHeight = () => {
+      const measured = Math.ceil(
+        navElement.getBoundingClientRect().height || navElement.offsetHeight || 64
+      );
+
+      setNavHeight((previous) => (previous === measured ? previous : measured));
+    };
+
+    syncNavHeight();
+
+    let navResizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      navResizeObserver = new ResizeObserver(syncNavHeight);
+      navResizeObserver.observe(navElement);
+    }
+
+    window.addEventListener("resize", syncNavHeight);
+
     return () => {
-      sel.style.display = prev || '';
+      window.removeEventListener("resize", syncNavHeight);
+      if (navResizeObserver) {
+        navResizeObserver.disconnect();
+      }
     };
   }, []);
 
-  const hideNotification = () => {
-    setNotification((prev) => ({ ...prev, show: false }));
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const syncThemeLabel = (event) => {
+      const eventTheme = event?.detail?.name;
+      if (eventTheme && String(eventTheme).trim()) {
+        setLiveThemeLabel(String(eventTheme).trim());
+        return;
+      }
+
+      const savedThemeName = getSavedBackgroundName();
+      if (savedThemeName) {
+        setLiveThemeLabel(savedThemeName);
+        return;
+      }
+
+      setLiveThemeLabel(profileThemeLabel);
+    };
+
+    window.addEventListener("myspace-background-changed", syncThemeLabel);
+    window.addEventListener("storage", syncThemeLabel);
+
+    return () => {
+      window.removeEventListener("myspace-background-changed", syncThemeLabel);
+      window.removeEventListener("storage", syncThemeLabel);
+    };
+  }, [profileThemeLabel]);
+
+  /* ── hide site footer on this page ── */
+  useEffect(() => {
+    const sel = document.querySelector("footer, .footer, #footer, .site-footer");
+    if (!sel) return;
+    const prev = sel.style.display;
+    sel.style.display = "none";
+    return () => { sel.style.display = prev || ""; };
+  }, []);
+
+  /* ── notification helpers ── */
+  const addNotification = (message, title = "Success", icon = "✅") => {
+    setNotification({ show: true, icon, title, message });
+    setTimeout(() => setNotification((p) => ({ ...p, show: false })), 3000);
   };
 
+  const hideNotification = () => setNotification((p) => ({ ...p, show: false }));
+
+  /* ── point awarding ── */
   const awardPoints = async ({ points = 0, studyMinutes = 0, sessionsCount = 0, subject = "", roomId = null, message = "" }) => {
     if (!user) return;
     if (points <= 0 && studyMinutes <= 0 && sessionsCount <= 0) return;
     try {
       await awardUserPoints(user.uid, { points, studyMinutes, sessionsCount, subject, roomId });
       await reloadUser();
-      if (message) {
-        addNotification(message, "Points", "⭐");
-      }
-    } catch (error) {
-      console.error("Failed to award points", error);
+      if (message) addNotification(message, "Points", "⭐");
+    } catch (err) {
+      console.error("Failed to award points", err);
     }
   };
 
   const handlePomodoroComplete = async ({ durationMinutes }) => {
-    const safeDuration = Math.max(0, Math.floor(Number(durationMinutes || 0)));
-    const awardedPoints = getPomodoroPoints(safeDuration);
+    const safeDuration   = Math.max(0, Math.floor(Number(durationMinutes || 0)));
+    const awardedPoints  = getPomodoroPoints(safeDuration);
     await awardPoints({
-      points: awardedPoints,
-      studyMinutes: safeDuration,
+      points:        awardedPoints,
+      studyMinutes:  safeDuration,
       sessionsCount: safeDuration > 0 ? 1 : 0,
-      subject: "Pomodoro",
-      message: awardedPoints > 0 ? `+${awardedPoints} points from Pomodoro` : "",
+      subject:       "Pomodoro",
+      message:       awardedPoints > 0 ? `+${awardedPoints} points from Pomodoro` : "",
     });
   };
 
   const handleNotesSaved = async () => {
     await awardPoints({
-      points: POINT_RULES.notesSave,
+      points:  POINT_RULES.notesSave,
       message: `+${POINT_RULES.notesSave} point${POINT_RULES.notesSave === 1 ? "" : "s"} from Notes`,
     });
   };
 
   const handleTaskAdded = async () => {
     await awardPoints({
-      points: POINT_RULES.taskAdded,
+      points:  POINT_RULES.taskAdded,
       message: `+${POINT_RULES.taskAdded} point${POINT_RULES.taskAdded === 1 ? "" : "s"} for new task`,
     });
   };
 
   const handleTaskCompleted = async () => {
     await awardPoints({
-      points: POINT_RULES.taskCompleted,
+      points:  POINT_RULES.taskCompleted,
       message: `+${POINT_RULES.taskCompleted} points for completed task`,
     });
   };
 
+  /* ── derived class helpers ── */
+  const toastClass  = `ms-toast ${notification.show ? "ms-toast--visible" : ""} ${darkMode ? "ms-toast--dark" : "ms-toast--light"}`;
+  const titleClass  = `ms-toast__title ${darkMode ? "ms-toast__title--dark" : "ms-toast__title--light"}`;
+  const msgClass    = `ms-toast__message ${darkMode ? "ms-toast__message--dark" : "ms-toast__message--light"}`;
+  const closeClass  = `ms-toast__close ${darkMode ? "ms-toast__close--dark" : "ms-toast__close--light"}`;
+
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden pb-6">
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pb-4 pt-16 sm:pt-18 md:pt-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 sm:gap-5 md:gap-6 lg:gap-8 max-w-7xl mx-auto items-stretch">
-          {}
-          <div className="xl:col-span-3 md:col-span-2 min-h-[500px] md:min-h-0">
-            <div className="h-full">
+    <div className="ms-page" style={{ "--ms-nav-height": `${navHeight}px` }}>
+      {/* ── atmosphere layers ── */}
+      <div className="ms-bg-overlay"  aria-hidden="true" />
+      <div className="ms-bg-grid"     aria-hidden="true" />
+      <div className="ms-aura ms-aura--blue"   aria-hidden="true" />
+      <div className="ms-aura ms-aura--violet" aria-hidden="true" />
+
+      {/* ── main content ── */}
+      <main className="ms-content">
+
+        {/* ── top bar ── */}
+        <header className="ms-topbar ms-reveal" role="banner">
+          <div className="ms-topbar__left">
+            <div className="ms-topbar__identity">
+              <h1 className="ms-topbar__title">My Space</h1>
+              <p className="ms-topbar__subtitle">
+                Welcome back, <strong>{displayName}</strong>. Your sessions, notes, and tasks — in one place.
+              </p>
+            </div>
+            <nav className="ms-stat-strip" aria-label="Workspace context">
+              <div className="ms-stat-chip">
+                <span className="ms-stat-chip__label">Date</span>
+                <span className="ms-stat-chip__divider" />
+                <span className="ms-stat-chip__value">{todayLabel}</span>
+              </div>
+              <div className="ms-stat-chip">
+                <span className="ms-stat-chip__label">Theme</span>
+                <span className="ms-stat-chip__divider" />
+                <span className="ms-stat-chip__value">{liveThemeLabel}</span>
+              </div>
+              <div className="ms-stat-chip">
+                <span className="ms-stat-chip__label">Focus</span>
+                <span className="ms-stat-chip__divider" />
+                <span className="ms-stat-chip__value">{safeWorkDuration}/{safeBreakDuration} min</span>
+              </div>
+            </nav>
+          </div>
+        </header>
+
+        {/* ── workspace panels ── */}
+        <div className="ms-workspace ms-reveal ms-reveal--d1">
+
+          {/* Focus Timer */}
+          <section className="ms-workspace__timer ms-panel ms-panel--accented" aria-label="Focus Timer">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Focus Timer</h2>
+              <span className="ms-panel__badge">Deep Work</span>
+            </div>
+            <div className="ms-panel__body">
               <Pomodoro
                 addNotification={addNotification}
                 onWorkSessionComplete={handlePomodoroComplete}
-                defaultWorkDuration={Number(userProfile?.pomodoroWork ?? 25)}
-                defaultBreakDuration={Number(userProfile?.pomodoroBreak ?? 5)}
+                defaultWorkDuration={safeWorkDuration}
+                defaultBreakDuration={safeBreakDuration}
               />
             </div>
-          </div>
+          </section>
 
-          {}
-          <div className="xl:col-span-5 md:col-span-2 min-h-[500px] md:min-h-0">
-            <div className="h-full">
+          {/* Workspace Notes */}
+          <section className="ms-workspace__notes ms-panel ms-panel--accented ms-panel--accented-violet" aria-label="Workspace Notes">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Notes</h2>
+              <span className="ms-panel__badge ms-panel__badge--violet">Draft &amp; Save</span>
+            </div>
+            <div className="ms-panel__body">
               <Notes addNotification={addNotification} onNotesSaved={handleNotesSaved} />
             </div>
-          </div>
+          </section>
 
-          {}
-          <div className="xl:col-span-4 md:col-span-2 min-h-[500px] md:min-h-0">
-            <div className="h-full">
+          {/* Task Board */}
+          <section className="ms-workspace__tasks ms-panel ms-panel--accented ms-panel--accented-neutral" aria-label="Task Board">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Tasks</h2>
+              <span className="ms-panel__badge ms-panel__badge--neutral">Plan &amp; Execute</span>
+            </div>
+            <div className="ms-panel__body">
               <Todo
                 addNotification={addNotification}
                 onTaskAdded={handleTaskAdded}
                 onTaskCompleted={handleTaskCompleted}
               />
             </div>
-          </div>
+          </section>
         </div>
-      </div>
 
-      {}
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-6xl">
-        <FocusPlaylist
-          addNotification={addNotification}
-          bgPanelOpen={bgPanelOpen}
-          setBgPanelOpen={setBgPanelOpen}
-        />
-      </div>
+        {/* ── sound & ambience ── */}
+        <section className="ms-sound-section ms-reveal ms-reveal--d2" aria-label="Sound and Ambience">
+          <div className="ms-sound-panel">
+            <div className="ms-sound-panel__header">
+              <div>
+                <h2 className="ms-sound-panel__title">Sound &amp; Ambience</h2>
+                <p className="ms-sound-panel__desc">
+                  Pick a playlist, sync playback in shared rooms, or switch ambient sounds without leaving your flow.
+                </p>
+              </div>
+            </div>
+            <div className="ms-sound-panel__body">
+              <FocusPlaylist
+                addNotification={addNotification}
+                bgPanelOpen={bgPanelOpen}
+                setBgPanelOpen={setBgPanelOpen}
+              />
+            </div>
+          </div>
+        </section>
 
-      {}
+      </main>
+
+      {/* ── background selector (portal/overlay) ── */}
       <BackgroundSelector
         bgPanelOpen={bgPanelOpen}
         setBgPanelOpen={setBgPanelOpen}
         addNotification={addNotification}
       />
 
-      {}
+      {/* ── toast notification ── */}
       <div
-        className={`fixed top-20 sm:top-24 right-3 sm:right-4 md:right-6 backdrop-blur-lg rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-xl transform transition-transform duration-500 z-50 max-w-[calc(100vw-1.5rem)] sm:max-w-sm ${
-          notification.show ? "translate-x-0" : "translate-x-[200%]"
-        } ${
-          darkMode 
-            ? "bg-gradient-to-r from-white/20 to-white/10 border border-white/20" 
-            : "bg-gradient-to-r from-purple-100/90 to-cyan-100/90 border border-purple-300/40"
-        }`}
+        className={toastClass}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
       >
-        <div className="flex items-center gap-2 sm:gap-3">
-          <span className="text-xl sm:text-2xl flex-shrink-0">{notification.icon}</span>
-          <div className="flex-1 min-w-0">
-            <div className={`font-semibold text-sm sm:text-base truncate ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}>
-              {notification.title}
-            </div>
-            <div className={`text-xs sm:text-sm line-clamp-2 ${
-              darkMode ? "text-white/80" : "text-gray-700"
-            }`}>
-              {notification.message}
-            </div>
+        <div className="ms-toast__inner">
+          <span className="ms-toast__icon" aria-hidden="true">{notification.icon}</span>
+          <div className="ms-toast__text">
+            <div className={titleClass}>{notification.title}</div>
+            <div className={msgClass}>{notification.message}</div>
           </div>
           <button
+            type="button"
             onClick={hideNotification}
-            className={`transition flex-shrink-0 text-sm sm:text-base ${
-              darkMode ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-800"
-            }`}
+            className={closeClass}
+            aria-label="Dismiss notification"
           >
-            ✖
+            ✕
           </button>
         </div>
       </div>

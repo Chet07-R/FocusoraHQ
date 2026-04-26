@@ -41,6 +41,8 @@ FocusoraHQ is a modern, fast, and collaborative study platform with personal foc
 		- `VITE_EMAILJS_PUBLIC_KEY=...` (optional)
 		- `VITE_EMAILJS_SERVICE_ID=...` (optional)
 		- `VITE_EMAILJS_TEMPLATE_ID=...` (optional)
+		- `VITE_EMAILJS_WELCOME_TEMPLATE_ID=...` (optional)
+		- `VITE_EMAILJS_SIGNIN_TEMPLATE_ID=...` (optional)
 - Start the dev server:
 	- `npm run dev`
 	- Open the printed `http://localhost:51xx/` URL

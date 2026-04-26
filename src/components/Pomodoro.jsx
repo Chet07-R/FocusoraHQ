@@ -20,6 +20,9 @@ const Pomodoro = ({
   const [workDuration, setWorkDuration] = useState(safeDefaultWorkDuration);
   const [breakDuration, setBreakDuration] = useState(safeDefaultBreakDuration);
   const [timeLeft, setTimeLeft] = useState(safeDefaultWorkDuration * 60);
+  const [sessionTotalSeconds, setSessionTotalSeconds] = useState(
+    safeDefaultWorkDuration * 60
+  );
   const [isRunning, setIsRunning] = useState(false);
   const [onBreak, setOnBreak] = useState(false);
   const soundOn = true;
@@ -28,6 +31,8 @@ const Pomodoro = ({
 
   const intervalRef = useRef(null);
   const hasAwardedCurrentWorkRef = useRef(false);
+  const previousWorkDefaultRef = useRef(safeDefaultWorkDuration);
+  const previousBreakDefaultRef = useRef(safeDefaultBreakDuration);
   const beepSound = useRef(
     new Audio("https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3")
   );
@@ -69,8 +74,12 @@ const Pomodoro = ({
               hasAwardedCurrentWorkRef.current = false;
             }
 
-            setOnBreak(!onBreak);
-            setTimeLeft(onBreak ? workDuration * 60 : breakDuration * 60);
+            const nextOnBreak = !onBreak;
+            const nextSessionSeconds = (nextOnBreak ? breakDuration : workDuration) * 60;
+
+            setOnBreak(nextOnBreak);
+            setTimeLeft(nextSessionSeconds);
+            setSessionTotalSeconds(nextSessionSeconds);
 
             if (autoStartNext) {
               setTimeout(() => setIsRunning(true), 1000);
@@ -96,16 +105,32 @@ const Pomodoro = ({
   }, []);
 
   useEffect(() => {
+    if (previousWorkDefaultRef.current === safeDefaultWorkDuration) {
+      return;
+    }
+
+    previousWorkDefaultRef.current = safeDefaultWorkDuration;
     setWorkDuration(safeDefaultWorkDuration);
+
     if (!isRunning && !onBreak) {
-      setTimeLeft(safeDefaultWorkDuration * 60);
+      const nextSeconds = safeDefaultWorkDuration * 60;
+      setTimeLeft(nextSeconds);
+      setSessionTotalSeconds(nextSeconds);
     }
   }, [safeDefaultWorkDuration, isRunning, onBreak]);
 
   useEffect(() => {
+    if (previousBreakDefaultRef.current === safeDefaultBreakDuration) {
+      return;
+    }
+
+    previousBreakDefaultRef.current = safeDefaultBreakDuration;
     setBreakDuration(safeDefaultBreakDuration);
+
     if (!isRunning && onBreak) {
-      setTimeLeft(safeDefaultBreakDuration * 60);
+      const nextSeconds = safeDefaultBreakDuration * 60;
+      setTimeLeft(nextSeconds);
+      setSessionTotalSeconds(nextSeconds);
     }
   }, [safeDefaultBreakDuration, isRunning, onBreak]);
 
@@ -124,9 +149,11 @@ const Pomodoro = ({
   };
 
   const handleReset = () => {
+    const nextSeconds = workDuration * 60;
     setIsRunning(false);
     setOnBreak(false);
-    setTimeLeft(workDuration * 60);
+    setTimeLeft(nextSeconds);
+    setSessionTotalSeconds(nextSeconds);
     hasAwardedCurrentWorkRef.current = false;
   };
 
@@ -135,7 +162,9 @@ const Pomodoro = ({
     if (!isNaN(minutes) && minutes >= 1 && minutes <= 60) {
       setWorkDuration(minutes);
       if (!isRunning && !onBreak) {
-        setTimeLeft(minutes * 60);
+        const nextSeconds = minutes * 60;
+        setTimeLeft(nextSeconds);
+        setSessionTotalSeconds(nextSeconds);
       }
     }
   };
@@ -146,13 +175,16 @@ const Pomodoro = ({
     if (!isNaN(minutes) && minutes >= 1 && minutes <= 60) {
       setBreakDuration(minutes);
       if (!isRunning && onBreak) {
-        setTimeLeft(minutes * 60);
+        const nextSeconds = minutes * 60;
+        setTimeLeft(nextSeconds);
+        setSessionTotalSeconds(nextSeconds);
       }
     }
   };
 
-  const sessionTotal = onBreak ? breakDuration * 60 : workDuration * 60;
-  const progressValue = ((sessionTotal - timeLeft) / sessionTotal) * 100;
+  const safeSessionTotal = Math.max(1, sessionTotalSeconds);
+  const elapsedSeconds = Math.max(0, safeSessionTotal - timeLeft);
+  const progressValue = Math.min(100, (elapsedSeconds / safeSessionTotal) * 100);
 
   return (
     <div

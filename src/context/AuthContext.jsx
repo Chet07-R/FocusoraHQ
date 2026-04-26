@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import api from '../api';
+import { sendSignInAlert, sendWelcomeEmail } from '../utils/email';
 
 const AuthContext = createContext(null);
 
@@ -20,6 +21,20 @@ const normalizeUser = (payload) => {
   };
 };
 
+const canSendEmailAlert = (email) => {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!normalized) return false;
+  if (normalized.endsWith('.local')) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
+};
+
+const safeTriggerEmail = (sender, payload) => {
+  if (!payload || !canSendEmailAlert(payload.email)) return;
+  Promise.resolve(sender(payload)).catch((error) => {
+    console.warn('[EmailJS] Auth email trigger failed:', error);
+  });
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
@@ -30,6 +45,7 @@ export const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       const searchParams = new URLSearchParams(window.location.search);
       const tokenFromQuery = searchParams.get('token');
+      const cameFromAuthRedirect = Boolean(tokenFromQuery);
 
       if (tokenFromQuery) {
         localStorage.setItem('token', tokenFromQuery);
@@ -47,6 +63,15 @@ export const AuthProvider = ({ children }) => {
           setUser(normalizedUser);
           setUserProfile(normalizedUser);
           setHadInitialUser(true);
+
+          // Token in query is currently used for provider callback flows.
+          if (cameFromAuthRedirect && normalizedUser?.provider === 'google') {
+            safeTriggerEmail(sendSignInAlert, {
+              email: normalizedUser.email,
+              name: normalizedUser.displayName,
+              provider: 'google',
+            });
+          }
         } catch (error) {
           console.error('Failed to load user:', error);
           localStorage.removeItem('token');
@@ -60,6 +85,12 @@ export const AuthProvider = ({ children }) => {
   const signUp = async ({ displayName, email, password }) => {
     const res = await api.post('/auth/register', { displayName, email, password });
     const normalizedUser = normalizeUser(res.data);
+
+    safeTriggerEmail(sendWelcomeEmail, {
+      email: normalizedUser?.email || email,
+      name: normalizedUser?.displayName || displayName,
+    });
+
     if (res.data.token) {
       localStorage.setItem('token', res.data.token);
       setUser(normalizedUser);
@@ -76,6 +107,13 @@ export const AuthProvider = ({ children }) => {
     setUser(normalizedUser);
     setUserProfile(normalizedUser);
     setHadInitialUser(true);
+
+    safeTriggerEmail(sendSignInAlert, {
+      email: normalizedUser?.email || email,
+      name: normalizedUser?.displayName,
+      provider: normalizedUser?.provider || 'password',
+    });
+
     return normalizedUser;
   };
 
