@@ -6,6 +6,7 @@ const todosRoutes = require('./todosRoutes');
 const sessionsRoutes = require('./sessionsRoutes');
 const roomsRoutes = require('./roomsRoutes');
 const blogsRoutes = require('./blogsRoutes');
+const activityRoutes = require('./activityRoutes');
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use('/todos', todosRoutes);
 router.use('/sessions', sessionsRoutes);
 router.use('/rooms', roomsRoutes);
 router.use('/blogs', blogsRoutes);
+router.use('/users/activity', activityRoutes);
 
 module.exports = router;

@@ -8,6 +8,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { awardUserPoints } from "../utils/firestoreUtils";
 import { POINT_RULES, getPomodoroPoints } from "../constants/pointsSystem";
+import { pushActivityEvent } from "../utils/activityLog";
 import "./MySpace.css";
 
 const DEFAULT_MYSPACE_BACKGROUND =
@@ -38,6 +39,9 @@ const getSavedBackgroundName = () => {
   if (typeof window === "undefined") return "";
   return (localStorage.getItem("myspace_background_name") || "").trim();
 };
+
+const getActiveUserId = (user, userProfile) =>
+  String(userProfile?._id || userProfile?.uid || user?._id || user?.uid || "").trim();
 
 const MySpace = () => {
   const { darkMode } = useTheme();
@@ -202,6 +206,17 @@ const MySpace = () => {
   };
 
   const handleTaskAdded = async () => {
+    const activeUserId = getActiveUserId(user, userProfile);
+    if (activeUserId) {
+      pushActivityEvent({
+        type: "task-added",
+        title: "Added a new task",
+        points: POINT_RULES.taskAdded,
+        minutes: 0,
+        metadata: { userId: activeUserId },
+      }).catch((error) => console.error("Failed to save task-added activity", error));
+    }
+
     await awardPoints({
       points:  POINT_RULES.taskAdded,
       message: `+${POINT_RULES.taskAdded} point${POINT_RULES.taskAdded === 1 ? "" : "s"} for new task`,
@@ -209,6 +224,17 @@ const MySpace = () => {
   };
 
   const handleTaskCompleted = async () => {
+    const activeUserId = getActiveUserId(user, userProfile);
+    if (activeUserId) {
+      pushActivityEvent({
+        type: "task-completed",
+        title: "Completed a task",
+        points: POINT_RULES.taskCompleted,
+        minutes: 0,
+        metadata: { userId: activeUserId },
+      }).catch((error) => console.error("Failed to save task-completed activity", error));
+    }
+
     await awardPoints({
       points:  POINT_RULES.taskCompleted,
       message: `+${POINT_RULES.taskCompleted} points for completed task`,

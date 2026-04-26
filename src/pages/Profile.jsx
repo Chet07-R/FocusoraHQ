@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import api from "../api";
 import { deleteBlog as deleteBlogApi, listMyBlogs } from "../utils/blogsApi";
+import { getUserActivityEvents } from "../utils/activityLog";
 
 const BADGE_DEFS = [
   { id: "first-session", label: "First Focus", icon: "🎯", metric: "sessions", target: 1 },
@@ -119,6 +120,38 @@ const Profile = () => {
   const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
 
   const trackedUserId = userProfile?._id || userProfile?.uid || user?._id || user?.uid || null;
+  const [taskActivityEvents, setTaskActivityEvents] = useState([]);
+
+  useEffect(() => {
+    if (!trackedUserId) {
+      setTaskActivityEvents([]);
+      return undefined;
+    }
+
+    const syncTaskEvents = async () => {
+      try {
+        setTaskActivityEvents(await getUserActivityEvents(50));
+      } catch (error) {
+        console.error("Failed to load activity events", error);
+        setTaskActivityEvents([]);
+      }
+    };
+
+    syncTaskEvents();
+
+    const onActivityUpdated = (event) => {
+      const eventUserId = String(event?.detail?.userId || "").trim();
+      if (!eventUserId || eventUserId === String(trackedUserId)) {
+        syncTaskEvents();
+      }
+    };
+
+    window.addEventListener("focusora-activity-updated", onActivityUpdated);
+
+    return () => {
+      window.removeEventListener("focusora-activity-updated", onActivityUpdated);
+    };
+  }, [trackedUserId]);
 
   useEffect(() => {
     if (!trackedUserId || !localStorage.getItem("token")) {
@@ -226,6 +259,7 @@ const Profile = () => {
       day,
       dayStart: new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + index),
       minutes: 0,
+      taskCount: 0,
     }));
 
     sessionData.forEach((session) => {
@@ -240,15 +274,34 @@ const Profile = () => {
       rows[dayOffset].minutes += Math.max(0, toNumber(session.duration, 0));
     });
 
+    taskActivityEvents.forEach((event) => {
+      const when = new Date(event?.createdAt || "");
+      if (Number.isNaN(when.getTime())) return;
+
+      const eventDayStart = new Date(when.getFullYear(), when.getMonth(), when.getDate());
+      const dayOffset = Math.floor((eventDayStart.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000));
+      if (dayOffset < 0 || dayOffset >= 7) return;
+
+      // Use small weighted minutes so task actions are reflected in the weekly activity chart.
+      const weightedMinutes = String(event?.type || "") === "task-completed" ? 15 : 8;
+      rows[dayOffset].minutes += weightedMinutes;
+      rows[dayOffset].taskCount += 1;
+    });
+
     const maxMinutes = Math.max(...rows.map((row) => row.minutes), 1);
 
     return rows.map((row) => ({
       day: row.day,
       hours: formatStudyTime(row.minutes),
+      taskCount: row.taskCount,
+      summaryLabel:
+        row.taskCount > 0
+          ? `${formatStudyTime(row.minutes)} + ${row.taskCount} task${row.taskCount === 1 ? "" : "s"}`
+          : formatStudyTime(row.minutes),
       width: row.minutes > 0 ? `${Math.max((row.minutes / maxMinutes) * 100, 4)}%` : "0%",
       hasValue: row.minutes > 0,
     }));
-  }, [sessionData]);
+  }, [sessionData, taskActivityEvents]);
 
   const recentActivity = useMemo(() => {
     const sessionActivities = sessionData
@@ -292,14 +345,32 @@ const Profile = () => {
       })
       .filter(Boolean);
 
-    return [...sessionActivities, ...blogActivities]
+    const taskActivities = taskActivityEvents
+      .map((event, index) => {
+        const when = new Date(event?.createdAt || "");
+        if (Number.isNaN(when.getTime())) return null;
+
+        const type = String(event?.type || "task");
+        const title = String(event?.title || "Task activity").trim() || "Task activity";
+
+        return {
+          id: `task-${String(event?.id || `${when.toISOString()}-${index}`)}`,
+          type,
+          when,
+          durationMinutes: 0,
+          title,
+        };
+      })
+      .filter(Boolean);
+
+    return [...sessionActivities, ...blogActivities, ...taskActivities]
       .sort((a, b) => b.when.getTime() - a.when.getTime())
       .slice(0, 5)
       .map((activity) => ({
         ...activity,
         timeLabel: formatRelativeTime(activity.when),
       }));
-  }, [myBlogs, sessionData]);
+  }, [myBlogs, sessionData, taskActivityEvents]);
 
   const badges = useMemo(() => {
     const metricMap = {
@@ -464,7 +535,7 @@ const Profile = () => {
               <div key={row.day} className="space-y-2 mb-4 last:mb-0">
                 <div className="flex justify-between text-sm">
                   <span className="font-semibold text-gray-700 dark:text-gray-300">{row.day}</span>
-                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">{row.hours}</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">{row.summaryLabel}</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                   <div
@@ -506,6 +577,17 @@ const Profile = () => {
                           <>
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                          </>
+                        ) : activity.type === 'task-completed' ? (
+                          <>
+                            <path d="M20 6L9 17l-5-5" />
+                            <path d="M19 3l2 2" />
+                          </>
+                        ) : activity.type === 'task-added' ? (
+                          <>
+                            <path d="M12 5v14" />
+                            <path d="M5 12h14" />
+                            <circle cx="12" cy="12" r="9" />
                           </>
                         ) : activity.durationMinutes > 0 ? (
                           <path d="M20 6L9 17l-5-5" />

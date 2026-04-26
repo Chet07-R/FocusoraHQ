@@ -1,6 +1,7 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 const { env } = require('../config/env');
+const StudyRoom = require('../models/StudyRoom');
 
 let ioInstance = null;
 
@@ -70,15 +71,57 @@ const initSocketServer = (httpServer) => {
       ioInstance.to(roomId).emit('user-left', { roomId, user });
     });
 
-    socket.on('timer-update', ({ roomId, timerData }) => {
-      if (roomId) {
-        socket.to(roomId).emit('timer-update', timerData);
+    socket.on('timer-update', async ({ roomId, timerData }) => {
+      if (!roomId || !timerData) {
+        return;
+      }
+
+      socket.to(roomId).emit('timer-update', timerData);
+
+      try {
+        await StudyRoom.findByIdAndUpdate(roomId, {
+          timer: {
+            duration: Math.max(0, Number(timerData.duration || 0) || 0),
+            remaining: Math.max(0, Number(timerData.remaining || 0) || 0),
+            isRunning: Boolean(timerData.isRunning),
+            startedAt: timerData.startedAt || null,
+            lastUpdatedAt: new Date(),
+          },
+        });
+
+        ioInstance.to(roomId).emit('room-data-updated', { roomId });
+      } catch (error) {
+        console.error('Failed to persist room timer', error);
       }
     });
 
-    socket.on('send-message', ({ roomId, message }) => {
-      if (roomId) {
-        ioInstance.to(roomId).emit('receive-message', message);
+    socket.on('send-message', async ({ roomId, message }) => {
+      if (!roomId || !message) {
+        return;
+      }
+
+      ioInstance.to(roomId).emit('receive-message', message);
+
+      try {
+        const room = await StudyRoom.findById(roomId);
+        if (!room) return;
+
+        const timestampValue = message.timestamp ? new Date(message.timestamp) : new Date();
+
+        const chatMessage = {
+          id: String(message.id || `${Date.now()}`),
+          userId: String(message.userId || ''),
+          displayName: String(message.displayName || ''),
+          message: String(message.message || message.text || '').trim(),
+          timestamp: Number.isNaN(timestampValue.getTime()) ? new Date().toISOString() : timestampValue.toISOString(),
+        };
+
+        room.chatMessages = [...(room.chatMessages || []), chatMessage].slice(-200);
+        await room.save();
+
+        ioInstance.to(roomId).emit('room-data-updated', { roomId });
+      } catch (error) {
+        console.error('Failed to persist room chat', error);
       }
     });
 

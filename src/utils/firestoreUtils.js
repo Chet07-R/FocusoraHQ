@@ -90,11 +90,35 @@ export const deleteStudyRoom = async (roomId) => {
 };
 
 export const subscribeToStudyRoom = (roomId, callback) => {
+  let active = true;
+
+  const fetchRoom = async () => {
+    try {
+      const res = await api.get(`/rooms/${roomId}`);
+      if (!active) return;
+      callback(normalizeRoom(res.data));
+    } catch {
+      if (active) callback(null);
+    }
+  };
+
   api.get(`/rooms/${roomId}`).then(res => callback(normalizeRoom(res.data))).catch(() => {});
   const interval = setInterval(() => {
-    api.get(`/rooms/${roomId}`).then(res => callback(normalizeRoom(res.data))).catch(() => {});
+    fetchRoom();
   }, 5000);
-  return () => clearInterval(interval);
+
+  const onRoomUpdated = ({ roomId: updatedRoomId }) => {
+    if (String(updatedRoomId) !== String(roomId)) return;
+    fetchRoom();
+  };
+
+  socket.on('room-data-updated', onRoomUpdated);
+
+  return () => {
+    active = false;
+    clearInterval(interval);
+    socket.off('room-data-updated', onRoomUpdated);
+  };
 };
 export const subscribeToRoomParticipants = (roomId, callback) => {
   const participantsMap = new Map();
@@ -148,60 +172,81 @@ export const sendRoomChatMessage = async (roomId, userId, displayName, message) 
   socket.emit('send-message', { roomId, message: fullMsg });
 };
 export const subscribeToRoomChat = (roomId, callback) => {
-  const messages = [];
-  const handler = (msg) => { messages.push(msg); callback([...messages]); };
-  socket.on('receive-message', handler);
-  return () => socket.off('receive-message', handler);
+  let active = true;
+
+  const fetchMessages = async () => {
+    try {
+      const res = await api.get(`/rooms/${roomId}`);
+      if (!active) return;
+      callback(Array.isArray(res.data?.chatMessages) ? res.data.chatMessages : []);
+    } catch {
+      if (active) callback([]);
+    }
+  };
+
+  const onIncomingMessage = () => fetchMessages();
+  const onRoomUpdated = ({ roomId: updatedRoomId }) => {
+    if (String(updatedRoomId) !== String(roomId)) return;
+    fetchMessages();
+  };
+
+  fetchMessages();
+  socket.on('receive-message', onIncomingMessage);
+  socket.on('room-data-updated', onRoomUpdated);
+
+  return () => {
+    active = false;
+    socket.off('receive-message', onIncomingMessage);
+    socket.off('room-data-updated', onRoomUpdated);
+  };
 };
 
 // --- ROOM NOTES & TODOS ---
 export const updateRoomNotes = async (roomId, notes, updatedById = null, updatedByName = null) => {
-  socket.emit('share-notes', { roomId, notes });
+  const res = await api.put(`/rooms/${roomId}/notes`, { notes, updatedById, updatedByName });
+  return res.data;
 };
 export const addRoomTodo = async (roomId, todoText, createdById, createdByName, createdByPhotoURL = null) => {
-  const todo = {
-    id: Date.now().toString(),
+  const res = await api.post(`/rooms/${roomId}/todos`, {
     text: todoText,
-    completed: false,
     createdById,
     createdByName,
     createdByPhotoURL,
-    createdAt: new Date().toISOString(),
-  };
-  socket.emit('todo-added', { roomId, todo });
+  });
+  return res.data;
 };
 export const toggleRoomTodo = async (roomId, todoId, completed) => {
-  socket.emit('todo-toggled', { roomId, todoId, completed });
+  const res = await api.put(`/rooms/${roomId}/todos/${todoId}`, { completed });
+  return res.data;
 };
 export const deleteRoomTodo = async (roomId, todoId) => {
-  socket.emit('todo-deleted', { roomId, todoId });
+  const res = await api.delete(`/rooms/${roomId}/todos/${todoId}`);
+  return res.data;
 };
 export const subscribeToRoomTodos = (roomId, callback) => {
-  const todos = [];
-  const addHandler = (todo) => {
-    todos.push(todo);
-    callback([...todos]);
-  };
-  const toggleHandler = ({ todoId, completed }) => {
-    const idx = todos.findIndex((todo) => String(todo.id) === String(todoId));
-    if (idx >= 0) {
-      todos[idx] = { ...todos[idx], completed: Boolean(completed) };
-      callback([...todos]);
-    }
-  };
-  const deleteHandler = ({ todoId }) => {
-    const idx = todos.findIndex((todo) => String(todo.id) === String(todoId));
-    if (idx >= 0) {
-      todos.splice(idx, 1);
-      callback([...todos]);
+  let active = true;
+
+  const fetchTodos = async () => {
+    try {
+      const res = await api.get(`/rooms/${roomId}/todos`);
+      if (!active) return;
+      callback(Array.isArray(res.data) ? res.data : []);
+    } catch {
+      if (active) callback([]);
     }
   };
 
+  const addHandler = (todo) => fetchTodos();
+  const toggleHandler = () => fetchTodos();
+  const deleteHandler = () => fetchTodos();
+
+  fetchTodos();
   socket.on('todo-received', addHandler);
   socket.on('todo-toggled-received', toggleHandler);
   socket.on('todo-deleted-received', deleteHandler);
 
   return () => {
+    active = false;
     socket.off('todo-received', addHandler);
     socket.off('todo-toggled-received', toggleHandler);
     socket.off('todo-deleted-received', deleteHandler);
@@ -210,10 +255,12 @@ export const subscribeToRoomTodos = (roomId, callback) => {
 
 // --- ROOM MEDIAS ---
 export const updateRoomPlaylist = async (roomId, spotifyUrl, updatedById = null, updatedByName = null) => {
-  socket.emit('update-playlist', { roomId, spotifyUrl });
+  const res = await api.put(`/rooms/${roomId}/playlist`, { spotifyUrl, updatedById, updatedByName });
+  return res.data;
 };
 export const updateRoomBackground = async (roomId, backgroundUrl, updatedById = null, updatedByName = null) => {
-  socket.emit('update-background', { roomId, backgroundUrl });
+  const res = await api.put(`/rooms/${roomId}/background`, { backgroundUrl, updatedById, updatedByName });
+  return res.data;
 };
 export const signalRoomPlayback = async (roomId, action, updatedById = null, updatedByName = null) => {
   socket.emit('sync-playback', { roomId, action, updatedById, updatedByName });

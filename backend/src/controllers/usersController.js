@@ -3,6 +3,7 @@ const Note = require('../models/Note');
 const Todo = require('../models/Todo');
 const StudySession = require('../models/StudySession');
 const StudyRoom = require('../models/StudyRoom');
+const ActivityEvent = require('../models/ActivityEvent');
 const { ok, fail } = require('../utils/apiResponse');
 const { applyFocusProgress } = require('../utils/userProgress');
 
@@ -153,6 +154,7 @@ const deleteProfile = async (req, res) => {
     Note.deleteMany({ userId }),
     Todo.deleteMany({ userId }),
     StudySession.deleteMany({ userId }),
+    ActivityEvent.deleteMany({ userId }),
     StudyRoom.updateMany(
       { 'participants.userId': userId },
       {
