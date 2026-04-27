@@ -1,9 +1,175 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { createReview, defaultReviewAvatar, listReviews } from '../utils/reviewsApi';
 import './Home.css';
+
+const REVIEW_ROLE_OPTIONS = ['Student', 'Teacher', 'Professional', 'Learner'];
 
 
 const Home = () => {
+  const { userProfile } = useAuth();
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [reviewsLoadError, setReviewsLoadError] = useState('');
+  const [reviewError, setReviewError] = useState('');
+  const [reviewSuccess, setReviewSuccess] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewForm, setReviewForm] = useState({
+    name: '',
+    role: 'Student',
+    rating: 5,
+    message: '',
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+      setReviewsLoadError('');
+      try {
+        const data = await listReviews(24);
+        if (!isMounted) {
+          return;
+        }
+        setReviews(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+        setReviewsLoadError(error?.response?.data?.message || 'Could not load reviews right now.');
+      } finally {
+        if (isMounted) {
+          setReviewsLoading(false);
+        }
+      }
+    };
+
+    fetchReviews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const profileName = String(userProfile?.displayName || '').trim();
+    if (!profileName) {
+      return;
+    }
+
+    setReviewForm((previous) => {
+      if (String(previous.name || '').trim()) {
+        return previous;
+      }
+
+      return {
+        ...previous,
+        name: profileName,
+      };
+    });
+  }, [userProfile?.displayName]);
+
+  useEffect(() => {
+    if (!isReviewModalOpen) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setReviewModalOpen(false);
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isReviewModalOpen]);
+
+  const visibleReviews = useMemo(() => reviews.slice(0, 12), [reviews]);
+
+  const marqueeReviews = useMemo(() => {
+    if (visibleReviews.length <= 1) {
+      return visibleReviews;
+    }
+
+    return [...visibleReviews, ...visibleReviews];
+  }, [visibleReviews]);
+
+  const shouldAnimateReviews = visibleReviews.length > 1;
+
+  const reviewScrollDuration = useMemo(
+    () => `${Math.max(18, visibleReviews.length * 5)}s`,
+    [visibleReviews.length]
+  );
+
+  const handleReviewFieldChange = (event) => {
+    const { name, value } = event.target;
+
+    setReviewForm((previous) => ({
+      ...previous,
+      [name]: name === 'rating' ? Number(value) : value,
+    }));
+  };
+
+  const openReviewModal = () => {
+    setReviewError('');
+    setReviewSuccess('');
+    setReviewModalOpen(true);
+  };
+
+  const closeReviewModal = () => {
+    setReviewModalOpen(false);
+  };
+
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault();
+    setReviewError('');
+    setReviewSuccess('');
+
+    const payload = {
+      name: String(reviewForm.name || '').trim(),
+      role: String(reviewForm.role || '').trim(),
+      message: String(reviewForm.message || '').trim(),
+      rating: Number(reviewForm.rating || 5),
+    };
+
+    if (!payload.name && !String(userProfile?.displayName || '').trim()) {
+      setReviewError('Please enter your name.');
+      return;
+    }
+
+    if (payload.message.length < 10) {
+      setReviewError('Review should be at least 10 characters.');
+      return;
+    }
+
+    setReviewSubmitting(true);
+
+    try {
+      const created = await createReview(payload);
+      setReviews((previous) => [created, ...previous].slice(0, 30));
+      setReviewForm((previous) => ({
+        ...previous,
+        message: '',
+        rating: 5,
+      }));
+      setReviewSuccess('Thank you. Your review is now live.');
+      setReviewModalOpen(false);
+    } catch (error) {
+      setReviewError(error?.response?.data?.message || 'Unable to submit review right now.');
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+
   return (
     <>
       <main className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen relative overflow-hidden flex flex-col lg:justify-start pt-24 lg:pt-20">
@@ -168,46 +334,213 @@ const Home = () => {
 
       <section className="py-16 sm:py-20 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 text-center">
-          
+
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white">Trusted by Students & Professionals</h2>
-          
-          <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400">See what our users are saying about FocusoraHQ.</p>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {
-              [
-                { name: 'Bhavya Jain', role: 'Student', img: '/images/People/1.jpg' },
-                { name: 'Vinit', role: 'Student', img: '/images/People/2.enc' },
-                { name: 'Manju', role: 'Teacher', img: '/images/People/3.jpg' },
-              ].map((t, idx) => (
-                <div key={idx} className="bg-gray-50 dark:bg-gray-700 p-6 sm:p-8 rounded-2xl border border-gray-200 dark:border-gray-600 shadow-lg flex flex-col items-center hover:scale-105 transition-transform duration-300 h-full">
+          <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400">Write your review and watch reviews move horizontally in real time.</p>
 
-                  <img src={t.img} alt={t.name} className="w-20 h-20 rounded-full border-4 border-purple-200 dark:border-purple-400 shadow mb-4 object-cover" />
+          <div className="mt-6 flex justify-center">
+            <button
+              type="button"
+              onClick={openReviewModal}
+              className="rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 transition-colors"
+            >
+              Add your review
+            </button>
+          </div>
 
-                  <div className="flex items-center mb-2">
-                    { Array.from({ length: 5 }).map((_, k) => (
-                      <svg key={k} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.64 16.56,18 10,13.72 3.44,18 6.03,11.64 0.49,7.36 7.41,7.36"/>
-                      </svg>
-                    )) }
+          {reviewSuccess ? (
+            <p className="mt-4 text-sm font-medium text-emerald-600 dark:text-emerald-300">{reviewSuccess}</p>
+          ) : null}
+
+          <div className="mt-12 text-left">
+
+            <div>
+              <div className="reviews-marquee-window rounded-2xl border border-gray-200 dark:border-gray-600 bg-gray-50/85 dark:bg-gray-700/65 p-3 sm:p-4">
+
+                {reviewsLoading ? (
+                  <div className="h-56 flex items-center justify-center text-gray-600 dark:text-gray-300">Loading reviews...</div>
+                ) : visibleReviews.length === 0 ? (
+                  <div className="h-56 flex items-center justify-center text-center px-6 text-gray-600 dark:text-gray-300">
+                    No reviews yet. Be the first one to share your FocusoraHQ experience.
                   </div>
+                ) : (
+                  <div
+                    className={`reviews-marquee-track ${shouldAnimateReviews ? 'reviews-marquee-track--animate' : ''}`}
+                    style={{ '--reviews-duration': reviewScrollDuration }}
+                  >
+                    {marqueeReviews.map((review, idx) => {
+                      const safeRating = Math.max(1, Math.min(5, Number(review.rating) || 5));
 
-                  <p className="text-gray-700 dark:text-gray-300 italic mb-4 text-sm sm:text-base flex-grow">
-                    "FocusoraHQ completely changed how I study for exams. The study rooms keep me accountable."
-                  </p>
+                      return (
+                        <article
+                          key={`${review.id || review._id || review.name}-${idx}`}
+                          className="reviews-marquee-item bg-white/90 dark:bg-gray-800/85 rounded-2xl border border-gray-200 dark:border-gray-600 p-6 sm:p-7 flex items-start gap-4"
+                        >
+                          <img
+                            src={review.photoURL || defaultReviewAvatar}
+                            alt={`${review.name} profile`}
+                            className="w-14 h-14 rounded-full border-2 border-purple-200 dark:border-purple-500 object-cover shrink-0"
+                            onError={(event) => {
+                              if (event.currentTarget.src.endsWith(defaultReviewAvatar)) {
+                                return;
+                              }
 
-                  <div className="mt-auto">
-                    <p className="font-bold text-gray-800 dark:text-white">{t.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{t.role}</p>
+                              event.currentTarget.src = defaultReviewAvatar;
+                            }}
+                          />
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-3 flex-wrap">
+                              <div>
+                                <p className="font-bold text-gray-800 dark:text-white">{review.name}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">{review.role}</p>
+                              </div>
+
+                              <div className="flex items-center gap-0.5" aria-label={`${safeRating} star rating`}>
+                                {Array.from({ length: 5 }).map((_, starIndex) => (
+                                  <svg
+                                    key={starIndex}
+                                    className={`w-4 h-4 ${starIndex < safeRating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-500'}`}
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.64 16.56,18 10,13.72 3.44,18 6.03,11.64 0.49,7.36 7.41,7.36" />
+                                  </svg>
+                                ))}
+                              </div>
+                            </div>
+
+                            <p className="mt-3 italic text-gray-700 dark:text-gray-300 leading-relaxed break-words">
+                              "{review.message}"
+                            </p>
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
+                )}
+              </div>
+            </div>
 
-                </div>
-              ))
-            }
+            {reviewsLoadError ? (
+              <p className="mt-4 text-sm font-medium text-red-600 dark:text-red-300">{reviewsLoadError}</p>
+            ) : null}
           </div>
 
         </div>
       </section>
+
+      {isReviewModalOpen ? (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6">
+          <button
+            type="button"
+            aria-label="Close add review popup"
+            onClick={closeReviewModal}
+            className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-review-heading"
+            className="relative w-full max-w-3xl rounded-2xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between px-6 sm:px-7 pt-6 sm:pt-7">
+              <h3 id="add-review-heading" className="text-2xl font-bold text-gray-800 dark:text-white">Share Your Review</h3>
+              <button
+                type="button"
+                onClick={closeReviewModal}
+                className="rounded-md px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-200/70 dark:hover:bg-gray-600/60"
+              >
+                Close
+              </button>
+            </div>
+
+            <p className="mt-2 px-6 sm:px-7 text-sm text-gray-600 dark:text-gray-300">
+              Post your feedback and it appears instantly in the horizontal review wall.
+            </p>
+
+            <form className="mt-6 px-6 sm:px-7 pb-6 sm:pb-7 grid grid-cols-1 lg:grid-cols-3 gap-3" onSubmit={handleReviewSubmit}>
+              <div className="lg:col-span-1">
+                <label htmlFor="reviewName" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1.5">
+                  Name
+                </label>
+                <input
+                  id="reviewName"
+                  name="name"
+                  type="text"
+                  value={reviewForm.name}
+                  onChange={handleReviewFieldChange}
+                  placeholder="Your name"
+                  className="w-full rounded-xl border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+
+              <div className="lg:col-span-1">
+                <label htmlFor="reviewRole" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1.5">
+                  Role
+                </label>
+                <select
+                  id="reviewRole"
+                  name="role"
+                  value={reviewForm.role}
+                  onChange={handleReviewFieldChange}
+                  className="w-full rounded-xl border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+                  {REVIEW_ROLE_OPTIONS.map((roleOption) => (
+                    <option key={roleOption} value={roleOption}>{roleOption}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="lg:col-span-1">
+                <label htmlFor="reviewRating" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1.5">
+                  Rating
+                </label>
+                <select
+                  id="reviewRating"
+                  name="rating"
+                  value={reviewForm.rating}
+                  onChange={handleReviewFieldChange}
+                  className="w-full rounded-xl border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+                  {[5, 4, 3, 2, 1].map((ratingValue) => (
+                    <option key={ratingValue} value={ratingValue}>{ratingValue} Star{ratingValue > 1 ? 's' : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="lg:col-span-3">
+                <label htmlFor="reviewMessage" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1.5">
+                  Review
+                </label>
+                <textarea
+                  id="reviewMessage"
+                  name="message"
+                  value={reviewForm.message}
+                  onChange={handleReviewFieldChange}
+                  placeholder="Share your FocusoraHQ experience"
+                  rows={5}
+                  className="w-full rounded-xl border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-y"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={reviewSubmitting}
+                className="lg:col-span-3 w-full rounded-xl bg-blue-700 hover:bg-blue-800 disabled:bg-blue-500 disabled:cursor-not-allowed text-white font-semibold py-3 transition-colors"
+              >
+                {reviewSubmitting ? 'Submitting...' : 'Post Review'}
+              </button>
+
+              {reviewError ? (
+                <p className="lg:col-span-3 text-sm font-medium text-red-600 dark:text-red-300">{reviewError}</p>
+              ) : null}
+            </form>
+          </div>
+        </div>
+      ) : null}
 
       <section className="relative overflow-hidden py-20 sm:py-28 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
         

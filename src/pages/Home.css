@@ -124,3 +124,52 @@
   background-size: 200% 200%;
   animation: gradient-x 3s ease infinite;
 }
+
+.reviews-marquee-window {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.reviews-marquee-track {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1rem;
+  width: max-content;
+  will-change: transform;
+}
+
+.reviews-marquee-track--animate {
+  animation: reviews-marquee-scroll var(--reviews-duration, 24s) linear infinite;
+}
+
+.reviews-marquee-item {
+  flex: 0 0 clamp(18rem, 34vw, 24rem);
+}
+
+.reviews-marquee-window:hover .reviews-marquee-track--animate {
+  animation-play-state: paused;
+}
+
+@keyframes reviews-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 1024px) {
+  .reviews-marquee-item {
+    flex-basis: min(84vw, 22rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviews-marquee-track--animate {
+    animation: none;
+  }
+}

@@ -135,6 +135,7 @@ const Blog = () => {
   const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
+  const [isBlogModalOpen, setBlogModalOpen] = useState(false);
   const [blogForm, setBlogForm] = useState({
     authorName: '',
     authorEmail: '',
@@ -178,6 +179,37 @@ const Blog = () => {
   useEffect(() => {
     loadCommunityBlogs();
   }, [loadCommunityBlogs]);
+
+  useEffect(() => {
+    if (!isBlogModalOpen) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setBlogModalOpen(false);
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isBlogModalOpen]);
+
+  const openBlogModal = () => {
+    setSubmitError('');
+    setSubmitSuccess('');
+    setBlogModalOpen(true);
+  };
+
+  const closeBlogModal = () => {
+    setBlogModalOpen(false);
+  };
 
   const handleCommunityInputChange = (event) => {
     const { name, value } = event.target;
@@ -272,6 +304,7 @@ const Blog = () => {
       const createdBlog = await createBlogApi(payload);
       setCommunityBlogs((prev) => [createdBlog, ...prev]);
       setSubmitSuccess('Your blog is now published in the community section.');
+      setBlogModalOpen(false);
       setBlogForm((prev) => ({
         ...prev,
         title: '',
@@ -491,6 +524,16 @@ const Blog = () => {
             <p className="text-lg text-gray-600 dark:text-gray-400">
               Stories and productivity systems shared by Focusora members.
             </p>
+
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={openBlogModal}
+                className="inline-flex items-center rounded-full bg-blue-700 px-7 py-3 text-white font-semibold hover:bg-blue-800 transition-colors"
+              >
+                Add your blog
+              </button>
+            </div>
           </div>
 
           {communityLoading && (
@@ -521,12 +564,13 @@ const Blog = () => {
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Publish your first article below and it will appear here instantly.
               </p>
-              <a
-                href="#community-write"
+              <button
+                type="button"
+                onClick={openBlogModal}
                 className="inline-flex items-center rounded-full bg-blue-700 px-7 py-3 text-white font-semibold hover:bg-blue-800 transition-colors"
               >
                 Write Your Blog
-              </a>
+              </button>
             </div>
           )}
 
@@ -585,17 +629,37 @@ const Blog = () => {
         </div>
       </section>
 
-      {}
-      <section id="community-write" className="py-16 bg-gradient-to-r from-indigo-100 via-cyan-50 to-white dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950">
-        <div className="container mx-auto px-6">
-          <div className="mx-auto max-w-4xl rounded-3xl border border-gray-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/80 p-8 sm:p-10 shadow-2xl backdrop-blur">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
-                Add Your Own Blog
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Keep the Focusora community growing by sharing your best productivity ideas.
-              </p>
+      {isBlogModalOpen && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6">
+          <button
+            type="button"
+            aria-label="Close add blog popup"
+            onClick={closeBlogModal}
+            className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-blog-heading"
+            className="relative w-full max-w-4xl rounded-3xl border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 max-h-[90vh] overflow-y-auto p-8 sm:p-10"
+          >
+            <div className="mb-8 flex items-start justify-between gap-4">
+              <div>
+                <h2 id="add-blog-heading" className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
+                  Add Your Own Blog
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Keep the Focusora community growing by sharing your best productivity ideas.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={closeBlogModal}
+                className="rounded-md px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
+              >
+                Close
+              </button>
             </div>
 
             <form className="space-y-5" onSubmit={handleCommunitySubmit}>
@@ -758,12 +822,6 @@ const Blog = () => {
                 </p>
               )}
 
-              {submitSuccess && (
-                <p className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 dark:border-green-500/40 dark:bg-green-950/40 dark:text-green-300">
-                  {submitSuccess}
-                </p>
-              )}
-
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {user ? `Publishing as ${user.displayName || user.email || 'community member'}.` : 'Publishing as a community guest.'}
@@ -779,7 +837,7 @@ const Blog = () => {
             </form>
           </div>
         </div>
-      </section>
+      )}
 
       {}
       <section className="py-16 bg-white dark:bg-gray-800">
