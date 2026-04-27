@@ -19,7 +19,7 @@ async function createApp() {
   let prodRender;
 
   if (isProd) {
-    const clientDist = path.resolve(__dirname, 'dist/client');
+    const clientDist = path.resolve(__dirname, 'dist');
     const serverDist = path.resolve(__dirname, 'dist/server/entry-server.js');
 
     prodTemplate = await fs.readFile(path.resolve(clientDist, 'index.html'), 'utf-8');

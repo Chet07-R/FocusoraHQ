@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "dev:csr": "vite --host",
-    "build": "vite build --outDir dist/client && vite build --ssr src/entry-server.jsx --outDir dist/server",
+    "build": "vite build --outDir dist && vite build --ssr src/entry-server.jsx --outDir dist/server",
     "lint": "eslint .",
     "preview": "node server.js --prod"
   },
