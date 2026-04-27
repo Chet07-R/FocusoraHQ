@@ -2,14 +2,58 @@ import React, { useState, useEffect, useRef } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
+const POMODORO_STORAGE_KEY = "focusora:myspace:pomodoro";
+
 const clampDuration = (value, fallback) => {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
   return Math.min(60, Math.max(1, Math.floor(parsed)));
 };
 
+const parsePomodoroSnapshot = (rawValue, fallbackWorkDuration, fallbackBreakDuration) => {
+  const fallbackState = {
+    workDuration: fallbackWorkDuration,
+    breakDuration: fallbackBreakDuration,
+    onBreak: false,
+    isRunning: false,
+    sessionTotalSeconds: fallbackWorkDuration * 60,
+    timeLeft: fallbackWorkDuration * 60,
+  };
+
+  if (!rawValue) return fallbackState;
+
+  try {
+    const parsed = JSON.parse(rawValue);
+    const workDuration = clampDuration(parsed?.workDuration, fallbackWorkDuration);
+    const breakDuration = clampDuration(parsed?.breakDuration, fallbackBreakDuration);
+    const onBreak = Boolean(parsed?.onBreak);
+    const isRunning = Boolean(parsed?.isRunning);
+    const expectedSessionSeconds = (onBreak ? breakDuration : workDuration) * 60;
+    const parsedSessionTotal = Math.floor(Number(parsed?.sessionTotalSeconds));
+    const parsedTimeLeft = Math.floor(Number(parsed?.timeLeft));
+    const sessionTotalSeconds = Number.isFinite(parsedSessionTotal) && parsedSessionTotal > 0
+      ? parsedSessionTotal
+      : expectedSessionSeconds;
+    const boundedTimeLeft = Number.isFinite(parsedTimeLeft)
+      ? Math.min(sessionTotalSeconds, Math.max(0, parsedTimeLeft))
+      : sessionTotalSeconds;
+
+    return {
+      workDuration,
+      breakDuration,
+      onBreak,
+      isRunning,
+      sessionTotalSeconds,
+      timeLeft: boundedTimeLeft,
+    };
+  } catch {
+    return fallbackState;
+  }
+};
+
 const Pomodoro = ({
   addNotification = () => { },
+  onWorkSessionStart = () => {},
   onWorkSessionComplete = () => {},
   defaultWorkDuration = 25,
   defaultBreakDuration = 5,
@@ -17,20 +61,30 @@ const Pomodoro = ({
   const safeDefaultWorkDuration = clampDuration(defaultWorkDuration, 25);
   const safeDefaultBreakDuration = clampDuration(defaultBreakDuration, 5);
 
-  const [workDuration, setWorkDuration] = useState(safeDefaultWorkDuration);
-  const [breakDuration, setBreakDuration] = useState(safeDefaultBreakDuration);
-  const [timeLeft, setTimeLeft] = useState(safeDefaultWorkDuration * 60);
-  const [sessionTotalSeconds, setSessionTotalSeconds] = useState(
-    safeDefaultWorkDuration * 60
+  const initialStateRef = useRef(
+    parsePomodoroSnapshot(
+      typeof window !== "undefined" ? localStorage.getItem(POMODORO_STORAGE_KEY) : null,
+      safeDefaultWorkDuration,
+      safeDefaultBreakDuration
+    )
   );
-  const [isRunning, setIsRunning] = useState(false);
-  const [onBreak, setOnBreak] = useState(false);
+  const initialState = initialStateRef.current;
+
+  const [workDuration, setWorkDuration] = useState(initialState.workDuration);
+  const [breakDuration, setBreakDuration] = useState(initialState.breakDuration);
+  const [timeLeft, setTimeLeft] = useState(initialState.timeLeft);
+  const [sessionTotalSeconds, setSessionTotalSeconds] = useState(initialState.sessionTotalSeconds);
+  const [isRunning, setIsRunning] = useState(initialState.isRunning);
+  const [onBreak, setOnBreak] = useState(initialState.onBreak);
   const soundOn = true;
   const theme = "dark";
   const autoStartNext = true;
 
   const intervalRef = useRef(null);
   const hasAwardedCurrentWorkRef = useRef(false);
+  const hasLoggedCurrentWorkStartRef = useRef(
+    !initialState.onBreak && initialState.timeLeft < initialState.sessionTotalSeconds
+  );
   const previousWorkDefaultRef = useRef(safeDefaultWorkDuration);
   const previousBreakDefaultRef = useRef(safeDefaultBreakDuration);
   const beepSound = useRef(
@@ -72,6 +126,7 @@ const Pomodoro = ({
             } else {
               addNotification("✅ Break complete!");
               hasAwardedCurrentWorkRef.current = false;
+              hasLoggedCurrentWorkStartRef.current = false;
             }
 
             const nextOnBreak = !onBreak;
@@ -97,6 +152,15 @@ const Pomodoro = ({
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isRunning, onBreak, workDuration, breakDuration, addNotification, onWorkSessionComplete, soundOn, autoStartNext]);
+
+  useEffect(() => {
+    if (!isRunning || onBreak || hasLoggedCurrentWorkStartRef.current) return;
+
+    hasLoggedCurrentWorkStartRef.current = true;
+    Promise.resolve(onWorkSessionStart({ durationMinutes: workDuration })).catch((error) => {
+      console.error("Failed to log pomodoro start activity", error);
+    });
+  }, [isRunning, onBreak, workDuration, onWorkSessionStart]);
 
   useEffect(() => {
     if ("Notification" in window) {
@@ -134,6 +198,21 @@ const Pomodoro = ({
     }
   }, [safeDefaultBreakDuration, isRunning, onBreak]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const snapshot = {
+      workDuration,
+      breakDuration,
+      timeLeft,
+      sessionTotalSeconds,
+      isRunning,
+      onBreak,
+    };
+
+    localStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(snapshot));
+  }, [workDuration, breakDuration, timeLeft, sessionTotalSeconds, isRunning, onBreak]);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -155,6 +234,7 @@ const Pomodoro = ({
     setTimeLeft(nextSeconds);
     setSessionTotalSeconds(nextSeconds);
     hasAwardedCurrentWorkRef.current = false;
+    hasLoggedCurrentWorkStartRef.current = false;
   };
 
   const handleWorkDurationChange = (e) => {

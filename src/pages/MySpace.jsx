@@ -189,6 +189,18 @@ const MySpace = () => {
   const handlePomodoroComplete = async ({ durationMinutes }) => {
     const safeDuration   = Math.max(0, Math.floor(Number(durationMinutes || 0)));
     const awardedPoints  = getPomodoroPoints(safeDuration);
+    const activeUserId = getActiveUserId(user, userProfile);
+
+    if (activeUserId) {
+      pushActivityEvent({
+        type: "pomodoro-completed",
+        title: `Completed a ${safeDuration}-minute Pomodoro`,
+        points: awardedPoints,
+        minutes: safeDuration,
+        metadata: { userId: activeUserId, durationMinutes: safeDuration },
+      }).catch((error) => console.error("Failed to save pomodoro-completed activity", error));
+    }
+
     await awardPoints({
       points:        awardedPoints,
       studyMinutes:  safeDuration,
@@ -196,6 +208,20 @@ const MySpace = () => {
       subject:       "Pomodoro",
       message:       awardedPoints > 0 ? `+${awardedPoints} points from Pomodoro` : "",
     });
+  };
+
+  const handlePomodoroStarted = async ({ durationMinutes }) => {
+    const safeDuration = Math.max(0, Math.floor(Number(durationMinutes || 0)));
+    const activeUserId = getActiveUserId(user, userProfile);
+    if (!activeUserId) return;
+
+    pushActivityEvent({
+      type: "pomodoro-started",
+      title: `Started a ${safeDuration}-minute Pomodoro`,
+      points: 0,
+      minutes: 0,
+      metadata: { userId: activeUserId, durationMinutes: safeDuration },
+    }).catch((error) => console.error("Failed to save pomodoro-started activity", error));
   };
 
   const handleNotesSaved = async () => {
@@ -299,6 +325,7 @@ const MySpace = () => {
             <div className="ms-panel__body">
               <Pomodoro
                 addNotification={addNotification}
+                onWorkSessionStart={handlePomodoroStarted}
                 onWorkSessionComplete={handlePomodoroComplete}
                 defaultWorkDuration={safeWorkDuration}
                 defaultBreakDuration={safeBreakDuration}
@@ -325,6 +352,7 @@ const MySpace = () => {
             </div>
             <div className="ms-panel__body">
               <Todo
+                scope="personal"
                 addNotification={addNotification}
                 onTaskAdded={handleTaskAdded}
                 onTaskCompleted={handleTaskCompleted}

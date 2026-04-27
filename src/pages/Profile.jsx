@@ -278,14 +278,24 @@ const Profile = () => {
       const when = new Date(event?.createdAt || "");
       if (Number.isNaN(when.getTime())) return;
 
+      const type = String(event?.type || "");
+      const minutesFromEvent = Math.max(0, Math.floor(toNumber(event?.minutes, 0)));
+
       const eventDayStart = new Date(when.getFullYear(), when.getMonth(), when.getDate());
       const dayOffset = Math.floor((eventDayStart.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000));
       if (dayOffset < 0 || dayOffset >= 7) return;
 
-      // Use small weighted minutes so task actions are reflected in the weekly activity chart.
-      const weightedMinutes = String(event?.type || "") === "task-completed" ? 15 : 8;
-      rows[dayOffset].minutes += weightedMinutes;
-      rows[dayOffset].taskCount += 1;
+      if (type === "task-completed" || type === "task-added") {
+        // Use small weighted minutes so task actions are reflected in the weekly activity chart.
+        const weightedMinutes = type === "task-completed" ? 15 : 8;
+        rows[dayOffset].minutes += weightedMinutes;
+        rows[dayOffset].taskCount += 1;
+        return;
+      }
+
+      if (type === "pomodoro-completed" && minutesFromEvent > 0) {
+        rows[dayOffset].minutes += minutesFromEvent;
+      }
     });
 
     const maxMinutes = Math.max(...rows.map((row) => row.minutes), 1);
@@ -352,12 +362,13 @@ const Profile = () => {
 
         const type = String(event?.type || "task");
         const title = String(event?.title || "Task activity").trim() || "Task activity";
+        const minutes = Math.max(0, Math.floor(toNumber(event?.minutes, 0)));
 
         return {
           id: `task-${String(event?.id || `${when.toISOString()}-${index}`)}`,
           type,
           when,
-          durationMinutes: 0,
+          durationMinutes: minutes,
           title,
         };
       })

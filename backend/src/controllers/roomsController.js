@@ -194,6 +194,7 @@ const addRoomTodo = async (req, res) => {
   await room.save();
 
   emitRoomTodoEvent('todo-received', room._id, todo);
+  emitRoomUpdated(room._id);
 
   return ok(res, todo, 201);
 };
@@ -218,6 +219,7 @@ const toggleRoomTodo = async (req, res) => {
   await room.save();
 
   emitRoomTodoEvent('todo-toggled-received', room._id, { todoId, completed });
+  emitRoomUpdated(room._id);
 
   return ok(res, normalizeTodo(todo));
 };
@@ -239,6 +241,7 @@ const deleteRoomTodo = async (req, res) => {
 
   await room.save();
   emitRoomTodoEvent('todo-deleted-received', room._id, { todoId });
+  emitRoomUpdated(room._id);
 
   return ok(res, { success: true, todoId });
 };

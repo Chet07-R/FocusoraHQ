@@ -191,11 +191,13 @@ export const subscribeToRoomChat = (roomId, callback) => {
   };
 
   fetchMessages();
+  const interval = setInterval(fetchMessages, 2500);
   socket.on('receive-message', onIncomingMessage);
   socket.on('room-data-updated', onRoomUpdated);
 
   return () => {
     active = false;
+    clearInterval(interval);
     socket.off('receive-message', onIncomingMessage);
     socket.off('room-data-updated', onRoomUpdated);
   };
@@ -239,17 +241,25 @@ export const subscribeToRoomTodos = (roomId, callback) => {
   const addHandler = (todo) => fetchTodos();
   const toggleHandler = () => fetchTodos();
   const deleteHandler = () => fetchTodos();
+  const onRoomUpdated = ({ roomId: updatedRoomId }) => {
+    if (String(updatedRoomId) !== String(roomId)) return;
+    fetchTodos();
+  };
 
   fetchTodos();
+  const interval = setInterval(fetchTodos, 2500);
   socket.on('todo-received', addHandler);
   socket.on('todo-toggled-received', toggleHandler);
   socket.on('todo-deleted-received', deleteHandler);
+  socket.on('room-data-updated', onRoomUpdated);
 
   return () => {
     active = false;
+    clearInterval(interval);
     socket.off('todo-received', addHandler);
     socket.off('todo-toggled-received', toggleHandler);
     socket.off('todo-deleted-received', deleteHandler);
+    socket.off('room-data-updated', onRoomUpdated);
   };
 };
 

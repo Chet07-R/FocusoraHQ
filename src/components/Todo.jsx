@@ -3,7 +3,12 @@ import { PlusCircle, Trash2, CheckCircle } from "lucide-react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
 
-const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskCompleted = () => {} }) => {
+const Todo = ({
+  addNotification = () => {},
+  onTaskAdded = () => {},
+  onTaskCompleted = () => {},
+  scope = "auto",
+}) => {
   const { currentRoom, roomTodos, participants, addTodo, toggleTodo, deleteTodo, fixUnknownTodoCreators } = useStudyRoom();
   const { user, userProfile } = useAuth();
   const prevTodosRef = React.useRef(null);
@@ -18,19 +23,20 @@ const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskComple
     }
   });
 
-  const todos = currentRoom ? (roomTodos || []) : localTodos;
+  const isRoomMode = scope === "room" ? Boolean(currentRoom) : scope === "personal" ? false : Boolean(currentRoom);
+  const todos = isRoomMode ? (roomTodos || []) : localTodos;
 
   useEffect(() => {
-    if (!currentRoom) {
+    if (!isRoomMode) {
       localStorage.setItem('myspace_todos', JSON.stringify(localTodos));
     }
-  }, [localTodos, currentRoom]);
+  }, [localTodos, isRoomMode]);
 
   const addTask = async () => {
     const t = newTask.trim();
     if (!t) return addNotification("⚠️ Enter a task first");
     
-    if (currentRoom) {
+    if (isRoomMode) {
       
       try {
         await addTodo(t);
@@ -59,7 +65,7 @@ const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskComple
   };
 
   const toggleTask = async (todo) => {
-    if (currentRoom) {
+    if (isRoomMode) {
       try {
         await toggleTodo(todo.id, !todo.completed);
         if (!todo.completed) {
@@ -79,7 +85,7 @@ const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskComple
   };
 
   const removeTask = async (todo) => {
-    if (currentRoom) {
+    if (isRoomMode) {
       try {
         await deleteTodo(todo.id);
         addNotification("🗑️ Task removed");
@@ -94,9 +100,15 @@ const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskComple
   };
 
   const active = todos.filter((t) => !t.completed).length;
-  const hasUnknown = (roomTodos || []).some(t => !t.createdById || !t.createdByName);
+  const hasUnknown = isRoomMode && (roomTodos || []).some(t => !t.createdById || !t.createdByName);
 
   useEffect(() => {
+    if (!isRoomMode) {
+      prevTodosRef.current = null;
+      initializedRef.current = false;
+      return;
+    }
+
     const prev = prevTodosRef.current || [];
     const prevMap = new Map(prev.map(t => [t.id, t]));
     const curr = roomTodos || [];
@@ -130,7 +142,7 @@ const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskComple
       }
     });
     prevTodosRef.current = curr;
-  }, [roomTodos, user]);
+  }, [roomTodos, user, isRoomMode]);
 
   return (
     <section className="glass-card rounded-xl p-6 shadow-lg overflow-hidden" style={{ backdropFilter: "blur(10px)" }}>
@@ -140,7 +152,7 @@ const Todo = ({ addNotification = () => {}, onTaskAdded = () => {}, onTaskComple
           <h3 className="text-lg font-semibold text-white">To-Do List</h3>
         </div>
         <div className="flex items-center gap-3">
-          {hasUnknown && currentRoom && (
+          {hasUnknown && (
             <button
               onClick={async () => {
                 try {

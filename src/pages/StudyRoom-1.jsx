@@ -274,7 +274,7 @@ const StudyRoom1 = () => {
         {}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6">
           <div className="min-h-[350px] sm:min-h-[400px] lg:min-h-0">
-            <Todo addNotification={addNotification} />
+            <Todo scope="room" addNotification={addNotification} />
           </div>
           <div className="col-span-1 lg:col-span-2 min-h-[350px] sm:min-h-[400px] lg:min-h-0">
             <Notes addNotification={addNotification} />
