@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema(
     isEmailVerified: { type: Boolean, default: false },
     emailVerificationTokenHash: { type: String, default: null },
     emailVerificationTokenExpiresAt: { type: Date, default: null },
+    // Geolocation / display location
+    location: { type: String, default: null },
+    locationCoords: {
+      lat: { type: Number, default: null },
+      lng: { type: Number, default: null },
+    },
   },
   { timestamps: true }
 );

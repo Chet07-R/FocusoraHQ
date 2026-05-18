@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame, Trophy, Rocket, Target, Medal } from "lucide-react";
+import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame, Trophy, Rocket, Target, Medal, Copy } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { getLeaderboard } from "../utils/firestoreUtils";
+import { getLeaderboard, updateUserLocation } from "../utils/firestoreUtils";
 import { POINT_RULES } from "../constants/pointsSystem";
 
 const getBadgeMeta = (points, streak, sessions) => {
@@ -50,6 +50,8 @@ const App = () => {
 
   const [visibleCount] = useState(10);
   const [sortMode, setSortMode] = useState("points");
+  const [filterLocation, setFilterLocation] = useState("all");
+  const [timeframe, setTimeframe] = useState("all"); // 'all' or 'weekly' (UI only for now)
 
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
@@ -101,6 +103,49 @@ const App = () => {
     return () => unsubscribe && unsubscribe();
   }, [user]);
 
+  // Attempt to fetch browser geolocation once per session and update user profile
+  useEffect(() => {
+    if (!user || typeof window === 'undefined' || !('geolocation' in navigator)) return;
+    try {
+      const sentKey = `leaderboard_location_sent_${user.uid || user._id}`;
+      if (sessionStorage.getItem(sentKey)) return;
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        try {
+          const { latitude: lat, longitude: lng } = pos.coords || {};
+          if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+          // Try reverse geocoding via Nominatim to get a friendly label
+          let label = null;
+          try {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+            const r = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+            if (r.ok) {
+              const json = await r.json();
+              if (json && json.address) {
+                const parts = [];
+                if (json.address.city) parts.push(json.address.city);
+                if (json.address.town && !parts.length) parts.push(json.address.town);
+                if (json.address.village && !parts.length) parts.push(json.address.village);
+                if (json.address.state && !parts.includes(json.address.state)) parts.push(json.address.state);
+                if (json.address.country) parts.push(json.address.country);
+                label = parts.join(', ')
+                if (!label && json.display_name) label = json.display_name;
+              }
+            }
+          } catch (e) {
+            // ignore reverse geocode failures
+          }
+
+          await updateUserLocation({ lat, lng }, label);
+          try { sessionStorage.setItem(sentKey, '1'); } catch (e) {}
+        } catch (err) {
+          // ignore
+        }
+      }, (err) => {}, { enableHighAccuracy: false, maximumAge: 1000 * 60 * 60, timeout: 8000 });
+    } catch (e) {}
+  }, [user]);
+
   useEffect(() => {
     const ranked = [...dynamicUsers]
       .sort((a, b) => {
@@ -129,6 +174,44 @@ const App = () => {
       goalRate,
     });
   }, [dynamicUsers, hasLoadedMore, sortMode, visibleCount]);
+
+  const uniqueLocations = useMemo(() => {
+    const set = new Set(dynamicUsers.map((u) => (u.location || "").trim()).filter(Boolean));
+    return ["all", ...Array.from(set)];
+  }, [dynamicUsers]);
+
+  const filteredRows = useMemo(() => {
+    let out = [...allRows];
+    if (filterLocation && filterLocation !== 'all') {
+      out = out.filter((r) => (r.location || '').toLowerCase().includes(String(filterLocation).toLowerCase()));
+    }
+    // timeframe is UI-only at the moment; placeholder for weekly filtering later
+    return out;
+  }, [allRows, filterLocation, timeframe]);
+
+  
+
+  const handleShare = async (row) => {
+    const text = `${row.rank}. ${row.name} — ${row.points.toLocaleString()} pts • ${row.sessions} sessions`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        // small visual feedback
+        alert('Copied to clipboard: ' + text);
+      } else {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        alert('Copied to clipboard');
+      }
+    } catch (e) {
+      console.error('copy failed', e);
+    }
+  };
 
   const currentUserRow = useMemo(() => {
     if (!user) return null;
@@ -387,7 +470,7 @@ const App = () => {
               Track your progress among all users
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2 items-center">
               {[{ key: 'points', label: 'Points', icon: Star }, { key: 'streak', label: 'Streak', icon: Flame }, { key: 'sessions', label: 'Sessions', icon: Rocket }].map((mode) => (
                 <button
                   key={mode.key}
@@ -401,6 +484,19 @@ const App = () => {
                   {mode.label}
                 </button>
               ))}
+
+              <div className="ml-2">
+                <select value={filterLocation} onChange={(e) => setFilterLocation(e.target.value)} className="px-3 py-1 rounded-md bg-transparent text-sm border border-white/20">
+                  {uniqueLocations.map((loc) => (
+                    <option key={loc} value={loc}>{loc === 'all' ? 'All locations' : loc}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="ml-2 inline-flex items-center gap-2">
+                <button onClick={() => setTimeframe('all')} className={`px-3 py-1 rounded-full text-xs ${timeframe === 'all' ? 'bg-white text-blue-700' : 'bg-blue-800/40 text-blue-100'}`}>All</button>
+                <button onClick={() => setTimeframe('weekly')} className={`px-3 py-1 rounded-full text-xs ${timeframe === 'weekly' ? 'bg-white text-blue-700' : 'bg-blue-800/40 text-blue-100'}`}>Weekly</button>
+              </div>
             </div>
           </div>
           
@@ -419,7 +515,7 @@ const App = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((user) => (
+                {filteredRows.map((user) => (
                   <tr
                     key={user._id}
                     className={`border-t transition ${
@@ -447,6 +543,9 @@ const App = () => {
                           {user.you && (
                             <span className="text-xs text-blue-400 font-semibold ml-2">YOU</span>
                           )}
+                          <button onClick={() => handleShare(user)} title="Copy ranking" className="ml-2 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-[10px]">
+                            <Copy className="w-3 h-3" />
+                          </button>
                         </p>
                         <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{user.location}</p>
                       </div>
@@ -496,6 +595,16 @@ const App = () => {
             </button>
           </div>
         </div>
+        {/* Champion celebration */}
+        {currentUserRow && currentUserRow.rank === 1 && (
+          <div className="max-w-6xl mx-auto mt-6">
+            <div className="rounded-2xl p-4 bg-gradient-to-r from-yellow-400 to-pink-400 text-black font-semibold flex items-center justify-center gap-3">
+              <Trophy className="w-6 h-6" />
+              Congratulations — you're the Champion! Keep the streak alive 🏆
+            </div>
+          </div>
+        )}
+
         <section className="py-20 px-6 md:px-20">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className={`text-3xl md:text-4xl font-extrabold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>

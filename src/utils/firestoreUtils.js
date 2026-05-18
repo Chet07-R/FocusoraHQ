@@ -35,6 +35,11 @@ export const getUserProfile = async (userId) => {
 export const updateUserProfile = async (userId, updates) => {
   await api.put('/users/profile', updates);
 };
+export const updateUserLocation = async (coords, label = null) => {
+  const payload = { locationCoords: coords };
+  if (typeof label === 'string') payload.location = label;
+  await api.put('/users/profile', payload);
+};
 export const awardUserPoints = async (
   userId,
   { points = 0, studyMinutes = 0, sessionsCount = 0, subject = '', roomId = null } = {}

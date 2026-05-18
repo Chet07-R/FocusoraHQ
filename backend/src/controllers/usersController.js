@@ -37,6 +37,9 @@ const toUserPayload = (user) => ({
   showOnLeaderboard: typeof user.showOnLeaderboard === 'boolean' ? user.showOnLeaderboard : true,
   allowMessages: typeof user.allowMessages === 'boolean' ? user.allowMessages : true,
   notifications: typeof user.notifications === 'boolean' ? user.notifications : true,
+  // location fields
+  location: user.location || null,
+  locationCoords: user.locationCoords || { lat: null, lng: null },
   provider: user.provider,
   isEmailVerified: user.isEmailVerified,
 });
@@ -83,6 +86,18 @@ const updateProfile = async (req, res) => {
 
   if (typeof req.body.notifications === 'boolean') {
     updates.notifications = req.body.notifications;
+  }
+
+  // accept location updates
+  if (typeof req.body.location === 'string') {
+    updates.location = req.body.location.trim().slice(0, 200);
+  }
+  if (req.body.locationCoords && typeof req.body.locationCoords === 'object') {
+    const lat = Number(req.body.locationCoords.lat);
+    const lng = Number(req.body.locationCoords.lng);
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+      updates.locationCoords = { lat, lng };
+    }
   }
 
   const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true });
@@ -175,7 +190,7 @@ const leaderboard = async (req, res) => {
 
   const users = await User.find(
     {},
-    { displayName: 1, photoURL: 1, points: 1, totalStudyMinutes: 1, sessionsCount: 1, focusStreak: 1, bestFocusStreak: 1 }
+    { displayName: 1, photoURL: 1, points: 1, totalStudyMinutes: 1, sessionsCount: 1, focusStreak: 1, bestFocusStreak: 1, location: 1, locationCoords: 1 }
   )
     .sort(sort)
     .limit(limit);
@@ -190,6 +205,8 @@ const leaderboard = async (req, res) => {
     sessionsCount: user.sessionsCount,
     focusStreak: user.focusStreak || 0,
     bestFocusStreak: user.bestFocusStreak || 0,
+    location: user.location || null,
+    locationCoords: user.locationCoords || { lat: null, lng: null },
   }));
 
   return ok(res, result);
