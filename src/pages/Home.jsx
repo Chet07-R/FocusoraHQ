@@ -340,13 +340,22 @@ const Home = () => {
           <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400">Write your review and watch reviews move horizontally in real time.</p>
 
           <div className="mt-6 flex justify-center">
-            <button
-              type="button"
-              onClick={openReviewModal}
-              className="rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 transition-colors"
-            >
-              Add your review
-            </button>
+            {userProfile ? (
+              <button
+                type="button"
+                onClick={openReviewModal}
+                className="rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 transition-colors flex items-center justify-center flex-wrap"
+              >
+                Add your review
+              </button>
+            ) : (
+              <Link
+                to="/signin"
+                className="rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 transition-colors flex items-center justify-center flex-wrap"
+              >
+                Add your review
+              </Link>
+            )}
           </div>
 
           {reviewSuccess ? (

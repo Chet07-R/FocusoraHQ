@@ -121,6 +121,41 @@ const getBlogById = async (req, res) => {
   return ok(res, toBlogPayload(blog));
 };
 
+const updateBlog = async (req, res) => {
+  const { title, category, excerpt, content, coverImage } = req.body;
+  const uploadedCoverImage = resolveUploadedCoverImageUrl(req);
+
+  const blog = await Blog.findOne({
+    _id: req.params.id,
+    authorId: req.user._id,
+  });
+
+  if (!blog) {
+    await deleteManagedCoverImage(uploadedCoverImage);
+    return fail(res, 404, 'BLOG_NOT_FOUND', 'Blog not found or unauthorized');
+  }
+
+  if (title) blog.title = String(title).trim();
+  if (category) blog.category = String(category).trim();
+  if (excerpt) blog.excerpt = String(excerpt).trim();
+  if (content) {
+    blog.content = String(content).trim();
+    blog.readTime = normalizeReadTime(blog.content);
+  }
+
+  if (uploadedCoverImage || coverImage) {
+    const newResolvedCover = uploadedCoverImage || coverImage;
+    if (newResolvedCover !== blog.coverImage) {
+      await deleteManagedCoverImage(blog.coverImage);
+      blog.coverImage = newResolvedCover;
+    }
+  }
+
+  await blog.save();
+
+  return ok(res, toBlogPayload(blog));
+};
+
 const deleteBlog = async (req, res) => {
   const blog = await Blog.findOneAndDelete({
     _id: req.params.id,

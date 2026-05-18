@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.6",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.5.2",
     "lucide-react": "^0.553.0",
     "react": "^19.2.0",
     "react-circular-progressbar": "^2.2.0",

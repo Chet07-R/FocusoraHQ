@@ -21,7 +21,7 @@ const Community = () => {
 
           {}
           <a
-            href="https://discord.gg/YOUR_INVITE_LINK"
+            href="https://discord.gg/7gDaE6kfs"
             target="_blank"
             rel="noopener noreferrer"
           >

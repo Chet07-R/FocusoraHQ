@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getAuthErrorMessage } from '../utils/authErrors';
 import { createBlog as createBlogApi, defaultBlogCoverImage, deleteBlog as deleteBlogApi, listBlogs } from '../utils/blogsApi';
@@ -14,6 +14,7 @@ const BLOG_CONTENT_MAX_LENGTH = 20000;
 
 const Blog = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const coverImageInputRef = useRef(null);
 
   const allArticles = [
@@ -202,6 +203,11 @@ const Blog = () => {
   }, [isBlogModalOpen]);
 
   const openBlogModal = () => {
+    if (!user) {
+      navigate('/signin');
+      return;
+    }
+
     setSubmitError('');
     setSubmitSuccess('');
     setBlogModalOpen(true);
@@ -252,6 +258,11 @@ const Blog = () => {
     setSubmitError('');
     setSubmitSuccess('');
 
+    if (!user) {
+      setSubmitError('You must be signed in to add your own blog post.');
+      return;
+    }
+
     const title = blogForm.title.trim();
     const excerpt = blogForm.excerpt.trim();
     const content = blogForm.content.trim();
@@ -276,11 +287,6 @@ const Blog = () => {
       return;
     }
 
-    if (!user && !blogForm.authorName.trim()) {
-      setSubmitError('Please add your name to publish as a community member.');
-      return;
-    }
-
     const payload = {
       title,
       category: blogForm.category,
@@ -291,11 +297,6 @@ const Blog = () => {
 
     if (blogForm.coverImageFile) {
       payload.coverImageFile = blogForm.coverImageFile;
-    }
-
-    if (!user) {
-      payload.authorName = blogForm.authorName.trim();
-      payload.authorEmail = blogForm.authorEmail.trim();
     }
 
     setSubmitPending(true);
@@ -663,39 +664,6 @@ const Blog = () => {
             </div>
 
             <form className="space-y-5" onSubmit={handleCommunitySubmit}>
-              {!user && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="authorName">
-                      Your Name
-                    </label>
-                    <input
-                      id="authorName"
-                      name="authorName"
-                      type="text"
-                      value={blogForm.authorName}
-                      onChange={handleCommunityInputChange}
-                      placeholder="Jane Doe"
-                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="authorEmail">
-                      Your Email (optional)
-                    </label>
-                    <input
-                      id="authorEmail"
-                      name="authorEmail"
-                      type="email"
-                      value={blogForm.authorEmail}
-                      onChange={handleCommunityInputChange}
-                      placeholder="you@example.com"
-                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                    />
-                  </div>
-                </div>
-              )}
-
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="title">
                   Blog Title
@@ -706,7 +674,6 @@ const Blog = () => {
                   type="text"
                   value={blogForm.title}
                   onChange={handleCommunityInputChange}
-                  placeholder="How I built a distraction-free study routine"
                   className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
                 />
               </div>
@@ -740,7 +707,6 @@ const Blog = () => {
                       type="url"
                       value={blogForm.coverImage}
                       onChange={handleCommunityInputChange}
-                      placeholder="https://images.unsplash.com/..."
                       className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
                     />
                   </div>
@@ -791,7 +757,6 @@ const Blog = () => {
                   maxLength={BLOG_EXCERPT_MAX_LENGTH}
                   value={blogForm.excerpt}
                   onChange={handleCommunityInputChange}
-                  placeholder="Give readers a quick summary of your article..."
                   className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
                 />
               </div>
@@ -808,7 +773,6 @@ const Blog = () => {
                   maxLength={BLOG_CONTENT_MAX_LENGTH}
                   value={blogForm.content}
                   onChange={handleCommunityInputChange}
-                  placeholder="Write your complete blog here..."
                   className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
                 />
                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
