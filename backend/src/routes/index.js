@@ -8,6 +8,7 @@ const roomsRoutes = require('./roomsRoutes');
 const blogsRoutes = require('./blogsRoutes');
 const activityRoutes = require('./activityRoutes');
 const reviewsRoutes = require('./reviewsRoutes');
+const distractionRoutes = require('./distractionRoutes');
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.use('/rooms', roomsRoutes);
 router.use('/blogs', blogsRoutes);
 router.use('/reviews', reviewsRoutes);
 router.use('/users/activity', activityRoutes);
+router.use('/distraction', distractionRoutes);
 
 module.exports = router;

@@ -268,20 +268,19 @@ const Pomodoro = ({
 
   return (
     <div
-      className="w-full max-w-[450px] group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[600px] flex flex-col"
+      className="w-full max-w-[400px] group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[420px] flex flex-col"
 
     >
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
 
-      <div className="relative p-6 pb-2 flex-1 flex flex-col justify-center items-center space-y-8">
+      <div className="relative p-3 pb-2 flex-1 flex flex-col justify-center items-center space-y-4">
         <div className="mb-0">
-          <h2 className="text-3xl font-semibold text-white tracking-wide drop-shadow-lg">
+          <h2 className="text-xl font-semibold text-white tracking-wide drop-shadow-lg">
             Pomodoro
           </h2>
         </div>
 
-
-        <div className="w-48 h-48">
+        <div className="w-36 h-36">
           <CircularProgressbar
             value={progressValue}
             text={formatTime(timeLeft)}
@@ -294,15 +293,15 @@ const Pomodoro = ({
           />
         </div>
 
-        <div className="flex flex-col items-center w-full mt-4">
+        <div className="flex flex-col items-center w-full mt-2">
 
-          <div className="flex space-x-6">
+          <div className="flex space-x-3">
 
             <button
               onClick={handleStart}
               disabled={isRunning}
               className={`
-        flex items-center gap-2 px-6 py-2 rounded-xl font-medium 
+        flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium 
         border border-green-400/50 bg-white/5 backdrop-blur-md
         transition-all duration-300 select-none
         ${isRunning ? "opacity-40 cursor-not-allowed" : "hover:bg-green-500/20 hover:border-green-400"}
@@ -315,7 +314,7 @@ const Pomodoro = ({
             <button
               onClick={handlePause}
               className="
-        flex items-center gap-2 px-6 py-2 rounded-xl font-medium
+        flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium
         border border-amber-400/50 bg-white/5 backdrop-blur-md
         transition-all duration-300 select-none
         hover:bg-amber-500/20 hover:border-amber-400
@@ -326,11 +325,11 @@ const Pomodoro = ({
             </button>
           </div>
 
-          <div className="mt-4 flex justify-center w-full">
+          <div className="mt-2 flex justify-center w-full">
             <button
               onClick={handleReset}
               className="
-        flex items-center gap-2 px-6 py-2 rounded-xl font-medium
+        flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium
         border border-red-400/50 bg-white/5 backdrop-blur-md
         transition-all duration-300 select-none
         hover:bg-red-500/20 hover:border-red-400
@@ -343,9 +342,9 @@ const Pomodoro = ({
 
         </div>
 
-        <div className="text-center mt-2">
+        <div className="text-center mt-1">
           <span
-            className={`inline-block px-5 py-2 rounded-full font-medium text-sm backdrop-blur-xl border 
+            className={`inline-block px-3 py-1 rounded-full font-medium text-sm backdrop-blur-xl border 
        ${onBreak ? "border-green-400/40 text-green-300 bg-green-500/10"
                 : "border-red-400/40 text-red-300 bg-red-500/10"}
     `}
@@ -354,8 +353,7 @@ const Pomodoro = ({
           </span>
         </div>
 
-
-        <div className="grid grid-cols-2 gap-6 w-full max-w-xs mt-4">
+        <div className="grid grid-cols-2 gap-3 w-full max-w-xs mt-2">
 
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-200 tracking-wide">

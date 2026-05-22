@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import Pomodoro from "../components/Pomodoro";
 import Notes from "../components/Notes";
 import Todo from "../components/Todo";
@@ -6,6 +6,7 @@ import FocusPlaylist from "../components/FocusPlaylist";
 import BackgroundSelector from "../components/BackgroundSelector";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import api from "../api";
 import { awardUserPoints } from "../utils/firestoreUtils";
 import { POINT_RULES, getPomodoroPoints } from "../constants/pointsSystem";
 import { pushActivityEvent } from "../utils/activityLog";
@@ -48,12 +49,27 @@ const MySpace = () => {
   const { user, userProfile, reloadUser } = useAuth();
   const [bgPanelOpen, setBgPanelOpen] = useState(false);
   const [navHeight, setNavHeight] = useState(64);
+  const [focusGuardEnabled, setFocusGuardEnabled] = useState(false);
+  const [focusStatus, setFocusStatus] = useState({
+    state: "idle",
+    label: "Camera off",
+    detail: "Enable focus guard to receive coaching nudges.",
+  });
+  const [coachTip, setCoachTip] = useState("Turn on Focus Guard to get gentle reminders.");
+  const [cameraError, setCameraError] = useState("");
   const [notification, setNotification] = useState({
     show: false,
     icon: "✅",
     title: "Success",
     message: "Action completed",
   });
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const detectorRef = useRef(null);
+  const tfModelRef = useRef(null);
+  const tfReadyRef = useRef(false);
+  const detectTimerRef = useRef(null);
+  const lastNoticeRef = useRef({ time: 0, signal: "" });
 
   const profileThemeLabel = useMemo(() => formatThemeName(userProfile?.theme), [userProfile?.theme]);
   const [liveThemeLabel, setLiveThemeLabel] = useState(
@@ -267,6 +283,225 @@ const MySpace = () => {
     });
   };
 
+  /* ── focus coach / camera guard ── */
+  const stopCameraStream = () => {
+    if (detectTimerRef.current) {
+      clearInterval(detectTimerRef.current);
+      detectTimerRef.current = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
+
+  const fallbackTipForSignal = (signal) => {
+    if (signal === "face_missing") return "I cannot see you. Sit back in view and take a deep breath.";
+    if (signal === "look_away") return "Eyes back on your work. Choose the next tiny step.";
+    return "Stay with your task for the next 5 minutes. You can do this.";
+  };
+
+  const requestCoachTip = async (signal) => {
+    try {
+      const response = await api.post("/distraction/coach", {
+        signal,
+        origin: "camera",
+      });
+      const tip = response?.data?.tip || fallbackTipForSignal(signal);
+      setCoachTip(tip);
+      return tip;
+    } catch (error) {
+      const tip = fallbackTipForSignal(signal);
+      setCoachTip(tip);
+      return tip;
+    }
+  };
+
+  const loadTfDetector = async () => {
+    if (tfReadyRef.current) return true;
+    try {
+      const tf = await import("@tensorflow/tfjs-core");
+      await import("@tensorflow/tfjs-backend-webgl");
+      const blazeface = await import("@tensorflow-models/blazeface");
+
+      if (tf.getBackend() !== "webgl") {
+        await tf.setBackend("webgl");
+        await tf.ready();
+      }
+
+      tfModelRef.current = await blazeface.load();
+      tfReadyRef.current = true;
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const evaluateFocusFrame = async () => {
+    const video = videoRef.current;
+    const detector = detectorRef.current;
+    const tfModel = tfModelRef.current;
+    if (!video) return;
+    if (video.readyState < 2) return;
+
+    let faces = [];
+    try {
+      if (detector) {
+        faces = await detector.detect(video);
+      } else if (tfModel) {
+        faces = await tfModel.estimateFaces(video, false);
+      } else {
+        return;
+      }
+    } catch (error) {
+      return;
+    }
+
+    const hasFace = faces.length > 0;
+    let distracted = false;
+    let signal = "focused";
+
+    if (!hasFace) {
+      distracted = true;
+      signal = "face_missing";
+    } else {
+      let faceBox = null;
+      if (faces[0].boundingBox) {
+        faceBox = faces[0].boundingBox;
+      } else if (faces[0].topLeft && faces[0].bottomRight) {
+        faceBox = {
+          x: faces[0].topLeft[0],
+          y: faces[0].topLeft[1],
+          width: faces[0].bottomRight[0] - faces[0].topLeft[0],
+          height: faces[0].bottomRight[1] - faces[0].topLeft[1],
+        };
+      }
+
+      if (!faceBox) return;
+
+      const centerX = faceBox.x + faceBox.width / 2;
+      const centerY = faceBox.y + faceBox.height / 2;
+      const dx = Math.abs(centerX - video.videoWidth / 2) / video.videoWidth;
+      const dy = Math.abs(centerY - video.videoHeight / 2) / video.videoHeight;
+
+      if (dx > 0.22 || dy > 0.22) {
+        distracted = true;
+        signal = "look_away";
+      }
+    }
+
+    if (distracted) {
+      setFocusStatus({
+        state: "distracted",
+        label: "Distraction detected",
+        detail: signal === "face_missing" ? "We cannot see you on camera." : "Looks like you turned away.",
+      });
+
+      const now = Date.now();
+      if (now - lastNoticeRef.current.time > 15000 || lastNoticeRef.current.signal !== signal) {
+        lastNoticeRef.current = { time: now, signal };
+        const tip = await requestCoachTip(signal);
+        addNotification(tip, "Stay focused", "🎯");
+      }
+    } else {
+      setFocusStatus({
+        state: "focused",
+        label: "Focused",
+        detail: "You are on track. Keep going.",
+      });
+    }
+  };
+
+  useEffect(() => {
+    let isActive = true;
+
+    if (!focusGuardEnabled) {
+      stopCameraStream();
+      setCameraError("");
+      setFocusStatus({
+        state: "idle",
+        label: "Camera off",
+        detail: "Enable focus guard to receive coaching nudges.",
+      });
+      return () => {};
+    }
+
+    const startCamera = async () => {
+      if (!navigator?.mediaDevices?.getUserMedia) {
+        setCameraError("Camera access is not supported in this browser.");
+        setFocusStatus({
+          state: "warning",
+          label: "Camera unsupported",
+          detail: "Use a modern browser with camera permissions.",
+        });
+        return;
+      }
+
+      if (!detectorRef.current && typeof window !== "undefined" && "FaceDetector" in window) {
+        detectorRef.current = new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 });
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 360 } },
+          audio: false,
+        });
+
+        if (!isActive) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play().catch(() => {});
+        }
+
+        if (!detectorRef.current) {
+          const loaded = await loadTfDetector();
+          if (!loaded) {
+            setFocusStatus({
+              state: "warning",
+              label: "Detector unavailable",
+              detail: "Face detection is not supported on this device.",
+            });
+            setCoachTip("Camera is on, but distraction detection is unavailable on this device.");
+            return;
+          }
+        }
+
+        setFocusStatus({
+          state: "monitoring",
+          label: "Monitoring focus",
+          detail: "We will nudge you if you drift away.",
+        });
+        setCameraError("");
+
+        detectTimerRef.current = setInterval(evaluateFocusFrame, 2400);
+      } catch (error) {
+        setCameraError("Camera permission denied or unavailable.");
+        setFocusStatus({
+          state: "warning",
+          label: "Camera blocked",
+          detail: "Enable camera permissions to start focus guard.",
+        });
+      }
+    };
+
+    startCamera();
+
+    return () => {
+      isActive = false;
+      stopCameraStream();
+    };
+  }, [focusGuardEnabled]);
+
   /* ── derived class helpers ── */
   const toastClass  = `ms-toast ${notification.show ? "ms-toast--visible" : ""} ${darkMode ? "ms-toast--dark" : "ms-toast--light"}`;
   const titleClass  = `ms-toast__title ${darkMode ? "ms-toast__title--dark" : "ms-toast__title--light"}`;
@@ -315,6 +550,54 @@ const MySpace = () => {
 
         {/* ── workspace panels ── */}
         <div className="ms-workspace ms-reveal ms-reveal--d1">
+
+          {/* Focus Coach */}
+          <section className="ms-workspace__coach ms-panel ms-panel--accented" aria-label="Focus Coach">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Focus Coach</h2>
+              <span className="ms-panel__badge ms-panel__badge--amber">Stay on track</span>
+            </div>
+            <div className="ms-panel__body">
+              <div className="ms-coach">
+                <div className="ms-coach__media">
+                  <div className="ms-coach__video-wrap">
+                    <video
+                      ref={videoRef}
+                      className="ms-coach__video"
+                      muted
+                      playsInline
+                      autoPlay
+                    />
+                    <div className={`ms-coach__status ms-coach__status--${focusStatus.state}`}>
+                      <span className="ms-coach__status-label">{focusStatus.label}</span>
+                      <span className="ms-coach__status-detail">{focusStatus.detail}</span>
+                    </div>
+                  </div>
+                  {cameraError ? (
+                    <p className="ms-coach__error">{cameraError}</p>
+                  ) : null}
+                </div>
+
+                <div className="ms-coach__details">
+                  <div className="ms-coach__tip-label">AI coaching tip</div>
+                  <p className="ms-coach__tip">{coachTip}</p>
+
+                  <div className="ms-coach__actions">
+                    <button
+                      type="button"
+                      className={`ms-coach__toggle ${focusGuardEnabled ? "is-active" : ""}`}
+                      onClick={() => setFocusGuardEnabled((prev) => !prev)}
+                    >
+                      {focusGuardEnabled ? "Disable Focus Guard" : "Enable Focus Guard"}
+                    </button>
+                    <span className="ms-coach__hint">
+                      Camera stays local. Only coaching signals are sent.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
           {/* Focus Timer */}
           <section className="ms-workspace__timer ms-panel ms-panel--accented" aria-label="Focus Timer">

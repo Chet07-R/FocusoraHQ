@@ -47,7 +47,7 @@
   --ms-radius-xl: 24px;
 
   /* spacing */
-  --ms-gap: clamp(0.72rem, 1.35vw, 1rem);
+  --ms-gap: clamp(0.5rem, 1vw, 0.75rem);
   --ms-nav-height: 4rem;
 
   /* type */
@@ -141,10 +141,10 @@
 .ms-content {
   position: relative;
   z-index: 1;
-  max-width: 1400px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 clamp(1rem, 3vw, 2rem) clamp(2rem, 4vw, 3rem);
-  padding-top: calc(var(--ms-nav-height) + clamp(0.35rem, 0.95vw, 0.62rem));
+  padding: 0 clamp(0.7rem, 2vw, 1.2rem) clamp(1rem, 2.2vw, 1.5rem);
+  padding-top: calc(var(--ms-nav-height) + clamp(0.1rem, 0.5vw, 0.3rem));
 }
 
 /* ─────────────────────────────────────────
@@ -154,15 +154,15 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.35rem;
   width: 100%;
-  padding: clamp(0.76rem, 1.2vw, 0.96rem) clamp(0.9rem, 1.4vw, 1.15rem);
+  padding: clamp(0.5rem, 0.9vw, 0.7rem) clamp(0.7rem, 1vw, 0.9rem);
   border-radius: var(--ms-radius-lg);
   border: 1px solid var(--ms-border-md);
   background: linear-gradient(160deg, rgba(10, 14, 25, 0.84), rgba(16, 22, 38, 0.7));
   box-shadow: var(--ms-shadow-md);
   backdrop-filter: blur(10px);
-  margin-bottom: clamp(0.78rem, 1.4vw, 1rem);
+  margin-bottom: clamp(0.45rem, 0.8vw, 0.6rem);
 }
 
 .ms-topbar__left {
@@ -203,7 +203,7 @@
 
 .ms-topbar__title {
   font-family: var(--ms-font-display);
-  font-size: clamp(1.75rem, 3vw, 2.8rem);
+  font-size: clamp(1.45rem, 2.4vw, 2.2rem);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -279,7 +279,8 @@
   grid-template-areas:
     "timer"
     "notes"
-    "tasks";
+    "tasks"
+    "coach";
 }
 
 @media (min-width: 768px) {
@@ -287,7 +288,8 @@
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "timer notes"
-      "tasks notes";
+      "tasks notes"
+      "coach coach";
   }
 }
 
@@ -295,10 +297,13 @@
   .ms-workspace {
     grid-template-columns: 280px 1fr 320px;
     grid-template-rows: auto;
-    grid-template-areas: "timer notes tasks";
+    grid-template-areas:
+      "timer notes tasks"
+      "timer notes coach";
   }
 }
 
+.ms-workspace__coach { grid-area: coach; }
 .ms-workspace__timer { grid-area: timer; }
 .ms-workspace__notes { grid-area: notes; }
 .ms-workspace__tasks { grid-area: tasks; }
@@ -328,7 +333,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.9rem 1.15rem;
+  padding: 0.65rem 0.9rem;
   border-bottom: 1px solid var(--ms-border);
   background: var(--ms-surface-1);
 }
@@ -368,16 +373,176 @@
   color: var(--ms-text-muted);
 }
 
+.ms-panel__badge--amber {
+  background: rgba(251, 191, 36, 0.16);
+  border-color: rgba(251, 191, 36, 0.32);
+  color: #fbbf24;
+}
+
 .ms-panel__body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 420px;
+  min-height: 220px;
 }
 
 .ms-panel__body > * {
   flex: 1;
   width: 100%;
+}
+
+.ms-workspace__tasks .ms-panel__body {
+  min-height: 140px;
+}
+
+@media (min-width: 1200px) {
+  .ms-workspace__tasks .ms-panel__body {
+    min-height: 130px;
+  }
+}
+
+/* ─────────────────────────────────────────
+   FOCUS COACH
+───────────────────────────────────────── */
+.ms-coach {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(220px, 0.9fr);
+  gap: 1rem;
+  padding: 0.6rem 0.75rem 0.75rem;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .ms-coach {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1200px) {
+  .ms-workspace__coach .ms-coach {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ms-coach__video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  border-radius: var(--ms-radius-lg);
+  border: 1px solid var(--ms-border-md);
+  background: rgba(4, 6, 12, 0.7);
+  overflow: hidden;
+  box-shadow: var(--ms-shadow-md);
+}
+
+.ms-coach__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.ms-coach__status {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 160px;
+}
+
+.ms-coach__status--focused {
+  border-color: rgba(52, 211, 153, 0.45);
+  box-shadow: 0 0 18px rgba(52, 211, 153, 0.18);
+}
+
+.ms-coach__status--distracted {
+  border-color: rgba(251, 191, 36, 0.45);
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.2);
+}
+
+.ms-coach__status--warning {
+  border-color: rgba(248, 113, 113, 0.45);
+  box-shadow: 0 0 18px rgba(248, 113, 113, 0.18);
+}
+
+.ms-coach__status--monitoring {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.ms-coach__status-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ms-text-primary);
+}
+
+.ms-coach__status-detail {
+  font-size: 0.7rem;
+  color: var(--ms-text-muted);
+}
+
+.ms-coach__error {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(248, 113, 113, 0.85);
+}
+
+.ms-coach__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  justify-content: space-between;
+}
+
+.ms-coach__tip-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ms-text-muted);
+  font-weight: 700;
+}
+
+.ms-coach__tip {
+  font-size: 0.88rem;
+  color: var(--ms-text-secondary);
+  margin: 0;
+}
+
+.ms-coach__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ms-coach__toggle {
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--ms-text-primary);
+  font-weight: 700;
+  padding: 0.6rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform var(--ms-duration) var(--ms-ease), box-shadow var(--ms-duration) var(--ms-ease);
+}
+
+.ms-coach__toggle.is-active {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: rgba(52, 211, 153, 0.5);
+  box-shadow: 0 12px 24px rgba(52, 211, 153, 0.18);
+}
+
+.ms-coach__toggle:hover {
+  transform: translateY(-1px);
+}
+
+.ms-coach__hint {
+  font-size: 0.7rem;
+  color: var(--ms-text-faint);
 }
 
 /* ─────────────────────────────────────────
@@ -433,7 +598,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 1.25rem 0.85rem;
+  padding: 0.8rem 1rem 0.7rem;
   border-bottom: 1px solid var(--ms-border);
   background: var(--ms-surface-1);
   flex-wrap: wrap;
@@ -449,7 +614,7 @@
 
 .ms-sound-panel__desc {
   margin-top: 0.2rem;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: var(--ms-text-muted);
   max-width: 70ch;
   line-height: 1.5;
@@ -604,7 +769,7 @@
   }
 
   .ms-panel__body {
-    min-height: 360px;
+    min-height: 210px;
   }
 }
 
