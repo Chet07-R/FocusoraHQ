@@ -44,6 +44,49 @@ const getSavedBackgroundName = () => {
 const getActiveUserId = (user, userProfile) =>
   String(userProfile?._id || userProfile?.uid || user?._id || user?.uid || "").trim();
 
+const QUOTES = [
+  {
+    text: "You do not rise to the level of your goals. You fall to the level of your systems.",
+    author: "James Clear",
+  },
+  {
+    text: "The secret of getting ahead is getting started.",
+    author: "Mark Twain",
+  },
+  {
+    text: "Small steps, every day.",
+    author: "Unknown",
+  },
+  {
+    text: "Focus is saying no to a hundred other good ideas.",
+    author: "Steve Jobs",
+  },
+  {
+    text: "Make it simple, but significant.",
+    author: "Don Draper",
+  },
+  {
+    text: "Action is the foundational key to all success.",
+    author: "Pablo Picasso",
+  },
+  {
+    text: "Start where you are. Use what you have. Do what you can.",
+    author: "Arthur Ashe",
+  },
+  {
+    text: "You can do anything, but not everything.",
+    author: "David Allen",
+  },
+  {
+    text: "Well begun is half done.",
+    author: "Aristotle",
+  },
+  {
+    text: "Simplicity boils down to the elimination of the unnecessary.",
+    author: "Bruce Lee",
+  },
+];
+
 const MySpace = () => {
   const { darkMode } = useTheme();
   const { user, userProfile, reloadUser } = useAuth();
@@ -56,6 +99,7 @@ const MySpace = () => {
     detail: "Enable focus guard to receive coaching nudges.",
   });
   const [coachTip, setCoachTip] = useState("Turn on Focus Guard to get gentle reminders.");
+  const [quoteIndex, setQuoteIndex] = useState(() => new Date().getHours() % QUOTES.length);
   const [cameraError, setCameraError] = useState("");
   const [notification, setNotification] = useState({
     show: false,
@@ -171,6 +215,17 @@ const MySpace = () => {
       window.removeEventListener("storage", syncThemeLabel);
     };
   }, [profileThemeLabel]);
+
+  useEffect(() => {
+    const syncQuote = () => {
+      setQuoteIndex(new Date().getHours() % QUOTES.length);
+    };
+
+    syncQuote();
+    const intervalId = setInterval(syncQuote, 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   /* ── hide site footer on this page ── */
   useEffect(() => {
@@ -613,6 +668,21 @@ const MySpace = () => {
                 defaultWorkDuration={safeWorkDuration}
                 defaultBreakDuration={safeBreakDuration}
               />
+            </div>
+          </section>
+
+          {/* Focus Quote */}
+          <section className="ms-workspace__quote ms-panel ms-panel--accented ms-panel--accented-violet" aria-label="Focus Quote">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Focus Quote</h2>
+              <span className="ms-panel__badge ms-panel__badge--violet">Fresh perspective</span>
+            </div>
+            <div className="ms-panel__body">
+              <div className="ms-quote">
+                <div className="ms-quote__text">"{QUOTES[quoteIndex].text}"</div>
+                <div className="ms-quote__author">{QUOTES[quoteIndex].author}</div>
+                <div className="ms-quote__note">Updates every hour</div>
+              </div>
             </div>
           </section>
 

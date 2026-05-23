@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Sora:wght@600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Sora:wght@600;700;800&display=swap");
 
 /* ─────────────────────────────────────────
    DESIGN TOKENS
@@ -275,9 +275,11 @@
 .ms-workspace {
   display: grid;
   gap: var(--ms-gap);
+  grid-auto-rows: min-content;
   grid-template-columns: 1fr;
   grid-template-areas:
     "timer"
+    "quote"
     "notes"
     "tasks"
     "coach";
@@ -288,6 +290,7 @@
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       "timer notes"
+      "quote notes"
       "tasks notes"
       "coach coach";
   }
@@ -296,17 +299,75 @@
 @media (min-width: 1200px) {
   .ms-workspace {
     grid-template-columns: 280px 1fr 320px;
-    grid-template-rows: auto;
+    grid-template-rows: min-content 1fr;
     grid-template-areas:
       "timer notes tasks"
-      "timer notes coach";
+      "quote notes coach";
   }
 }
 
 .ms-workspace__coach { grid-area: coach; }
 .ms-workspace__timer { grid-area: timer; }
+.ms-workspace__quote { grid-area: quote; }
 .ms-workspace__notes { grid-area: notes; }
 .ms-workspace__tasks { grid-area: tasks; }
+
+.ms-workspace__timer {
+  align-self: start;
+  height: clamp(480px, 62vh, 640px);
+}
+
+.ms-workspace__timer .ms-panel__body {
+  min-height: 0;
+}
+
+.ms-workspace__notes {
+  align-self: stretch;
+  height: 100%;
+}
+
+.ms-workspace__notes .ms-panel__body {
+  min-height: 0;
+}
+
+.ms-workspace__quote {
+  align-self: stretch;
+  margin-top: 0;
+}
+
+.ms-quote {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  min-height: 100%;
+  border-radius: var(--ms-radius-md);
+  border: 1px solid rgba(129, 140, 248, 0.18);
+  background: linear-gradient(150deg, rgba(14, 20, 36, 0.9), rgba(20, 30, 52, 0.85));
+}
+
+.ms-quote__text {
+  font-family: "Playfair Display", "Georgia", serif;
+  font-size: 1.7rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--ms-text-primary);
+  line-height: 1.7;
+}
+
+.ms-quote__author {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ms-text-muted);
+}
+
+.ms-quote__note {
+  font-size: 0.68rem;
+  color: var(--ms-text-faint);
+  letter-spacing: 0.02em;
+  margin-top: auto;
+}
 
 /* ─────────────────────────────────────────
    PANEL (shared card shell)

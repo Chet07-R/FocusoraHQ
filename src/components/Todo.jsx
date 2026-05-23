@@ -145,7 +145,7 @@ const Todo = ({
   }, [roomTodos, user, isRoomMode]);
 
   return (
-    <section className="glass-card rounded-xl p-6 shadow-lg overflow-hidden" style={{ backdropFilter: "blur(10px)" }}>
+    <section className="glass-card rounded-xl p-4 shadow-lg overflow-hidden" style={{ backdropFilter: "blur(10px)" }}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <CheckCircle className="text-emerald-400" />
@@ -186,8 +186,8 @@ const Todo = ({
         </button>
       </div>
 
-      <ul className="space-y-3 max-h-[450px] overflow-auto custom-scrollbar pr-2">
-        <div className="space-y-3 h-[450px] overflow-y-auto">
+      <ul className="space-y-3 max-h-[300px] overflow-auto custom-scrollbar pr-2">
+        <div className="space-y-3 h-[300px] overflow-y-auto">
           {todos.map((t) => (
             <li key={t.id} className="flex items-center justify-between bg-white/5 p-3 rounded-md">
               <div className="flex items-center gap-3">

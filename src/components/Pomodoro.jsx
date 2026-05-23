@@ -268,19 +268,18 @@ const Pomodoro = ({
 
   return (
     <div
-      className="w-full max-w-[400px] group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 h-full min-h-[420px] flex flex-col"
-
+      className="w-full max-w-[400px] group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300 min-h-[300px] flex flex-col"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
 
-      <div className="relative p-3 pb-2 flex-1 flex flex-col justify-center items-center space-y-4">
+      <div className="relative p-3 pb-2 flex-1 flex flex-col justify-center items-center space-y-3">
         <div className="mb-0">
           <h2 className="text-xl font-semibold text-white tracking-wide drop-shadow-lg">
             Pomodoro
           </h2>
         </div>
 
-        <div className="w-36 h-36">
+        <div className="w-32 h-32">
           <CircularProgressbar
             value={progressValue}
             text={formatTime(timeLeft)}

@@ -460,7 +460,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
   const { chars, words, minutes } = getNotesStats();
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl" style={{ height: 'calc(725px - 120px)' }}>
+    <div className="w-full max-w-4xl mx-auto flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <span>Notes</span>
