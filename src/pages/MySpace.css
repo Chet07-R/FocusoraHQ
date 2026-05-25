@@ -456,11 +456,13 @@
   min-height: 140px;
 }
 
+
 @media (min-width: 1200px) {
   .ms-workspace__tasks .ms-panel__body {
     min-height: 130px;
   }
 }
+
 
 /* ─────────────────────────────────────────
    FOCUS COACH

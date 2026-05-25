@@ -21,6 +21,8 @@ const env = {
   smtpUser: process.env.SMTP_USER,
   smtpPass: process.env.SMTP_PASS,
   emailFrom: process.env.EMAIL_FROM,
+  geminiApiKey: process.env.GEMINI_API_KEY,
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
 };
 
 module.exports = { env };

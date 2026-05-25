@@ -9,6 +9,7 @@ const blogsRoutes = require('./blogsRoutes');
 const activityRoutes = require('./activityRoutes');
 const reviewsRoutes = require('./reviewsRoutes');
 const distractionRoutes = require('./distractionRoutes');
+const aiRoutes = require('./aiRoutes');
 
 const router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/blogs', blogsRoutes);
 router.use('/reviews', reviewsRoutes);
 router.use('/users/activity', activityRoutes);
 router.use('/distraction', distractionRoutes);
+router.use('/ai', aiRoutes);
 
 module.exports = router;

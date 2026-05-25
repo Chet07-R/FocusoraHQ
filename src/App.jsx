@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
+import ChatWidget from "./components/ChatWidget";
 import Blog from "./pages/Blog";
 import Blog1 from "./pages/Blog1";
 import Blog2 from "./pages/Blog2";
@@ -62,6 +63,7 @@ function App() {
         <Route path="/press" element={<Press />} />
       </Routes>
       <Footer />
+      <ChatWidget />
     </>
   );
 }
