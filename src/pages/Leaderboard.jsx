@@ -52,6 +52,8 @@ const App = () => {
   const [sortMode, setSortMode] = useState("points");
   const [filterLocation, setFilterLocation] = useState("all");
   const [timeframe, setTimeframe] = useState("all"); // 'all' or 'weekly' (UI only for now)
+  const [compareUserId, setCompareUserId] = useState("");
+  const [compareSearch, setCompareSearch] = useState("");
 
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
@@ -175,6 +177,21 @@ const App = () => {
     });
   }, [dynamicUsers, hasLoadedMore, sortMode, visibleCount]);
 
+  useEffect(() => {
+    if (!allRows.length) {
+      return;
+    }
+
+    const fallbackRow = allRows.find((row) => !row.you) || allRows[0] || null;
+    setCompareUserId((previous) => {
+      if (previous && allRows.some((row) => String(row._id) === String(previous))) {
+        return previous;
+      }
+
+      return fallbackRow?._id || "";
+    });
+  }, [allRows]);
+
   const uniqueLocations = useMemo(() => {
     const set = new Set(dynamicUsers.map((u) => (u.location || "").trim()).filter(Boolean));
     return ["all", ...Array.from(set)];
@@ -192,7 +209,7 @@ const App = () => {
   
 
   const handleShare = async (row) => {
-    const text = `${row.rank}. ${row.name} — ${row.points.toLocaleString()} pts • ${row.sessions} sessions`;
+    const text = `${row.rank}. ${row.name} G�� ${row.points.toLocaleString()} pts G�� ${row.sessions} sessions`;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
@@ -265,6 +282,79 @@ const App = () => {
   }, [currentUserRow]);
 
   const rankingLabel = sortMode === "streak" ? "Streak Masters" : sortMode === "sessions" ? "Session Sprinters" : "Points Ranking";
+
+  const compareBaseRow = useMemo(() => {
+    if (currentUserRow) return currentUserRow;
+    return allRows[0] || null;
+  }, [allRows, currentUserRow]);
+
+  const compareTargetRow = useMemo(() => {
+    if (!allRows.length) return null;
+    const selected = allRows.find((row) => String(row._id) === String(compareUserId));
+    if (selected) return selected;
+    return allRows.find((row) => !row.you) || allRows[1] || allRows[0] || null;
+  }, [allRows, compareUserId]);
+
+  const comparisonCards = useMemo(() => {
+    if (!compareBaseRow || !compareTargetRow) return [];
+
+    const basePoints = Number(compareBaseRow.points) || 0;
+    const rivalPoints = Number(compareTargetRow.points) || 0;
+    const baseSessions = Number(compareBaseRow.sessions) || 0;
+    const rivalSessions = Number(compareTargetRow.sessions) || 0;
+    const baseTime = Number(compareBaseRow.totalStudyMinutes || 0);
+    const rivalTime = Number(compareTargetRow.totalStudyMinutes || 0);
+    const baseStreak = Number(compareBaseRow.streak) || 0;
+    const rivalStreak = Number(compareTargetRow.streak) || 0;
+
+    const formatDelta = (value, suffix = "") => {
+      const sign = value > 0 ? "+" : "";
+      return `${sign}${value.toLocaleString()}${suffix}`;
+    };
+
+    return [
+      {
+        label: "Points",
+        you: basePoints.toLocaleString(),
+        them: rivalPoints.toLocaleString(),
+        diff: formatDelta(basePoints - rivalPoints),
+      },
+      {
+        label: "Sessions",
+        you: baseSessions.toLocaleString(),
+        them: rivalSessions.toLocaleString(),
+        diff: formatDelta(baseSessions - rivalSessions),
+      },
+      {
+        label: "Study Time",
+        you: `${Math.floor(baseTime / 60)}h ${baseTime % 60}m`,
+        them: `${Math.floor(rivalTime / 60)}h ${rivalTime % 60}m`,
+        diff: formatDelta(baseTime - rivalTime, "m"),
+      },
+      {
+        label: "Streak",
+        you: `${baseStreak} days`,
+        them: `${rivalStreak} days`,
+        diff: formatDelta(baseStreak - rivalStreak, " days"),
+      },
+    ];
+  }, [compareBaseRow, compareTargetRow]);
+
+  const compareSearchResults = useMemo(() => {
+    const term = compareSearch.trim().toLowerCase();
+    if (!term) return allRows.slice(0, 12);
+
+    return allRows.filter((row) => {
+      const name = String(row.name || "").toLowerCase();
+      const location = String(row.location || "").toLowerCase();
+      return name.includes(term) || location.includes(term) || String(row.rank || "").includes(term);
+    }).slice(0, 12);
+  }, [allRows, compareSearch]);
+
+  const clearCompareSearch = () => {
+    setCompareSearch("");
+    setCompareUserId((currentValue) => currentValue || (currentUserRow?._id || allRows[0]?._id || ""));
+  };
 
   return (
     <div className={`min-h-screen pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
@@ -445,7 +535,7 @@ const App = () => {
                       {u.points.toLocaleString()}
                     </p>
 
-                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sessions • {u.time}</p>
+                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sessions G�� {u.time}</p>
 
                     <div className="flex gap-2 mt-4">
                       <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
@@ -459,6 +549,139 @@ const App = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 md:px-20 pb-8 relative z-20">
+        <div className={`max-w-6xl mx-auto rounded-2xl border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
+          <div className={`p-6 sm:p-8 border-b ${darkMode ? 'border-gray-700/60' : 'border-gray-200/70'}`}>
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <p className={`text-sm uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Compare Stats</p>
+                <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Side-by-side with another learner
+                </h3>
+                <p className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Compare points, sessions, study time, and streaks against a chosen user.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {allRows.slice(0, 5).map((row) => (
+                  <button
+                    key={`compare-${row._id}`}
+                    type="button"
+                    onClick={() => setCompareUserId(row._id)}
+                    className={`relative z-30 pointer-events-auto px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${String(compareUserId) === String(row._id)
+                      ? 'bg-blue-600 text-white border-blue-500'
+                      : darkMode
+                        ? 'bg-gray-900/60 text-gray-200 border-gray-700 hover:bg-gray-800'
+                        : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                    }`}
+                  >
+                    {row.you ? 'You' : row.name}
+                  </button>
+                ))}
+              </div>
+
+              <div className="w-full">
+                <label className={`mb-2 block text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Search users
+                </label>
+                <div className="relative">
+                  <input
+                    value={compareSearch}
+                    onChange={(e) => setCompareSearch(e.target.value)}
+                    placeholder="Type a name, location, or rank"
+                    className={`relative z-30 w-full rounded-xl border px-4 py-3 pr-24 text-sm outline-none transition ${darkMode
+                      ? 'bg-gray-900/70 border-gray-700 text-gray-100 placeholder:text-gray-500 focus:border-blue-500'
+                      : 'bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-blue-500'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onPointerDown={(e) => {
+                      e.preventDefault();
+                      clearCompareSearch();
+                    }}
+                    onClick={clearCompareSearch}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 z-40 rounded-lg border px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${darkMode
+                      ? 'bg-gray-900/90 border-gray-700 text-gray-200 hover:bg-gray-800'
+                      : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                <div className="relative z-30 mt-3 flex flex-wrap gap-2 pointer-events-auto">
+                  {compareSearchResults.map((row) => (
+                    <button
+                      key={`search-${row._id}`}
+                      type="button"
+                      onClick={() => setCompareUserId(row._id)}
+                      className={`relative z-30 pointer-events-auto px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${String(compareUserId) === String(row._id)
+                        ? 'bg-blue-600 text-white border-blue-500'
+                        : darkMode
+                          ? 'bg-gray-900/60 text-gray-200 border-gray-700 hover:bg-gray-800'
+                          : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                      }`}
+                    >
+                      {row.you ? `You • ${row.name}` : `${row.rank}. ${row.name}`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className={`p-6 sm:p-8 ${darkMode ? 'border-b lg:border-b-0 lg:border-r border-gray-700/60' : 'border-b lg:border-b-0 lg:border-r border-gray-200/70'}`}>
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <div>
+                  <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>You</p>
+                  <h4 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {compareBaseRow?.name || 'Your profile'}
+                  </h4>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-semibold">Current</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {comparisonCards.map((card) => (
+                  <div key={`you-${card.label}`} className={`rounded-xl p-4 border ${darkMode ? 'bg-gray-900/50 border-gray-700/60' : 'bg-gray-50 border-gray-200/70'}`}>
+                    <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{card.label}</p>
+                    <p className={`mt-2 text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{card.you}</p>
+                    <p className="mt-1 text-xs text-blue-400 font-semibold">vs {card.them}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <div>
+                  <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Compared with</p>
+                  <h4 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {compareTargetRow?.name || 'Selected user'}
+                  </h4>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-purple-600 text-white text-xs font-semibold">Rival</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {comparisonCards.map((card) => (
+                  <div key={`them-${card.label}`} className={`rounded-xl p-4 border ${darkMode ? 'bg-gray-900/50 border-gray-700/60' : 'bg-gray-50 border-gray-200/70'}`}>
+                    <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{card.label}</p>
+                    <p className={`mt-2 text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{card.them}</p>
+                    <p className={`mt-1 text-xs font-semibold ${card.diff.startsWith('-') ? 'text-orange-400' : 'text-emerald-400'}`}>
+                      Difference {card.diff}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -600,7 +823,7 @@ const App = () => {
           <div className="max-w-6xl mx-auto mt-6">
             <div className="rounded-2xl p-4 bg-gradient-to-r from-yellow-400 to-pink-400 text-black font-semibold flex items-center justify-center gap-3">
               <Trophy className="w-6 h-6" />
-              Congratulations — you're the Champion! Keep the streak alive 🏆
+              Congratulations G�� you're the Champion! Keep the streak alive =���
             </div>
           </div>
         )}

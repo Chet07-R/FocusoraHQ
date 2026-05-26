@@ -268,9 +268,21 @@ const Home = () => {
                 title: "Leaderboard", 
                 desc: "Add a competitive edge to your productivity with gamified analytics and global rankings." 
               }
-            ].map((item, idx) => (
-              <Link key={idx} to={item.to} className="group h-full">
-                <div className="h-full bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300 flex flex-col">
+            ].map((item, idx) => {
+              const isLeaderboardCard = item.title === "Leaderboard";
+
+              return (
+              <Link
+                key={idx}
+                to={item.to}
+                className="group block h-full w-full cursor-pointer relative z-10"
+                aria-label={`Open ${item.title}`}
+              >
+                <div
+                  className={`h-full bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300 flex flex-col transform-gpu ${
+                    isLeaderboardCard ? 'origin-right sm:origin-right' : 'origin-center'
+                  }`}
+                >
                   <div className={`${item.bgColor} ${item.textColor} w-12 h-12 rounded-full flex items-center justify-center mb-4 shrink-0`}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.iconPath} />
@@ -280,7 +292,8 @@ const Home = () => {
                   <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 flex-grow">{item.desc}</p>
                 </div>
               </Link>
-            ))}
+              );
+            })}
 
           </div>
         </div>
