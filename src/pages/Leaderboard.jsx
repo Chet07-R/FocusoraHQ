@@ -209,7 +209,7 @@ const App = () => {
   
 
   const handleShare = async (row) => {
-    const text = `${row.rank}. ${row.name} G�� ${row.points.toLocaleString()} pts G�� ${row.sessions} sessions`;
+    const text = `${row.rank}. ${row.name} - ${row.points.toLocaleString()} pts - ${row.sessions} sessions`;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(text);
@@ -535,7 +535,7 @@ const App = () => {
                       {u.points.toLocaleString()}
                     </p>
 
-                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sessions G�� {u.time}</p>
+                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sessions - {u.time}</p>
 
                     <div className="flex gap-2 mt-4">
                       <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
@@ -823,7 +823,7 @@ const App = () => {
           <div className="max-w-6xl mx-auto mt-6">
             <div className="rounded-2xl p-4 bg-gradient-to-r from-yellow-400 to-pink-400 text-black font-semibold flex items-center justify-center gap-3">
               <Trophy className="w-6 h-6" />
-              Congratulations G�� you're the Champion! Keep the streak alive =���
+              Congratulations - you're the Champion! Keep the streak alive.
             </div>
           </div>
         )}

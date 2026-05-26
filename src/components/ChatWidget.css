@@ -105,7 +105,7 @@
 }
 
 .cw-panel {
-  pointer-events: auto;
+  pointer-events: none;
   width: min(360px, calc(100vw - 2rem));
   height: min(520px, calc(100vh - 8rem));
   position: fixed;
@@ -137,6 +137,7 @@
 .cw-shell--open .cw-panel {
   opacity: 1;
   transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .cw-panel__header {
