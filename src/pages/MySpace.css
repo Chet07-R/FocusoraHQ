@@ -140,7 +140,8 @@
 ───────────────────────────────────────── */
 .ms-content {
   position: relative;
-  z-index: 10050;
+  z-index: 3;
+  pointer-events: auto;
   max-width: 1320px;
   margin: 0 auto;
   padding: 0 clamp(0.7rem, 2vw, 1.2rem) clamp(1rem, 2.2vw, 1.5rem);
@@ -292,6 +293,17 @@
     "notes"
     "tasks"
     "coach";
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.ms-workspace--room {
+  grid-template-areas:
+    "participants"
+    "chat"
+    "notes"
+    "tasks";
 }
 
 @media (min-width: 768px) {
@@ -303,6 +315,14 @@
       "tasks notes"
       "coach coach";
   }
+
+  .ms-workspace--room {
+    grid-template-columns: 1fr 1.4fr 1fr;
+    grid-template-rows: min-content minmax(320px, 1fr);
+    grid-template-areas:
+      "participants notes tasks"
+      "chat notes tasks";
+  }
 }
 
 @media (min-width: 1200px) {
@@ -313,6 +333,14 @@
       "timer notes tasks"
       "quote notes coach";
   }
+
+  .ms-workspace--room {
+    grid-template-columns: 1fr 1.4fr 1fr;
+    grid-template-rows: min-content minmax(360px, 1fr);
+    grid-template-areas:
+      "participants notes tasks"
+      "chat notes tasks";
+  }
 }
 
 .ms-workspace__coach { grid-area: coach; }
@@ -320,6 +348,8 @@
 .ms-workspace__quote { grid-area: quote; }
 .ms-workspace__notes { grid-area: notes; }
 .ms-workspace__tasks { grid-area: tasks; }
+.ms-workspace__chat { grid-area: chat; }
+.ms-workspace__participants { grid-area: participants; }
 
 .ms-workspace__timer {
   align-self: start;
@@ -335,8 +365,48 @@
   height: 100%;
 }
 
+.ms-workspace--room .ms-workspace__notes {
+  height: auto;
+}
+
 .ms-workspace__notes .ms-panel__body {
   min-height: 0;
+}
+
+.ms-workspace--room .ms-workspace__notes .ms-panel__body {
+  min-height: 560px;
+}
+
+@media (min-width: 1200px) {
+  .ms-workspace--room .ms-workspace__notes .ms-panel__body {
+    min-height: 680px;
+  }
+}
+
+.ms-workspace--room .ms-workspace__participants .ms-panel__body {
+  max-height: 220px;
+  overflow: auto;
+}
+
+.ms-workspace--room .ms-workspace__chat .ms-panel__body > .chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.ms-workspace--room .ms-workspace__chat .ms-panel__body > .chat-composer {
+  flex: 0 0 auto;
+}
+
+.ms-workspace--room .ms-workspace__chat .ms-panel__body {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ms-workspace--room .ms-workspace__chat {
+  align-self: stretch;
+  height: clamp(360px, 55vh, 520px);
 }
 
 .ms-workspace__quote {
@@ -390,6 +460,8 @@
   backdrop-filter: blur(12px);
   box-shadow: var(--ms-shadow-md);
   overflow: hidden;
+  position: relative;
+  z-index: 1;
   transition: border-color var(--ms-duration) var(--ms-ease), box-shadow var(--ms-duration) var(--ms-ease);
 }
 
@@ -406,6 +478,8 @@
   padding: 0.65rem 0.9rem;
   border-bottom: 1px solid var(--ms-border);
   background: var(--ms-surface-1);
+  position: relative;
+  z-index: 1;
 }
 
 .ms-panel__title {
@@ -454,6 +528,9 @@
   display: flex;
   flex-direction: column;
   min-height: 220px;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 }
 
 .ms-panel__body > * {
@@ -634,6 +711,8 @@
   background: linear-gradient(90deg, var(--ms-accent) 0%, transparent 100%);
   border-radius: var(--ms-radius-lg) var(--ms-radius-lg) 0 0;
   opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .ms-panel--accented-violet::before {
@@ -649,6 +728,9 @@
 ───────────────────────────────────────── */
 .ms-sound-section {
   margin-top: var(--ms-gap);
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
 }
 
 .ms-sound-panel {
@@ -658,6 +740,8 @@
   backdrop-filter: blur(12px);
   box-shadow: var(--ms-shadow-md);
   overflow: hidden;
+  position: relative;
+  z-index: 1;
   transition: border-color var(--ms-duration) var(--ms-ease);
 }
 
@@ -880,4 +964,9 @@
   .ms-toast {
     transition: none;
   }
+}
+
+.ms-workspace--room .ms-workspace__participants .ms-panel__body {
+  max-height: 220px;
+  overflow: auto;
 }

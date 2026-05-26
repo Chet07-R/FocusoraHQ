@@ -13,10 +13,12 @@ const createRateLimitHandler = (message) => {
   };
 };
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const sharedRateLimitOptions = {
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  skip: (req) => req.method === 'OPTIONS',
+  skip: (req) => req.method === 'OPTIONS' || isDev,
 };
 
 const authRateLimit = rateLimit({

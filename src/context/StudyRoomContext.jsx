@@ -158,7 +158,7 @@ export const StudyRoomProvider = ({ children }) => {
         description: roomConfig.description || '',
         type: roomConfig.type || 'study',
         maxParticipants: roomConfig.maxParticipants || 50,
-        isPrivate: roomConfig.isPrivate || false,
+        isPrivate: typeof roomConfig.isPublic === 'boolean' ? !roomConfig.isPublic : roomConfig.isPrivate || false,
         password: roomConfig.password || null,
         creatorId: user.uid,
         creatorName: user.displayName || 'User',

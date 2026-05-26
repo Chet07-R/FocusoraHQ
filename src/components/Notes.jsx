@@ -3,9 +3,12 @@ import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, Alig
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
 
-const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
+const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "auto" }) => {
   const { roomData, updateNotes, currentRoom } = useStudyRoom();
   const { user, userProfile } = useAuth();
+  const isRoomMode = scope === "room" ? Boolean(currentRoom) : scope === "personal" ? false : Boolean(currentRoom);
+  const notesStorageKey = isRoomMode ? "sr_notes" : "myspace_notes";
+  const filesStorageKey = isRoomMode ? "sr_files" : "myspace_files";
   const [notes, setNotes] = useState("");
   const notesAreaRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -13,14 +16,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
   const [voicesList, setVoicesList] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState(() => {
-    try {
-      const raw = localStorage.getItem("sr_files");
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [dictationLang, setDictationLang] = useState('en-US');
   const [autoPunct, setAutoPunct] = useState(true);
 
@@ -30,27 +26,45 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
   const [activeAlign, setActiveAlign] = useState('left');
 
   useEffect(() => {
-    if (roomData && typeof roomData.sharedNotes === 'string') {
+    if (isRoomMode && roomData && typeof roomData.sharedNotes === "string") {
       setNotes(roomData.sharedNotes || "");
       const el = notesAreaRef.current;
       if (el && el.innerHTML !== (roomData.sharedNotes || "")) {
         el.innerHTML = roomData.sharedNotes || "";
       }
-    } else {
-      const local = localStorage.getItem("sr_notes") || "";
-      setNotes(local);
+      return;
     }
-  }, [roomData]);
+
+    const local = localStorage.getItem(notesStorageKey) || "";
+    if (!isRoomMode && notesStorageKey === "myspace_notes" && !local) {
+      const legacy = localStorage.getItem("sr_notes") || "";
+      if (legacy) {
+        localStorage.setItem(notesStorageKey, legacy);
+        setNotes(legacy);
+        return;
+      }
+    }
+    setNotes(local);
+  }, [roomData, isRoomMode, notesStorageKey]);
 
   useEffect(() => {
-    if (!currentRoom) {
-      localStorage.setItem("sr_notes", notes);
+    if (!isRoomMode) {
+      localStorage.setItem(notesStorageKey, notes);
     }
-  }, [notes, currentRoom]);
+  }, [notes, isRoomMode, notesStorageKey]);
 
   useEffect(() => {
-    localStorage.setItem("sr_files", JSON.stringify(uploadedFiles));
-  }, [uploadedFiles]);
+    try {
+      const raw = localStorage.getItem(filesStorageKey);
+      setUploadedFiles(raw ? JSON.parse(raw) : []);
+    } catch {
+      setUploadedFiles([]);
+    }
+  }, [filesStorageKey]);
+
+  useEffect(() => {
+    localStorage.setItem(filesStorageKey, JSON.stringify(uploadedFiles));
+  }, [uploadedFiles, filesStorageKey]);
 
   useEffect(() => {
     const el = notesAreaRef.current;
@@ -67,12 +81,12 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
       t = setTimeout(() => {
         const html = el.innerHTML;
         setNotes(html);
-        if (currentRoom) {
+        if (isRoomMode) {
           updateNotes(html);
-          const name = user?.displayName || userProfile?.displayName || 'You';
+          const name = user?.displayName || userProfile?.displayName || "You";
           addNotification(`💾 Notes saved to room by ${name}`);
         } else {
-          try { localStorage.setItem("sr_notes", html); } catch {}
+          try { localStorage.setItem(notesStorageKey, html); } catch {}
           addNotification("💾 Notes auto-saved");
         }
       }, 1000);
@@ -125,7 +139,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
       el.removeEventListener('mouseup', onSelection);
       clearTimeout(t);
     };
-  }, [currentRoom, updateNotes, user, userProfile, addNotification]);
+  }, [isRoomMode, updateNotes, user, userProfile, addNotification, notesStorageKey]);
 
   const lastNotesRef = useRef("");
   const lastUpdaterRef = useRef(null);
@@ -133,7 +147,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
     const incoming = roomData?.sharedNotes ?? null;
     const updaterId = roomData?.notesUpdatedById || null;
     const updaterName = roomData?.notesUpdatedByName || 'Someone';
-    if (currentRoom && typeof incoming === 'string') {
+    if (isRoomMode && typeof incoming === "string") {
       const isOwn = user && updaterId && updaterId === user.uid;
       const changed = incoming !== lastNotesRef.current;
       if (changed) {
@@ -144,7 +158,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
         lastUpdaterRef.current = updaterId;
       }
     }
-  }, [roomData, currentRoom, user]);
+  }, [roomData, isRoomMode, user]);
 
   useEffect(() => {
     const load = () => {
@@ -250,7 +264,13 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
         const current = el.innerText.trim();
         const sep = current && !/[\s\n]$/.test(el.innerText) ? ' ' : '';
         el.innerText = (current + sep + processed).trim();
-        setNotes(el.innerHTML);
+        const html = el.innerHTML;
+        setNotes(html);
+        if (isRoomMode) {
+          updateNotes(html);
+        } else {
+          try { localStorage.setItem(notesStorageKey, html); } catch {}
+        }
         finalTranscript = '';
 
 

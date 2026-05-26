@@ -14,23 +14,26 @@ const Todo = ({
   const prevTodosRef = React.useRef(null);
   const initializedRef = React.useRef(false);
   const [newTask, setNewTask] = useState("");
-  const [localTodos, setLocalTodos] = useState(() => {
-    try {
-      const saved = localStorage.getItem('myspace_todos');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const todosStorageKey = scope === "room" ? "sr_todos" : "myspace_todos";
+  const [localTodos, setLocalTodos] = useState([]);
 
   const isRoomMode = scope === "room" ? Boolean(currentRoom) : scope === "personal" ? false : Boolean(currentRoom);
   const todos = isRoomMode ? (roomTodos || []) : localTodos;
 
   useEffect(() => {
-    if (!isRoomMode) {
-      localStorage.setItem('myspace_todos', JSON.stringify(localTodos));
+    try {
+      const saved = localStorage.getItem(todosStorageKey);
+      setLocalTodos(saved ? JSON.parse(saved) : []);
+    } catch {
+      setLocalTodos([]);
     }
-  }, [localTodos, isRoomMode]);
+  }, [todosStorageKey]);
+
+  useEffect(() => {
+    if (!isRoomMode) {
+      localStorage.setItem(todosStorageKey, JSON.stringify(localTodos));
+    }
+  }, [localTodos, isRoomMode, todosStorageKey]);
 
   const addTask = async () => {
     const t = newTask.trim();
@@ -145,7 +148,10 @@ const Todo = ({
   }, [roomTodos, user, isRoomMode]);
 
   return (
-    <section className="glass-card rounded-xl p-4 shadow-lg overflow-hidden" style={{ backdropFilter: "blur(10px)" }}>
+    <section
+      className="glass-card rounded-xl p-4 shadow-lg overflow-hidden relative z-10 pointer-events-auto"
+      style={{ backdropFilter: "blur(10px)" }}
+    >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <CheckCircle className="text-emerald-400" />

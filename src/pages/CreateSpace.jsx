@@ -14,21 +14,7 @@ const CreateSpace = () => {
     description: "",
     isPublic: true, 
     maxParticipants: 10,
-  });<button
-  type="button"
-  onClick={() => handlePrivacyChange(true)}
-  className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
-    formData.isPublic
-      ? "border-blue-500 bg-blue-500/10"
-      : "border-white/20 dark:border-white/10 hover:border-blue-400"
-  }`}
->
-  <Globe className="w-6 h-6 mb-2 text-gray-700 dark:text-white" />
-  <span className="font-semibold text-blue-900 dark:text-white">Public</span>
-  <span className="text-xs text-gray-600 dark:text-gray-300 mt-1 text-center">
-    Anyone can join your space
-  </span>
-</button>
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -53,10 +39,8 @@ const CreateSpace = () => {
     setLoading(true);
     setError("");
     try {
-      const room = await createRoom(formData);
-      
-      
-      navigate(`/study-room-1`, { state: { roomId: room?.id || null } });
+      const roomId = await createRoom(formData);
+      navigate(`/study-room-1`, { state: { roomId: roomId || null } });
     } catch (err) {
       setError(err.message || "Failed to create room.");
     } finally {

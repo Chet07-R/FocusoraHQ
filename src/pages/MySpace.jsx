@@ -693,7 +693,7 @@ const MySpace = () => {
               <span className="ms-panel__badge ms-panel__badge--violet">Draft &amp; Save</span>
             </div>
             <div className="ms-panel__body">
-              <Notes addNotification={addNotification} onNotesSaved={handleNotesSaved} />
+              <Notes addNotification={addNotification} onNotesSaved={handleNotesSaved} scope="personal" />
             </div>
           </section>
 
