@@ -400,6 +400,11 @@ const Profile = () => {
     });
   }, [display]);
 
+  const questState = profileData?.questState || userProfile?.questState || user?.questState || null;
+  const activeQuest = questState?.active || null;
+  const unlockedRewards = Array.isArray(questState?.rewards) ? questState.rewards : [];
+  const questHistory = Array.isArray(questState?.history) ? questState.history : [];
+
   return (
     <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300 pt-16">
       <div className="p-4 md:p-8">
@@ -532,6 +537,87 @@ const Profile = () => {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {}
+          <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
+              <svg className="w-6 h-6 text-cyan-500 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.5 7 7 .5-5.5 4.8L19 21l-7-4-7 4 1-6.7L.5 9.5l7-.5L12 2z"/></svg>
+              Quest Vault
+            </h2>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div className="rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm dark:border-cyan-500/30 dark:bg-gray-800">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-cyan-600 dark:text-cyan-300">Active quest</p>
+                    <h3 className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
+                      {activeQuest?.title || 'Your next quest is ready'}
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                      {activeQuest?.label || 'Keep studying to generate your next live quest and digital reward.'}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-cyan-600 px-4 py-2 text-right text-white">
+                    <p className="text-xs uppercase tracking-wide text-cyan-100">Reward</p>
+                    <p className="text-lg font-bold">+{activeQuest?.reward?.pointsBonus || 0} XP</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 h-3 rounded-full bg-cyan-100 dark:bg-gray-700 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500"
+                    style={{ width: `${activeQuest?.progress || 0}%` }}
+                  />
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+                  <span className="rounded-full bg-gray-100 px-3 py-1 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                    {activeQuest?.current || 0} / {activeQuest?.target || 0}
+                  </span>
+                  <span className="rounded-full bg-cyan-50 px-3 py-1 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-200">
+                    {activeQuest?.done ? 'Complete' : 'In progress'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm dark:border-cyan-500/30 dark:bg-gray-800">
+                <p className="text-xs uppercase tracking-wide text-cyan-600 dark:text-cyan-300">Digital rewards</p>
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {unlockedRewards.length === 0 && (
+                    <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900/40 dark:text-gray-300 sm:col-span-2">
+                      Complete a quest to unlock badges, frames, shields, and boost tokens.
+                    </div>
+                  )}
+
+                  {unlockedRewards.slice(0, 4).map((reward) => (
+                    <div key={reward.id} className="rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900/40">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{reward.icon}</span>
+                        <div>
+                          <p className="font-semibold text-gray-900 dark:text-white">{reward.label}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">{reward.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {questHistory.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Recent unlocks</p>
+                    <div className="mt-2 space-y-2">
+                      {questHistory.slice(0, 2).map((entry) => (
+                        <div key={entry.id} className="rounded-xl bg-cyan-50 px-3 py-2 text-sm text-cyan-900 dark:bg-cyan-900/20 dark:text-cyan-100">
+                          <span className="mr-2">{entry.rewardIcon}</span>
+                          {entry.title} unlocked {entry.rewardLabel}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

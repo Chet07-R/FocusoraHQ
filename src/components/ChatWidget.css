@@ -24,6 +24,10 @@
   pointer-events: none;
 }
 
+.cw-shell--study-room {
+  align-items: flex-start;
+}
+
 .cw-shell * {
   box-sizing: border-box;
 }
@@ -52,6 +56,11 @@
   overflow: hidden;
   transition: transform 240ms var(--cw-ease), box-shadow 240ms var(--cw-ease);
   margin: 0;
+}
+
+.cw-shell--study-room .cw-fab {
+  left: 8px;
+  right: auto;
 }
 
 .cw-fab:hover {
@@ -121,6 +130,11 @@
   transform: translateY(16px) scale(0.96);
   transition: opacity 240ms var(--cw-ease), transform 240ms var(--cw-ease);
   overflow: hidden;
+}
+
+.cw-shell--study-room .cw-panel {
+  left: 12px;
+  right: auto;
 }
 
 .cw-panel--expanded {

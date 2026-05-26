@@ -229,6 +229,8 @@ const ChatWidget = () => {
   const [status, setStatus] = useState({ loading: false, error: "" });
   const [mounted, setMounted] = useState(false);
   const endRef = useRef(null);
+  const pathname = typeof window !== "undefined" ? String(window.location?.pathname || "") : "";
+  const isStudyRoomPage = /^\/study-room(?:\/|$)/i.test(pathname) || /^\/study-room-1(?:\/|$)/i.test(pathname);
 
   const isLoggedIn = Boolean(user);
   const isGuestAccount = user?.provider === "guest";
@@ -354,7 +356,7 @@ const ChatWidget = () => {
 
   return createPortal(
     <div
-      className={`cw-shell ${isOpen ? "cw-shell--open" : ""}`}
+      className={`cw-shell ${isOpen ? "cw-shell--open" : ""} ${isStudyRoomPage ? "cw-shell--study-room" : ""}`}
       style={{ position: "fixed", inset: 0, padding: 16 }}
     >
       <button

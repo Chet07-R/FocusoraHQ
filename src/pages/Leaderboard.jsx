@@ -92,6 +92,7 @@ const App = () => {
           return `${h}h ${m}m`;
         })(),
         streak: u.focusStreak || u.streak || 0,
+        questState: u.questState || null,
         badge: getBadgeMeta(
           typeof u.points === 'number' ? u.points : 0,
           u.focusStreak || u.streak || 0,
@@ -246,40 +247,10 @@ const App = () => {
     return Math.min(100, Math.round(((currentPoints - currentFloor) / span) * 100));
   }, [currentLeague, currentUserRow, nextLeague]);
 
-  const questBoard = useMemo(() => {
-    const sessions = currentUserRow?.sessions || 0;
-    const streak = currentUserRow?.streak || 0;
-    const totalStudyMinutes = (() => {
-      const [hoursPart, minutesPart] = String(currentUserRow?.time || "0h 0m").split(" ");
-      const hours = Number(String(hoursPart || "0").replace("h", "")) || 0;
-      const minutes = Number(String(minutesPart || "0").replace("m", "")) || 0;
-      return (hours * 60) + minutes;
-    })();
-
-    return [
-      {
-        id: "quest-sessions",
-        label: "Complete 10 focus sessions",
-        reward: 60,
-        progress: getQuestProgress(sessions, 10),
-        done: sessions >= 10,
-      },
-      {
-        id: "quest-streak",
-        label: "Reach a 7-day streak",
-        reward: 120,
-        progress: getQuestProgress(streak, 7),
-        done: streak >= 7,
-      },
-      {
-        id: "quest-minutes",
-        label: "Accumulate 600 focus minutes",
-        reward: 200,
-        progress: getQuestProgress(totalStudyMinutes, 600),
-        done: totalStudyMinutes >= 600,
-      },
-    ];
-  }, [currentUserRow]);
+  const questState = currentUserRow?.questState || null;
+  const activeQuest = questState?.active || null;
+  const recentRewards = Array.isArray(questState?.rewards) ? questState.rewards : [];
+  const questHistory = Array.isArray(questState?.history) ? questState.history : [];
 
   const rankingLabel = sortMode === "streak" ? "Streak Masters" : sortMode === "sessions" ? "Session Sprinters" : "Points Ranking";
 
@@ -408,26 +379,84 @@ const App = () => {
           <div className={`rounded-2xl p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
             <div className="flex items-center gap-2 mb-4">
               <Target className="w-5 h-5 text-cyan-400" />
-              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Focus Quest Board</h3>
+              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Quest Relay</h3>
             </div>
 
-            <div className="space-y-3">
-              {questBoard.map((quest) => (
-                <div key={quest.id} className={`rounded-xl p-3 border ${darkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-gray-50/80'}`}>
-                  <div className="flex items-center justify-between gap-3">
-                    <p className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>{quest.label}</p>
-                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${quest.done ? 'bg-green-600 text-white' : 'bg-blue-600 text-white'}`}>
-                      {quest.done ? 'Done' : `+${quest.reward} XP`}
-                    </span>
+            <div className={`rounded-xl p-4 border ${darkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-gray-50/80'}`}>
+              {activeQuest ? (
+                <>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Active quest</p>
+                      <h4 className={`text-lg font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{activeQuest.title}</h4>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{activeQuest.label}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-cyan-600 px-3 py-1 text-xs font-semibold text-white">
+                        +{activeQuest.reward?.pointsBonus || 0} XP
+                      </span>
+                      <p className={`mt-2 text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {activeQuest.metric === 'sessions'
+                          ? 'Session target'
+                          : activeQuest.metric === 'minutes'
+                            ? 'Minutes target'
+                            : activeQuest.metric === 'streak'
+                              ? 'Streak target'
+                              : 'Points target'}
+                      </p>
+                    </div>
                   </div>
-                  <div className={`mt-2 h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+
+                  <div className={`mt-4 h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                     <div
-                      className={`h-full rounded-full ${quest.done ? 'bg-green-500' : 'bg-cyan-500'} transition-all duration-500`}
-                      style={{ width: `${quest.progress}%` }}
+                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500"
+                      style={{ width: `${activeQuest.progress || 0}%` }}
                     />
                   </div>
-                </div>
-              ))}
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+                      {activeQuest.current || 0} / {activeQuest.target || 0}
+                    </span>
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${activeQuest.done ? 'bg-green-600 text-white' : darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-700'}`}>
+                      {activeQuest.done ? 'Quest complete' : 'Quest in progress'}
+                    </span>
+                  </div>
+
+                  <div className="mt-5 grid gap-2 sm:grid-cols-2">
+                    {recentRewards.slice(0, 2).map((reward) => (
+                      <div
+                        key={reward.id}
+                        className={`rounded-xl border p-3 ${darkMode ? 'border-gray-700 bg-gray-950/50' : 'border-gray-200 bg-white/80'}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{reward.icon}</span>
+                          <div>
+                            <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{reward.label}</p>
+                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{reward.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {questHistory.length > 0 && (
+                    <div className="mt-4">
+                      <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Recent completions</p>
+                      <div className="mt-2 space-y-2">
+                        {questHistory.slice(0, 2).map((entry) => (
+                          <div key={entry.id} className={`rounded-xl px-3 py-2 text-sm ${darkMode ? 'bg-gray-950/40 text-gray-200' : 'bg-white/70 text-gray-700'}`}>
+                            <span className="mr-2">{entry.rewardIcon}</span>
+                            {entry.title} unlocked {entry.rewardLabel}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>Sign in to see your live quest chain and rewards.</p>
+              )}
             </div>
           </div>
         </div>

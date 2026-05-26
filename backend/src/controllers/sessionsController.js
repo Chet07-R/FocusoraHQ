@@ -2,6 +2,7 @@ const User = require('../models/User');
 const StudySession = require('../models/StudySession');
 const { ok, fail } = require('../utils/apiResponse');
 const { applyFocusProgress } = require('../utils/userProgress');
+const { getQuestStateSnapshot } = require('../utils/questEngine');
 
 const createSession = async (req, res) => {
   const session = await StudySession.create({
@@ -43,7 +44,7 @@ const endSession = async (req, res) => {
   });
   await user.save();
 
-  return ok(res, session);
+  return ok(res, { ...session.toObject(), questState: getQuestStateSnapshot(user) });
 };
 
 const listSessions = async (req, res) => {

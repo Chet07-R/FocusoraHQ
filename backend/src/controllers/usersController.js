@@ -6,6 +6,7 @@ const StudyRoom = require('../models/StudyRoom');
 const ActivityEvent = require('../models/ActivityEvent');
 const { ok, fail } = require('../utils/apiResponse');
 const { applyFocusProgress } = require('../utils/userProgress');
+const { getQuestStateSnapshot } = require('../utils/questEngine');
 
 const ALLOWED_THEMES = new Set(['forest', 'ocean', 'rain', 'cafe', 'library']);
 
@@ -37,6 +38,7 @@ const toUserPayload = (user) => ({
   showOnLeaderboard: typeof user.showOnLeaderboard === 'boolean' ? user.showOnLeaderboard : true,
   allowMessages: typeof user.allowMessages === 'boolean' ? user.allowMessages : true,
   notifications: typeof user.notifications === 'boolean' ? user.notifications : true,
+  questState: getQuestStateSnapshot(user),
   // location fields
   location: user.location || null,
   locationCoords: user.locationCoords || { lat: null, lng: null },
@@ -190,7 +192,7 @@ const leaderboard = async (req, res) => {
 
   const users = await User.find(
     {},
-    { displayName: 1, photoURL: 1, points: 1, totalStudyMinutes: 1, sessionsCount: 1, focusStreak: 1, bestFocusStreak: 1, location: 1, locationCoords: 1 }
+    { displayName: 1, photoURL: 1, points: 1, totalStudyMinutes: 1, sessionsCount: 1, focusStreak: 1, bestFocusStreak: 1, location: 1, locationCoords: 1, questState: 1 }
   )
     .sort(sort)
     .limit(limit);
@@ -205,6 +207,7 @@ const leaderboard = async (req, res) => {
     sessionsCount: user.sessionsCount,
     focusStreak: user.focusStreak || 0,
     bestFocusStreak: user.bestFocusStreak || 0,
+    questState: getQuestStateSnapshot(user),
     location: user.location || null,
     locationCoords: user.locationCoords || { lat: null, lng: null },
   }));

@@ -114,6 +114,8 @@ const MySpace = () => {
   const tfReadyRef = useRef(false);
   const detectTimerRef = useRef(null);
   const lastNoticeRef = useRef({ time: 0, signal: "" });
+  const questCompletionRef = useRef(null);
+  const questCompletionInitializedRef = useRef(false);
 
   const profileThemeLabel = useMemo(() => formatThemeName(userProfile?.theme), [userProfile?.theme]);
   const [liveThemeLabel, setLiveThemeLabel] = useState(
@@ -132,6 +134,35 @@ const MySpace = () => {
       }).format(new Date()),
     []
   );
+
+  useEffect(() => {
+    const questState = userProfile?.questState || null;
+    const completedAt = String(questState?.lastCompletedAt || "").trim();
+
+    if (!questCompletionInitializedRef.current) {
+      questCompletionRef.current = completedAt;
+      questCompletionInitializedRef.current = true;
+      return;
+    }
+
+    if (!completedAt || questCompletionRef.current === completedAt) {
+      return;
+    }
+
+    questCompletionRef.current = completedAt;
+
+    const latestReward = Array.isArray(questState?.rewards) ? questState.rewards[0] : null;
+    const activeQuest = questState?.active || null;
+    const rewardLabel = latestReward?.label || "a reward";
+    const rewardIcon = latestReward?.icon || "🎉";
+    const nextQuestLabel = activeQuest?.title || "Your next quest is ready.";
+
+    addNotification(
+      `${rewardLabel} unlocked. ${nextQuestLabel}`,
+      "Quest Complete",
+      rewardIcon
+    );
+  }, [userProfile?.questState?.lastCompletedAt]);
 
   /* ── background sync ── */
   useEffect(() => {

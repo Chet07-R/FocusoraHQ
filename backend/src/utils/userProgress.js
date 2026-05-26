@@ -1,3 +1,5 @@
+const { advanceQuestState } = require('./questEngine');
+
 const getUtcDateOnly = (value) => {
   const date = value instanceof Date ? value : new Date(value);
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
@@ -34,6 +36,7 @@ const applyFocusProgress = (
 
   user.lastFocusDate = eventAt;
   user.bestFocusStreak = Math.max(user.bestFocusStreak || 0, user.focusStreak || 0);
+  advanceQuestState(user, eventAt);
 
   return user;
 };

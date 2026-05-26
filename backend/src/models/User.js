@@ -24,6 +24,16 @@ const userSchema = new mongoose.Schema(
     isEmailVerified: { type: Boolean, default: false },
     emailVerificationTokenHash: { type: String, default: null },
     emailVerificationTokenExpiresAt: { type: Date, default: null },
+    questState: {
+      type: mongoose.Schema.Types.Mixed,
+      default: () => ({
+        active: null,
+        completedCount: 0,
+        rewards: [],
+        history: [],
+        lastCompletedAt: null,
+      }),
+    },
     // Geolocation / display location
     location: { type: String, default: null },
     locationCoords: {

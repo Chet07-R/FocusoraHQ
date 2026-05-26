@@ -5,6 +5,7 @@ const { createToken } = require('../utils/createToken');
 const { ok, fail } = require('../utils/apiResponse');
 const { env } = require('../config/env');
 const { sendVerificationEmail } = require('../utils/mailer');
+const { getQuestStateSnapshot } = require('../utils/questEngine');
 
 const VERIFICATION_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -66,6 +67,7 @@ const toAuthPayload = (user) => {
     provider: user.provider,
     isEmailVerified: user.isEmailVerified,
     emailVerified: user.isEmailVerified,
+    questState: getQuestStateSnapshot(user),
   };
 };
 
