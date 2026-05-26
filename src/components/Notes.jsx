@@ -571,6 +571,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {} }) => {
         ref={notesAreaRef}
         contentEditable
         suppressContentEditableWarning
+        data-focusora-notes-editor="true"
         className="flex-1 bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4"
       />
 

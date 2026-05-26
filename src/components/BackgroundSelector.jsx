@@ -39,7 +39,7 @@ const BackgroundSelector = ({ bgPanelOpen, setBgPanelOpen, addNotification }) =>
   return (
     <div
       className={`fixed bottom-0 left-0 w-full max-w-full rounded-t-2xl md:rounded-2xl md:left-1/2 md:bottom-36 md:transform md:-translate-x-1/2 md:w-96 max-w-[90vw]
-        bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-4 md:p-5 transition-all duration-500 z-50 ${
+        bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-4 md:p-5 transition-all duration-500 z-[11080] ${
         bgPanelOpen
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-6 pointer-events-none"
@@ -50,8 +50,9 @@ const BackgroundSelector = ({ bgPanelOpen, setBgPanelOpen, addNotification }) =>
           <span className="text-xl">🌈</span> Choose Your Ambience
         </h3>
         <button
+          type="button"
           onClick={() => setBgPanelOpen(false)}
-          className="text-white text-lg hover:text-red-400 transition"
+          className="text-white text-lg hover:text-red-400 transition cursor-pointer"
         >
           ✖
         </button>
@@ -61,9 +62,10 @@ const BackgroundSelector = ({ bgPanelOpen, setBgPanelOpen, addNotification }) =>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {backgrounds.map((bg) => (
           <button
+            type="button"
             key={bg.name}
             onClick={() => changeBackground(bg.url, bg.name)}
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
+            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2 cursor-pointer"
           >
             <span className="text-xl">{bg.emoji}</span>
             <span>{bg.name}</span>

@@ -178,9 +178,9 @@ const Todo = ({
           onChange={(e) => setNewTask(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && addTask()}
           placeholder="Add a new task..."
-          className="flex-1 px-3 py-2 rounded-md bg-white/10 text-white outline-none"
+          className="flex-1 px-3 py-2 rounded-md bg-white/10 text-white outline-none cursor-text"
         />
-        <button onClick={addTask} className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:opacity-95 transition">
+        <button type="button" onClick={addTask} className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:opacity-95 transition cursor-pointer">
           <PlusCircle size={16} />
           <span className="select-none">Add</span>
         </button>
@@ -206,7 +206,7 @@ const Todo = ({
                     || 'Unknown';
                   return (<span className="text-[11px] text-gray-400 italic">{own && !t.createdByName ? 'You' : name}</span>);
                 })()}
-                <button onClick={() => removeTask(t)} className="text-red-400">
+                <button type="button" onClick={() => removeTask(t)} className="text-red-400 cursor-pointer">
                   <Trash2 size={16} />
                 </button>
               </div>

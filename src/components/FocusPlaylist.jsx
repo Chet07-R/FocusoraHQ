@@ -87,36 +87,40 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <button
+                  type="button"
                   onClick={() => {
                     setMusicPanelOpen(!musicPanelOpen);
                     if (setBgPanelOpen) setBgPanelOpen(false);
                   }}
-                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition"
+                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition cursor-pointer"
                 >
                   🎧 Change Music
                 </button>
                 {currentRoom && (
                   <>
                     <button
+                      type="button"
                       onClick={() => signalPlayback('play')}
-                      className="text-sm bg-emerald-500/80 hover:bg-emerald-500 px-3 py-2 rounded-lg transition"
+                      className="text-sm bg-emerald-500/80 hover:bg-emerald-500 px-3 py-2 rounded-lg transition cursor-pointer"
                     >
                       ▶ Play for everyone
                     </button>
                     <button
+                      type="button"
                       onClick={() => signalPlayback('pause')}
-                      className="text-sm bg-orange-500/80 hover:bg-orange-500 px-3 py-2 rounded-lg transition"
+                      className="text-sm bg-orange-500/80 hover:bg-orange-500 px-3 py-2 rounded-lg transition cursor-pointer"
                     >
                       ⏸ Pause for everyone
                     </button>
                   </>
                 )}
                 <button
+                  type="button"
                   onClick={() => {
                     if (setBgPanelOpen) setBgPanelOpen(!bgPanelOpen);
                     setMusicPanelOpen(false);
                   }}
-                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition"
+                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition cursor-pointer"
                 >
                   🌈 Choose Ambience
                 </button>
@@ -131,8 +135,9 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                     : `${syncPrompt.by} pressed Pause — pause your player to sync.`}
                 </span>
                 <button
+                  type="button"
                   onClick={() => setSyncPrompt(null)}
-                  className="text-xs bg-white/20 hover:bg-white/30 rounded px-2 py-1"
+                  className="text-xs bg-white/20 hover:bg-white/30 rounded px-2 py-1 cursor-pointer"
                 >
                   Dismiss
                 </button>
@@ -154,7 +159,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
 
       <div
         className={`fixed bottom-0 left-0 w-full max-w-full rounded-t-2xl md:rounded-2xl md:left-1/2 md:bottom-36 md:transform md:-translate-x-1/2 md:w-96 max-w-[90vw]
-          bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-4 md:p-5 transition-all duration-500 z-50 ${
+          bg-gradient-to-br from-black/80 via-gray-900/90 to-black/80 backdrop-blur-xl border border-white/20 shadow-xl p-4 md:p-5 transition-all duration-500 z-[11070] ${
           musicPanelOpen
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-6 pointer-events-none"
@@ -165,8 +170,9 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
             <span className="text-xl">🎵</span> Choose Your Vibe
           </h3>
           <button
+            type="button"
             onClick={() => setMusicPanelOpen(false)}
-            className="text-white text-lg hover:text-red-400 transition"
+            className="text-white text-lg hover:text-red-400 transition cursor-pointer"
           >
             ✖
           </button>
@@ -174,32 +180,37 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
     
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <button
+            type="button"
             onClick={() => changeMusic("37i9dQZF1DZ06evO0FDzS8")}
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
+            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2 cursor-pointer"
           >
             🎹 <span>Deep Focus</span>
           </button>
           <button
+            type="button"
             onClick={() => changeMusic("37i9dQZF1DWZeKCadgRdKQ")}
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
+            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2 cursor-pointer"
           >
             🎻 <span>Classical Study</span>
           </button>
           <button
+            type="button"
             onClick={() => changeMusic("37i9dQZF1DX3Kdv0IChEm9")}
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
+            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2 cursor-pointer"
           >
             🎧 <span>Lofi Beats</span>
           </button>
           <button
+            type="button"
             onClick={() => changeMusic("37i9dQZF1DWXe9gFZP0gtP")}
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
+            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2 cursor-pointer"
           >
             🌧️ <span>Ambient Rain</span>
           </button>
           <button
+            type="button"
             onClick={() => changeMusic("37i9dQZF1DX1s9knjP51Oa")}
-            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2"
+            className="w-full text-left px-4 py-3 bg-white/10 hover:bg-white/20 rounded-lg text-white flex items-center gap-2 cursor-pointer"
           >
             🎸 <span>Acoustic Focus</span>
           </button>

@@ -117,7 +117,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="site-navbar w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed top-0 z-[100]">
+    <nav className="site-navbar w-full backdrop-blur-md h-16 flex text-white justify-between items-center px-4 lg:px-6 fixed top-0 z-[11000]">
       <Link 
         to="/" 
         onClick={handleLogoClick}
@@ -199,7 +199,7 @@ const Navbar = () => {
           {profileOpen && (
             <div
               id="profile-menu"
-              className="absolute right-0 top-12 z-50 w-72 rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 profile-panel overflow-hidden ring-1 ring-black/5 dark:ring-white/10 animate-slideInUp"
+              className="absolute right-0 top-12 z-[11010] w-72 rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 profile-panel overflow-hidden ring-1 ring-black/5 dark:ring-white/10 animate-slideInUp"
             >
 
               <div className="flex p-4 items-center gap-3 profile-gradient-header">
@@ -226,7 +226,7 @@ const Navbar = () => {
               <div className="py-1 space-y-1">
                 <Link
                   to="/profile"
-                  className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"
+                  className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none cursor-pointer"
                 >
                   <svg
                     className="menu-icon"
@@ -247,7 +247,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/community"
-                  className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none"
+                  className="menu-item flex items-center gap-3 px-4 py-3 rounded-xl transition-all group focus:outline-none cursor-pointer"
                 >
                   <svg
                     className="menu-icon"
@@ -281,7 +281,7 @@ const Navbar = () => {
                       setProfileOpen(false);
                     }
                   }}
-                  className="w-full text-left menu-item logout-btn flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 transition-all group focus:outline-none"
+                  className="w-full text-left menu-item logout-btn flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 transition-all group focus:outline-none cursor-pointer"
                 >
                   <svg
                     className="menu-icon"

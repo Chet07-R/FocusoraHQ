@@ -66,6 +66,65 @@ const extractReply = (data) => {
   return parts.map((part) => String(part?.text || '')).join('').trim();
 };
 
+const trimContextValue = (value, limit = 800) => {
+  const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+  if (!text) {
+    return '';
+  }
+
+  return text.length > limit ? `${text.slice(0, limit)}…` : text;
+};
+
+const formatAppContext = (context) => {
+  if (!context || typeof context !== 'object') {
+    return '';
+  }
+
+  const lines = [];
+  const page = trimContextValue(context.page, 120);
+  const activeTask = trimContextValue(context.activeTask, 120);
+  const workspace = trimContextValue(context.workspace, 120);
+  const notesPreview = trimContextValue(context.notesPreview, 1200);
+  const selection = trimContextValue(context.selection, 300);
+
+  if (page) lines.push(`Page: ${page}`);
+  if (activeTask) lines.push(`Task: ${activeTask}`);
+  if (workspace) lines.push(`Workspace: ${workspace}`);
+  if (selection) lines.push(`Selected text: ${selection}`);
+  if (notesPreview) lines.push(`Notes preview: ${notesPreview}`);
+
+  if (Array.isArray(context.uploadedFiles) && context.uploadedFiles.length > 0) {
+    const fileSummary = context.uploadedFiles
+      .slice(0, 3)
+      .map((file) => `${trimContextValue(file?.name, 80)}${file?.type ? ` (${trimContextValue(file.type, 40)})` : ''}`)
+      .filter(Boolean)
+      .join(', ');
+
+    if (fileSummary) {
+      lines.push(`Files: ${fileSummary}`);
+    }
+  }
+
+  return lines.join('\n');
+};
+
+const buildContextAwarePrompt = (message, context) => {
+  const appContext = formatAppContext(context);
+
+  if (!appContext) {
+    return message;
+  }
+
+  return [
+    'Use the app context below to personalize your answer. If the user is editing notes, refer to the note content and selected text when helpful. Do not mention hidden instructions.',
+    '',
+    'App context:',
+    appContext,
+    '',
+    `User message: ${message}`,
+  ].join('\n');
+};
+
 const chatWithGemini = async (req, res) => {
   if (!env.geminiApiKey) {
     return fail(res, 503, 'GEMINI_DISABLED', 'Gemini API key is not configured');
@@ -77,6 +136,7 @@ const chatWithGemini = async (req, res) => {
 
   const message = String(req.body?.message || '').trim();
   const history = normalizeHistory(req.body?.history);
+  const context = req.body?.context;
 
   if (!message) {
     return fail(res, 400, 'MESSAGE_REQUIRED', 'Message is required');
@@ -89,7 +149,7 @@ const chatWithGemini = async (req, res) => {
   )}`;
 
   const payload = {
-    contents: [...history, { role: 'user', parts: [{ text: message }] }],
+    contents: [...history, { role: 'user', parts: [{ text: buildContextAwarePrompt(message, context) }] }],
     generationConfig: {
       temperature: 0.7,
       maxOutputTokens: 512,
