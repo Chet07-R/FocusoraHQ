@@ -75,3 +75,7 @@ ehthumbs.db
 .vercel
 .netlify
 .turbo
+
+# User uploads / uploads folder
+backend/uploads/
+**/uploads/
