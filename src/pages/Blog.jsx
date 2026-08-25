@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getAuthErrorMessage } from '../utils/authErrors';
 import { createBlog as createBlogApi, defaultBlogCoverImage, deleteBlog as deleteBlogApi, listBlogs } from '../utils/blogsApi';
+import '../components/blog.css';
 
 const MAX_COVER_FILE_SIZE_BYTES = 2 * 1024 * 1024;
 const BLOG_TITLE_MIN_LENGTH = 3;
@@ -16,6 +17,28 @@ const Blog = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const coverImageInputRef = useRef(null);
+
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [communityBlogs, setCommunityBlogs] = useState([]);
+  const [communityLoading, setCommunityLoading] = useState(true);
+  const [communityError, setCommunityError] = useState('');
+  const [submitPending, setSubmitPending] = useState(false);
+  const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState('');
+  const [isBlogModalOpen, setBlogModalOpen] = useState(false);
+  const [blogForm, setBlogForm] = useState({
+    authorName: '',
+    authorEmail: '',
+    title: '',
+    category: 'Focus',
+    excerpt: '',
+    content: '',
+    coverImage: '',
+    coverImageFile: null,
+  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const allArticles = [
     {
@@ -128,30 +151,17 @@ const Blog = () => {
     },
   ];
 
-  const [visibleCount, setVisibleCount] = useState(6);
-  const [communityBlogs, setCommunityBlogs] = useState([]);
-  const [communityLoading, setCommunityLoading] = useState(true);
-  const [communityError, setCommunityError] = useState('');
-  const [submitPending, setSubmitPending] = useState(false);
-  const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
-  const [submitError, setSubmitError] = useState('');
-  const [submitSuccess, setSubmitSuccess] = useState('');
-  const [isBlogModalOpen, setBlogModalOpen] = useState(false);
-  const [blogForm, setBlogForm] = useState({
-    authorName: '',
-    authorEmail: '',
-    title: '',
-    category: 'Focus',
-    excerpt: '',
-    content: '',
-    coverImage: '',
-    coverImageFile: null,
+  const filteredArticles = allArticles.filter(article => {
+    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          article.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
+    return matchesSearch && matchesCategory;
   });
 
-  const articles = allArticles.slice(0, visibleCount);
+  const articles = filteredArticles.slice(0, visibleCount);
 
   const loadMoreArticles = () => {
-    setVisibleCount(prev => Math.min(prev + 6, allArticles.length));
+    setVisibleCount(prev => Math.min(prev + 6, filteredArticles.length));
   };
 
   const categoryColors = {
@@ -252,6 +262,14 @@ const Blog = () => {
       coverImageInputRef.current.value = '';
     }
   };
+
+  const filteredCommunityBlogs = communityBlogs.filter(blog => {
+    const matchesSearch = blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (blog.excerpt && blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                          (blog.authorName && blog.authorName.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesCategory = selectedCategory === 'All' || blog.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const handleCommunitySubmit = async (event) => {
     event.preventDefault();
@@ -358,35 +376,52 @@ const Blog = () => {
   };
 
   return (
-    <>
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
+      {/* 🚀 Hero Section */}
+      <section className="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 text-white pt-28 pb-24 overflow-hidden border-b border-indigo-950/20">
+        {/* Animated Background Gradients */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-blue-500/10 rounded-full filter blur-[120px] animate-pulse"></div>
+          <div className="absolute top-1/2 -right-40 w-[500px] h-[500px] bg-purple-500/10 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
 
-      {}
-      <section className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 pt-20 pb-16 relative overflow-hidden">
         <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between">
-            <div className="lg:w-1/2 text-left lg:pr-12">
-              <h1 className="text-6xl lg:text-7xl font-extrabold text-blue-900 dark:text-white mb-6">
-                Productivity Blog
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <div className="lg:w-3/5 text-left space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider">
+                <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-ping"></span>
+                Productivity & Study Resource
+              </div>
+              <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
+                Supercharge Your <br />
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">Focus & Learning</span>
               </h1>
-              <p className="text-2xl lg:text-3xl text-blue-800 dark:text-gray-300 font-medium mb-8">
-                Focus. Study. Thrive.
+              <p className="text-lg lg:text-xl text-slate-300 max-w-xl font-normal leading-relaxed">
+                Explore actionable systems, expert guides, and scientific study strategies to level up your flow, time management, and mindset.
               </p>
-              <p className="text-blue-700 dark:text-gray-400 text-lg mb-8">
-                Your ultimate resource for productivity insights, focus strategies, and actionable tips to transform your work and life.
-              </p>
-              <a
-                href="#latest-articles"
-                className="inline-flex items-center bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 transform"
-              >
-                Explore Articles
-              </a>
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <a
+                  href="#latest-articles"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-8 py-3.5 rounded-full font-bold transition-all duration-300 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 hover:-translate-y-0.5"
+                >
+                  Explore Articles
+                </a>
+                <button
+                  onClick={openBlogModal}
+                  className="bg-white/10 hover:bg-white/15 text-white border border-white/15 px-8 py-3.5 rounded-full font-bold transition-all duration-300 hover:-translate-y-0.5"
+                >
+                  Share Your Story
+                </button>
+              </div>
             </div>
-            <div className="lg:w-1/2 flex justify-center lg:justify-end mt-8 lg:mt-0">
-              <div className="relative">
+            <div className="lg:w-2/5 flex justify-center lg:justify-end">
+              <div className="relative group">
+                {/* Glow ring */}
+                <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-500 opacity-20 blur-xl group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
                 <img
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                  alt="Productive workspace with laptop and notebook"
-                  className="w-96 h-96 object-cover rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                  alt="Productive study workspace"
+                  className="relative w-96 h-96 object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
             </div>
@@ -394,59 +429,79 @@ const Blog = () => {
         </div>
       </section>
 
-      {}
-      <section id="featured" className="py-16 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Featured Article
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Our most impactful productivity insights
-            </p>
+      {/* 🔍 Category Filters Bar */}
+      <section className="sticky top-[64px] z-50 bg-slate-50 dark:bg-slate-955 border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm transition-all duration-300">
+        <div className="container mx-auto px-6">
+          <div className="flex justify-center">
+            {/* Category Scrolling Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none scroll-smooth justify-center">
+              {['All', 'Focus', 'Time Management', 'Organization', 'Goals', 'Habits', 'Energy'].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95 ${
+                    selectedCategory === category
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 🏆 Featured Section */}
+      <section className="py-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <div className="container mx-auto px-6">
+          <div className="flex items-center gap-3 mb-8">
+            <span className="h-8 w-1 rounded-full bg-blue-600"></span>
+            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Featured Article</h2>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="group bg-gradient-to-r from-indigo-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 rounded-3xl overflow-hidden shadow-lg dark:shadow-xl hover:shadow-2xl dark:hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-              <div className="md:flex h-full">
-                {}
-                <div className="md:w-1/2 overflow-hidden">
+          <div className="max-w-6xl mx-auto">
+            <div className="group bg-gradient-to-br from-indigo-50/50 via-cyan-50/20 to-white dark:from-slate-800/40 dark:via-slate-800/20 dark:to-slate-900/60 rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/5 hover:-translate-y-1.5">
+              <div className="md:flex">
+                <div className="md:w-1/2 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent z-10"></div>
                   <img
-                    src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                     alt="Deep work and focus strategies"
-                    className="w-full h-64 md:h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-72 md:h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
+                  <div className="absolute bottom-6 left-6 z-20 md:hidden">
+                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
+                  </div>
                 </div>
 
-                {}
                 <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
-                  <Link to="/blog1" className="block h-full">
-                    <div className="inline-block bg-blue-700 dark:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide mb-4 group-hover:bg-blue-800 dark:group-hover:bg-blue-700 transition-colors duration-300">
-                      Featured
+                  <div>
+                    <div className="hidden md:inline-block bg-blue-600/10 text-blue-600 dark:text-blue-400 px-4.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest mb-6">
+                      Spotlight
                     </div>
-                    <h3 className="text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                      The Ultimate Guide to Deep Work: Transform Your Productivity in 30 Days
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors duration-300">
-                      Master the art of sustained focus with proven strategies from top performers. Learn how to eliminate distractions, create optimal work environments, and achieve breakthrough results.
+                    <Link to="/blog1">
+                      <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                        The Ultimate Guide to Deep Work: Transform Your Productivity
+                      </h3>
+                    </Link>
+                    <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed mb-6">
+                      Master the art of sustained focus with proven strategies from top performers. Learn how to eliminate distractions, create optimal environments, and unlock flow states.
                     </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors duration-300">
-                        15 min read • Dec 2024
-                      </span>
-                      <span className="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 transform group-hover:shadow-lg">
-                        Read Article
-                        <svg
-                          className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </span>
-                    </div>
-                  </Link>
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <span className="text-sm font-semibold text-slate-400 dark:text-slate-500">15 min read • Dec 2024</span>
+                    <Link
+                      to="/blog1"
+                      className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 hover:-translate-y-0.5"
+                    >
+                      Read Now
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -454,59 +509,82 @@ const Blog = () => {
         </div>
       </section>
 
-      {}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900" id="latest-articles">
+      {/* 📚 Articles Grid Section */}
+      <section className="py-16 bg-slate-50 dark:bg-slate-950" id="latest-articles">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Latest Articles
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Fresh insights to supercharge your productivity
-            </p>
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-3">
+              <span className="h-8 w-1 rounded-full bg-blue-600"></span>
+              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Latest Guides</h2>
+            </div>
+            {selectedCategory !== 'All' && (
+              <span className="text-sm font-medium text-slate-500">
+                Found {filteredArticles.length} guides in {selectedCategory}
+              </span>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article) => (
-              <article
-                key={article.id}
-                className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+          {articles.length === 0 ? (
+            <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/50 dark:border-slate-800/50 max-w-lg mx-auto">
+              <svg className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No guides found</h3>
+              <p className="text-slate-500 text-sm mb-4">Try adjusting your keywords or category filters.</p>
+              <button
+                onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+                className="bg-blue-600 text-white px-5 py-2 rounded-full text-xs font-bold"
               >
-                <Link to={article.link}>
-                  <img src={article.image} alt={article.title} className="w-full h-48 object-cover" />
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <span
-                        className={`${categoryColors[article.category]} px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide`}
-                      >
-                        {article.category}
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{article.readTime}</span>
+                Reset Search
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {articles.map((article) => (
+                <article
+                  key={article.id}
+                  className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/40 dark:border-slate-800/40 shadow-md premium-blog-card"
+                >
+                  <Link to={article.link}>
+                    <div className="h-48 overflow-hidden relative">
+                      <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute top-4 left-4 z-10">
+                        <span className={`${categoryColors[article.category] || 'bg-blue-100 text-blue-600'} px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider`}>
+                          {article.category}
+                        </span>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
-                      {article.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                      {article.description}
-                    </p>
-                    <span className="inline-flex items-center text-blue-700 dark:text-blue-400 font-semibold hover:underline">
-                      Read More
-                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </span>
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
+                    <div className="p-6 space-y-3">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-semibold">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{article.readTime}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                        {article.title}
+                      </h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">
+                        {article.description}
+                      </p>
+                      <div className="pt-2 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+                        <span>Read Guide</span>
+                        <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          )}
 
-          {}
-          {visibleCount < allArticles.length && (
+          {visibleCount < filteredArticles.length && (
             <div className="text-center mt-12">
-              <button 
+              <button
                 onClick={loadMoreArticles}
-                className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 transform shadow-lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-full font-bold text-base transition-all duration-300 hover:shadow-lg shadow-blue-500/10 cursor-pointer"
               >
                 Load More Articles
               </button>
@@ -515,111 +593,105 @@ const Blog = () => {
         </div>
       </section>
 
-      {}
-      <section className="py-16 bg-gradient-to-b from-white to-slate-50 dark:from-gray-900 dark:to-slate-950">
+      {/* 👥 Community Blogs Section */}
+      <section className="py-16 bg-white dark:bg-slate-900 border-t border-b border-slate-100 dark:border-slate-800">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Community Blogs
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Stories and productivity systems shared by Focusora members.
-            </p>
-
-            <div className="mt-6">
-              <button
-                type="button"
-                onClick={openBlogModal}
-                className="inline-flex items-center rounded-full bg-blue-700 px-7 py-3 text-white font-semibold hover:bg-blue-800 transition-colors"
-              >
-                Add your blog
-              </button>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div className="flex items-center gap-3">
+              <span className="h-8 w-1 rounded-full bg-blue-600"></span>
+              <div>
+                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Community Logs</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Read systems and reflections from the Focusora network.</p>
+              </div>
             </div>
+            <button
+              onClick={openBlogModal}
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-md shadow-blue-500/10 hover:-translate-y-0.5"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+              </svg>
+              Share Your Log
+            </button>
           </div>
 
           {communityLoading && (
-            <div className="flex items-center justify-center py-14">
-              <div className="text-center">
-                <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
-                <p className="mt-4 text-gray-600 dark:text-gray-300">Loading community blogs...</p>
-              </div>
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="h-10 w-10 animate-spin rounded-full border-3 border-blue-500 border-t-transparent" />
+              <p className="mt-4 text-sm font-semibold text-slate-500 dark:text-slate-400">Syncing community database...</p>
             </div>
           )}
 
           {!communityLoading && communityError && (
-            <div className="max-w-2xl mx-auto rounded-2xl border border-red-200 bg-red-50 dark:border-red-500/40 dark:bg-red-950/40 p-6 text-center">
-              <p className="text-red-700 dark:text-red-300 font-medium mb-4">{communityError}</p>
+            <div className="max-w-lg mx-auto p-6 rounded-2xl border border-red-100 bg-red-50/50 dark:border-red-500/20 dark:bg-red-950/20 text-center">
+              <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-3">{communityError}</p>
               <button
-                type="button"
                 onClick={loadCommunityBlogs}
-                className="inline-flex items-center rounded-full bg-blue-700 px-6 py-2 text-white font-semibold hover:bg-blue-800 transition-colors"
+                className="bg-blue-600 text-white px-5 py-2 rounded-full text-xs font-bold"
               >
-                Retry
+                Retry Sync
               </button>
             </div>
           )}
 
-          {!communityLoading && !communityError && communityBlogs.length === 0 && (
-            <div className="max-w-3xl mx-auto rounded-3xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 text-center shadow-lg">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Be the first community author</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Publish your first article below and it will appear here instantly.
-              </p>
+          {!communityLoading && !communityError && filteredCommunityBlogs.length === 0 && (
+            <div className="max-w-lg mx-auto p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/50 text-center shadow-lg bg-slate-50 dark:bg-slate-900/50">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Be the first spotlight author</h3>
+              <p className="text-slate-500 text-sm mb-6">Share your workflow, morning setup, or study systems with developers and students worldwide.</p>
               <button
-                type="button"
                 onClick={openBlogModal}
-                className="inline-flex items-center rounded-full bg-blue-700 px-7 py-3 text-white font-semibold hover:bg-blue-800 transition-colors"
+                className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-xs font-bold"
               >
-                Write Your Blog
+                Publish First Log
               </button>
             </div>
           )}
 
-          {!communityLoading && !communityError && communityBlogs.length > 0 && (
+          {!communityLoading && !communityError && filteredCommunityBlogs.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {communityBlogs.slice(0, 9).map((communityBlog) => (
+              {filteredCommunityBlogs.slice(0, 9).map((blog) => (
                 <article
-                  key={communityBlog.id || communityBlog._id}
-                  className="group overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                  key={blog.id || blog._id}
+                  className="group bg-slate-50 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-slate-800/50 shadow-md premium-blog-card flex flex-col h-full"
                 >
-                  <Link to={`/blog/community/${communityBlog.id || communityBlog._id}`}>
-                    <img
-                      src={communityBlog.coverImage || defaultBlogCoverImage}
-                      alt={communityBlog.title}
-                      className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="p-6">
-                      <div className="mb-3 flex items-center justify-between gap-3">
-                        <span className={`${categoryColors[communityBlog.category] || categoryColors.Focus} px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide`}>
-                          {communityBlog.category || 'Focus'}
+                  <Link to={`/blog/community/${blog.id || blog._id}`} className="flex-1 flex flex-col">
+                    <div className="h-44 overflow-hidden relative">
+                      <img
+                        src={blog.coverImage || defaultBlogCoverImage}
+                        alt={blog.title}
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                      />
+                      <div className="absolute top-4 left-4 z-10">
+                        <span className="bg-indigo-600 text-white px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                          {blog.category || 'Focus'}
                         </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{communityBlog.readTime || '1 min read'}</span>
                       </div>
-
-                      <h3 className="mb-2 text-xl font-bold leading-tight text-gray-900 transition-colors duration-300 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400">
-                        {communityBlog.title}
-                      </h3>
-
-                      <p className="mb-4 text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
-                        {communityBlog.excerpt}
-                      </p>
-
-                      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                        <span>By {communityBlog.authorName || 'Focusora Member'}</span>
-                        <span>{formatBlogDate(communityBlog.createdAt)}</span>
+                    </div>
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                          {blog.title}
+                        </h3>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">
+                          {blog.excerpt}
+                        </p>
+                      </div>
+                      <div className="pt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 font-semibold border-t border-slate-200/40 dark:border-slate-800/40 mt-4">
+                        <span>By {blog.authorName || 'Focusora Member'}</span>
+                        <span>{formatBlogDate(blog.createdAt)}</span>
                       </div>
                     </div>
                   </Link>
 
-                  {user && String(communityBlog.authorId) === String(user.uid) && (
-                    <div className="border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+                  {user && String(blog.authorId) === String(user.uid) && (
+                    <div className="p-4 bg-slate-100/50 dark:bg-slate-950/20 border-t border-slate-200/50 dark:border-slate-800/50">
                       <button
                         type="button"
-                        onClick={() => handleDeleteCommunityBlog(communityBlog.id || communityBlog._id)}
-                        disabled={deletePendingBlogId === String(communityBlog.id || communityBlog._id)}
-                        className="w-full rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                        onClick={() => handleDeleteCommunityBlog(blog.id || blog._id)}
+                        disabled={deletePendingBlogId === String(blog.id || blog._id)}
+                        className="w-full bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white py-1.5 rounded-lg text-xs font-bold transition-all duration-300"
                       >
-                        {deletePendingBlogId === String(communityBlog.id || communityBlog._id) ? 'Deleting...' : 'Delete My Blog'}
+                        {deletePendingBlogId === String(blog.id || blog._id) ? 'Deleting...' : 'Delete Log'}
                       </button>
                     </div>
                   )}
@@ -630,298 +702,54 @@ const Blog = () => {
         </div>
       </section>
 
-      {isBlogModalOpen && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6">
-          <button
-            type="button"
-            aria-label="Close add blog popup"
-            onClick={closeBlogModal}
-            className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"
-          />
-
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="add-blog-heading"
-            className="relative w-full max-w-4xl rounded-3xl border border-gray-200 dark:border-white/10 bg-white dark:bg-slate-900 max-h-[90vh] overflow-y-auto p-8 sm:p-10"
-          >
-            <div className="mb-8 flex items-start justify-between gap-4">
-              <div>
-                <h2 id="add-blog-heading" className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3">
-                  Add Your Own Blog
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Keep the Focusora community growing by sharing your best productivity ideas.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={closeBlogModal}
-                className="rounded-md px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
-              >
-                Close
-              </button>
-            </div>
-
-            <form className="space-y-5" onSubmit={handleCommunitySubmit}>
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="title">
-                  Blog Title
-                </label>
-                <input
-                  id="title"
-                  name="title"
-                  type="text"
-                  value={blogForm.title}
-                  onChange={handleCommunityInputChange}
-                  className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="category">
-                    Category
-                  </label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={blogForm.category}
-                    onChange={handleCommunityInputChange}
-                    className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                  >
-                    {Object.keys(categoryColors).map((category) => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="coverImage">
-                      Cover Image URL (optional)
-                    </label>
-                    <input
-                      id="coverImage"
-                      name="coverImage"
-                      type="url"
-                      value={blogForm.coverImage}
-                      onChange={handleCommunityInputChange}
-                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="coverImageFile">
-                      Choose Cover Image File (optional)
-                    </label>
-                    <input
-                      ref={coverImageInputRef}
-                      id="coverImageFile"
-                      name="coverImageFile"
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp,image/gif"
-                      onChange={handleCoverImageFileChange}
-                      className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-blue-700 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-800"
-                    />
-
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span>{blogForm.coverImageFile ? `Selected: ${blogForm.coverImageFile.name}` : 'No file selected'}</span>
-                      {blogForm.coverImageFile && (
-                        <button
-                          type="button"
-                          onClick={clearSelectedCoverImageFile}
-                          className="rounded-full border border-gray-300 dark:border-slate-600 px-3 py-1 font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
-                        >
-                          Remove file
-                        </button>
-                      )}
-                    </div>
-
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Both options are available. If you provide both URL and file, uploaded file is used as cover image.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="excerpt">
-                  Short Excerpt
-                </label>
-                <textarea
-                  id="excerpt"
-                  name="excerpt"
-                  rows={3}
-                  minLength={BLOG_EXCERPT_MIN_LENGTH}
-                  maxLength={BLOG_EXCERPT_MAX_LENGTH}
-                  value={blogForm.excerpt}
-                  onChange={handleCommunityInputChange}
-                  className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200" htmlFor="content">
-                  Full Content
-                </label>
-                <textarea
-                  id="content"
-                  name="content"
-                  rows={8}
-                  minLength={BLOG_CONTENT_MIN_LENGTH}
-                  maxLength={BLOG_CONTENT_MAX_LENGTH}
-                  value={blogForm.content}
-                  onChange={handleCommunityInputChange}
-                  className="w-full rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-gray-900 dark:text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30"
-                />
-                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  Tip: add headings like ## Morning Planning or ## Deep Work Block in your content to generate a cleaner table of contents.
-                </p>
-              </div>
-
-              {submitError && (
-                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-500/40 dark:bg-red-950/40 dark:text-red-300">
-                  {submitError}
-                </p>
-              )}
-
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {user ? `Publishing as ${user.displayName || user.email || 'community member'}.` : 'Publishing as a community guest.'}
-                </p>
-                <button
-                  type="submit"
-                  disabled={submitPending}
-                  className="inline-flex items-center rounded-full bg-blue-700 px-8 py-3 text-white font-semibold transition-all duration-300 hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {submitPending ? 'Publishing...' : 'Publish Blog'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {}
-      <section className="py-16 bg-white dark:bg-gray-800">
-        <div className="container mx-auto px-6 mt-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Most Popular
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Reader favorites that deliver real results
-            </p>
+      {/* 🏆 Popular Reads Section */}
+      <section className="py-16 bg-slate-50 dark:bg-slate-950">
+        <div className="container mx-auto px-6">
+          <div className="flex items-center gap-3 mb-10">
+            <span className="h-8 w-1 rounded-full bg-blue-600"></span>
+            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Most Popular</h2>
           </div>
 
-          <div className="max-w-4xl mx-auto space-y-6 mt-6">
-            {}
-            <Link to="/blog1" className="block mb-6">
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-700 rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-2xl transform hover:scale-105">
-                <div className="border-l-4 border-blue-600 pl-6 flex items-start space-x-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Pop Card 1 */}
+            <Link to="/blog1" className="group block">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/40 dark:border-slate-800/40 shadow-sm premium-blog-card">
+                <div className="flex items-start gap-5">
                   <img
                     src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
                     alt="Workplace productivity tips"
-                    className="w-32 h-32 rounded-xl object-cover flex-shrink-0 shadow-md border-2 border-blue-200 dark:border-blue-600"
+                    className="w-24 h-24 rounded-xl object-cover shadow-sm border border-slate-100 dark:border-slate-800"
                   />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="inline-block bg-blue-700 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase shadow-md">
-                        Trending
-                      </span>
-                      <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Featured</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
-                      How to Eliminate Distractions and Double Your Focus in 2025
+                  <div className="flex-1 space-y-1">
+                    <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Trending</span>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      How to Eliminate Distractions and Double Focus
                     </h3>
-                    <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                      Master the art of deep work with these proven concentration techniques that top performers use daily...
+                    <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+                      Master deep work loops using proven focus block timings utilized by software architects and top students.
                     </p>
-                    <div className="mt-4 flex items-center gap-4">
-                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H3.75A2.25 2.25 0 001.5 3.75v12.5A2.25 2.25 0 003.75 18.5h12.5a2.25 2.25 0 002.25-2.25V9.5m-15-4h14m-14 7h14" /></svg>
-                        <span>8 min</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3a7 7 0 100 14 7 7 0 000-14zM9 9a1 1 0 112 0 1 1 0 01-2 0z" /></svg>
-                        <span>50K views</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
             </Link>
 
-            {}
-            <Link to="/blog2" className="block mb-6">
-              <div className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-700 dark:to-gray-700 rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-2xl transform hover:scale-105">
-                <div className="border-l-4 border-cyan-600 pl-6 flex items-start space-x-6">
+            {/* Pop Card 2 */}
+            <Link to="/blog2" className="group block">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/40 dark:border-slate-800/40 shadow-sm premium-blog-card">
+                <div className="flex items-start gap-5">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
-                    alt="Productive workspace setup"
-                    className="w-32 h-32 rounded-xl object-cover flex-shrink-0 shadow-md border-2 border-cyan-200 dark:border-cyan-600"
+                    alt="Productive workspace"
+                    className="w-24 h-24 rounded-xl object-cover shadow-sm border border-slate-100 dark:border-slate-800"
                   />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="inline-block bg-cyan-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase shadow-md">
-                        Popular
-                      </span>
-                      <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Most Read</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
-                      The 90-Minute Work Block Method: Get More Done in Less Time
+                  <div className="flex-1 space-y-1">
+                    <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest">Must Read</span>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      The 90-Minute Work Block Method
                     </h3>
-                    <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                      Discover the optimal work rhythm that maximizes your mental energy and output throughout the day...
+                    <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+                      Optimize your biological ultradian rhythms to maximize productive cycles without triggering cognitive exhaustion.
                     </p>
-                    <div className="mt-4 flex items-center gap-4">
-                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H3.75A2.25 2.25 0 001.5 3.75v12.5A2.25 2.25 0 003.75 18.5h12.5a2.25 2.25 0 002.25-2.25V9.5m-15-4h14m-14 7h14" /></svg>
-                        <span>12 min</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3a7 7 0 100 14 7 7 0 000-14zM9 9a1 1 0 112 0 1 1 0 01-2 0z" /></svg>
-                        <span>42K views</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            {}
-            <Link to="/blog1" className="block mb-6">
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-700 rounded-2xl p-6 shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-2xl transform hover:scale-105">
-                <div className="border-l-4 border-indigo-600 pl-6 flex items-start space-x-6">
-                  <img
-                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
-                    alt="Digital tools and technology"
-                    className="w-32 h-32 rounded-xl object-cover flex-shrink-0 shadow-md border-2 border-indigo-200 dark:border-indigo-600"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="inline-block bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase shadow-md">
-                        Essential
-                      </span>
-                      <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Must Read</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors duration-300">
-                      Digital Minimalism: Declutter Your Workspace for Peak Performance
-                    </h3>
-                    <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                      Create a distraction-free digital environment that supports sustained focus and creative thinking...
-                    </p>
-                    <div className="mt-4 flex items-center gap-4">
-                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.5 1.5H3.75A2.25 2.25 0 001.5 3.75v12.5A2.25 2.25 0 003.75 18.5h12.5a2.25 2.25 0 002.25-2.25V9.5m-15-4h14m-14 7h14" /></svg>
-                        <span>15 min</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3a7 7 0 100 14 7 7 0 000-14zM9 9a1 1 0 112 0 1 1 0 01-2 0z" /></svg>
-                        <span>38K views</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -930,47 +758,187 @@ const Blog = () => {
         </div>
       </section>
 
-      {}
-<section className="relative overflow-hidden py-20 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+      {/* 🚀 Interactive Footer CTA */}
+      <section className="relative overflow-hidden py-24 bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 text-white text-center">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-32 left-1/4 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] animate-pulse"></div>
+        </div>
 
-  {/* Pastel / Neon Blobs */}
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    <div className="absolute -top-40 left-1/4 w-96 h-96 bg-cyan-300 dark:bg-cyan-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="container mx-auto px-6 relative z-10 max-w-3xl space-y-6">
+          <h2 className="text-4xl font-extrabold tracking-tight">Ready to Master Your Attention?</h2>
+          <p className="text-slate-300 text-base max-w-lg mx-auto">
+            Build streaks, sync ambient spaces, and access tailored AI coaching designed to align your learning flow.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <Link
+              to="/signup"
+              className="bg-white text-slate-900 hover:bg-slate-100 px-8 py-3.5 rounded-full font-bold transition-all duration-300 shadow-xl"
+            >
+              Sign Up Free
+            </Link>
+            <a
+              href="#latest-articles"
+              className="bg-transparent border border-white/25 text-white hover:bg-white/5 px-8 py-3.5 rounded-full font-bold transition-all duration-300"
+            >
+              Back to Articles
+            </a>
+          </div>
+        </div>
+      </section>
 
-    <div 
-      className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-30 animate-blob"
-      style={{ animationDelay: '1s' }}
-    ></div>
-  </div>
+      {/* 📝 Create Blog Modal Popup */}
+      {isBlogModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={closeBlogModal}></div>
+          <div className="relative w-full max-w-3xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-slate-900 shadow-2xl max-h-[85vh] overflow-y-auto p-8 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Write Community Log</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Share strategies, workspace designs, or reflections.</p>
+              </div>
+              <button
+                onClick={closeBlogModal}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
-  {/* Content */}
-  <div className="container mx-auto px-6 py-20 text-center relative z-10">
-    <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
-      Ready to Transform Your Productivity?
-    </h2>
+            <form onSubmit={handleCommunitySubmit} className="space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  value={blogForm.title}
+                  onChange={handleCommunityInputChange}
+                  placeholder="e.g. My 5:00 AM Study Loop Routine"
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
 
-    <p className="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">
-      Join thousands who've transformed their work and life with our proven systems and strategies.
-    </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Category</label>
+                  <select
+                    name="category"
+                    value={blogForm.category}
+                    onChange={handleCommunityInputChange}
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  >
+                    {Object.keys(categoryColors).map((category) => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
 
-    <Link
-      to="/signup"
-      className="inline-block bg-white dark:bg-gray-200 text-indigo-700 dark:text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 shadow-lg m-3"
-    >
-      Start Your Journey
-    </Link>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Cover URL (Optional)</label>
+                  <input
+                    type="url"
+                    name="coverImage"
+                    value={blogForm.coverImage}
+                    onChange={handleCommunityInputChange}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                </div>
+              </div>
 
-    <a
-      href="#latest-articles"
-      className="inline-block bg-transparent border-2 border-gray-700 text-gray-700 dark:border-white dark:text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 dark:hover:bg-white dark:hover:text-indigo-700 transform hover:scale-105 transition-all duration-300 m-3"
-    >
-      Browse All Articles
-    </a>
-  </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Cover File (Optional)</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    ref={coverImageInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverImageFileChange}
+                    className="hidden"
+                    id="file-upload-input"
+                  />
+                  <label
+                    htmlFor="file-upload-input"
+                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition-all duration-300 border border-slate-200/50 dark:border-slate-800/50"
+                  >
+                    Choose Cover Image File
+                  </label>
+                  <span className="text-xs text-slate-400">
+                    {blogForm.coverImageFile ? blogForm.coverImageFile.name : 'No file selected (2MB max)'}
+                  </span>
+                  {blogForm.coverImageFile && (
+                    <button
+                      type="button"
+                      onClick={clearSelectedCoverImageFile}
+                      className="text-red-500 hover:text-red-600 text-xs font-semibold"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
 
-</section>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Short Summary</label>
+                <input
+                  type="text"
+                  name="excerpt"
+                  required
+                  value={blogForm.excerpt}
+                  onChange={handleCommunityInputChange}
+                  placeholder="Summarize the core focus takeaway in 1-2 sentences..."
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
 
-    </>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Full Markdown Content</label>
+                <textarea
+                  name="content"
+                  required
+                  rows={6}
+                  value={blogForm.content}
+                  onChange={handleCommunityInputChange}
+                  placeholder="Share details, schedules, tips, or setups..."
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+
+              {submitError && (
+                <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200/50 dark:border-red-500/20 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400">
+                  {submitError}
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                <span className="text-xs text-slate-400 dark:text-slate-500">
+                  Publishing as {user?.displayName || 'Community Member'}
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={closeBlogModal}
+                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2 rounded-lg text-xs font-bold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitPending}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md shadow-blue-500/10"
+                  >
+                    {submitPending ? 'Publishing...' : 'Publish'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

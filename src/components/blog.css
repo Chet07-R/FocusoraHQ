@@ -1,11 +1,13 @@
 .toc-link.active-toc {
   color: rgb(37 99 235) !important;
-  font-weight: 600;
+  font-weight: 700;
+  background-color: rgba(59, 130, 246, 0.08) !important;
 }
 
 .dark .toc-link.active-toc {
   color: rgb(96 165 250) !important;
-  font-weight: 600;
+  font-weight: 700;
+  background-color: rgba(96, 165, 250, 0.15) !important;
 }
 
 nav .toc-indicator {
@@ -18,4 +20,38 @@ nav .toc-indicator {
 .dark nav .toc-indicator {
   background: linear-gradient(180deg, rgb(96 165 250) 0%, rgb(168 85 247) 100%);
   box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+}
+
+/* Premium smooth transitions for blog cards */
+.premium-blog-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, box-shadow;
+}
+
+.premium-blog-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+}
+
+.dark .premium-blog-card:hover {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3) !important;
+}
+
+/* Butter-smooth image zoom inside premium cards */
+.premium-blog-card img {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+.premium-blog-card:hover img {
+  transform: scale(1.05) !important;
+}
+
+/* Hide scrollbars for scrollbar-none class */
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+}
+.scrollbar-none {
+  -ms-overflow-style: none !important;  /* IE/Edge */
+  scrollbar-width: none !important;  /* Firefox */
 }
