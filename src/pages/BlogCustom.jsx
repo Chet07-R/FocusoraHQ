@@ -261,7 +261,7 @@ const BlogCustom = () => {
   }
 
   return (
-    <section className="pt-24 sm:pt-28 pb-8 sm:pb-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <section className="pt-24 sm:pt-28 pb-8 sm:pb-12 bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6">
         <Link to="/blog" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -53,7 +53,7 @@ const Blog1 = () => {
     }
   };
   return (
-    <>
+    <div className="bg-slate-50 dark:bg-slate-950 min-h-screen pt-20 transition-colors duration-300 text-slate-800 dark:text-slate-100">
     
     {}
     <article className="py-6 sm:py-12">
@@ -723,7 +723,7 @@ const Blog1 = () => {
         </div>
     </div>
 </section>
-    </>
+    </div>
   );
 };
 

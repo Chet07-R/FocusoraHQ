@@ -430,7 +430,7 @@ const Blog = () => {
       </section>
 
       {/* 🔍 Category Filters Bar */}
-      <section className="sticky top-[64px] z-50 bg-slate-50 dark:bg-slate-955 border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm transition-all duration-300">
+      <section className="sticky top-[64px] z-50 bg-slate-50 dark:bg-slate-950 border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm transition-all duration-300">
         <div className="container mx-auto px-6">
           <div className="flex justify-center">
             {/* Category Scrolling Pills */}
