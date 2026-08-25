@@ -1,8 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../components/blog.css';
 
 const Blog1 = () => {
+  const [activeId, setActiveId] = useState('introduction');
+  const [indicatorStyle, setIndicatorStyle] = useState({ height: 0, top: 0 });
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const sections = ['introduction', 'science', 'benefits', 'challenges', 'day-plan', 'techniques', 'tracking'];
+    const observers = [];
+
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveId(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0.1,
+    });
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const activeEl = document.querySelector(`.toc-link[href="#${activeId}"]`);
+    if (activeEl && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const activeRect = activeEl.getBoundingClientRect();
+      setIndicatorStyle({
+        height: activeRect.height,
+        top: activeRect.top - containerRect.top,
+      });
+    }
+  }, [activeId]);
+
+  const handleLinkClick = (e, id) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveId(id);
+    }
+  };
   return (
     <>
     
@@ -78,39 +127,37 @@ const Blog1 = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-12 max-w-7xl mx-auto">
            {}
 <div className="lg:col-span-1 order-2 lg:order-1">
-  <div className="bg-transparent rounded-xl shadow-lg p-4 sm:p-6 lg:sticky lg:top-24 border border-gray-200/50 dark:border-gray-700/50">
-    <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-800 dark:text-white flex items-center gap-2">
+  <div ref={containerRef} className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-4 sm:p-6 lg:sticky lg:top-24 border border-gray-200/50 dark:border-gray-700/50 relative overflow-hidden">
+    <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-800 dark:text-white flex items-center gap-2 border-b border-gray-100 dark:border-gray-700/50 pb-3">
       <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
       Table of Contents
     </h3>
 
-      {}
-      <div className="toc-indicator absolute left-0 w-1 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out" style={{height: '36px', top: '0'}}></div>
+      <div className="toc-indicator absolute left-2 w-1.5 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full transition-all duration-300 ease-out" style={{ height: `${indicatorStyle.height}px`, top: `${indicatorStyle.top}px` }}></div>
       
-      <div className="space-y-1 relative pl-4">
-        <a href="#introduction" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          What is Deep Work?
-        </a>
-        <a href="#science" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          The Science Behind Deep Work
-        </a>
-        <a href="#benefits" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          Benefits & Impact
-        </a>
-        <a href="#challenges" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          Common Challenges
-        </a>
-        <a href="#day-plan" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          30-Day Action Plan
-        </a>
-        <a href="#techniques" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          Proven Techniques
-        </a>
-        <a href="#tracking" className="toc-link block py-2 px-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors text-xs sm:text-sm font-medium">
-          Progress Tracking
-        </a>
+      <div className="space-y-1.5 relative pl-4">
+        {[
+          { id: 'introduction', label: 'What is Deep Work?' },
+          { id: 'science', label: 'The Science Behind Deep Work' },
+          { id: 'benefits', label: 'Benefits & Impact' },
+          { id: 'challenges', label: 'Common Challenges' },
+          { id: 'day-plan', label: '30-Day Action Plan' },
+          { id: 'techniques', label: 'Proven Techniques' },
+          { id: 'tracking', label: 'Progress Tracking' },
+        ].map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            onClick={(e) => handleLinkClick(e, item.id)}
+            className={`toc-link block py-2 px-3 rounded-xl transition-all duration-300 text-xs sm:text-sm font-medium ${
+              activeId === item.id ? 'active-toc' : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+            }`}
+          >
+            {item.label}
+          </a>
+        ))}
       </div>
   </div>
 </div>
