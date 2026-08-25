@@ -123,7 +123,7 @@ const Navbar = () => {
         onClick={handleLogoClick}
         className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300 flex-shrink-0"
       >
-        <img src="/images/transparent.png" className="w-7 h-7 sm:w-8 sm:h-8" alt="FocusoraHQ Lamp Logo" />
+        <img src="/images/transparent.png" className="w-7 h-7 sm:w-8 sm:h-8 dark:invert-0 invert transition-all duration-300" alt="FocusoraHQ Lamp Logo" />
         <span className="font-bold text-lg sm:text-xl brand-gradient" style={{ letterSpacing: "-0.5px" }}>
           FocusoraHQ
         </span>
@@ -164,14 +164,14 @@ const Navbar = () => {
           aria-checked={darkMode}
           aria-label="Toggle dark mode"
           onClick={toggleDarkMode}
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
         >
           {darkMode ? (
             <svg className="w-5 h-5 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           ) : (
-            <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-slate-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
           )}
@@ -199,7 +199,7 @@ const Navbar = () => {
           {profileOpen && (
             <div
               id="profile-menu"
-              className="absolute right-0 top-12 z-[11010] w-72 rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 profile-panel overflow-hidden ring-1 ring-black/5 dark:ring-white/10 animate-slideInUp"
+              className="absolute right-0 top-12 z-[11010] w-72 max-w-[calc(100vw-24px)] rounded-2xl shadow-2xl border border-slate-200/50 dark:border-white/10 profile-panel overflow-hidden ring-1 ring-black/5 dark:ring-white/10 animate-slideInUp"
             >
 
               <div className="flex p-4 items-center gap-3 profile-gradient-header">
@@ -364,7 +364,7 @@ const Navbar = () => {
       </div>
 
       {mobileMenuOpen && (
-        <div id="mobile-menu" className="absolute top-16 left-0 w-full bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden shadow-xl border-t border-white/10">
+        <div id="mobile-menu" className="absolute top-16 left-0 w-full bg-white/95 dark:bg-black/95 backdrop-blur-md z-40 transition-all duration-300 lg:hidden shadow-xl border-t border-slate-200/50 dark:border-white/10">
           <div className="px-4 py-6 space-y-3">
             {navItems.map((item) =>
               item.isExternal ? (
@@ -373,10 +373,10 @@ const Navbar = () => {
                   href={item.href}
                   data-page={item.dataPage}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors duration-300 text-white font-semibold"
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors duration-300 text-slate-800 dark:text-white font-semibold"
                 >
                   {renderIcon(item.icon)}
-                  <span className="text-white font-semibold">{item.name}</span>
+                  <span className="text-slate-800 dark:text-white font-semibold">{item.name}</span>
                 </a>
               ) : (
                 <Link
@@ -384,16 +384,16 @@ const Navbar = () => {
                   to={item.to}
                   data-page={item.dataPage}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 text-white font-semibold group focus:outline-none ${
+                  className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 text-slate-800 dark:text-white font-semibold group focus:outline-none ${
                     location.pathname === item.to 
-                      ? 'bg-white/5 shadow-lg shadow-black/30' 
-                      : 'hover:bg-gray-800'
+                      ? 'bg-slate-100 dark:bg-white/5 shadow-md shadow-black/10' 
+                      : 'hover:bg-slate-100 dark:hover:bg-gray-800'
                   }`}
                 >
                   {renderIcon(item.icon)}
                   <span className={location.pathname === item.to 
-                    ? 'text-white font-bold underline underline-offset-4 decoration-cyan-400 decoration-2'
-                    : 'text-white font-semibold'
+                    ? 'text-slate-900 dark:text-white font-bold underline underline-offset-4 decoration-cyan-500 dark:decoration-cyan-400 decoration-2'
+                    : 'text-slate-700 dark:text-white font-semibold'
                   }>{item.name}</span>
                 </Link>
               )
