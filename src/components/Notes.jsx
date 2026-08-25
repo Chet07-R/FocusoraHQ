@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, AlignRight, FileText, Eye } from "lucide-react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "auto" }) => {
   const { roomData, updateNotes, currentRoom } = useStudyRoom();
   const { user, userProfile } = useAuth();
+  const { darkMode } = useTheme();
   const isRoomMode = scope === "room" ? Boolean(currentRoom) : scope === "personal" ? false : Boolean(currentRoom);
   const notesStorageKey = isRoomMode ? "sr_notes" : "myspace_notes";
   const filesStorageKey = isRoomMode ? "sr_files" : "myspace_files";
@@ -480,7 +482,7 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
   const { chars, words, minutes } = getNotesStats();
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-2xl">
+    <div className="w-full max-w-4xl mx-auto flex flex-col bg-white/70 dark:bg-slate-900 text-slate-800 dark:text-white p-6 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-xl">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <span>Notes</span>
@@ -503,42 +505,42 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
         </div>
       </div>
 
-      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0" style={{ userSelect: 'none' }}>
+      <div className="bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0" style={{ userSelect: 'none' }}>
         <div className="flex items-center gap-2 justify-center">
           <button
             onClick={() => formatText('bold')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <strong>B</strong>
           </button>
           <button
             onClick={() => formatText('italic')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <em>I</em>
           </button>
           <button
             onClick={() => formatText('underline')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <u>U</u>
           </button>
 
           <button 
             onClick={() => setAlignment('left')} 
-            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <AlignLeft className="w-4 h-4" />
           </button>
           <button 
             onClick={() => setAlignment('center')} 
-            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <AlignCenter className="w-4 h-4" />
           </button>
           <button 
             onClick={() => setAlignment('right')} 
-            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-white/6 text-white'}`}
+            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <AlignRight className="w-4 h-4" />
           </button>
@@ -557,16 +559,16 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
           <select
             value={dictationLang}
             onChange={(e) => setDictationLang(e.target.value)}
-            className="px-2 py-2 rounded-md bg-white/10 text-white outline-none"
+            className="px-2 py-2 rounded-md bg-slate-100/50 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200/50 dark:border-white/10 outline-none"
             title="Dictation language"
           >
-            <option className="bg-gray-900" value="en-US">English (US)</option>
-            <option className="bg-gray-900" value="en-IN">English (India)</option>
-            <option className="bg-gray-900" value="en-GB">English (UK)</option>
-            <option className="bg-gray-900" value="hi-IN">Hindi (India)</option>
-            <option className="bg-gray-900" value="en-CA">English (Canada)</option>
+            <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="en-US">English (US)</option>
+            <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="en-IN">English (India)</option>
+            <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="en-GB">English (UK)</option>
+            <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="hi-IN">Hindi (India)</option>
+            <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="en-CA">English (Canada)</option>
           </select>
-          <label className="flex items-center gap-2 text-xs text-gray-300">
+          <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-gray-300">
             <input type="checkbox" checked={autoPunct} onChange={(e) => setAutoPunct(e.target.checked)} />
             Auto punctuation
           </label>
@@ -574,14 +576,14 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
             onClick={isRecording ? stopDictation : startDictation}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
               isRecording
-                ? 'bg-red-600 hover:bg-red-500'
-                : 'bg-orange-600 hover:bg-orange-500'
+                ? 'bg-red-600 hover:bg-red-500 text-white'
+                : 'bg-orange-600 hover:bg-orange-500 text-white'
             }`}
           >
             <Mic className="w-4 h-4" />
             {isRecording ? 'Stop' : 'Dictate'}
           </button>
-          <div className="text-sm text-white/70">
+          <div className="text-sm text-slate-500 dark:text-white/70">
             {chars} chars • {words} words • {minutes} min read
           </div>
         </div>
@@ -592,28 +594,27 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
         contentEditable
         suppressContentEditableWarning
         data-focusora-notes-editor="true"
-        className="flex-1 bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4"
+        className="flex-1 bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4 text-slate-800 dark:text-white"
       />
 
-      <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 flex-shrink-0">
+      <div className="bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-4 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <UploadCloud className="w-5 h-5 text-white/70" />
-          <span className="text-sm font-semibold text-white/70">📥 Upload Notes</span>
+          <UploadCloud className="w-5 h-5 text-slate-500 dark:text-white/70" />
+          <span className="text-sm font-semibold text-slate-600 dark:text-white/70">📥 Upload Notes</span>
           <input
             type="file"
             id="fileUpload"
             onChange={handleFileUpload}
-            // accept=".txt,.md,text/plain,text/markdown"
             className="hidden"
           />
           <label
             htmlFor="fileUpload"
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg cursor-pointer transition text-sm"
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg cursor-pointer transition text-sm text-white"
           >
             Choose File
           </label>
-          <div className="text-gray-300">{uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}</div>
-          <div className="ml-auto text-xs text-gray-300">Local only</div>
+          <div className="text-slate-600 dark:text-gray-300">{uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}</div>
+          <div className="ml-auto text-xs text-slate-500 dark:text-gray-300">Local only</div>
         </div>
         {uploadedFiles.length > 0 && (
           <div className="mt-3 space-y-2">
