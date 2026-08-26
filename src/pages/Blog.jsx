@@ -39,6 +39,25 @@ const Blog = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 4000);
+  };
+
+  useEffect(() => {
+    document.title = "FocusoraHQ | Productivity & Study Blogs";
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const allArticles = [
     {
@@ -322,7 +341,7 @@ const Blog = () => {
     try {
       const createdBlog = await createBlogApi(payload);
       setCommunityBlogs((prev) => [createdBlog, ...prev]);
-      setSubmitSuccess('Your blog is now published in the community section.');
+      showToast('Your blog has been successfully published!', 'success');
       setBlogModalOpen(false);
       setBlogForm((prev) => ({
         ...prev,
@@ -337,7 +356,7 @@ const Blog = () => {
         coverImageInputRef.current.value = '';
       }
     } catch (error) {
-      setSubmitError(getAuthErrorMessage(error, 'Unable to publish your blog right now.'));
+      showToast(getAuthErrorMessage(error, 'Unable to publish your blog right now.'), 'error');
     } finally {
       setSubmitPending(false);
     }
@@ -367,9 +386,9 @@ const Blog = () => {
     try {
       await deleteBlogApi(blogId);
       setCommunityBlogs((prev) => prev.filter((blog) => String(blog.id || blog._id) !== String(blogId)));
-      setSubmitSuccess('Blog deleted successfully.');
+      showToast('Blog deleted successfully.', 'success');
     } catch (error) {
-      setSubmitError(getAuthErrorMessage(error, 'Unable to delete this blog right now.'));
+      showToast(getAuthErrorMessage(error, 'Unable to delete this blog right now.'), 'error');
     } finally {
       setDeletePendingBlogId('');
     }
@@ -389,7 +408,6 @@ const Blog = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="lg:w-3/5 text-left space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider">
-                <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-ping"></span>
                 Productivity & Study Resource
               </div>
               <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
@@ -429,30 +447,6 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* 🔍 Category Filters Bar */}
-      <section className="sticky top-[64px] z-50 bg-slate-50 dark:bg-slate-950 border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm transition-all duration-300">
-        <div className="container mx-auto px-6">
-          <div className="flex justify-center">
-            {/* Category Scrolling Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none scroll-smooth justify-center">
-              {['All', 'Focus', 'Time Management', 'Organization', 'Goals', 'Habits', 'Energy'].map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95 ${
-                    selectedCategory === category
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 🏆 Featured Section */}
       <section className="py-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
         <div className="container mx-auto px-6">
@@ -469,7 +463,7 @@ const Blog = () => {
                   <img
                     src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                     alt="Deep work and focus strategies"
-                    className="w-full h-72 md:h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-72 md:h-full object-cover featured-article-img"
                   />
                   <div className="absolute bottom-6 left-6 z-20 md:hidden">
                     <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
@@ -509,6 +503,30 @@ const Blog = () => {
         </div>
       </section>
 
+      {/* 🔍 Category Filters Bar */}
+      <section className="sticky top-[64px] z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm transition-all duration-300">
+        <div className="container mx-auto px-6">
+          <div className="flex justify-center">
+            {/* Category Scrolling Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none scroll-smooth justify-start sm:justify-center px-2">
+              {['All', 'Focus', 'Time Management', 'Organization', 'Goals', 'Habits', 'Energy'].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95 ${
+                    selectedCategory === category
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 📚 Articles Grid Section */}
       <section className="py-16 bg-slate-50 dark:bg-slate-950" id="latest-articles">
         <div className="container mx-auto px-6">
@@ -525,17 +543,19 @@ const Blog = () => {
           </div>
 
           {articles.length === 0 ? (
-            <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/50 dark:border-slate-800/50 max-w-lg mx-auto">
-              <svg className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">No guides found</h3>
-              <p className="text-slate-500 text-sm mb-4">Try adjusting your keywords or category filters.</p>
+            <div className="text-center py-16 px-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/40 dark:border-slate-800/40 max-w-xl mx-auto shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="w-24 h-24 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="h-12 w-12 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No Guides Found</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-base mb-6 max-w-sm mx-auto">We couldn't find any articles matching your search query or selected category. Try another filter!</p>
               <button
                 onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-                className="bg-blue-600 text-white px-5 py-2 rounded-full text-xs font-bold"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
               >
-                Reset Search
+                Reset Search Filters
               </button>
             </div>
           ) : (
@@ -616,9 +636,18 @@ const Blog = () => {
           </div>
 
           {communityLoading && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="h-10 w-10 animate-spin rounded-full border-3 border-blue-500 border-t-transparent" />
-              <p className="mt-4 text-sm font-semibold text-slate-500 dark:text-slate-400">Syncing community database...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-6 space-y-4 animate-pulse">
+                  <div className="h-48 bg-slate-200 dark:bg-slate-800 rounded-xl w-full" />
+                  <div className="space-y-2">
+                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/4" />
+                    <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-full" />
+                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3" />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
@@ -635,12 +664,17 @@ const Blog = () => {
           )}
 
           {!communityLoading && !communityError && filteredCommunityBlogs.length === 0 && (
-            <div className="max-w-lg mx-auto p-8 rounded-3xl border border-slate-200/50 dark:border-slate-800/50 text-center shadow-lg bg-slate-50 dark:bg-slate-900/50">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Be the first spotlight author</h3>
-              <p className="text-slate-500 text-sm mb-6">Share your workflow, morning setup, or study systems with developers and students worldwide.</p>
+            <div className="max-w-xl mx-auto p-10 rounded-3xl border border-slate-200/40 dark:border-slate-800/40 text-center shadow-xl bg-slate-50/50 dark:bg-slate-900/50 hover:shadow-2xl transition-all duration-300">
+              <div className="w-20 h-20 bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="h-10 w-10 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Be the first spotlight author</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-base mb-8 max-w-sm mx-auto">Share your workflow, morning setup, or study systems with developers and students worldwide.</p>
               <button
                 onClick={openBlogModal}
-                className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-xs font-bold"
+                className="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-600 hover:via-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
               >
                 Publish First Log
               </button>
@@ -677,8 +711,18 @@ const Blog = () => {
                         </p>
                       </div>
                       <div className="pt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 font-semibold border-t border-slate-200/40 dark:border-slate-800/40 mt-4">
-                        <span>By {blog.authorName || 'Focusora Member'}</span>
-                        <span>{formatBlogDate(blog.createdAt)}</span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-3.5 h-3.5 text-blue-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          {blog.authorName || 'Focusora Member'}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <svg className="w-3.5 h-3.5 text-indigo-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {formatBlogDate(blog.createdAt)}
+                        </span>
                       </div>
                     </div>
                   </Link>
@@ -936,6 +980,24 @@ const Blog = () => {
               </div>
             </form>
           </div>
+        </div>
+      )}
+      {toast.show && (
+        <div className={`fixed bottom-24 left-6 z-50 flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border transition-all duration-500 animate-slideInUp ${
+          toast.type === 'success'
+            ? 'bg-emerald-50 dark:bg-emerald-950/90 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800'
+            : 'bg-red-50 dark:bg-red-950/90 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800'
+        }`}>
+          {toast.type === 'success' ? (
+            <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          )}
+          <span className="text-sm font-bold">{toast.message}</span>
         </div>
       )}
     </div>
