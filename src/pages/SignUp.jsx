@@ -89,7 +89,7 @@ const SignUp = () => {
           {}
           <div className="text-center mb-8">
             <h2 
-              className="text-4xl font-extrabold mb-2"
+              className="text-3xl sm:text-4xl font-extrabold mb-2"
               style={{
                 background: 'linear-gradient(90deg, #22d3ee 0%, #f472b6 100%)',
                 WebkitBackgroundClip: 'text',

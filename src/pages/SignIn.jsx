@@ -94,7 +94,7 @@ return (
       {}
       <div className="text-center mb-8">
         <h2 
-          className="text-5xl font-black mb-3 tracking-tight" 
+          className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 tracking-tight" 
           style={{ 
             fontFamily: 'Inter, system-ui, sans-serif', 
             letterSpacing: '-0.02em',
