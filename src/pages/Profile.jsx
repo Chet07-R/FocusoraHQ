@@ -406,9 +406,9 @@ const Profile = () => {
   const questHistory = Array.isArray(questState?.history) ? questState.history : [];
 
   return (
-    <div className="bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300 pt-16">
+    <div className="bg-gradient-to-br from-indigo-50 via-slate-50 to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen transition-colors duration-300 pt-24 pb-16">
       <div className="p-4 md:p-8">
-        <div className="max-w-6xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-colors duration-300 relative">
+        <div className="max-w-6xl mx-auto bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden transition-all duration-300 relative">
           {}
           <div className="relative">
             <div className="relative h-48 md:h-64 overflow-hidden">
@@ -470,43 +470,54 @@ const Profile = () => {
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-4">{display.name}</h1>
               <p className="text-gray-600 dark:text-gray-300 text-lg mt-2">{display.bio}</p>
 
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-full font-bold mt-4 shadow-lg" style={{ animation: "pulse-slow 2s infinite" }}>
-                {}
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.001 2c.6 2.4-.3 3.9-1.2 4.9-.9 1-1.7 2.1-.6 3.9.9-1.1 2.4-1.6 3.6-1.2 2 .7 3.1 3 2.3 5.1-.9 2.3-3.5 3.5-6 2.7-2.2-.7-3.7-2.7-3.7-5 0-3.6 2.7-5.7 3.6-6.8C10.6 4.1 11.2 3.2 12 2z" />
-                </svg>
-                <span>{display.streak} Day Streak</span>
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-full font-bold shadow-lg" style={{ animation: "pulse-slow 2s infinite" }}>
+                  {}
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.001 2c.6 2.4-.3 3.9-1.2 4.9-.9 1-1.7 2.1-.6 3.9.9-1.1 2.4-1.6 3.6-1.2 2 .7 3.1 3 2.3 5.1-.9 2.3-3.5 3.5-6 2.7-2.2-.7-3.7-2.7-3.7-5 0-3.6 2.7-5.7 3.6-6.8C10.6 4.1 11.2 3.2 12 2z" />
+                  </svg>
+                  <span>{display.streak} Day Streak</span>
+                </div>
+                <Link
+                  to="/edit-profile"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  Edit Profile
+                </Link>
               </div>
             </div>
           </div>
 
           {}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
-            <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-6 py-8 bg-slate-50/50 dark:bg-slate-950/40 border-b border-slate-200/50 dark:border-slate-800/60">
+            <div className="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 text-center border border-slate-200/50 dark:border-slate-700/50">
               {}
               <svg className="w-10 h-10 mx-auto text-indigo-600 dark:text-indigo-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.totalHours}</h3>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white">{display.totalHours}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Total Hours</p>
             </div>
 
-            <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
+            <div className="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 text-center border border-slate-200/50 dark:border-slate-700/50">
               {}
               <svg className="w-10 h-10 mx-auto text-green-600 dark:text-green-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.sessions}</h3>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white">{display.sessions}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Study Sessions</p>
             </div>
 
-            <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
+            <div className="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 text-center border border-slate-200/50 dark:border-slate-700/50">
               {}
               <svg className="w-10 h-10 mx-auto text-yellow-600 dark:text-yellow-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8"/><path d="M12 17a4 4 0 0 0 4-4V5H8v8a4 4 0 0 0 4 4z"/><path d="M7 5H5a2 2 0 0 0-2 2v1a5 5 0 0 0 5 5"/><path d="M17 5h2a2 2 0 0 1 2 2v1a5 5 0 0 1-5 5"/></svg>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.points}</h3>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white">{display.points}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Points</p>
             </div>
 
-            <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all hover:-translate-y-1 text-center border border-gray-100 dark:border-gray-600">
+            <div className="bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 text-center border border-slate-200/50 dark:border-slate-700/50">
               {}
               <svg className="w-10 h-10 mx-auto text-red-600 dark:text-red-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8v4l3 3"/><path d="M10 2h4"/><path d="M4.93 4.93l2.83 2.83"/><circle cx="12" cy="13" r="8"/></svg>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{display.pomodoros}</h3>
+              <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white">{display.pomodoros}</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Pomodoros</p>
             </div>
           </div>
@@ -541,14 +552,14 @@ const Profile = () => {
           </div>
 
           {}
-          <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
+          <div className="px-6 py-8 bg-slate-50/40 dark:bg-slate-950/40 border-b border-slate-200/50 dark:border-slate-800/60">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-cyan-500 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.5 7 7 .5-5.5 4.8L19 21l-7-4-7 4 1-6.7L.5 9.5l7-.5L12 2z"/></svg>
               Quest Vault
             </h2>
 
             <div className="grid gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm dark:border-cyan-500/30 dark:bg-gray-800">
+              <div className="rounded-2xl border border-cyan-200 bg-white/90 dark:bg-slate-800/80 p-5 shadow-md dark:border-cyan-500/30">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-wide text-cyan-600 dark:text-cyan-300">Active quest</p>
@@ -582,7 +593,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cyan-200 bg-white p-5 shadow-sm dark:border-cyan-500/30 dark:bg-gray-800">
+              <div className="rounded-2xl border border-cyan-200 bg-white/90 dark:bg-slate-800/80 p-5 shadow-md dark:border-cyan-500/30">
                 <p className="text-xs uppercase tracking-wide text-cyan-600 dark:text-cyan-300">Digital rewards</p>
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {unlockedRewards.length === 0 && (
@@ -622,7 +633,7 @@ const Profile = () => {
           </div>
 
           {}
-          <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
+          <div className="px-6 py-8 bg-slate-50/40 dark:bg-slate-950/40 border-b border-slate-200/50 dark:border-slate-800/60">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-7"/></svg>
               This Week's Activity
@@ -707,14 +718,14 @@ const Profile = () => {
           </div>
 
           {}
-          <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
+          <div className="px-6 py-8 bg-slate-50/40 dark:bg-slate-950/40 border-b border-slate-200/50 dark:border-slate-800/60">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-gray-600 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .69.28 1.32.73 1.77.45.45 1.08.73 1.77.73"/></svg>
               Study Preferences
             </h2>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600">
+              <div className="flex items-center gap-4 bg-white/90 dark:bg-slate-800/80 p-4 rounded-xl shadow-md border border-slate-200/50 dark:border-slate-700/50">
                 <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                 </div>
@@ -724,7 +735,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600">
+              <div className="flex items-center gap-4 bg-white/90 dark:bg-slate-800/80 p-4 rounded-xl shadow-md border border-slate-200/50 dark:border-slate-700/50">
                 <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/50 rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-pink-600 dark:text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
                 </div>
@@ -734,7 +745,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600">
+              <div className="flex items-center gap-4 bg-white/90 dark:bg-slate-800/80 p-4 rounded-xl shadow-md border border-slate-200/50 dark:border-slate-700/50">
                 <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 11a7 7 0 0 1-7 7"/><path d="M5 19a7 7 0 0 1 7-7"/><path d="M5 5v14"/><path d="M19 5v14"/></svg>
                 </div>
@@ -744,7 +755,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 bg-white dark:bg-gray-700 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600">
+              <div className="flex items-center gap-4 bg-white/90 dark:bg-slate-800/80 p-4 rounded-xl shadow-md border border-slate-200/50 dark:border-slate-700/50">
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/50 rounded-full flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>
                 </div>
@@ -784,7 +795,7 @@ const Profile = () => {
             {!myBlogsLoading && myBlogs.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {myBlogs.map((blog) => (
-                  <article key={blog.id || blog._id} className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                  <article key={blog.id || blog._id} className="overflow-hidden rounded-2xl border border-slate-200/50 dark:border-slate-700/50 bg-white/90 dark:bg-slate-800/80 shadow-md">
                     <Link to={`/blog/community/${blog.id || blog._id}`}>
                       <img src={blog.coverImage} alt={blog.title} className="h-44 w-full object-cover" />
                       <div className="p-4">
@@ -794,7 +805,7 @@ const Profile = () => {
                       </div>
                     </Link>
 
-                    <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+                    <div className="border-t border-slate-200/50 dark:border-gray-700 px-4 py-3">
                       <button
                         type="button"
                         onClick={() => handleDeleteBlog(blog.id || blog._id)}
@@ -811,14 +822,14 @@ const Profile = () => {
           </div>
 
           {}
-          <div className="px-6 py-8 bg-gray-50 dark:bg-gray-900/50">
+          <div className="px-6 py-8 bg-slate-50/40 dark:bg-slate-950/40 border-b border-slate-200/50 dark:border-slate-800/60">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <svg className="w-6 h-6 text-indigo-500" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
               </svg>
               Community
             </h2>
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="bg-white/90 dark:bg-slate-800/80 rounded-xl p-6 border border-slate-200/50 dark:border-slate-700/50 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Join our Discord Server</h3>
                 <p className="text-gray-600 dark:text-gray-400 mt-1">Connect with other students, share study tips, and participate in community events.</p>

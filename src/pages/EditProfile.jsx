@@ -210,7 +210,7 @@ const EditProfile = () => {
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transition-colors duration-300">
-            <form onSubmit={onSubmit} className="p-8 md:p-12">
+            <form onSubmit={onSubmit} className="p-4 sm:p-8 md:p-12">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
                 <div className="space-y-6">
