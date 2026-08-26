@@ -4,6 +4,19 @@ const { ok, fail } = require('../utils/apiResponse');
 const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1/models';
 
 const listModels = async (req, res) => {
+  if (env.groqApiKey) {
+    return ok(res, {
+      models: [
+        {
+          name: env.groqModel || 'qwen-2.5-coder-32b',
+          displayName: 'Qwen 2.5 Coder (via Groq)',
+          description: 'High-performance coder model from Qwen hosted on Groq.',
+          supportedGenerationMethods: ['generateContent']
+        }
+      ]
+    });
+  }
+
   if (!env.geminiApiKey) {
     return fail(res, 503, 'GEMINI_DISABLED', 'Gemini API key is not configured');
   }
@@ -52,6 +65,29 @@ const normalizeHistory = (history = []) => {
       }
 
       return { role: 'user', parts: [{ text: content }] };
+    })
+    .filter(Boolean);
+};
+
+const normalizeHistoryForGroq = (history = []) => {
+  if (!Array.isArray(history)) {
+    return [];
+  }
+
+  return history
+    .map((item) => {
+      const role = String(item?.role || '').toLowerCase();
+      const content = String(item?.content || item?.text || '').trim();
+
+      if (!content) {
+        return null;
+      }
+
+      if (role === 'assistant' || role === 'model') {
+        return { role: 'assistant', content };
+      }
+
+      return { role: 'user', content };
     })
     .filter(Boolean);
 };
@@ -126,22 +162,62 @@ const buildContextAwarePrompt = (message, context) => {
 };
 
 const chatWithGemini = async (req, res) => {
-  if (!env.geminiApiKey) {
-    return fail(res, 503, 'GEMINI_DISABLED', 'Gemini API key is not configured');
-  }
-
   if (typeof fetch !== 'function') {
     return fail(res, 500, 'FETCH_UNAVAILABLE', 'Server fetch API is unavailable. Use Node 18+ or add a fetch polyfill.');
   }
 
   const message = String(req.body?.message || '').trim();
-  const history = normalizeHistory(req.body?.history);
   const context = req.body?.context;
 
   if (!message) {
     return fail(res, 400, 'MESSAGE_REQUIRED', 'Message is required');
   }
 
+  // --- Groq Integration (Qwen) ---
+  if (env.groqApiKey) {
+    const model = env.groqModel || 'qwen-2.5-coder-32b';
+    const groqHistory = normalizeHistoryForGroq(req.body?.history);
+
+    const payload = {
+      model,
+      messages: [
+        ...groqHistory,
+        { role: 'user', content: buildContextAwarePrompt(message, context) }
+      ],
+      temperature: 0.7,
+      max_tokens: 512,
+    };
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${env.groqApiKey}`
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      const errorMessage = data?.error?.message || 'Groq API request failed';
+      return fail(res, response.status, 'GROQ_ERROR', errorMessage, data?.error);
+    }
+
+    const reply = data?.choices?.[0]?.message?.content?.trim() || '';
+
+    return ok(res, {
+      model,
+      reply,
+    });
+  }
+
+  // --- Gemini Fallback ---
+  if (!env.geminiApiKey) {
+    return fail(res, 503, 'GEMINI_DISABLED', 'Gemini API key is not configured');
+  }
+
+  const history = normalizeHistory(req.body?.history);
   const rawModel = env.geminiModel || 'gemini-2.5-flash';
   const model = rawModel.startsWith('models/') ? rawModel.slice('models/'.length) : rawModel;
   const url = `${GEMINI_ENDPOINT}/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(
