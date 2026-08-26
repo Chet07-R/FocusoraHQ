@@ -23,6 +23,8 @@ const env = {
   emailFrom: process.env.EMAIL_FROM,
   geminiApiKey: process.env.GEMINI_API_KEY,
   geminiModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  groqApiKey: process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY,
+  groqModel: process.env.GROQ_MODEL || process.env.GEMINI_MODEL || 'qwen-2.5-coder-32b',
 };
 
 module.exports = { env };
