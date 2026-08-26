@@ -18,6 +18,7 @@ import StudyRoom from "./pages/StudyRoom";
 import MySpace from "./pages/MySpace";
 import Community from "./pages/Community";
 import ScrollToTop from "./components/ScrollToTop";
+import BackToTop from "./components/BackToTop";
 import StudyRoom1 from "./pages/StudyRoom-1";
 import Home from "./pages/Home";
 import Terms from "./pages/Terms";
@@ -34,6 +35,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <BackToTop />
       <Navbar />
         <EmailVerificationBanner />
       <Routes>
