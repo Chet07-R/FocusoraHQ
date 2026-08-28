@@ -75,35 +75,35 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-b from-black via-gray-900 to-gray-950 w-full relative overflow-hidden text-gray-300">
-      <div className="absolute inset-0 opacity-10">
+    <footer className="w-full relative overflow-hidden transition-colors duration-300">
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
         <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-6 py-12 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-8 mb-8">
-          <div className="col-span-2 md:col-span-3 lg:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-8 mb-8">
+          <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img
                 src="/images/transparent.png"
                 alt="FocusoraHQ Logo"
-                className="w-8 h-8"
+                className="w-8 h-8 dark:invert-0 invert transition-all duration-300"
               />
-              <span className="font-bold text-2xl bg-gradient-to-r from-cyan-400 to-pink-400 brand-gradient">
+              <span className="font-bold text-2xl bg-gradient-to-r from-cyan-600 to-pink-500 dark:from-cyan-400 dark:to-pink-400 brand-gradient">
                 FocusoraHQ
               </span>
             </div>
-            <p className="text-gray-300 text-sm leading-relaxed mb-6 md:max-w-md">
+            <p className="text-slate-800 dark:text-gray-300 text-sm leading-relaxed mb-6 md:max-w-md">
               The all-in-one platform for focused work. Minimize digital noise
               and maximize your potential — whether you're working alone or
               with a team.
             </p>
 
-            <div className="space-y-2 text-sm text-gray-300">
+            <div className="space-y-2 text-sm text-slate-700 dark:text-gray-400">
               <div className="flex items-center">
                 <svg
-                  className="w-4 h-4 mr-3 text-cyan-400"
+                  className="w-4 h-4 mr-3 text-cyan-500 dark:text-cyan-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -126,7 +126,7 @@ const Footer = () => {
 
               <div className="flex items-center">
                 <svg
-                  className="w-4 h-4 mr-3 text-cyan-400"
+                  className="w-4 h-4 mr-3 text-cyan-500 dark:text-cyan-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -143,7 +143,7 @@ const Footer = () => {
 
               <div className="flex items-center">
                 <svg
-                  className="w-4 h-4 mr-3 text-cyan-400"
+                  className="w-4 h-4 mr-3 text-cyan-500 dark:text-cyan-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -160,61 +160,61 @@ const Footer = () => {
             </div>
           </div>
           <div className="space-y-4">
-            <h3 className="text-white font-semibold text-lg underline-hover cursor-default">
+            <h3 className="text-slate-800 dark:text-white font-semibold text-lg underline-hover cursor-default">
               Product
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/my-space" className="text-gray-300 hover:text-cyan-400 transition-colors">My Space</Link></li>
-              <li><Link to="/study-room" className="text-gray-300 hover:text-cyan-400 transition-colors">Study Room</Link></li>
-              <li><Link to="/blog" className="text-gray-300 hover:text-cyan-400 transition-colors">Blogs</Link></li>
-              <li><Link to="/leaderboard" className="text-gray-300 hover:text-cyan-400 transition-colors">Leaderboard</Link></li>
+              <li><Link to="/my-space" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">My Space</Link></li>
+              <li><Link to="/study-room" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Study Room</Link></li>
+              <li><Link to="/blog" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Blogs</Link></li>
+              <li><Link to="/leaderboard" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Leaderboard</Link></li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-white font-semibold text-lg underline-hover cursor-default">
+            <h3 className="text-slate-800 dark:text-white font-semibold text-lg underline-hover cursor-default">
               Company
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="text-gray-300 hover:text-purple-500 transition-colors">About</Link></li>
-              <li><Link to="/blog" className="text-gray-300 hover:text-purple-500 transition-colors">Blogs</Link></li>
-              <li><Link to="/careers" className="text-gray-300 hover:text-purple-500 transition-colors">Careers</Link></li>
-              <li><Link to="/press" className="text-gray-300 hover:text-purple-500 transition-colors">Press</Link></li>
+              <li><Link to="/about" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">About</Link></li>
+              <li><Link to="/blog" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Blogs</Link></li>
+              <li><Link to="/careers" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Careers</Link></li>
+              <li><Link to="/press" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Press</Link></li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-white font-semibold text-lg underline-hover cursor-default">
+            <h3 className="text-slate-800 dark:text-white font-semibold text-lg underline-hover cursor-default">
               Support
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/help-center" className="text-gray-300 hover:text-cyan-400 transition-colors">Help Center</Link></li>
-              <li><Link to="/documentation" className="text-gray-300 hover:text-cyan-400 transition-colors">Documentation</Link></li>
-              <li><Link to="/community" className="text-gray-300 hover:text-cyan-400 transition-colors">Community</Link></li>
-              <li><Link to="/contact" className="text-gray-300 hover:text-cyan-400 transition-colors">Contact</Link></li>
+              <li><Link to="/help-center" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Help Center</Link></li>
+              <li><Link to="/documentation" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Documentation</Link></li>
+              <li><Link to="/community" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Community</Link></li>
+              <li><Link to="/contact" className="text-slate-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">Contact</Link></li>
             </ul>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-white font-semibold text-lg underline-hover cursor-default">
+            <h3 className="text-slate-800 dark:text-white font-semibold text-lg underline-hover cursor-default">
               Legal
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Terms of Service</Link></li>
-              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Cookie Policy</Link></li>
-              <li><Link to="/terms" className="text-gray-300 hover:text-purple-500 transition-colors">Disclaimer</Link></li>
+              <li><Link to="/terms" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Terms of Service</Link></li>
+              <li><Link to="/terms" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Cookie Policy</Link></li>
+              <li><Link to="/terms" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Disclaimer</Link></li>
             </ul>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700/50 hover:border-cyan-500/30 transition-all duration-300">
+        <div className="newsletter-section mb-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-4 md:mb-0">
-              <h3 className="text-white font-semibold text-lg mb-2 flex items-center gap-2">
+              <h3 className="text-slate-800 dark:text-white font-semibold text-lg mb-2 flex items-center gap-2">
                 <span className="text-2xl">📬</span> Stay Updated
               </h3>
-              <p className="text-gray-300 text-sm">
+              <p className="text-slate-800 dark:text-gray-300 text-sm">
                 Get the latest updates and productivity tips straight to your inbox.
               </p>
             </div>
@@ -225,7 +225,7 @@ const Footer = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSubscription()}
                 placeholder="Enter your email"
-                className="px-4 py-2 w-full md:w-64 rounded-l-lg bg-gray-700/50 text-white placeholder-gray-400 border border-gray-600/50 outline-none focus:border-cyan-500 focus:bg-gray-700 transition-all"
+                className="px-4 py-2 w-full md:w-64 rounded-l-lg outline-none transition-all"
               />
               <button
                 onClick={handleSubscription}
@@ -243,11 +243,11 @@ const Footer = () => {
           </div>
         </div>
 
-        <hr className="m-2 border-gray-700/50" />
+        <hr className="m-2 border-slate-200 dark:border-slate-800" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between p-2">
-          <p className="text-gray-300 text-sm text-center sm:text-left">
-            <span className="font-semibold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">
+          <p className="text-slate-700 dark:text-gray-400 text-sm text-center sm:text-left">
+            <span className="font-semibold bg-gradient-to-r from-cyan-600 to-pink-500 dark:from-cyan-400 dark:to-pink-400 bg-clip-text text-transparent">
               FocusoraHQ
             </span>
             {" "} © 2025

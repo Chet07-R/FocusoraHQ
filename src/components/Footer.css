@@ -2,8 +2,12 @@
   position: relative;
   display: inline-block;
   cursor: default;
-  color: #f3f4f6;
+  color: #1e293b;
   transition: color 0.3s ease;
+}
+
+.dark .underline-hover {
+  color: #f3f4f6;
 }
 
 .underline-hover::after {
@@ -24,8 +28,15 @@
 footer {
   position: relative;
   overflow: hidden;
+  color: #475569;
+  background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark footer {
   color: #d1d5db;
   background: linear-gradient(to bottom, #000, #111827, #0f172a);
+  border-top-color: transparent;
 }
 
 footer::before,
@@ -57,9 +68,13 @@ footer::after {
 
 footer h3 {
   font-weight: 600;
-  color: #ffffff;
+  color: #1e293b;
   position: relative;
   transition: all 0.3s ease;
+}
+
+.dark footer h3 {
+  color: #ffffff;
 }
 
 footer h3:hover {
@@ -67,24 +82,24 @@ footer h3:hover {
 }
 
 footer a {
-  color: #d1d5db;
   transition: all 0.3s ease;
   text-decoration: none;
 }
 
-footer a:hover {
-  color: #22d3ee;
-  text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
-}
-
 footer .newsletter-section {
-  background: rgba(17, 24, 39, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dark footer .newsletter-section {
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
 }
 
 footer .newsletter-section:hover {
@@ -93,18 +108,33 @@ footer .newsletter-section:hover {
 }
 
 footer input[type="email"] {
-  background: rgba(55, 65, 81, 0.5);
-  border: 1px solid rgba(75, 85, 99, 0.5);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #0f172a;
   outline: none;
   transition: all 0.3s ease;
 }
 
+.dark footer input[type="email"] {
+  background: rgba(55, 65, 81, 0.5);
+  border: 1px solid rgba(75, 85, 99, 0.5);
+  color: #ffffff;
+}
+
 footer input[type="email"]::placeholder {
+  color: #64748b;
+}
+
+.dark footer input[type="email"]::placeholder {
   color: #9ca3af;
 }
 
 footer input[type="email"]:focus {
+  border-color: #06b6d4;
+  background: #ffffff;
+}
+
+.dark footer input[type="email"]:focus {
   border-color: #06b6d4;
   background: rgba(55, 65, 81, 0.8);
 }
@@ -145,8 +175,12 @@ footer hr {
 
 footer p {
   font-size: 0.9rem;
-  color: #d1d5db;
+  color: #334155;
   line-height: 1.5;
+}
+
+.dark footer p {
+  color: #d1d5db;
 }
 
 footer p span {
