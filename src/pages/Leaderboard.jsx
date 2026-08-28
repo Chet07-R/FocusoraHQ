@@ -756,14 +756,14 @@ const App = () => {
             <table className={`min-w-full text-left text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
               <thead className={`uppercase text-xs ${darkMode ? 'bg-[#1e263b] text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
                 <tr>
-                  <th className="px-6 py-3">Rank</th>
-                  <th className="px-6 py-3">User</th>
-                  <th className="px-6 py-3">Points</th>
-                  <th className="px-6 py-3">Sessions</th>
-                  <th className="px-6 py-3">Focus Time</th>
-                  <th className="px-6 py-3">Streak</th>
-                  <th className="px-6 py-3">League</th>
-                  <th className="px-6 py-3">Badge</th>
+                  <th className="px-3 sm:px-6 py-3">Rank</th>
+                  <th className="px-3 sm:px-6 py-3">User</th>
+                  <th className="px-3 sm:px-6 py-3">Points</th>
+                  <th className="px-3 sm:px-6 py-3">Sessions</th>
+                  <th className="px-3 sm:px-6 py-3">Focus Time</th>
+                  <th className="px-3 sm:px-6 py-3">Streak</th>
+                  <th className="px-3 sm:px-6 py-3">League</th>
+                  <th className="px-3 sm:px-6 py-3">Badge</th>
                 </tr>
               </thead>
               <tbody>
@@ -776,10 +776,10 @@ const App = () => {
                         : `border-gray-200 hover:bg-gray-50 ${user.you ? 'bg-blue-50' : ''}`
                     }`}
                   >
-                    <td className={`px-6 py-4 font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                    <td className={`px-3 sm:px-6 py-4 font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
                       {user.rank}
                     </td>
-                    <td className="px-6 py-4 flex items-center gap-3">
+                    <td className="px-3 sm:px-6 py-4 flex items-center gap-3">
                       <img
                         src={user.img}
                         alt={user.name}
@@ -802,17 +802,17 @@ const App = () => {
                         <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{user.location}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-blue-400 font-semibold">
+                    <td className="px-3 sm:px-6 py-4 text-blue-400 font-semibold">
                       {user.points.toLocaleString()}
                       {user.today && <span className="text-xs text-green-400 ml-1">{user.today}</span>}
                     </td>
-                    <td className="px-6 py-4">{user.sessions}</td>
-                    <td className="px-6 py-4">{user.time}</td>
-                    <td className="px-6 py-4 flex items-center gap-1">
+                    <td className="px-3 sm:px-6 py-4">{user.sessions}</td>
+                    <td className="px-3 sm:px-6 py-4">{user.time}</td>
+                    <td className="px-3 sm:px-6 py-4 flex items-center gap-1">
                       <Flame className="text-orange-400 w-4 h-4" />
                       {user.streak} days
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-4">
                       <span className={`text-xs font-semibold px-3 py-1 rounded-full text-white bg-gradient-to-r ${getLeagueByPoints(user.points).color}`}>
                         {getLeagueByPoints(user.points).name}
                       </span>

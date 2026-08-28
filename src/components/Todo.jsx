@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PlusCircle, Trash2, CheckCircle } from "lucide-react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Todo = ({
   addNotification = () => {},
@@ -11,6 +12,7 @@ const Todo = ({
 }) => {
   const { currentRoom, roomTodos, participants, addTodo, toggleTodo, deleteTodo, fixUnknownTodoCreators } = useStudyRoom();
   const { user, userProfile } = useAuth();
+  const { darkMode } = useTheme();
   const prevTodosRef = React.useRef(null);
   const initializedRef = React.useRef(false);
   const [newTask, setNewTask] = useState("");
@@ -149,13 +151,13 @@ const Todo = ({
 
   return (
     <section
-      className="glass-card rounded-xl p-4 shadow-lg overflow-hidden relative z-10 pointer-events-auto"
+      className="bg-white/70 dark:bg-white/10 border border-slate-200/50 dark:border-white/10 rounded-xl p-4 shadow-lg overflow-hidden relative z-10 pointer-events-auto text-slate-800 dark:text-white"
       style={{ backdropFilter: "blur(10px)" }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <CheckCircle className="text-emerald-400" />
-          <h3 className="text-lg font-semibold text-white">To-Do List</h3>
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-white">To-Do List</h3>
         </div>
         <div className="flex items-center gap-3">
           {hasUnknown && (
@@ -174,7 +176,7 @@ const Todo = ({
               Fix unknown
             </button>
           )}
-          <div className="text-sm text-gray-300">{active} active</div>
+          <div className="text-sm text-slate-500 dark:text-gray-300">{active} active</div>
         </div>
       </div>
 
@@ -184,7 +186,7 @@ const Todo = ({
           onChange={(e) => setNewTask(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && addTask()}
           placeholder="Add a new task..."
-          className="flex-1 px-3 py-2 rounded-md bg-white/10 text-white outline-none cursor-text"
+          className="flex-1 px-3 py-2 rounded-md bg-slate-100/50 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200/50 dark:border-white/10 outline-none cursor-text"
         />
         <button type="button" onClick={addTask} className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:opacity-95 transition cursor-pointer">
           <PlusCircle size={16} />
@@ -194,12 +196,36 @@ const Todo = ({
 
       <ul className="space-y-3 max-h-[300px] overflow-auto custom-scrollbar pr-2">
         <div className="space-y-3 h-[300px] overflow-y-auto">
+          <style>{`
+            @keyframes bounceShort {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.2) rotate(3deg); }
+            }
+            .animate-bounce-short {
+              animation: bounceShort 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            }
+          `}</style>
           {todos.map((t) => (
-            <li key={t.id} className="flex items-center justify-between bg-white/5 p-3 rounded-md">
+            <li key={t.id} className="flex items-center justify-between bg-slate-100/50 dark:bg-white/5 p-3 rounded-md border border-slate-200/50 dark:border-transparent">
               <div className="flex items-center gap-3">
-                <input type="checkbox" checked={!!t.completed} onChange={() => toggleTask(t)} className="w-4 h-4" />
+                <button
+                  type="button"
+                  onClick={() => toggleTask(t)}
+                  className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all duration-300 active:scale-90 ${
+                    t.completed
+                      ? "bg-emerald-500 border-emerald-500 text-white animate-bounce-short"
+                      : "border-slate-300 dark:border-slate-600 hover:border-emerald-400"
+                  }`}
+                  aria-label={t.completed ? "Mark task incomplete" : "Mark task complete"}
+                >
+                  {t.completed && (
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </button>
                 <div className="flex flex-col">
-                  <div className={t.completed ? "text-sm line-through text-gray-400" : "text-sm text-white"}>{t.text}</div>
+                  <div className={t.completed ? "text-sm line-through text-slate-400 dark:text-gray-400 transition-all duration-300" : "text-sm text-slate-800 dark:text-white transition-all duration-300"}>{t.text}</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
