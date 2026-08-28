@@ -747,23 +747,11 @@ const MySpace = () => {
 
         {/* ── sound & ambience ── */}
         <section className="ms-sound-section ms-reveal ms-reveal--d2" aria-label="Sound and Ambience">
-          <div className="ms-sound-panel">
-            <div className="ms-sound-panel__header">
-              <div>
-                <h2 className="ms-sound-panel__title">Sound &amp; Ambience</h2>
-                <p className="ms-sound-panel__desc">
-                  Pick a playlist, sync playback in shared rooms, or switch ambient sounds without leaving your flow.
-                </p>
-              </div>
-            </div>
-            <div className="ms-sound-panel__body">
-              <FocusPlaylist
-                addNotification={addNotification}
-                bgPanelOpen={bgPanelOpen}
-                setBgPanelOpen={setBgPanelOpen}
-              />
-            </div>
-          </div>
+          <FocusPlaylist
+            addNotification={addNotification}
+            bgPanelOpen={bgPanelOpen}
+            setBgPanelOpen={setBgPanelOpen}
+          />
         </section>
 
       </main>
