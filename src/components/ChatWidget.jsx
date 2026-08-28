@@ -362,7 +362,7 @@ const ChatWidget = () => {
       <button
         type="button"
         className={`cw-fab ${isOpen ? "cw-fab--open" : ""}`}
-        style={{ position: "fixed", right: 12, bottom: 12, top: "auto", left: "auto", zIndex: 10000 }}
+        style={{ position: "fixed", right: isStudyRoomPage ? "auto" : "16px", left: isStudyRoomPage ? "16px" : "auto", bottom: "92px", top: "auto", zIndex: 10000 }}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-controls="focusora-chat"

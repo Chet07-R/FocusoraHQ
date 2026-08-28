@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
   const [musicPanelOpen, setMusicPanelOpen] = useState(false);
   const { currentRoom, roomData, updatePlaylist, signalPlayback } = useStudyRoom();
   const { user, userProfile } = useAuth();
+  const { darkMode } = useTheme();
   const [spotifyUrl, setSpotifyUrl] = useState(
     localStorage.getItem("spotify_playlist") ||
       "https://open.spotify.com/embed/playlist/37i9dQZF1DZ06evO0FDzS8?utm_source=generator"
@@ -78,7 +80,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
   return (
     <>
       <div className="w-full mb-8">
-        <div className="bg-gradient-to-r from-black/60 via-gray-900/80 to-black/60 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg text-white">
+        <div className={`bg-gradient-to-r ${darkMode ? 'from-black/60 via-gray-900/80 to-black/60 text-white' : 'from-slate-100/80 via-slate-50/90 to-slate-100/80 text-slate-800 border-slate-200/50'} backdrop-blur-xl border rounded-2xl shadow-lg`}>
           <div className="px-2 sm:px-4 md:px-6 py-4">
             <div className="flex flex-wrap items-center justify-between mb-3 gap-y-2">
               <div className="flex items-center gap-2">
@@ -92,7 +94,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                     setMusicPanelOpen(!musicPanelOpen);
                     if (setBgPanelOpen) setBgPanelOpen(false);
                   }}
-                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition cursor-pointer"
+                  className="text-sm bg-slate-200/50 dark:bg-white/10 hover:bg-slate-300/50 dark:hover:bg-white/20 text-slate-800 dark:text-white px-3 py-2 rounded-lg transition cursor-pointer"
                 >
                   🎧 Change Music
                 </button>
@@ -120,11 +122,11 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                     if (setBgPanelOpen) setBgPanelOpen(!bgPanelOpen);
                     setMusicPanelOpen(false);
                   }}
-                  className="text-sm bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition cursor-pointer"
+                  className="text-sm bg-slate-200/50 dark:bg-white/10 hover:bg-slate-300/50 dark:hover:bg-white/20 text-slate-800 dark:text-white px-3 py-2 rounded-lg transition cursor-pointer"
                 >
                   🌈 Choose Ambience
                 </button>
-                <span className="text-sm text-white/70">Powered by Spotify</span>
+                <span className="text-sm text-slate-500 dark:text-white/70">Powered by Spotify</span>
               </div>
             </div>
             {syncPrompt && (
