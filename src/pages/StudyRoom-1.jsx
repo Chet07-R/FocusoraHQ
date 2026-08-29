@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import {
   Sun,
@@ -91,19 +92,8 @@ const StudyRoom1 = () => {
   
   const isCreator = user && roomData && roomData.creatorId === user.uid;
   
-  const [darkMode, setDarkMode] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const saved = localStorage.getItem("theme");
-    if (saved) return saved === "dark";
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-  });
+  const { darkMode } = useTheme();
   const [navHeight, setNavHeight] = useState(64);
-  
-  useEffect(() => {
-    if (darkMode) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -323,21 +313,21 @@ const StudyRoom1 = () => {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => { navigator.clipboard?.writeText(roomInfo.id); addNotification("📋 Copied"); }}
-              className="px-3 py-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 text-xs border border-white/10"
+              className="px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-800 dark:bg-white/10 dark:text-white hover:bg-slate-200 dark:hover:bg-white/20 text-xs font-semibold border border-slate-300 dark:border-white/10 transition-colors shadow-sm"
             >
               Copy Room ID
             </button>
             {isCreator && (
               <button
                 onClick={handleDeleteRoom}
-                className="px-3 py-1.5 rounded-full bg-orange-500/80 text-white hover:bg-orange-500 text-xs border border-orange-400/50"
+                className="px-3.5 py-1.5 rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs font-semibold shadow-sm"
               >
                 Delete Room
               </button>
             )}
             <button
               onClick={handleLeaveRoom}
-              className="px-3 py-1.5 rounded-full bg-red-500/80 text-white hover:bg-red-500 text-xs border border-red-400/50"
+              className="px-3.5 py-1.5 rounded-full bg-red-500 text-white hover:bg-red-600 text-xs font-semibold shadow-sm"
             >
               Leave Room
             </button>
@@ -349,7 +339,7 @@ const StudyRoom1 = () => {
             <div className="ms-panel__header">
               <div>
                 <h2 className="ms-panel__title">Participants</h2>
-                <div className="text-[11px] text-gray-400">{participants?.length || 0} online</div>
+                <div className="text-[11px] text-slate-500 dark:text-gray-400 font-medium">{participants?.length || 0} online</div>
               </div>
               <span className="ms-panel__badge">Live</span>
             </div>
@@ -359,13 +349,13 @@ const StudyRoom1 = () => {
                   {sortedParticipants.map((p, index) => {
                     const isHost = p?.userId && roomData?.creatorId && p.userId === roomData.creatorId;
                     return (
-                    <li key={p.userId} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/5 text-white">
-                      <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-[11px] font-semibold flex items-center justify-center">
+                    <li key={p.userId} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-white font-medium border border-slate-200/60 dark:border-transparent">
+                      <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-[11px] font-semibold flex items-center justify-center shrink-0">
                         {index + 1}
                       </span>
-                      <span className="truncate text-xs sm:text-sm">{p.displayName || "User"}</span>
+                      <span className="truncate text-xs sm:text-sm font-semibold">{p.displayName || "User"}</span>
                       {isHost && (
-                        <span className="text-[10px] uppercase tracking-wide bg-yellow-500/20 text-yellow-300 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] uppercase tracking-wide bg-amber-100 text-amber-800 dark:bg-yellow-500/20 dark:text-yellow-300 px-1.5 py-0.5 rounded font-bold ml-auto shrink-0">
                           Host
                         </span>
                       )}
@@ -381,12 +371,12 @@ const StudyRoom1 = () => {
             <div className="ms-panel__header">
               <div>
                 <h2 className="ms-panel__title">Chat</h2>
-                <div className="text-[11px] text-gray-400">Stay in sync with your room</div>
+                <div className="text-[11px] text-slate-500 dark:text-gray-400 font-medium">Stay in sync with your room</div>
               </div>
               <span className="ms-panel__badge">Live</span>
             </div>
             <div className="ms-panel__body">
-              <div ref={chatLogRef} className="chat-log flex-1 overflow-auto space-y-2 custom-scrollbar p-3 bg-white/5 rounded-xl mx-3 mt-2 mb-2">
+              <div ref={chatLogRef} className="chat-log flex-1 overflow-auto space-y-2 custom-scrollbar p-3 bg-slate-100/90 dark:bg-white/5 border border-slate-200/60 dark:border-transparent rounded-xl mx-3 mt-2 mb-2 min-h-[160px]">
                 {chatMessages.map((m, i) => {
                   const isOwn = m.userId === user?.uid;
                   const isSys = m.userId === "system";
@@ -395,16 +385,16 @@ const StudyRoom1 = () => {
                     <div
                       key={m.id || i}
                       className={cx(
-                        "p-2 rounded text-xs sm:text-sm max-w-[90%]",
+                        "p-2 rounded-lg text-xs sm:text-sm max-w-[90%] font-medium",
                         isOwn
-                          ? "ml-auto bg-blue-600 text-white"
+                          ? "ml-auto bg-blue-600 text-white shadow-sm"
                           : isSys
-                            ? "mx-auto bg-gray-500/30 text-gray-300 text-center"
-                            : "bg-white/10 text-white"
+                            ? "mx-auto bg-slate-200 dark:bg-gray-500/30 text-slate-700 dark:text-gray-300 text-center font-normal"
+                            : "bg-white dark:bg-white/10 text-slate-800 dark:text-white shadow-sm border border-slate-200/60 dark:border-transparent"
                       )}
                     >
                       {!isSys && !isOwn && (
-                        <div className="text-[10px] text-gray-400 mb-0.5">
+                        <div className="text-[10px] font-bold text-slate-500 dark:text-gray-400 mb-0.5">
                           {m.displayName || "User"}
                         </div>
                       )}
@@ -415,17 +405,17 @@ const StudyRoom1 = () => {
                 <div ref={chatEnd} />
               </div>
               <div className="chat-composer mt-auto px-3 pb-2">
-                <div className="flex gap-2 bg-white/5 rounded-xl p-2">
+                <div className="flex gap-2 bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-transparent rounded-xl p-2">
                   <input
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                    className="flex-1 px-2 py-2 rounded bg-transparent text-white outline-none text-xs sm:text-sm"
+                    className="flex-1 px-2.5 py-1.5 rounded bg-transparent text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-gray-400 outline-none text-xs sm:text-sm"
                     placeholder="Message the room..."
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 py-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 text-xs sm:text-sm"
+                    className="px-4 py-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 text-xs sm:text-sm font-semibold transition-colors shadow-sm"
                   >
                     Send
                   </button>

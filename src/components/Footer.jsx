@@ -243,19 +243,19 @@ const Footer = () => {
           </div>
         </div>
 
-        <hr className="m-2 border-slate-200 dark:border-slate-800" />
+        <hr className="my-4 border-slate-200 dark:border-slate-800" />
 
-        <div className="flex flex-col sm:flex-row items-center justify-between p-2">
-          <p className="text-slate-700 dark:text-gray-400 text-sm text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-3 px-2 sm:pr-48 pb-6 sm:pb-4 text-sm text-slate-700 dark:text-gray-400">
+          <p className="text-center sm:text-left">
+            © 2025{" "}
             <span className="font-semibold bg-gradient-to-r from-cyan-600 to-pink-500 dark:from-cyan-400 dark:to-pink-400 bg-clip-text text-transparent">
               FocusoraHQ
             </span>
-            {" "} © 2025
+            . All rights reserved.
+          </p>
 
-            <br />
-            Made with <span className="text-pink-500 animate-pulse">❤️</span> by students, for students.
-            <br />
-            All rights reserved.
+          <p className="text-center sm:text-right flex items-center justify-center gap-1">
+            Made with <span className="text-pink-500 animate-pulse">💜</span> by students, for students.
           </p>
         </div>
       </div>

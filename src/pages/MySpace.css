@@ -234,6 +234,10 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: #0284c7;
+}
+
+.dark .ms-topbar__eyebrow {
   color: rgba(186, 230, 253, 0.95);
 }
 
