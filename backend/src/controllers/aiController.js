@@ -8,9 +8,9 @@ const listModels = async (req, res) => {
     return ok(res, {
       models: [
         {
-          name: env.groqModel || 'qwen-2.5-coder-32b',
-          displayName: 'Qwen 2.5 Coder (via Groq)',
-          description: 'High-performance coder model from Qwen hosted on Groq.',
+          name: env.groqModel || 'openai/gpt-oss-120b',
+          displayName: 'Groq High-Speed AI',
+          description: 'Ultra fast inference powered by Groq LPU.',
           supportedGenerationMethods: ['generateContent']
         }
       ]
@@ -18,7 +18,7 @@ const listModels = async (req, res) => {
   }
 
   if (!env.geminiApiKey) {
-    return fail(res, 503, 'GEMINI_DISABLED', 'Gemini API key is not configured');
+    return fail(res, 503, 'AI_DISABLED', 'AI API key is not configured');
   }
 
   if (typeof fetch !== 'function') {
@@ -30,8 +30,8 @@ const listModels = async (req, res) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const errorMessage = data?.error?.message || 'Gemini API request failed';
-    return fail(res, response.status, 'GEMINI_ERROR', errorMessage, data?.error);
+    const errorMessage = data?.error?.message || 'AI API request failed';
+    return fail(res, response.status, 'AI_ERROR', errorMessage, data?.error);
   }
 
   const models = Array.isArray(data?.models)

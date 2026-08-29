@@ -156,6 +156,11 @@ const verifyEmail = async (req, res) => {
   user.emailVerificationTokenExpiresAt = null;
   await user.save();
 
+  // If request expects JSON (from frontend SPA api call)
+  if (req.xhr || req.headers.accept?.includes('application/json') || req.path.startsWith('/api')) {
+    return ok(res, { success: true, message: 'Email verified successfully' });
+  }
+
   return res.redirect(`${resolveClientUrl(req)}/signin?verified=1`);
 };
 

@@ -19,11 +19,13 @@ const [searchParams] = useSearchParams();
 const { signIn, signInWithGoogle, signInAsGuest, signOutUser, user, loading } = useAuth();
 const { darkMode } = useTheme();
 
-useEffect(() => {
-  if (searchParams.get('verified') === '1') {
-    setError('Email verified successfully. You can sign in now.');
-  }
-}, [searchParams]);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (searchParams.get('verified') === '1') {
+      setSuccessMessage('🎉 Email verified successfully! Please sign in to your account.');
+    }
+  }, [searchParams]);
 
 useEffect(() => {
   if (!loading && user) {
@@ -113,6 +115,11 @@ return (
 
       {}
       <form onSubmit={handleSignIn} className="space-y-5">
+        {successMessage && (
+          <div className={`w-full border text-sm px-4 py-3 rounded-xl flex items-center gap-2 ${darkMode ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-emerald-50 border-emerald-300 text-emerald-700'}`}>
+            {successMessage}
+          </div>
+        )}
         {error && (
           <div className={`w-full border text-sm px-4 py-2 rounded-lg ${darkMode ? 'bg-red-500/10 border-red-500/40 text-red-300' : 'bg-red-50 border-red-300 text-red-700'}`}>
             {error}

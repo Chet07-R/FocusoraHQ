@@ -13,6 +13,8 @@ const VerifyEmail = () => {
   const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
 
+  const verifiedRef = React.useRef(false);
+
   useEffect(() => {
     const token = searchParams.get('token');
     const nextEmail = searchParams.get('email') || user?.email || '';
@@ -28,17 +30,28 @@ const VerifyEmail = () => {
       return;
     }
 
+    if (verifiedRef.current) return;
+    verifiedRef.current = true;
+
     const runVerification = async () => {
       setStatus('checking');
       setMessage('Verifying your email...');
       try {
         await verifyEmail(token);
         setStatus('verified');
-        setMessage('Email verified successfully. You can now sign in.');
-        setTimeout(() => navigate('/signin?verified=1'), 2000);
+        setMessage('Email verified successfully! Redirecting to sign in...');
+        setTimeout(() => navigate('/signin?verified=1'), 1500);
       } catch (error) {
-        setStatus('error');
-        setMessage(error?.response?.data?.message || error.message || 'Failed to verify email.');
+        // If already verified or successfully processed
+        const errMsg = error?.response?.data?.message || error.message || '';
+        if (errMsg.toLowerCase().includes('already') || searchParams.get('verified') === '1') {
+          setStatus('verified');
+          setMessage('Your email is already verified. Redirecting to sign in...');
+          setTimeout(() => navigate('/signin?verified=1'), 1500);
+        } else {
+          setStatus('error');
+          setMessage(errMsg || 'Failed to verify email.');
+        }
       }
     };
 
