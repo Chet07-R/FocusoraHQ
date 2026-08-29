@@ -867,7 +867,7 @@ const App = () => {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
                 <div className="flex items-center justify-center mb-4">
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-yellow-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-yellow-50'}`}>
                     <Clock className="w-8 h-8" />
@@ -890,7 +890,7 @@ const App = () => {
                 </ul>
               </div>
 
-              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
                 <div className="flex items-center justify-center mb-4">
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-teal-300 ${darkMode ? 'bg-[#0b141b]' : 'bg-teal-50'}`}>
                     <CheckCircle className="w-8 h-8" />
@@ -913,7 +913,7 @@ const App = () => {
                 </ul>
               </div>
 
-              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
                 <div className="flex items-center justify-center mb-4">
                   <div className={`w-16 h-16 rounded-full flex items-center justify-center text-red-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-red-50'}`}>
                     <Zap className="w-8 h-8" />

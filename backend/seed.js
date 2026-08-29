@@ -96,6 +96,37 @@ const seedDatabase = async () => {
         role: 'High School Senior',
         message: 'I love competing on the leaderboard with my friends. It makes studying for exams actually fun!',
         rating: 5,
+      },
+      {
+        authorId: insertedUsers[3]?._id,
+        name: insertedUsers[3]?.displayName || 'Diana Productivity',
+        role: 'PhD Researcher',
+        message: 'Having Spotify integration and ambiance control directly in my browser helps me sustain 4+ hour writing sessions without fatigue.',
+        rating: 5,
+      },
+      {
+        name: 'Evan Focus',
+        role: 'Software Engineer',
+        message: 'The clean UI and lack of distracting elements is exactly what I needed. It\'s the ultimate hub for deep work.',
+        rating: 5,
+      },
+      {
+        name: 'Fiona Scholar',
+        role: 'Medical Student',
+        message: 'The integrated to-do list combined with Pomodoro cycles keeps me on track during massive biology study blocks.',
+        rating: 5,
+      },
+      {
+        name: 'George Teacher',
+        role: 'High School Educator',
+        message: 'I recommend FocusoraHQ to all my students. It teaches them time management and healthy study habits in a fun, structured way.',
+        rating: 4,
+      },
+      {
+        name: 'Hannah Learner',
+        role: 'Language Student',
+        message: 'Competing on the global leaderboard gave me that extra push to study vocabulary daily. Best productivity app ever!',
+        rating: 5,
       }
     ];
 

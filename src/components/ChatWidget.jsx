@@ -13,7 +13,7 @@ const MaximizeIcon = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
     <path
       d="M8 3H3V8M16 21H21V16M3 3L10 10M21 21L14 14"
-      stroke="white"
+      stroke="currentColor"
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -25,7 +25,7 @@ const MinimizeIcon = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
     <path
       d="M21 3L14 10M3 21L10 14M15 3H21V9M3 15V21H9"
-      stroke="white"
+      stroke="currentColor"
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -230,7 +230,6 @@ const ChatWidget = () => {
   const [mounted, setMounted] = useState(false);
   const endRef = useRef(null);
   const pathname = typeof window !== "undefined" ? String(window.location?.pathname || "") : "";
-  const isStudyRoomPage = /^\/study-room(?:\/|$)/i.test(pathname) || /^\/study-room-1(?:\/|$)/i.test(pathname);
 
   const isLoggedIn = Boolean(user);
   const isGuestAccount = user?.provider === "guest";
@@ -356,13 +355,13 @@ const ChatWidget = () => {
 
   return createPortal(
     <div
-      className={`cw-shell ${isOpen ? "cw-shell--open" : ""} ${isStudyRoomPage ? "cw-shell--study-room" : ""}`}
+      className={`cw-shell ${isOpen ? "cw-shell--open" : ""}`}
       style={{ position: "fixed", inset: 0, padding: 16 }}
     >
       <button
         type="button"
         className={`cw-fab ${isOpen ? "cw-fab--open" : ""}`}
-        style={{ position: "fixed", right: isStudyRoomPage ? "auto" : "16px", left: isStudyRoomPage ? "16px" : "auto", bottom: "92px", top: "auto", zIndex: 10000 }}
+        style={{ position: "fixed", right: "24px", left: "auto", bottom: "20px", top: "auto", zIndex: 10000 }}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-controls="focusora-chat"

@@ -7,6 +7,65 @@ import './Home.css';
 const REVIEW_ROLE_OPTIONS = ['Student', 'Teacher', 'Professional', 'Learner'];
 
 
+const FALLBACK_REVIEWS = [
+  {
+    id: 'f1',
+    name: 'Alice Scholar',
+    role: 'Computer Science Student',
+    message: 'FocusoraHQ completely transformed my study routine. The pomodoro timer mixed with the study rooms is a game changer!',
+    rating: 5,
+  },
+  {
+    id: 'f2',
+    name: 'Bob Focus',
+    role: 'MBA Candidate',
+    message: 'The productivity tracking features let me see exactly how much deep work I am getting done. Highly recommended.',
+    rating: 4,
+  },
+  {
+    id: 'f3',
+    name: 'Charlie Learner',
+    role: 'High School Senior',
+    message: 'I love competing on the leaderboard with my friends. It makes studying for exams actually fun!',
+    rating: 5,
+  },
+  {
+    id: 'f4',
+    name: 'Diana Productivity',
+    role: 'PhD Researcher',
+    message: 'Having Spotify integration and ambiance control directly in my browser helps me sustain 4+ hour writing sessions without fatigue.',
+    rating: 5,
+  },
+  {
+    id: 'f5',
+    name: 'Evan Focus',
+    role: 'Software Engineer',
+    message: "The clean UI and lack of distracting elements is exactly what I needed. It's the ultimate hub for deep work.",
+    rating: 5,
+  },
+  {
+    id: 'f6',
+    name: 'Fiona Scholar',
+    role: 'Medical Student',
+    message: 'The integrated to-do list combined with Pomodoro cycles keeps me on track during massive biology study blocks.',
+    rating: 5,
+  },
+  {
+    id: 'f7',
+    name: 'George Teacher',
+    role: 'High School Educator',
+    message: 'I recommend FocusoraHQ to all my students. It teaches them time management and healthy study habits in a fun, structured way.',
+    rating: 4,
+  },
+  {
+    id: 'f8',
+    name: 'Hannah Learner',
+    role: 'Language Student',
+    message: 'Competing on the global leaderboard gave me that extra push to study vocabulary daily. Best productivity app ever!',
+    rating: 5,
+  }
+];
+
 const Home = () => {
   const { userProfile } = useAuth();
   const [reviews, setReviews] = useState([]);
@@ -93,7 +152,10 @@ const Home = () => {
     };
   }, [isReviewModalOpen]);
 
-  const visibleReviews = useMemo(() => reviews.slice(0, 12), [reviews]);
+  const visibleReviews = useMemo(() => {
+    const list = reviews.length > 0 ? reviews : FALLBACK_REVIEWS;
+    return list.slice(0, 15);
+  }, [reviews]);
 
   const marqueeReviews = useMemo(() => {
     if (visibleReviews.length <= 1) {
@@ -106,7 +168,8 @@ const Home = () => {
   const shouldAnimateReviews = visibleReviews.length > 1;
 
   const reviewScrollDuration = useMemo(
-    () => `${Math.max(18, visibleReviews.length * 5)}s`,
+    // Slowed down: Increased multiplier from 5 to 15, and min duration from 18 to 45
+    () => `${Math.max(45, visibleReviews.length * 15)}s`,
     [visibleReviews.length]
   );
 
