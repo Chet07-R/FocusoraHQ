@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, AlignRight, FileText, Eye } from "lucide-react";
+import { UploadCloud, Download, Mic, Save, Volume2, AlignLeft, AlignCenter, AlignRight, Eye } from "lucide-react";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";

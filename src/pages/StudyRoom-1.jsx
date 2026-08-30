@@ -4,23 +4,13 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useStudyRoom } from "../context/StudyRoomContext";
 import {
-  Sun,
-  Moon,
   Trash2,
-  MessageSquare,
-  Bell,
-  Music,
   X,
   CheckCircle,
   PlusCircle,
   UploadCloud,
   Download,
-  Play,
-  Pause,
-  Search,
   Save as SaveIcon,
-  ArrowLeft,
-  ArrowRight,
 } from "lucide-react";
 import Notes from "../components/Notes";
 import Todo from "../components/Todo";
