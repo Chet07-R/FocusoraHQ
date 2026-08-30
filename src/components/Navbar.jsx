@@ -334,13 +334,13 @@ const Navbar = () => {
         <button
           id="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`lg:hidden p-2 hover:bg-gray-800 rounded-lg transition-colors duration-300 ${
+          className={`lg:hidden p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-gray-800 rounded-lg transition-colors duration-300 ${
             mobileMenuOpen ? "active" : ""
           }`}
           aria-label="Toggle menu"
         >
           <svg
-            className="w-6 h-6 text-white"
+            className="w-6 h-6 text-slate-800 dark:text-white"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

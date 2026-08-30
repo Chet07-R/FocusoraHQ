@@ -296,7 +296,7 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 lg:gap-8">
 
             {[
               { 
@@ -342,17 +342,17 @@ const Home = () => {
                 aria-label={`Open ${item.title}`}
               >
                 <div
-                  className={`h-full bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl border-2 border-transparent shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300 flex flex-col transform-gpu ${
+                  className={`h-full bg-white dark:bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl border-2 border-transparent shadow-md sm:shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 transition-all duration-300 flex flex-col transform-gpu ${
                     isLeaderboardCard ? 'origin-right sm:origin-right' : 'origin-center'
                   }`}
                 >
-                  <div className={`${item.bgColor} ${item.textColor} w-12 h-12 rounded-full flex items-center justify-center mb-4 shrink-0`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <div className={`${item.bgColor} ${item.textColor} w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-full flex items-center justify-center mb-3 sm:mb-4 shrink-0`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.iconPath} />
                     </svg>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-800 dark:text-white">{item.title}</h3>
-                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 flex-grow">{item.desc}</p>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-1.5 sm:mb-2 text-gray-800 dark:text-white leading-tight">{item.title}</h3>
+                  <p className="text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-400 flex-grow leading-relaxed line-clamp-3 sm:line-clamp-none">{item.desc}</p>
                 </div>
               </Link>
               );
@@ -366,25 +366,25 @@ const Home = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
           <div className="text-left order-2 lg:order-1">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white mb-3 sm:mb-6">
               Craft Your Perfect Focus Sanctuary.
             </h2>
 
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-8">
+            <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 leading-relaxed">
               Your personal workspace is a private, customizable zone designed for deep work. Eliminate distractions and arrange your digital desk with the tools you need to find your flow.
             </p>
 
-            <ul className="space-y-4">
+            <ul className="space-y-3 sm:space-y-4">
               {[
                 { label: "Integrated To-Do List", desc: "Organize and track tasks seamlessly." },
                 { label: "Pomodoro Timer", desc: "Work in focused sprints with a built-in timer." },
                 { label: "Ambiance Control", desc: "Curate your mood with Spotify and custom themes." }
               ].map((feat, i) => (
                 <li key={i} className="flex items-start">
-                   <svg className="w-6 h-6 text-indigo-500 dark:text-indigo-400 mr-3 shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <svg className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-500 dark:text-indigo-400 mr-2.5 sm:mr-3 shrink-0 mt-0.5 sm:mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  <span className="text-gray-700 dark:text-gray-300 text-sm sm:text-base"><strong className="font-semibold">{feat.label}:</strong> {feat.desc}</span>
+                  <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm lg:text-base leading-relaxed"><strong className="font-semibold">{feat.label}:</strong> {feat.desc}</span>
                 </li>
               ))}
             </ul>
@@ -408,14 +408,14 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-16 sm:py-20 bg-white dark:bg-gray-800">
+      <section className="py-12 sm:py-16 lg:py-20 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 text-center">
 
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white">Trusted by Students & Professionals</h2>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white">Trusted by Students & Professionals</h2>
 
-          <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400">Write your review and watch reviews move horizontally in real time.</p>
+          <p className="mt-2 sm:mt-4 text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">Write your review and watch reviews move horizontally in real time.</p>
 
-          <div className="mt-6 flex justify-center">
+          <div className="mt-5 sm:mt-6 flex justify-center">
             {userProfile ? (
               <button
                 type="button"
@@ -460,12 +460,12 @@ const Home = () => {
                       return (
                         <article
                           key={`${review.id || review._id || review.name}-${idx}`}
-                          className="reviews-marquee-item bg-white/90 dark:bg-gray-800/85 rounded-2xl border border-gray-200 dark:border-gray-600 p-6 sm:p-7 flex items-start gap-4"
+                          className="reviews-marquee-item bg-white/90 dark:bg-gray-800/85 rounded-2xl border border-gray-200 dark:border-gray-600 p-4 sm:p-6 lg:p-7 flex items-start gap-3 sm:gap-4"
                         >
                           <img
                             src={review.photoURL || defaultReviewAvatar}
                             alt={`${review.name} profile`}
-                            className="w-14 h-14 rounded-full border-2 border-purple-200 dark:border-purple-500 object-cover shrink-0"
+                            className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 border-purple-200 dark:border-purple-500 object-cover shrink-0"
                             onError={(event) => {
                               if (event.currentTarget.src.endsWith(defaultReviewAvatar)) {
                                 return;
@@ -476,17 +476,17 @@ const Home = () => {
                           />
 
                           <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-3 flex-wrap">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
                               <div>
-                                <p className="font-bold text-gray-800 dark:text-white">{review.name}</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">{review.role}</p>
+                                <p className="font-bold text-sm sm:text-base text-gray-800 dark:text-white leading-tight">{review.name}</p>
+                                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{review.role}</p>
                               </div>
 
                               <div className="flex items-center gap-0.5" aria-label={`${safeRating} star rating`}>
                                 {Array.from({ length: 5 }).map((_, starIndex) => (
                                   <svg
                                     key={starIndex}
-                                    className={`w-4 h-4 ${starIndex < safeRating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-500'}`}
+                                    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${starIndex < safeRating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-500'}`}
                                     fill="currentColor"
                                     viewBox="0 0 20 20"
                                   >

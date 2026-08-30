@@ -25,6 +25,7 @@ const MySpace = lazy(() => import("./pages/MySpace"));
 const Community = lazy(() => import("./pages/Community"));
 const StudyRoom1 = lazy(() => import("./pages/StudyRoom-1"));
 const Terms = lazy(() => import("./pages/Terms"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 const Profile = lazy(() => import("./pages/Profile"));
 const EditProfile = lazy(() => import("./pages/EditProfile"));
 const HelpCenter = lazy(() => import("./pages/HelpCenter"));
@@ -37,28 +38,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Fallback Loader Component
 const PageLoader = () => (
-  <div style={{
-    minHeight: "80vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#0f172a",
-    color: "#3b82f6"
-  }}>
-    <div style={{
-      width: "50px",
-      height: "50px",
-      border: "4px solid #1e293b",
-      borderTop: "4px solid #3b82f6",
-      borderRadius: "50%",
-      animation: "spin 1s linear infinite"
-    }} />
-    <style>{`
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `}</style>
+  <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <div className="w-12 h-12 rounded-full border-4 border-indigo-200/60 dark:border-gray-700 border-t-indigo-600 dark:border-t-blue-500 animate-spin" />
   </div>
 );
 
@@ -87,6 +68,7 @@ function App() {
           <Route path="/study-room" element={<StudyRoom />} />
           <Route path="/create-space" element={<CreateSpace />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/help-center" element={<HelpCenter />} />
