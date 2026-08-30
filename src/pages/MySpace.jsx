@@ -637,6 +637,50 @@ const MySpace = () => {
         {/* ── workspace panels ── */}
         <div className="ms-workspace ms-reveal ms-reveal--d1">
 
+          {/* Focus Timer */}
+          <section className="ms-workspace__timer ms-panel ms-panel--accented" aria-label="Focus Timer">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Focus Timer</h2>
+              <span className="ms-panel__badge">Deep Work</span>
+            </div>
+            <div className="ms-panel__body">
+              <Pomodoro
+                addNotification={addNotification}
+                onWorkSessionStart={handlePomodoroStarted}
+                onWorkSessionComplete={handlePomodoroComplete}
+                defaultWorkDuration={safeWorkDuration}
+                defaultBreakDuration={safeBreakDuration}
+              />
+            </div>
+          </section>
+
+          {/* Workspace Notes */}
+          <section className="ms-workspace__notes ms-panel ms-panel--accented ms-panel--accented-violet" aria-label="Workspace Notes">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Notes</h2>
+              <span className="ms-panel__badge ms-panel__badge--violet">Draft &amp; Save</span>
+            </div>
+            <div className="ms-panel__body">
+              <Notes addNotification={addNotification} onNotesSaved={handleNotesSaved} scope="personal" />
+            </div>
+          </section>
+
+          {/* Task Board */}
+          <section className="ms-workspace__tasks ms-panel ms-panel--accented ms-panel--accented-neutral" aria-label="Task Board">
+            <div className="ms-panel__header">
+              <h2 className="ms-panel__title">Tasks</h2>
+              <span className="ms-panel__badge ms-panel__badge--neutral">Plan &amp; Execute</span>
+            </div>
+            <div className="ms-panel__body">
+              <Todo
+                scope="personal"
+                addNotification={addNotification}
+                onTaskAdded={handleTaskAdded}
+                onTaskCompleted={handleTaskCompleted}
+              />
+            </div>
+          </section>
+
           {/* Focus Coach */}
           <section className="ms-workspace__coach ms-panel ms-panel--accented" aria-label="Focus Coach">
             <div className="ms-panel__header">
@@ -685,23 +729,6 @@ const MySpace = () => {
             </div>
           </section>
 
-          {/* Focus Timer */}
-          <section className="ms-workspace__timer ms-panel ms-panel--accented" aria-label="Focus Timer">
-            <div className="ms-panel__header">
-              <h2 className="ms-panel__title">Focus Timer</h2>
-              <span className="ms-panel__badge">Deep Work</span>
-            </div>
-            <div className="ms-panel__body">
-              <Pomodoro
-                addNotification={addNotification}
-                onWorkSessionStart={handlePomodoroStarted}
-                onWorkSessionComplete={handlePomodoroComplete}
-                defaultWorkDuration={safeWorkDuration}
-                defaultBreakDuration={safeBreakDuration}
-              />
-            </div>
-          </section>
-
           {/* Focus Quote */}
           <section className="ms-workspace__quote ms-panel ms-panel--accented ms-panel--accented-violet" aria-label="Focus Quote">
             <div className="ms-panel__header">
@@ -714,33 +741,6 @@ const MySpace = () => {
                 <div className="ms-quote__author">{QUOTES[quoteIndex].author}</div>
                 <div className="ms-quote__note">Updates every hour</div>
               </div>
-            </div>
-          </section>
-
-          {/* Workspace Notes */}
-          <section className="ms-workspace__notes ms-panel ms-panel--accented ms-panel--accented-violet" aria-label="Workspace Notes">
-            <div className="ms-panel__header">
-              <h2 className="ms-panel__title">Notes</h2>
-              <span className="ms-panel__badge ms-panel__badge--violet">Draft &amp; Save</span>
-            </div>
-            <div className="ms-panel__body">
-              <Notes addNotification={addNotification} onNotesSaved={handleNotesSaved} scope="personal" />
-            </div>
-          </section>
-
-          {/* Task Board */}
-          <section className="ms-workspace__tasks ms-panel ms-panel--accented ms-panel--accented-neutral" aria-label="Task Board">
-            <div className="ms-panel__header">
-              <h2 className="ms-panel__title">Tasks</h2>
-              <span className="ms-panel__badge ms-panel__badge--neutral">Plan &amp; Execute</span>
-            </div>
-            <div className="ms-panel__body">
-              <Todo
-                scope="personal"
-                addNotification={addNotification}
-                onTaskAdded={handleTaskAdded}
-                onTaskCompleted={handleTaskCompleted}
-              />
             </div>
           </section>
         </div>

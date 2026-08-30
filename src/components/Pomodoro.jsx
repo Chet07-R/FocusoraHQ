@@ -295,52 +295,95 @@ const Pomodoro = ({
         </div>
 
         <div className="flex flex-col items-center w-full mt-2">
-
-          <div className="flex space-x-3">
-
+          {/* Mobile layout: all 3 in single row */}
+          <div className="flex sm:hidden items-center justify-center gap-2 w-full">
             <button
               onClick={handleStart}
               disabled={isRunning}
               className={`
-        flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium 
-        border border-green-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
-        transition-all duration-300 select-none
-        ${isRunning ? "opacity-40 cursor-not-allowed" : "hover:bg-green-500/20 hover:border-green-400"}
-      `}
+                flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium 
+                border border-green-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
+                transition-all duration-300 select-none cursor-pointer
+                ${isRunning ? "opacity-40 cursor-not-allowed" : "hover:bg-green-500/20 hover:border-green-400"}
+              `}
             >
-              <span className="text-green-400">▶</span>
+              <span className="text-green-500">▶</span>
               <span className="text-slate-800 dark:text-white">Start</span>
             </button>
 
             <button
               onClick={handlePause}
               className="
-        flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium
-        border border-amber-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
-        transition-all duration-300 select-none
-        hover:bg-amber-500/20 hover:border-amber-400
-      "
+                flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+                border border-amber-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
+                transition-all duration-300 select-none cursor-pointer
+                hover:bg-amber-500/20 hover:border-amber-400
+              "
             >
-              <span className="text-amber-400">⏸</span>
+              <span className="text-amber-500">⏸</span>
               <span className="text-slate-800 dark:text-white">Pause</span>
             </button>
-          </div>
 
-          <div className="mt-2 flex justify-center w-full">
             <button
               onClick={handleReset}
               className="
-        flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium
-        border border-red-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
-        transition-all duration-300 select-none
-        hover:bg-red-500/20 hover:border-red-400
-      "
+                flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+                border border-red-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
+                transition-all duration-300 select-none cursor-pointer
+                hover:bg-red-500/20 hover:border-red-400
+              "
             >
-              <span className="text-red-400">🔄</span>
+              <span className="text-red-500">🔄</span>
               <span className="text-slate-800 dark:text-white">Reset</span>
             </button>
           </div>
 
+          {/* Laptop/Desktop layout: Start & Pause top, Reset bottom */}
+          <div className="hidden sm:flex flex-col items-center w-full">
+            <div className="flex space-x-3">
+              <button
+                onClick={handleStart}
+                disabled={isRunning}
+                className={`
+                  flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium 
+                  border border-green-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
+                  transition-all duration-300 select-none cursor-pointer
+                  ${isRunning ? "opacity-40 cursor-not-allowed" : "hover:bg-green-500/20 hover:border-green-400"}
+                `}
+              >
+                <span className="text-green-500">▶</span>
+                <span className="text-slate-800 dark:text-white">Start</span>
+              </button>
+
+              <button
+                onClick={handlePause}
+                className="
+                  flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium
+                  border border-amber-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
+                  transition-all duration-300 select-none cursor-pointer
+                  hover:bg-amber-500/20 hover:border-amber-400
+                "
+              >
+                <span className="text-amber-500">⏸</span>
+                <span className="text-slate-800 dark:text-white">Pause</span>
+              </button>
+            </div>
+
+            <div className="mt-2 flex justify-center w-full">
+              <button
+                onClick={handleReset}
+                className="
+                  flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium
+                  border border-red-400/50 bg-slate-100/50 dark:bg-white/5 backdrop-blur-md
+                  transition-all duration-300 select-none cursor-pointer
+                  hover:bg-red-500/20 hover:border-red-400
+                "
+              >
+                <span className="text-red-500">🔄</span>
+                <span className="text-slate-800 dark:text-white">Reset</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="text-center mt-1">

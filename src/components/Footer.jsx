@@ -82,8 +82,8 @@ const Footer = () => {
       </div>
 
       <div className="container mx-auto px-6 py-12 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-8 mb-8">
-          <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-8 mb-8">
+          <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <img
                 src="/images/transparent.png"
@@ -187,11 +187,11 @@ const Footer = () => {
           </div>
 
           {/* Company Column */}
-          <div className="space-y-4">
+          <div className="space-y-4 col-span-2 sm:col-span-1">
             <h3 className="text-slate-800 dark:text-white font-semibold text-lg underline-hover cursor-default">
               Company
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="grid grid-cols-2 sm:grid-cols-1 gap-2 text-sm">
               <li><Link to="/about" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">About</Link></li>
               <li><Link to="/blog" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Blogs</Link></li>
               <li><Link to="/terms" className="text-slate-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Terms of Service</Link></li>

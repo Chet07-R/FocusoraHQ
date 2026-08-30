@@ -5,9 +5,9 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
 const Todo = ({
-  addNotification = () => {},
-  onTaskAdded = () => {},
-  onTaskCompleted = () => {},
+  addNotification = () => { },
+  onTaskAdded = () => { },
+  onTaskCompleted = () => { },
   scope = "auto",
 }) => {
   const { currentRoom, roomTodos, participants, addTodo, toggleTodo, deleteTodo, fixUnknownTodoCreators } = useStudyRoom();
@@ -40,9 +40,9 @@ const Todo = ({
   const addTask = async () => {
     const t = newTask.trim();
     if (!t) return addNotification("⚠️ Enter a task first");
-    
+
     if (isRoomMode) {
-      
+
       try {
         await addTodo(t);
         setNewTask("");
@@ -53,7 +53,7 @@ const Todo = ({
         console.error(e);
       }
     } else {
-      
+
       const newTodo = {
         id: Date.now().toString(),
         text: t,
@@ -80,7 +80,7 @@ const Todo = ({
         console.error(e);
       }
     } else {
-      setLocalTodos(prev => prev.map(t => 
+      setLocalTodos(prev => prev.map(t =>
         t.id === todo.id ? { ...t, completed: !t.completed } : t
       ));
       if (!todo.completed) {
@@ -211,11 +211,10 @@ const Todo = ({
                 <button
                   type="button"
                   onClick={() => toggleTask(t)}
-                  className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all duration-300 active:scale-90 ${
-                    t.completed
+                  className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all duration-300 active:scale-90 ${t.completed
                       ? "bg-emerald-500 border-emerald-500 text-white animate-bounce-short"
                       : "border-slate-300 dark:border-slate-600 hover:border-emerald-400"
-                  }`}
+                    }`}
                   aria-label={t.completed ? "Mark task incomplete" : "Mark task complete"}
                 >
                   {t.completed && (

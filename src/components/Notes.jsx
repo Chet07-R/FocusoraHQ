@@ -482,84 +482,99 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
   const { chars, words, minutes } = getNotesStats();
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col bg-white/70 dark:bg-slate-900 text-slate-800 dark:text-white p-6 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-xl">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
+    <div className="w-full max-w-4xl mx-auto flex flex-col flex-1 h-full bg-white/70 dark:bg-slate-900 text-slate-800 dark:text-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-xl">
+      <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2 flex-shrink-0">
+        <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-2">
           <span>Notes</span>
         </h1>
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <button
             onClick={saveLocalNotes}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg flex items-center gap-2 transition"
+            className="px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg flex items-center gap-1.5 transition"
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Save
           </button>
           <button
             onClick={downloadNotes}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center gap-2 transition"
+            className="px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center gap-1.5 transition"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Download
           </button>
         </div>
       </div>
 
-      <div className="bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-4 space-y-3 flex-shrink-0" style={{ userSelect: 'none' }}>
-        <div className="flex items-center gap-2 justify-center">
+      <div className="bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-xl sm:rounded-2xl p-2.5 sm:p-4 mb-3 sm:mb-4 space-y-2.5 sm:space-y-3 flex-shrink-0" style={{ userSelect: 'none' }}>
+        <div className="flex items-center gap-1.5 sm:gap-2 justify-center flex-wrap">
           <button
             onClick={() => formatText('bold')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-sm rounded-lg flex items-center justify-center transition ${activeBold ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <strong>B</strong>
           </button>
           <button
             onClick={() => formatText('italic')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-sm rounded-lg flex items-center justify-center transition ${activeItalic ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <em>I</em>
           </button>
           <button
             onClick={() => formatText('underline')}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-sm rounded-lg flex items-center justify-center transition ${activeUnderline ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
             <u>U</u>
           </button>
 
+          <span className="w-px h-5 bg-slate-300 dark:bg-white/10 mx-0.5" />
+
           <button 
             onClick={() => setAlignment('left')} 
-            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'left' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
-            <AlignLeft className="w-4 h-4" />
+            <AlignLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button 
             onClick={() => setAlignment('center')} 
-            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'center' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
-            <AlignCenter className="w-4 h-4" />
+            <AlignCenter className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button 
             onClick={() => setAlignment('right')} 
-            className={`w-9 h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center transition ${activeAlign === 'right' ? 'bg-emerald-500 text-white' : 'bg-slate-200/50 text-slate-700 dark:bg-white/6 dark:text-white'}`}
           >
-            <AlignRight className="w-4 h-4" />
+            <AlignRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <button
             onClick={readNotesAloud}
-            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg flex items-center gap-1.5 transition text-white ${
               isSpeaking ? 'bg-red-600' : 'bg-purple-600 hover:bg-purple-500'
             }`}
           >
-            <Volume2 className="w-4 h-4" />
+            <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             {isSpeaking ? 'Stop' : 'Speak'}
           </button>
+
+          <button
+            onClick={isRecording ? stopDictation : startDictation}
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg flex items-center gap-1.5 transition ${
+              isRecording
+                ? 'bg-red-600 hover:bg-red-500 text-white'
+                : 'bg-orange-600 hover:bg-orange-500 text-white'
+            }`}
+          >
+            <Mic className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            {isRecording ? 'Stop' : 'Dictate'}
+          </button>
+
           <select
             value={dictationLang}
             onChange={(e) => setDictationLang(e.target.value)}
-            className="px-2 py-2 rounded-md bg-slate-100/50 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200/50 dark:border-white/10 outline-none"
+            className="px-2 py-1.5 text-xs sm:text-sm rounded-md bg-slate-100/50 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200/50 dark:border-white/10 outline-none"
             title="Dictation language"
           >
             <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="en-US">English (US)</option>
@@ -568,22 +583,13 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
             <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="hi-IN">Hindi (India)</option>
             <option className="bg-white text-slate-800 dark:bg-gray-900 dark:text-white" value="en-CA">English (Canada)</option>
           </select>
-          <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-gray-300">
-            <input type="checkbox" checked={autoPunct} onChange={(e) => setAutoPunct(e.target.checked)} />
+
+          <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-gray-300 cursor-pointer">
+            <input type="checkbox" checked={autoPunct} onChange={(e) => setAutoPunct(e.target.checked)} className="rounded" />
             Auto punctuation
           </label>
-          <button
-            onClick={isRecording ? stopDictation : startDictation}
-            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
-              isRecording
-                ? 'bg-red-600 hover:bg-red-500 text-white'
-                : 'bg-orange-600 hover:bg-orange-500 text-white'
-            }`}
-          >
-            <Mic className="w-4 h-4" />
-            {isRecording ? 'Stop' : 'Dictate'}
-          </button>
-          <div className="text-sm text-slate-500 dark:text-white/70">
+
+          <div className="w-full text-xs text-slate-500 dark:text-white/70 pt-1">
             {chars} chars • {words} words • {minutes} min read
           </div>
         </div>
@@ -594,13 +600,17 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
         contentEditable
         suppressContentEditableWarning
         data-focusora-notes-editor="true"
-        className="flex-1 bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-6 text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-4 text-slate-800 dark:text-white"
+        className="h-[220px] md:h-[540px] max-h-[540px] bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-xl sm:rounded-2xl p-4 sm:p-6 text-sm sm:text-base lg:text-lg leading-relaxed outline-none overflow-y-auto focus:ring-2 focus:ring-emerald-500/50 mb-3 sm:mb-4 text-slate-800 dark:text-white"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(16, 185, 129, 0.4) transparent'
+        }}
       />
 
-      <div className="bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-4 flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <UploadCloud className="w-5 h-5 text-slate-500 dark:text-white/70" />
-          <span className="text-sm font-semibold text-slate-600 dark:text-white/70">📥 Upload Notes</span>
+      <div className="bg-slate-100/50 dark:bg-white/5 backdrop-blur-lg rounded-xl sm:rounded-2xl p-3 sm:p-4 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <UploadCloud className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 dark:text-white/70 shrink-0" />
+          <span className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-white/70 shrink-0">Upload Notes</span>
           <input
             type="file"
             id="fileUpload"
@@ -609,12 +619,14 @@ const Notes = ({ addNotification = () => {}, onNotesSaved = () => {}, scope = "a
           />
           <label
             htmlFor="fileUpload"
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg cursor-pointer transition text-sm text-white"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg cursor-pointer transition text-xs sm:text-sm text-white"
           >
             Choose File
           </label>
-          <div className="text-slate-600 dark:text-gray-300">{uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}</div>
-          <div className="ml-auto text-xs text-slate-500 dark:text-gray-300">Local only</div>
+          <div className="text-xs sm:text-sm text-slate-600 dark:text-gray-300 truncate max-w-[120px] sm:max-w-[200px]">
+            {uploadedFiles.length ? `${uploadedFiles[0].name}` : 'No file chosen'}
+          </div>
+          <div className="ml-auto text-[10px] sm:text-xs text-slate-500 dark:text-gray-300">Local only</div>
         </div>
         {uploadedFiles.length > 0 && (
           <div className="mt-3 space-y-2">
