@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame, Trophy, Rocket, Target, Medal, Copy } from "lucide-react";
+import { Users, Zap, Clock, CheckCircle, Star, Crown, Flame, Trophy, Rocket, Target, Copy } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { getLeaderboard, updateUserLocation } from "../utils/firestoreUtils";
