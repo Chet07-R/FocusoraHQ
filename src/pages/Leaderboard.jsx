@@ -32,12 +32,6 @@ const getNextLeague = (points = 0) => {
   return LEAGUES.find((entry) => safePoints < entry.minPoints) || null;
 };
 
-const getQuestProgress = (value, target) => {
-  const safeValue = Math.max(0, Number(value) || 0);
-  const safeTarget = Math.max(1, Number(target) || 1);
-  return Math.min(100, Math.round((safeValue / safeTarget) * 100));
-};
-
 const App = () => {
   const { user } = useAuth();
   const { darkMode } = useTheme();
@@ -48,7 +42,7 @@ const App = () => {
     goalRate: 0,
   });
 
-  const [visibleCount] = useState(10);
+  const [visibleCount, setVisibleCount] = useState(10);
   const [sortMode, setSortMode] = useState("points");
   const [filterLocation, setFilterLocation] = useState("all");
   const [timeframe, setTimeframe] = useState("all"); // 'all' or 'weekly' (UI only for now)
@@ -57,8 +51,6 @@ const App = () => {
 
   const [dynamicUsers, setDynamicUsers] = useState([]);
   const [allRows, setAllRows] = useState([]);
-  const [rows, setRows] = useState([]);
-  const [hasLoadedMore, setHasLoadedMore] = useState(false);
   const getBadgeColor = (color) => {
     const colors = {
       green: "bg-green-600",
@@ -72,8 +64,7 @@ const App = () => {
   };
 
   const handleLoadMore = () => {
-    setHasLoadedMore(true);
-    setRows(allRows);
+    setVisibleCount((prev) => prev + 10);
   };
 
   useEffect(() => {
@@ -132,21 +123,23 @@ const App = () => {
                 if (json.address.village && !parts.length) parts.push(json.address.village);
                 if (json.address.state && !parts.includes(json.address.state)) parts.push(json.address.state);
                 if (json.address.country) parts.push(json.address.country);
-                label = parts.join(', ')
+                label = parts.join(', ');
                 if (!label && json.display_name) label = json.display_name;
               }
             }
-          } catch (e) {
+          } catch {
             // ignore reverse geocode failures
           }
 
           await updateUserLocation({ lat, lng }, label);
-          try { sessionStorage.setItem(sentKey, '1'); } catch (e) {}
-        } catch (err) {
+          try { sessionStorage.setItem(sentKey, '1'); } catch { /* ignore */ }
+        } catch {
           // ignore
         }
-      }, (err) => {}, { enableHighAccuracy: false, maximumAge: 1000 * 60 * 60, timeout: 8000 });
-    } catch (e) {}
+      }, () => {}, { enableHighAccuracy: false, maximumAge: 1000 * 60 * 60, timeout: 8000 });
+    } catch {
+      // ignore
+    }
   }, [user]);
 
   useEffect(() => {
@@ -163,7 +156,6 @@ const App = () => {
       })
       .map((u, idx) => ({ ...u, rank: idx + 1, _id: String(u.id || idx + 1) }));
     setAllRows(ranked);
-    setRows(hasLoadedMore ? ranked : ranked.slice(0, visibleCount));
 
     const usersCount = ranked.length;
     const pointsTotal = ranked.reduce((sum, row) => sum + (Number(row.points) || 0), 0);
@@ -176,7 +168,7 @@ const App = () => {
       sessions: sessionsTotal,
       goalRate,
     });
-  }, [dynamicUsers, hasLoadedMore, sortMode, visibleCount]);
+  }, [dynamicUsers, sortMode]);
 
   useEffect(() => {
     if (!allRows.length) {
@@ -206,6 +198,10 @@ const App = () => {
     // timeframe is UI-only at the moment; placeholder for weekly filtering later
     return out;
   }, [allRows, filterLocation, timeframe]);
+
+  const displayedRows = useMemo(() => {
+    return filteredRows.slice(0, visibleCount);
+  }, [filteredRows, visibleCount]);
 
   
 
@@ -313,45 +309,46 @@ const App = () => {
 
   const compareSearchResults = useMemo(() => {
     const term = compareSearch.trim().toLowerCase();
-    if (!term) return allRows.slice(0, 12);
+    if (!term) return [];
 
     return allRows.filter((row) => {
       const name = String(row.name || "").toLowerCase();
       const location = String(row.location || "").toLowerCase();
       return name.includes(term) || location.includes(term) || String(row.rank || "").includes(term);
-    }).slice(0, 12);
+    }).slice(0, 10);
   }, [allRows, compareSearch]);
 
   const clearCompareSearch = () => {
     setCompareSearch("");
-    setCompareUserId((currentValue) => currentValue || (currentUserRow?._id || allRows[0]?._id || ""));
   };
 
   return (
-    <div className={`min-h-screen pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+    <div className={`min-h-screen pt-20 sm:pt-24 bg-gradient-to-r from-indigo-300 to-cyan-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
 
-      <section className="pb-12 text-center border-b border-white/20 dark:border-gray-700/50">
-        <div className="flex justify-center mb-6">
-          <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
-            <Star className="w-6 h-6" />
+      {/* Hero Header */}
+      <section className="pb-8 sm:pb-12 text-center border-b border-white/20 dark:border-gray-700/50 px-4">
+        <div className="flex justify-center mb-3 sm:mb-6">
+          <div className="bg-yellow-400 text-black w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-md">
+            <Star className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
         </div>
-        <h1 className={`text-4xl md:text-5xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+        <h1 className={`text-2xl sm:text-4xl md:text-5xl font-extrabold mb-2 sm:mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
           Leaderboard
         </h1>
-        <p className={`text-base md:text-lg max-w-xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <p className={`text-xs sm:text-base md:text-lg max-w-xl mx-auto ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
           Track your progress and compete with focused learners worldwide
         </p>
       </section>
 
-      <section className="px-6 md:px-20 pt-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className={`lg:col-span-2 rounded-2xl p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
-            <div className="flex items-center justify-between gap-4 flex-wrap">
+      {/* League & Quest Relay */}
+      <section className="px-4 sm:px-8 md:px-12 lg:px-20 pt-6 sm:pt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className={`lg:col-span-2 rounded-2xl p-4 sm:p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
+            <div className="flex items-center justify-between gap-3 sm:gap-4 flex-wrap">
               <div>
-                <p className={`text-sm uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your League</p>
-                <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{currentLeague.name}</h3>
-                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm mt-1`}>
+                <p className={`text-xs sm:text-sm uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your League</p>
+                <h3 className={`text-xl sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{currentLeague.name}</h3>
+                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-xs sm:text-sm mt-1`}>
                   {currentUserRow
                     ? (nextLeague
                       ? `${pointsToNextLeague} points to ${nextLeague.name}`
@@ -359,43 +356,43 @@ const App = () => {
                     : "Sign in to track your personal progression"}
                 </p>
               </div>
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${currentLeague.color} text-white flex items-center justify-center shadow-xl`}>
-                <Trophy className="w-7 h-7" />
+              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${currentLeague.color} text-white flex items-center justify-center shadow-xl shrink-0`}>
+                <Trophy className="w-6 h-6 sm:w-7 sm:h-7" />
               </div>
             </div>
 
-            <div className={`mt-5 h-3 rounded-full ${darkMode ? 'bg-gray-700/70' : 'bg-gray-200'}`}>
+            <div className={`mt-4 sm:mt-5 h-2.5 sm:h-3 rounded-full ${darkMode ? 'bg-gray-700/70' : 'bg-gray-200'}`}>
               <div
                 className={`h-full rounded-full bg-gradient-to-r ${currentLeague.color} transition-all duration-700`}
                 style={{ width: `${leagueProgress}%` }}
               />
             </div>
-            <div className="mt-2 flex items-center justify-between text-xs">
+            <div className="mt-1.5 sm:mt-2 flex items-center justify-between text-[11px] sm:text-xs">
               <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{currentLeague.name}</span>
               <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{nextLeague ? nextLeague.name : 'MAX'}</span>
             </div>
           </div>
 
-          <div className={`rounded-2xl p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
-            <div className="flex items-center gap-2 mb-4">
-              <Target className="w-5 h-5 text-cyan-400" />
-              <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Quest Relay</h3>
+          <div className={`rounded-2xl p-4 sm:p-6 border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
+              <h3 className={`text-base sm:text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Quest Relay</h3>
             </div>
 
-            <div className={`rounded-xl p-4 border ${darkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-gray-50/80'}`}>
+            <div className={`rounded-xl p-3 sm:p-4 border ${darkMode ? 'border-gray-700 bg-gray-900/40' : 'border-gray-200 bg-gray-50/80'}`}>
               {activeQuest ? (
                 <>
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Active quest</p>
-                      <h4 className={`text-lg font-bold mt-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{activeQuest.title}</h4>
-                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{activeQuest.label}</p>
+                      <p className={`text-[10px] sm:text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Active quest</p>
+                      <h4 className={`text-base sm:text-lg font-bold mt-0.5 sm:mt-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{activeQuest.title}</h4>
+                      <p className={`text-xs sm:text-sm mt-0.5 sm:mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{activeQuest.label}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-cyan-600 px-3 py-1 text-xs font-semibold text-white">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-cyan-600 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[11px] sm:text-xs font-semibold text-white">
                         +{activeQuest.reward?.pointsBonus || 0} XP
                       </span>
-                      <p className={`mt-2 text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <p className={`mt-1 sm:mt-2 text-[10px] sm:text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         {activeQuest.metric === 'sessions'
                           ? 'Session target'
                           : activeQuest.metric === 'minutes'
@@ -407,33 +404,33 @@ const App = () => {
                     </div>
                   </div>
 
-                  <div className={`mt-4 h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                  <div className={`mt-3 sm:mt-4 h-2 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500"
                       style={{ width: `${activeQuest.progress || 0}%` }}
                     />
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+                  <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span className="rounded-full bg-blue-600 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[11px] sm:text-xs font-semibold text-white">
                       {activeQuest.current || 0} / {activeQuest.target || 0}
                     </span>
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${activeQuest.done ? 'bg-green-600 text-white' : darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-700'}`}>
+                    <span className={`rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-[11px] sm:text-xs font-semibold ${activeQuest.done ? 'bg-green-600 text-white' : darkMode ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-700'}`}>
                       {activeQuest.done ? 'Quest complete' : 'Quest in progress'}
                     </span>
                   </div>
 
-                  <div className="mt-5 grid gap-2 sm:grid-cols-2">
+                  <div className="mt-3.5 sm:mt-5 grid gap-2 grid-cols-1 sm:grid-cols-2">
                     {recentRewards.slice(0, 2).map((reward) => (
                       <div
                         key={reward.id}
-                        className={`rounded-xl border p-3 ${darkMode ? 'border-gray-700 bg-gray-950/50' : 'border-gray-200 bg-white/80'}`}
+                        className={`rounded-xl border p-2.5 sm:p-3 ${darkMode ? 'border-gray-700 bg-gray-950/50' : 'border-gray-200 bg-white/80'}`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-xl">{reward.icon}</span>
-                          <div>
-                            <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{reward.label}</p>
-                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{reward.description}</p>
+                          <span className="text-lg sm:text-xl">{reward.icon}</span>
+                          <div className="min-w-0">
+                            <p className={`text-xs sm:text-sm font-semibold truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>{reward.label}</p>
+                            <p className={`text-[11px] sm:text-xs truncate ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{reward.description}</p>
                           </div>
                         </div>
                       </div>
@@ -441,12 +438,12 @@ const App = () => {
                   </div>
 
                   {questHistory.length > 0 && (
-                    <div className="mt-4">
-                      <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Recent completions</p>
-                      <div className="mt-2 space-y-2">
+                    <div className="mt-3 sm:mt-4">
+                      <p className={`text-[10px] sm:text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Recent completions</p>
+                      <div className="mt-1.5 sm:mt-2 space-y-1.5 sm:space-y-2">
                         {questHistory.slice(0, 2).map((entry) => (
-                          <div key={entry.id} className={`rounded-xl px-3 py-2 text-sm ${darkMode ? 'bg-gray-950/40 text-gray-200' : 'bg-white/70 text-gray-700'}`}>
-                            <span className="mr-2">{entry.rewardIcon}</span>
+                          <div key={entry.id} className={`rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm ${darkMode ? 'bg-gray-950/40 text-gray-200' : 'bg-white/70 text-gray-700'}`}>
+                            <span className="mr-1.5">{entry.rewardIcon}</span>
                             {entry.title} unlocked {entry.rewardLabel}
                           </div>
                         ))}
@@ -455,71 +452,73 @@ const App = () => {
                   )}
                 </>
               ) : (
-                <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>Sign in to see your live quest chain and rewards.</p>
+                <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Sign in to see your live quest chain and rewards.</p>
               )}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-12 px-6 md:px-20 text-center">
-        <h2 className={`text-2xl md:text-3xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+      {/* Platform Statistics */}
+      <section className="py-8 sm:py-12 px-4 sm:px-8 md:px-12 lg:px-20 text-center">
+        <h2 className={`text-xl sm:text-2xl md:text-3xl font-semibold mb-1 sm:mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
           Platform Statistics
         </h2>
-        <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <p className={`text-xs sm:text-sm md:text-base mb-6 sm:mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
           See how our global community is performing
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-cyan-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
-            <div className="flex justify-center mb-4 text-blue-500">
-              <Users className="w-10 h-10" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
+          <div className={`p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg hover:shadow-cyan-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-2 sm:mb-4 text-blue-500">
+              <Users className="w-7 h-7 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-3xl font-bold text-blue-400">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-400">
               {stats.users.toLocaleString()}
             </h3>
-            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Users</p>
+            <p className={`mt-1 sm:mt-2 text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Users</p>
           </div>
-          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-pink-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
-            <div className="flex justify-center mb-4 text-pink-500">
-              <Zap className="w-10 h-10" />
+          <div className={`p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg hover:shadow-pink-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-2 sm:mb-4 text-pink-500">
+              <Zap className="w-7 h-7 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-3xl font-bold text-pink-400">{stats.points.toLocaleString()}</h3>
-            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Points</p>
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-pink-400">{stats.points.toLocaleString()}</h3>
+            <p className={`mt-1 sm:mt-2 text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Points</p>
           </div>
-          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-yellow-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
-            <div className="flex justify-center mb-4 text-yellow-400">
-              <Clock className="w-10 h-10" />
+          <div className={`p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg hover:shadow-yellow-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-2 sm:mb-4 text-yellow-400">
+              <Clock className="w-7 h-7 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-3xl font-bold text-yellow-400">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400">
               {stats.sessions.toLocaleString()}
             </h3>
-            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Focus Sessions</p>
+            <p className={`mt-1 sm:mt-2 text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Focus Sessions</p>
           </div>
-          <div className={`p-8 rounded-2xl shadow-lg hover:shadow-green-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
-            <div className="flex justify-center mb-4 text-green-500">
-              <CheckCircle className="w-10 h-10" />
+          <div className={`p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg hover:shadow-green-600/30 transition-all backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50'}`}>
+            <div className="flex justify-center mb-2 sm:mb-4 text-green-500">
+              <CheckCircle className="w-7 h-7 sm:w-10 sm:h-10" />
             </div>
-            <h3 className="text-3xl font-bold text-green-400">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-green-400">
               {stats.goalRate}%
             </h3>
-            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Goal Rate</p>
+            <p className={`mt-1 sm:mt-2 text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Goal Rate</p>
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-6 md:px-20">
+      {/* Hall of Champions (Podium Layout) */}
+      <section className="py-6 sm:py-12 md:py-16 px-2 sm:px-6 md:px-12 lg:px-20">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="flex justify-center mb-6">
-            <div className="bg-yellow-400 text-black w-12 h-12 rounded-full flex items-center justify-center shadow-md">
-              <Star className="w-6 h-6" />
+          <div className="flex justify-center mb-2 sm:mb-4">
+            <div className="bg-yellow-400 text-black w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shadow-md">
+              <Star className="w-4 h-4 sm:w-6 sm:h-6" />
             </div>
           </div>
 
-          <h2 className={`text-3xl md:text-4xl font-extrabold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hall of Champions</h2>
-          <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{rankingLabel}</p>
+          <h2 className={`text-xl sm:text-3xl md:text-4xl font-extrabold mb-1 sm:mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Hall of Champions</h2>
+          <p className={`text-[11px] sm:text-sm md:text-base mb-4 sm:mb-8 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{rankingLabel}</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-4 md:gap-8 items-end max-w-4xl mx-auto">
             {(allRows.length >= 3
               ? [allRows[1], allRows[0], allRows[2]]
               : allRows.slice(0, 3)
@@ -527,26 +526,26 @@ const App = () => {
               if (!u) return null;
               const isChampion = displayIdx === 1; 
               const actualRank = u.rank;
-              // CSS order for mobile: 1st, 2nd, 3rd
-              const mobileOrder = actualRank === 1 ? 'order-1' : actualRank === 2 ? 'order-2' : 'order-3';
               
               return (
                 <div
                   key={`${u.name}-${displayIdx}`}
-                  className={`${mobileOrder} md:order-none rounded-2xl p-8 shadow-lg transform-gpu will-change-transform transition-[transform,box-shadow,border-color,background-color] duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.03] hover:shadow-[0_16px_38px_rgba(59,130,246,0.32)] hover:-translate-y-1 hover:z-50 relative backdrop-blur-sm ${
+                  className={`rounded-xl sm:rounded-2xl p-2 sm:p-5 md:p-7 shadow-md sm:shadow-lg transform-gpu transition-all duration-300 hover:scale-[1.02] relative backdrop-blur-sm ${
                     isChampion
-                      ? `scale-[1.02] border-4 border-blue-600 ${darkMode ? 'bg-gradient-to-b from-blue-900/80 to-blue-800/80' : 'bg-gradient-to-b from-blue-100/80 to-blue-200/80'} hover:border-blue-400`
-                      : `${darkMode ? 'bg-gray-800/70 hover:bg-gray-800/85 border border-gray-700/50' : 'bg-white/80 hover:bg-blue-50/90 border border-white/50'} hover:border-blue-500/30`
+                      ? `scale-[1.02] sm:scale-[1.03] border-2 sm:border-4 border-blue-600 ${darkMode ? 'bg-gradient-to-b from-blue-900/80 to-blue-800/80' : 'bg-gradient-to-b from-blue-100/90 to-blue-200/90'} shadow-blue-500/20 z-10 pb-3 sm:pb-6`
+                      : `${darkMode ? 'bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 border border-white/60'} pb-2.5 sm:pb-5`
                   }`}
                 >
                   <div className="flex flex-col items-center">
-                    {isChampion && (
-                      <div className="mb-3 text-yellow-300">
-                        <Crown className="w-10 h-10" />
+                    {isChampion ? (
+                      <div className="mb-1 sm:mb-2 text-yellow-300 animate-bounce duration-1000">
+                        <Crown className="w-5 h-5 sm:w-8 sm:h-8" />
                       </div>
+                    ) : (
+                      <div className="h-2 sm:h-4"></div>
                     )}
 
-                    <div className={`w-28 h-28 rounded-full overflow-hidden border-4 ${isChampion ? 'border-blue-400' : darkMode ? 'border-gray-600' : 'border-gray-300'} mb-4`}>
+                    <div className={`${isChampion ? 'w-13 h-13 sm:w-22 sm:h-22 md:w-26 md:h-26 border-2 sm:border-4 border-blue-400' : 'w-10 h-10 sm:w-18 sm:h-18 md:w-22 md:h-22 border sm:border-3 ' + (darkMode ? 'border-gray-600' : 'border-gray-300')} rounded-full overflow-hidden mb-1.5 sm:mb-3 shrink-0`}>
                       <img
                         src={u.img}
                         alt={u.name}
@@ -558,20 +557,20 @@ const App = () => {
                       />
                     </div>
 
-                    <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{u.name}</h3>
+                    <h3 className={`text-[11px] sm:text-base md:text-lg font-bold mb-0.5 truncate w-full px-0.5 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{u.name}</h3>
 
-                    <p className={`text-3xl font-extrabold ${isChampion ? (darkMode ? 'text-blue-300' : 'text-blue-600') : 'text-blue-400'}`}>
+                    <p className={`text-sm sm:text-2xl md:text-3xl font-extrabold leading-tight ${isChampion ? (darkMode ? 'text-blue-300' : 'text-blue-600') : 'text-blue-400'}`}>
                       {u.points.toLocaleString()}
                     </p>
 
-                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sessions - {u.time}</p>
+                    <p className={`text-[9px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 truncate w-full px-0.5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.sessions} sess • {u.time}</p>
 
-                    <div className="flex gap-2 mt-4">
-                      <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-sm">
-                        {actualRank === 1 ? 'Champion' : actualRank === 2 ? '2nd' : '3rd'}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-1 mt-1.5 sm:mt-3 w-full">
+                      <span className={`px-1.5 sm:px-2.5 py-0.5 rounded-full text-[9px] sm:text-xs font-semibold whitespace-nowrap ${isChampion ? 'bg-blue-600 text-white' : 'bg-slate-700/80 text-white'}`}>
+                        {actualRank === 1 ? '1st 🏆' : actualRank === 2 ? '2nd' : '3rd'}
                       </span>
-                      <span className="px-3 py-1 rounded-full bg-orange-700 text-white text-sm">
-                        {u.streak} day streak
+                      <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-orange-600/90 text-white text-[10px] sm:text-xs font-semibold whitespace-nowrap">
+                        {u.streak}d streak
                       </span>
                     </div>
                   </div>
@@ -582,130 +581,143 @@ const App = () => {
         </div>
       </section>
 
-      <section className="px-6 md:px-20 pb-8 relative z-20">
+      {/* Compare Stats */}
+      <section className="px-4 sm:px-8 md:px-12 lg:px-20 pb-8 relative z-20">
         <div className={`max-w-6xl mx-auto rounded-2xl border backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border-gray-700/60' : 'bg-white/85 border-white/70 shadow-lg'}`}>
-          <div className={`p-6 sm:p-8 border-b ${darkMode ? 'border-gray-700/60' : 'border-gray-200/70'}`}>
-            <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className={`p-4 sm:p-6 md:p-8 border-b ${darkMode ? 'border-gray-700/60' : 'border-gray-200/70'}`}>
+            <div>
+              <p className={`text-xs sm:text-sm uppercase tracking-wide font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Compare Stats</p>
+              <h3 className={`text-lg sm:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                Side-by-side with another learner
+              </h3>
+              <p className={`text-xs sm:text-sm mt-0.5 sm:mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                Compare points, sessions, study time, and streaks against a chosen user.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
               <div>
-                <p className={`text-sm uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Compare Stats</p>
-                <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  Side-by-side with another learner
-                </h3>
-                <p className={`text-sm mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Compare points, sessions, study time, and streaks against a chosen user.
-                </p>
+                <label className={`mb-1.5 block text-[11px] sm:text-xs font-bold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Select Learner
+                </label>
+                <select
+                  value={compareUserId}
+                  onChange={(e) => setCompareUserId(e.target.value)}
+                  className={`w-full rounded-xl border px-3.5 py-2.5 text-xs sm:text-sm font-medium outline-none transition cursor-pointer ${
+                    darkMode
+                      ? 'bg-gray-900 border-gray-700 text-gray-100 focus:border-blue-500'
+                      : 'bg-white border-gray-200 text-gray-900 focus:border-blue-500 shadow-sm'
+                  }`}
+                >
+                  {allRows.map((row) => (
+                    <option key={row._id} value={row._id} className={darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}>
+                      #{row.rank} {row.name} ({row.points.toLocaleString()} pts) {row.you ? '• YOU' : ''}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
-                {allRows.slice(0, 5).map((row) => (
-                  <button
-                    key={`compare-${row._id}`}
-                    type="button"
-                    onClick={() => setCompareUserId(row._id)}
-                    className={`relative z-30 pointer-events-auto px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${String(compareUserId) === String(row._id)
-                      ? 'bg-blue-600 text-white border-blue-500'
-                      : darkMode
-                        ? 'bg-gray-900/60 text-gray-200 border-gray-700 hover:bg-gray-800'
-                        : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
-                    }`}
-                  >
-                    {row.you ? 'You' : row.name}
-                  </button>
-                ))}
-              </div>
-
-              <div className="w-full">
-                <label className={`mb-2 block text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Search users
+              <div>
+                <label className={`mb-1.5 block text-[11px] sm:text-xs font-bold uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Search & Filter
                 </label>
                 <div className="relative">
                   <input
                     value={compareSearch}
                     onChange={(e) => setCompareSearch(e.target.value)}
-                    placeholder="Type a name, location, or rank"
-                    className={`relative z-30 w-full rounded-xl border px-4 py-3 pr-24 text-sm outline-none transition ${darkMode
-                      ? 'bg-gray-900/70 border-gray-700 text-gray-100 placeholder:text-gray-500 focus:border-blue-500'
-                      : 'bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-blue-500'
+                    placeholder="Type name, rank, or location..."
+                    className={`w-full rounded-xl border px-3.5 py-2.5 pr-16 text-xs sm:text-sm outline-none transition ${
+                      darkMode
+                        ? 'bg-gray-900 border-gray-700 text-gray-100 placeholder:text-gray-500 focus:border-blue-500'
+                        : 'bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 shadow-sm'
                     }`}
                   />
-                  <button
-                    type="button"
-                    onPointerDown={(e) => {
-                      e.preventDefault();
-                      clearCompareSearch();
-                    }}
-                    onClick={clearCompareSearch}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 z-40 rounded-lg border px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${darkMode
-                      ? 'bg-gray-900/90 border-gray-700 text-gray-200 hover:bg-gray-800'
-                      : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    Clear
-                  </button>
-                </div>
-
-                <div className="relative z-30 mt-3 flex flex-wrap gap-2 pointer-events-auto">
-                  {compareSearchResults.map((row) => (
+                  {compareSearch && (
                     <button
-                      key={`search-${row._id}`}
                       type="button"
-                      onClick={() => setCompareUserId(row._id)}
-                      className={`relative z-30 pointer-events-auto px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${String(compareUserId) === String(row._id)
-                        ? 'bg-blue-600 text-white border-blue-500'
-                        : darkMode
-                          ? 'bg-gray-900/60 text-gray-200 border-gray-700 hover:bg-gray-800'
-                          : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'
+                      onClick={clearCompareSearch}
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-semibold transition cursor-pointer ${
+                        darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'
                       }`}
                     >
-                      {row.you ? `You • ${row.name}` : `${row.rank}. ${row.name}`}
+                      Clear
                     </button>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
+
+            {/* If user typed a search query, show the matching options */}
+            {compareSearch.trim() && (
+              <div className="mt-3 flex flex-wrap gap-1.5 p-2 rounded-xl bg-gray-100/70 dark:bg-gray-900/60 border border-gray-200/70 dark:border-gray-700/60 max-h-28 overflow-y-auto">
+                {compareSearchResults.length > 0 ? (
+                  compareSearchResults.map((row) => (
+                    <button
+                      key={`search-${row._id}`}
+                      type="button"
+                      onClick={() => {
+                        setCompareUserId(row._id);
+                        setCompareSearch('');
+                      }}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold border transition cursor-pointer ${
+                        String(compareUserId) === String(row._id)
+                          ? 'bg-blue-600 text-white border-blue-500 shadow'
+                          : darkMode
+                            ? 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700'
+                            : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100 shadow-sm'
+                      }`}
+                    >
+                      #{row.rank} {row.name} ({row.points.toLocaleString()} pts)
+                    </button>
+                  ))
+                ) : (
+                  <span className="text-xs text-gray-400 px-1 py-0.5">No learners found matching "{compareSearch}"</span>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            <div className={`p-6 sm:p-8 ${darkMode ? 'border-b lg:border-b-0 lg:border-r border-gray-700/60' : 'border-b lg:border-b-0 lg:border-r border-gray-200/70'}`}>
-              <div className="flex items-center justify-between gap-3 mb-5">
+            <div className={`p-4 sm:p-6 md:p-8 ${darkMode ? 'border-b lg:border-b-0 lg:border-r border-gray-700/60' : 'border-b lg:border-b-0 lg:border-r border-gray-200/70'}`}>
+              <div className="flex items-center justify-between gap-3 mb-3.5 sm:mb-5">
                 <div>
-                  <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>You</p>
-                  <h4 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  <p className={`text-[10px] sm:text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>You</p>
+                  <h4 className={`text-base sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {compareBaseRow?.name || 'Your profile'}
                   </h4>
                 </div>
-                <span className="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-semibold">Current</span>
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-blue-600 text-white text-xs font-semibold">Current</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
                 {comparisonCards.map((card) => (
-                  <div key={`you-${card.label}`} className={`rounded-xl p-4 border ${darkMode ? 'bg-gray-900/50 border-gray-700/60' : 'bg-gray-50 border-gray-200/70'}`}>
-                    <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{card.label}</p>
-                    <p className={`mt-2 text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{card.you}</p>
-                    <p className="mt-1 text-xs text-blue-400 font-semibold">vs {card.them}</p>
+                  <div key={`you-${card.label}`} className={`rounded-xl p-2.5 sm:p-4 border ${darkMode ? 'bg-gray-900/50 border-gray-700/60' : 'bg-gray-50 border-gray-200/70'}`}>
+                    <p className={`text-[10px] sm:text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{card.label}</p>
+                    <p className={`mt-1 sm:mt-2 text-sm sm:text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{card.you}</p>
+                    <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs text-blue-400 font-semibold truncate">vs {card.them}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="p-6 sm:p-8">
-              <div className="flex items-center justify-between gap-3 mb-5">
+            <div className="p-4 sm:p-6 md:p-8">
+              <div className="flex items-center justify-between gap-3 mb-3.5 sm:mb-5">
                 <div>
-                  <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Compared with</p>
-                  <h4 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  <p className={`text-[10px] sm:text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Compared with</p>
+                  <h4 className={`text-base sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {compareTargetRow?.name || 'Selected user'}
                   </h4>
                 </div>
-                <span className="px-3 py-1 rounded-full bg-purple-600 text-white text-xs font-semibold">Rival</span>
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-purple-600 text-white text-xs font-semibold">Rival</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
                 {comparisonCards.map((card) => (
-                  <div key={`them-${card.label}`} className={`rounded-xl p-4 border ${darkMode ? 'bg-gray-900/50 border-gray-700/60' : 'bg-gray-50 border-gray-200/70'}`}>
-                    <p className={`text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{card.label}</p>
-                    <p className={`mt-2 text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{card.them}</p>
-                    <p className={`mt-1 text-xs font-semibold ${card.diff.startsWith('-') ? 'text-orange-400' : 'text-emerald-400'}`}>
-                      Difference {card.diff}
+                  <div key={`them-${card.label}`} className={`rounded-xl p-2.5 sm:p-4 border ${darkMode ? 'bg-gray-900/50 border-gray-700/60' : 'bg-gray-50 border-gray-200/70'}`}>
+                    <p className={`text-[10px] sm:text-xs uppercase tracking-wide ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{card.label}</p>
+                    <p className={`mt-1 sm:mt-2 text-sm sm:text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{card.them}</p>
+                    <p className={`mt-0.5 sm:mt-1 text-[11px] sm:text-xs font-semibold truncate ${card.diff.startsWith('-') ? 'text-orange-400' : 'text-emerald-400'}`}>
+                      {card.diff}
                     </p>
                   </div>
                 ))}
@@ -714,116 +726,143 @@ const App = () => {
           </div>
         </div>
       </section>
-      <section className="py-20 px-6 md:px-20 border-t border-white/20 dark:border-gray-700/50">
-        <div className={`rounded-t-2xl overflow-hidden backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50 shadow-lg'}`}>
-          <div className={`py-4 px-6 text-left text-lg font-semibold ${darkMode ? 'bg-blue-700 text-white' : 'bg-blue-600 text-white'}`}>
-            Complete Rankings
-            <p className="text-sm text-gray-200 font-normal">
+
+      {/* Complete Rankings Table */}
+      <section className="py-10 sm:py-16 md:py-20 px-3 sm:px-6 md:px-12 lg:px-20 border-t border-white/20 dark:border-gray-700/50">
+        <div className={`rounded-2xl overflow-hidden backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 border border-gray-700/50' : 'bg-white/80 border border-white/50 shadow-lg'}`}>
+          <div className={`py-3.5 sm:py-4 px-4 sm:px-6 text-left ${darkMode ? 'bg-blue-700 text-white' : 'bg-blue-600 text-white'}`}>
+            <h2 className="text-base sm:text-lg font-semibold">Complete Rankings</h2>
+            <p className="text-xs sm:text-sm text-gray-200 font-normal">
               Track your progress among all users
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-2 items-center">
+            <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2 items-center">
               {[{ key: 'points', label: 'Points', icon: Star }, { key: 'streak', label: 'Streak', icon: Flame }, { key: 'sessions', label: 'Sessions', icon: Rocket }].map((mode) => (
                 <button
                   key={mode.key}
                   onClick={() => {
                     setSortMode(mode.key);
-                    setHasLoadedMore(false);
+                    setVisibleCount(10);
                   }}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition ${sortMode === mode.key ? 'bg-white text-blue-700 border-white' : 'bg-blue-800/40 text-blue-100 border-blue-300/30 hover:bg-blue-800/60'}`}
+                  className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${sortMode === mode.key ? 'bg-white text-blue-700 border-white' : 'bg-blue-800/40 text-blue-100 border-blue-300/30 hover:bg-blue-800/60'}`}
                 >
-                  <mode.icon className="w-3.5 h-3.5" />
+                  <mode.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   {mode.label}
                 </button>
               ))}
 
-              <div className="ml-2">
-                <select value={filterLocation} onChange={(e) => setFilterLocation(e.target.value)} className="px-3 py-1 rounded-md bg-transparent text-sm border border-white/20">
+              <div className="my-0.5">
+                <select
+                  value={filterLocation}
+                  onChange={(e) => {
+                    setFilterLocation(e.target.value);
+                    setVisibleCount(10);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-blue-800/60 text-white text-xs border border-white/20 outline-none cursor-pointer"
+                >
                   {uniqueLocations.map((loc) => (
-                    <option key={loc} value={loc}>{loc === 'all' ? 'All locations' : loc}</option>
+                    <option key={loc} value={loc} className="bg-slate-900 text-white">{loc === 'all' ? 'All locations' : loc}</option>
                   ))}
                 </select>
               </div>
 
-              <div className="ml-2 inline-flex items-center gap-2">
-                <button onClick={() => setTimeframe('all')} className={`px-3 py-1 rounded-full text-xs ${timeframe === 'all' ? 'bg-white text-blue-700' : 'bg-blue-800/40 text-blue-100'}`}>All</button>
-                <button onClick={() => setTimeframe('weekly')} className={`px-3 py-1 rounded-full text-xs ${timeframe === 'weekly' ? 'bg-white text-blue-700' : 'bg-blue-800/40 text-blue-100'}`}>Weekly</button>
+              <div className="inline-flex items-center gap-1 sm:gap-1.5">
+                <button
+                  onClick={() => {
+                    setTimeframe('all');
+                    setVisibleCount(10);
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${timeframe === 'all' ? 'bg-white text-blue-700' : 'bg-blue-800/40 text-blue-100 hover:bg-blue-800/60'}`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => {
+                    setTimeframe('weekly');
+                    setVisibleCount(10);
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${timeframe === 'weekly' ? 'bg-white text-blue-700' : 'bg-blue-800/40 text-blue-100 hover:bg-blue-800/60'}`}
+                >
+                  Weekly
+                </button>
               </div>
             </div>
           </div>
           
-          <div className={`overflow-x-auto ${darkMode ? 'bg-gray-900/40' : 'bg-white/60'}`}>
-            <table className={`min-w-full text-left text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              <thead className={`uppercase text-xs ${darkMode ? 'bg-[#1e263b] text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
+          <div className={`overflow-x-auto ${darkMode ? 'bg-gray-900/40' : 'bg-white/60'} scrollbar-thin`}>
+            <table className={`min-w-full text-left text-xs sm:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <thead className={`uppercase text-[10px] sm:text-xs ${darkMode ? 'bg-[#1e263b] text-gray-200' : 'bg-gray-100 text-gray-700'}`}>
                 <tr>
-                  <th className="px-3 sm:px-6 py-3">Rank</th>
-                  <th className="px-3 sm:px-6 py-3">User</th>
-                  <th className="px-3 sm:px-6 py-3">Points</th>
-                  <th className="px-3 sm:px-6 py-3">Sessions</th>
-                  <th className="px-3 sm:px-6 py-3">Focus Time</th>
-                  <th className="px-3 sm:px-6 py-3">Streak</th>
-                  <th className="px-3 sm:px-6 py-3">League</th>
-                  <th className="px-3 sm:px-6 py-3">Badge</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">Rank</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">User</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">Points</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">Sessions</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">Focus Time</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">Streak</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">League</th>
+                  <th className="px-2.5 sm:px-4 md:px-6 py-3">Badge</th>
                 </tr>
               </thead>
-              <tbody>
-                {filteredRows.map((user) => (
+              <tbody className="divide-y divide-gray-200/50 dark:divide-gray-700/50">
+                {displayedRows.map((u) => (
                   <tr
-                    key={user._id}
-                    className={`border-t transition ${
+                    key={u._id}
+                    className={`transition ${
                       darkMode 
-                        ? `border-gray-700 hover:bg-[#1b243a] ${user.you ? 'bg-[#13213a]' : ''}` 
-                        : `border-gray-200 hover:bg-gray-50 ${user.you ? 'bg-blue-50' : ''}`
+                        ? `hover:bg-[#1b243a] ${u.you ? 'bg-[#13213a]' : ''}` 
+                        : `hover:bg-gray-50 ${u.you ? 'bg-blue-50' : ''}`
                     }`}
                   >
-                    <td className={`px-3 sm:px-6 py-4 font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-                      {user.rank}
+                    <td className={`px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                      {u.rank}
                     </td>
-                    <td className="px-3 sm:px-6 py-4 flex items-center gap-3">
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-3">
                       <img
-                        src={user.img}
-                        alt={user.name}
-                        className={`w-9 h-9 rounded-full border ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}
+                        src={u.img}
+                        alt={u.name}
+                        className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full border shrink-0 ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}
                         onError={(e) => {
                           if (e.currentTarget.src.endsWith('Profile_Icon.png')) return;
                           e.currentTarget.src = '/images/Profile_Icon.png';
                         }}
                       />
-                      <div>
-                        <p className={`font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
-                          {user.name}
-                          {user.you && (
-                            <span className="text-xs text-blue-400 font-semibold ml-2">YOU</span>
+                      <div className="min-w-0">
+                        <p className={`font-medium flex items-center gap-1 truncate ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                          <span className="truncate">{u.name}</span>
+                          {u.you && (
+                            <span className="text-[10px] text-blue-400 font-bold bg-blue-500/10 px-1.5 py-0.5 rounded shrink-0">YOU</span>
                           )}
-                          <button onClick={() => handleShare(user)} title="Copy ranking" className="ml-2 inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-[10px]">
-                            <Copy className="w-3 h-3" />
+                          <button onClick={() => handleShare(u)} title="Copy ranking" className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] shrink-0 cursor-pointer">
+                            <Copy className="w-2.5 h-2.5" />
                           </button>
                         </p>
-                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{user.location}</p>
+                        <p className={`text-[11px] truncate ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{u.location}</p>
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-4 text-blue-400 font-semibold">
-                      {user.points.toLocaleString()}
-                      {user.today && <span className="text-xs text-green-400 ml-1">{user.today}</span>}
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 text-blue-400 font-semibold whitespace-nowrap">
+                      {u.points.toLocaleString()}
+                      {u.today && <span className="text-[10px] text-green-400 block sm:inline sm:ml-1">{u.today}</span>}
                     </td>
-                    <td className="px-3 sm:px-6 py-4">{user.sessions}</td>
-                    <td className="px-3 sm:px-6 py-4">{user.time}</td>
-                    <td className="px-3 sm:px-6 py-4 flex items-center gap-1">
-                      <Flame className="text-orange-400 w-4 h-4" />
-                      {user.streak} days
-                    </td>
-                    <td className="px-3 sm:px-6 py-4">
-                      <span className={`text-xs font-semibold px-3 py-1 rounded-full text-white bg-gradient-to-r ${getLeagueByPoints(user.points).color}`}>
-                        {getLeagueByPoints(user.points).name}
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">{u.sessions}</td>
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">{u.time}</td>
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1">
+                        <Flame className="text-orange-400 w-3.5 h-3.5" />
+                        {u.streak}d
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                      <span className={`text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 rounded-full text-white bg-gradient-to-r ${getLeagueByPoints(u.points).color}`}>
+                        {getLeagueByPoints(u.points).name}
+                      </span>
+                    </td>
+                    <td className="px-2.5 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                       <span
-                        className={`text-white text-xs px-2 py-1 rounded-full ${getBadgeColor(
-                          user.badge.color
+                        className={`text-white text-[10px] sm:text-xs px-2 py-0.5 rounded-full ${getBadgeColor(
+                          u.badge.color
                         )}`}
                       >
-                        {user.badge.label}
+                        {u.badge.label}
                       </span>
                     </td>
                   </tr>
@@ -831,105 +870,107 @@ const App = () => {
               </tbody>
             </table>
           </div>
-          <div className={`flex justify-center gap-4 py-6 rounded-b-2xl ${darkMode ? 'bg-gray-900/40' : 'bg-white/60 border-t border-gray-200/50'}`}>
+          <div className={`flex justify-center gap-4 py-4 sm:py-6 rounded-b-2xl ${darkMode ? 'bg-gray-900/40' : 'bg-white/60 border-t border-gray-200/50'}`}>
             <button
               onClick={handleLoadMore}
-              disabled={hasLoadedMore || rows.length >= allRows.length}
+              disabled={visibleCount >= filteredRows.length}
               style={{ 
                 background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
                 boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
               }}
-              className="text-white cursor-pointer font-semibold px-8 py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:scale-100"
+              className="text-white cursor-pointer text-xs sm:text-sm font-semibold px-5 sm:px-8 py-2.5 sm:py-3 rounded-xl hover:brightness-110 transform hover:scale-105 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:scale-100"
               onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
               onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
             >
-              {hasLoadedMore || rows.length >= allRows.length ? 'All Rankings Loaded' : 'Load More Rankings'}
+              {visibleCount >= filteredRows.length ? 'All Rankings Loaded' : `Load More Rankings (${Math.min(visibleCount, filteredRows.length)} of ${filteredRows.length})`}
             </button>
           </div>
         </div>
+
         {/* Champion celebration */}
         {currentUserRow && currentUserRow.rank === 1 && (
-          <div className="max-w-6xl mx-auto mt-6">
-            <div className="rounded-2xl p-4 bg-gradient-to-r from-yellow-400 to-pink-400 text-black font-semibold flex items-center justify-center gap-3">
-              <Trophy className="w-6 h-6" />
-              Congratulations - you're the Champion! Keep the streak alive.
+          <div className="max-w-6xl mx-auto mt-4 sm:mt-6">
+            <div className="rounded-2xl p-3 sm:p-4 bg-gradient-to-r from-yellow-400 to-pink-400 text-black font-semibold flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm">
+              <Trophy className="w-5 h-5 shrink-0" />
+              <span>Congratulations — you're the Champion! Keep the streak alive.</span>
             </div>
           </div>
         )}
 
-        <section className="py-20 px-6 md:px-20">
+        {/* How Points Are Calculated */}
+        <div className="py-10 sm:py-16 md:py-20">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className={`text-3xl md:text-4xl font-extrabold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-xl sm:text-2xl md:text-3xl font-extrabold mb-1.5 sm:mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               How Points Are Calculated
             </h2>
-            <p className={`mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className={`text-xs sm:text-sm md:text-base mb-6 sm:mb-10 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               These are the live scoring rules used for leaderboard updates
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
-                <div className="flex items-center justify-center mb-4">
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-yellow-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-yellow-50'}`}>
-                    <Clock className="w-8 h-8" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+              <div className={`rounded-2xl p-5 sm:p-6 md:p-8 shadow-md sm:shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-[1.02] relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+                <div className="flex items-center justify-center mb-3 sm:mb-4">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-yellow-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-yellow-50'}`}>
+                    <Clock className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                 </div>
-                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Focus Sessions</h3>
-                <ul className="space-y-3 text-left">
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                <h3 className={`text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Focus Sessions</h3>
+                <ul className="space-y-2 sm:space-y-3 text-left text-xs sm:text-sm">
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
                     <span>Per focused minute</span>
                     <span className="text-blue-300 font-semibold">+{POINT_RULES.pomodoroPerMinute} pt</span>
                   </li>
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
                     <span>25min session</span>
                     <span className="text-blue-300 font-semibold">+{25 * POINT_RULES.pomodoroPerMinute} pts</span>
                   </li>
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-cyan-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-cyan-100 to-transparent text-gray-700'}`}>
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-gradient-to-r from-cyan-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-cyan-100 to-transparent text-gray-700'}`}>
                     <span>50min session</span>
                     <span className="text-teal-300 font-semibold">+{50 * POINT_RULES.pomodoroPerMinute} pts</span>
                   </li>
                 </ul>
               </div>
 
-              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
-                <div className="flex items-center justify-center mb-4">
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-teal-300 ${darkMode ? 'bg-[#0b141b]' : 'bg-teal-50'}`}>
-                    <CheckCircle className="w-8 h-8" />
+              <div className={`rounded-2xl p-5 sm:p-6 md:p-8 shadow-md sm:shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-[1.02] relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+                <div className="flex items-center justify-center mb-3 sm:mb-4">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-teal-300 ${darkMode ? 'bg-[#0b141b]' : 'bg-teal-50'}`}>
+                    <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                 </div>
-                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Tasks & Notes</h3>
-                <ul className="space-y-3 text-left">
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                <h3 className={`text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Tasks & Notes</h3>
+                <ul className="space-y-2 sm:space-y-3 text-left text-xs sm:text-sm">
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
                     <span>Notes save</span>
                     <span className="text-cyan-200 font-semibold">+{POINT_RULES.notesSave} pt</span>
                   </li>
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
                     <span>Add new task</span>
                     <span className="text-cyan-200 font-semibold">+{POINT_RULES.taskAdded} pt</span>
                   </li>
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-purple-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-purple-100 to-transparent text-gray-700'}`}>
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-gradient-to-r from-purple-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-purple-100 to-transparent text-gray-700'}`}>
                     <span>Complete task</span>
                     <span className="text-pink-300 font-semibold">+{POINT_RULES.taskCompleted} pts</span>
                   </li>
                 </ul>
               </div>
 
-              <div className={`rounded-2xl p-8 shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-2 hover:scale-[1.03] hover:shadow-2xl relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
-                <div className="flex items-center justify-center mb-4">
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-red-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-red-50'}`}>
-                    <Zap className="w-8 h-8" />
+              <div className={`rounded-2xl p-5 sm:p-6 md:p-8 shadow-md sm:shadow-lg transition-all duration-700 ease-out transform hover:-translate-y-1 hover:scale-[1.02] relative hover:z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/60 hover:bg-gray-800/70 border border-gray-700/50' : 'bg-white/80 hover:bg-white/90 border border-white/50'}`}>
+                <div className="flex items-center justify-center mb-3 sm:mb-4">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-red-400 ${darkMode ? 'bg-[#0b141b]' : 'bg-red-50'}`}>
+                    <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                 </div>
-                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Consistency & Rank</h3>
-                <ul className="space-y-3 text-left">
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
+                <h3 className={`text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Consistency & Rank</h3>
+                <ul className="space-y-2 sm:space-y-3 text-left text-xs sm:text-sm">
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-[#07121a] text-gray-300' : 'bg-gray-50 text-gray-700'}`}>
                     <span>Any scoring action</span>
                     <span className="text-yellow-300 font-semibold">Updates streak</span>
                   </li>
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 border border-orange-700 ${darkMode ? 'bg-[#2b1a10] text-gray-300' : 'bg-orange-50 text-gray-700'}`}>
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 border border-orange-700 ${darkMode ? 'bg-[#2b1a10] text-gray-300' : 'bg-orange-50 text-gray-700'}`}>
                     <span>Leaderboard refresh</span>
                     <span className="text-orange-300 font-semibold">Every 5 seconds</span>
                   </li>
-                  <li className={`flex justify-between items-center rounded-md px-4 py-3 ${darkMode ? 'bg-gradient-to-r from-pink-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-pink-100 to-transparent text-gray-700'}`}>
+                  <li className={`flex justify-between items-center rounded-lg px-3 py-2 sm:px-4 sm:py-3 ${darkMode ? 'bg-gradient-to-r from-pink-900 to-transparent text-gray-300' : 'bg-gradient-to-r from-pink-100 to-transparent text-gray-700'}`}>
                     <span>Badges</span>
                     <span className="text-pink-300 font-semibold">Based on points/streak</span>
                   </li>
@@ -937,7 +978,7 @@ const App = () => {
               </div>
             </div>
           </div>
-        </section>
+        </div>
       </section>
     </div>
   );
