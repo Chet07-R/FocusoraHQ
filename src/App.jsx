@@ -32,8 +32,6 @@ const HelpCenter = lazy(() => import("./pages/HelpCenter"));
 const Documentation = lazy(() => import("./pages/Documentation"));
 const Contact = lazy(() => import("./pages/Contact"));
 const About = lazy(() => import("./pages/About"));
-const Careers = lazy(() => import("./pages/Careers"));
-const Press = lazy(() => import("./pages/Press"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Fallback Loader Component
@@ -75,8 +73,6 @@ function App() {
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/press" element={<Press />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

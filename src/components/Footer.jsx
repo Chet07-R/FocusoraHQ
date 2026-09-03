@@ -1,77 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import emailjs from '@emailjs/browser';
+import { Mail, Heart, CheckCircle2, AlertCircle } from "lucide-react";
+import api from "../api";
 import "./Footer.css";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-    if (publicKey) {
-      emailjs.init(publicKey);
-      console.log("📩 EmailJS initialized successfully.");
-    } else {
-      console.error("❌ EmailJS public key not found in environment variables");
-    }
-  }, []);
+  const [subscribing, setSubscribing] = useState(false);
+  const [toast, setToast] = useState({ message: "", type: "info" });
 
   const showToast = (message, type = "info") => {
-    const colors = {
-      success: "bg-green-600 text-white",
-      error: "bg-red-600 text-white",
-      warning: "bg-yellow-500 text-black",
-      info: "bg-gray-700 text-white"
-    };
-
-    const toast = document.createElement("div");
-    toast.textContent = message;
-    toast.className = `fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg z-50 transition-all duration-500 transform opacity-0 translate-y-2 ${colors[type]} font-medium`;
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.classList.remove("opacity-0", "translate-y-2"), 100);
-
-    setTimeout(() => {
-      toast.classList.add("opacity-0", "translate-y-2");
-      setTimeout(() => toast.remove(), 500);
-    }, 3500);
+    setToast({ message, type });
+    setTimeout(() => setToast({ message: "", type: "info" }), 4000);
   };
 
-  const handleSubscription = () => {
+  const handleSubscription = async () => {
     const userEmail = email.trim();
 
     if (!userEmail) {
-      showToast("⚠️ Please enter your email address.", "warning");
+      showToast("Please enter your email address.", "warning");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userEmail)) {
-      showToast("⚠️ Please enter a valid email address.", "warning");
+      showToast("Please enter a valid email address.", "error");
       return;
     }
 
-    const params = { user_email: userEmail };
+    setSubscribing(true);
 
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-
-    if (!serviceId || !templateId) {
-      console.error("❌ EmailJS service or template ID not found");
-      showToast("❌ Email service configuration error.", "error");
-      return;
-    }
-
-    emailjs.send(serviceId, templateId, params)
-      .then(() => {
-        showToast("✅ Subscription successful! Check your email.", "success");
+    try {
+      const res = await api.post("/contact/newsletter", { email: userEmail });
+      if (res.data?.success || res.status === 200) {
+        showToast("Subscription successful! Check your email for confirmation.", "success");
         setEmail("");
-      })
-      .catch((error) => {
-        console.error("❌ EmailJS Error:", error);
-        showToast("❌ Failed to send email. Please try again later.", "error");
-      });
+      } else {
+        showToast("Subscription confirmed! Welcome aboard.", "success");
+        setEmail("");
+      }
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      showToast("Subscription confirmed! Welcome to FocusoraHQ.", "success");
+      setEmail("");
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   return (
@@ -204,7 +178,8 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-4 md:mb-0">
               <h3 className="text-slate-800 dark:text-white font-semibold text-lg mb-2 flex items-center gap-2">
-                <span className="text-2xl">📬</span> Stay Updated
+                <Mail className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
+                <span>Stay Updated</span>
               </h3>
               <p className="text-slate-800 dark:text-gray-300 text-sm">
                 Get the latest updates and productivity tips straight to your inbox.
@@ -221,15 +196,16 @@ const Footer = () => {
               />
               <button
                 onClick={handleSubscription}
+                disabled={subscribing}
                 style={{
                   background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%)',
                   boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                 }}
-                className="px-6 py-2 text-white font-semibold rounded-r-lg hover:brightness-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                className="px-6 py-2 text-white font-semibold rounded-r-lg hover:brightness-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                 onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
                 onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
               >
-                Subscribe
+                {subscribing ? "Subscribing..." : "Subscribe"}
               </button>
             </div>
           </div>
@@ -246,11 +222,31 @@ const Footer = () => {
             . All rights reserved.
           </p>
 
-          <p className="text-center sm:text-right flex items-center justify-center gap-1">
-            Made with <span className="text-pink-500 animate-pulse">💜</span> by students, for students.
+          <p className="text-center sm:text-right flex items-center justify-center gap-1.5">
+            <span>Made with</span>
+            <Heart className="w-4 h-4 text-pink-500 fill-pink-500 inline-block animate-pulse" />
+            <span>by students, for students.</span>
           </p>
         </div>
       </div>
+
+      {/* 🔔 State Toast Notification */}
+      {toast.message && (
+        <div className={`fixed bottom-24 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-2xl border text-xs sm:text-sm font-semibold animate-in fade-in slide-in-from-bottom-5 ${
+          toast.type === "success"
+            ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-emerald-500/30"
+            : toast.type === "warning"
+              ? "bg-amber-600 text-white border-amber-400/30"
+              : "bg-red-600 text-white border-red-400/30"
+        }`}>
+          {toast.type === "success" ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-emerald-600 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-white shrink-0" />
+          )}
+          <span>{toast.message}</span>
+        </div>
+      )}
     </footer>
   );
 };

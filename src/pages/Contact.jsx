@@ -11,8 +11,7 @@ import {
   Clock, 
   ExternalLink, 
   CheckCircle2, 
-  HelpCircle,
-  PhoneCall
+  HelpCircle
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";

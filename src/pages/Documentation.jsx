@@ -8,8 +8,6 @@ import {
   Clock, 
   CheckCircle2, 
   BookOpen, 
-  Headphones, 
-  Keyboard, 
   ShieldCheck, 
   Search, 
   ArrowRight, 
@@ -17,14 +15,12 @@ import {
   Copy, 
   Check, 
   ExternalLink, 
-  Layers,
-  Code2,
-  ThumbsUp,
-  ThumbsDown,
-  ChevronRight,
-  Menu,
-  X,
-  FileText
+  Code2, 
+  ThumbsUp, 
+  ThumbsDown, 
+  ChevronRight, 
+  Menu, 
+  X
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { POINT_RULES } from "../constants/pointsSystem";

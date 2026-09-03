@@ -6,13 +6,11 @@ import {
   Users, 
   Lock, 
   Scale, 
-  HelpCircle, 
   ArrowRight, 
   CheckCircle2, 
   Copy, 
   Check, 
   Sparkles,
-  ChevronRight,
   BookOpen
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";

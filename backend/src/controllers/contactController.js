@@ -1,4 +1,4 @@
-const { sendContactEmail } = require('../utils/mailer');
+const { sendContactEmail, sendNewsletterEmail } = require('../utils/mailer');
 const { ok, fail } = require('../utils/apiResponse');
 
 const submitContactMessage = async (req, res) => {
@@ -38,4 +38,30 @@ const submitContactMessage = async (req, res) => {
   }
 };
 
-module.exports = { submitContactMessage };
+const subscribeNewsletter = async (req, res) => {
+  const email = String(req.body.email || '').trim().toLowerCase();
+
+  if (!email) {
+    return fail(res, 400, 'EMAIL_REQUIRED', 'Please enter your email address.');
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return fail(res, 400, 'INVALID_EMAIL', 'Please enter a valid email address.');
+  }
+
+  try {
+    await sendNewsletterEmail({ email });
+
+    return ok(res, {
+      success: true,
+      message: 'Subscription successful! Check your email for confirmation.',
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[Newsletter Error]', error);
+    return fail(res, 500, 'SUBSCRIPTION_FAILED', 'Failed to subscribe. Please try again.');
+  }
+};
+
+module.exports = { submitContactMessage, subscribeNewsletter };

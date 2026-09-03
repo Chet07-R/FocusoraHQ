@@ -13,11 +13,7 @@ import {
   Sparkles, 
   ArrowRight,
   Code2,
-  Headphones,
-  CheckCircle2,
   Trophy,
-  Github,
-  Linkedin,
   MessageSquare
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";

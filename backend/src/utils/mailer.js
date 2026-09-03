@@ -49,8 +49,6 @@ const sendVerificationEmail = async ({ to, name, verifyUrl }) => {
   const transporter = getTransporter();
 
   if (!transporter) {
-    // Development fallback: keep the flow testable even without SMTP.
-    // The URL is still generated and can be opened manually from logs.
     // eslint-disable-next-line no-console
     console.log('[Email] Verification link for', to, verifyUrl);
     return { sent: false, previewUrl: verifyUrl };
@@ -111,4 +109,48 @@ const sendContactEmail = async ({ name, email, category, subject, message }) => 
   return { sent: true };
 };
 
-module.exports = { sendVerificationEmail, sendContactEmail, isMailerConfigured };
+const sendNewsletterEmail = async ({ email }) => {
+  const transporter = getTransporter();
+
+  const subscriberHtml = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#0f172a;max-width:600px;margin:0 auto;padding:24px;border:1px solid #e2e8f0;border-radius:16px;background:#ffffff">
+      <div style="background:linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);padding:20px;border-radius:12px;color:#ffffff;text-align:center;margin-bottom:20px">
+        <h1 style="margin:0;font-size:24px">Welcome to FocusoraHQ!</h1>
+      </div>
+      <p>Hi there,</p>
+      <p>Thank you for subscribing to the <strong>FocusoraHQ Newsletter</strong>! You will now receive our curated study tips, deep work strategies, and new feature drops straight to your inbox.</p>
+      <p style="margin:24px 0;text-align:center">
+        <a href="${env.clientUrl || 'http://localhost:5173'}/my-space" style="background:#2563eb;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Open Your Study Space</a>
+      </p>
+      <p style="color:#64748b;font-size:12px;text-align:center;margin-top:24px">© 2026 FocusoraHQ. All rights reserved.</p>
+    </div>
+  `;
+
+  if (!transporter) {
+    // eslint-disable-next-line no-console
+    console.log('[Email - Fallback] Newsletter subscription for', email);
+    return { sent: false };
+  }
+
+  // Send confirmation to user
+  await transporter.sendMail({
+    from: env.emailFrom,
+    to: email,
+    subject: 'Welcome to FocusoraHQ — Subscription Confirmed!',
+    text: 'Thank you for subscribing to FocusoraHQ updates! Welcome aboard.',
+    html: subscriberHtml,
+  });
+
+  // Notify focusorahq@gmail.com
+  await transporter.sendMail({
+    from: env.emailFrom,
+    to: 'focusorahq@gmail.com',
+    subject: `[FocusoraHQ Newsletter] New Subscriber: ${email}`,
+    text: `New user subscribed to newsletter: ${email}`,
+    html: `<p><strong>New Subscriber:</strong> ${email}</p><p>Subscribed on ${new Date().toUTCString()}</p>`,
+  });
+
+  return { sent: true };
+};
+
+module.exports = { sendVerificationEmail, sendContactEmail, sendNewsletterEmail, isMailerConfigured };
