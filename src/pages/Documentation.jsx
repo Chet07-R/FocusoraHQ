@@ -140,7 +140,7 @@ const Documentation = () => {
           </div>
 
           <div className={`p-5 rounded-2xl border-l-4 border-blue-500 ${darkMode ? "bg-blue-950/30 border-blue-500" : "bg-blue-50/80"}`}>
-            <h4 className="font-bold text-sm mb-1 text-blue-400">✨ Platform Pillars:</h4>
+            <h4 className="font-bold text-sm mb-1 text-blue-400">Platform Pillars:</h4>
             <ul className="text-xs sm:text-sm space-y-1.5 list-disc list-inside mt-2">
               <li><strong>Zero Installation:</strong> Runs natively in any modern desktop or mobile browser.</li>
               <li><strong>Realtime Sync:</strong> Instant state updates across all connected participants.</li>
@@ -249,19 +249,19 @@ const Documentation = () => {
           <h4 className="font-bold text-sm sm:text-base">Room Capabilities:</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
             <div className={`p-3.5 rounded-xl border ${darkMode ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"}`}>
-              <span className="font-bold text-blue-500 block mb-1">🏷️ Space Codes</span>
+              <span className="font-bold text-blue-500 block mb-1">Space Codes</span>
               Every room has an easily shareable 6-digit code for instant 1-click peer joining.
             </div>
             <div className={`p-3.5 rounded-xl border ${darkMode ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"}`}>
-              <span className="font-bold text-purple-500 block mb-1">👥 Host & Participants</span>
+              <span className="font-bold text-purple-500 block mb-1">Host & Participants</span>
               Live member list with avatars, study streak status, and host indicators.
             </div>
             <div className={`p-3.5 rounded-xl border ${darkMode ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"}`}>
-              <span className="font-bold text-emerald-500 block mb-1">💬 Room Chat</span>
+              <span className="font-bold text-emerald-500 block mb-1">Room Chat</span>
               Instant messaging to share resources, questions, and session milestones.
             </div>
             <div className={`p-3.5 rounded-xl border ${darkMode ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-200"}`}>
-              <span className="font-bold text-amber-500 block mb-1">📝 Shared Notes</span>
+              <span className="font-bold text-amber-500 block mb-1">Shared Notes</span>
               Integrated rich text notes with download and quick-save features.
             </div>
           </div>
@@ -281,17 +281,17 @@ const Documentation = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
             <div className={`p-4 rounded-xl border ${darkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}>
-              <div className="text-2xl mb-1">⏱️</div>
+              <Clock className="w-6 h-6 text-blue-500 mx-auto mb-1.5" />
               <div className="font-bold text-blue-500 text-sm">25 Minutes</div>
               <div className="text-xs text-slate-400 mt-1">Standard Focus</div>
             </div>
             <div className={`p-4 rounded-xl border ${darkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}>
-              <div className="text-2xl mb-1">☕</div>
+              <Sparkles className="w-6 h-6 text-emerald-500 mx-auto mb-1.5" />
               <div className="font-bold text-emerald-500 text-sm">5 Minutes</div>
               <div className="text-xs text-slate-400 mt-1">Short Refresh</div>
             </div>
             <div className={`p-4 rounded-xl border ${darkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}>
-              <div className="text-2xl mb-1">🧘</div>
+              <Zap className="w-6 h-6 text-purple-500 mx-auto mb-1.5" />
               <div className="font-bold text-purple-500 text-sm">15-30 Minutes</div>
               <div className="text-xs text-slate-400 mt-1">Long Break</div>
             </div>

@@ -234,105 +234,110 @@ const Contact = () => {
         </div>
 
         {/* 📝 Contact Form & Quick Resources */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
           
           {/* Form Column */}
-          <div className={`lg:col-span-8 rounded-3xl p-6 sm:p-10 border ${
+          <div className={`lg:col-span-8 rounded-3xl p-6 sm:p-10 border flex flex-col justify-between ${
             darkMode ? "bg-slate-900/90 border-slate-800 shadow-xl" : "bg-white border-slate-200 shadow-xl"
           }`}>
-            <div className="mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold mb-1">Send us a Message</h2>
-              <p className={`text-xs sm:text-sm ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
-                Fill out the form below and our team will get back to you within a few hours.
-              </p>
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold mb-1">Send us a Message</h2>
+                <p className={`text-xs sm:text-sm ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  Fill out the form below and our team will get back to you within a few hours.
+                </p>
+              </div>
+
+              <form id="contact-form" onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
+                      Your Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="e.g. Chetan"
+                      required
+                      className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="you@example.com"
+                      required
+                      className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
+                      Topic Category
+                    </label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer transition-all"
+                    >
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Study Room Issue">Study Room & Space Code</option>
+                      <option value="Timer & Points">Timer & Points Calculation</option>
+                      <option value="Feature Suggestion">Feature Suggestion</option>
+                      <option value="Bug Report">Bug Report</option>
+                      <option value="Partnership">Partnership & Campus Club</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
+                      Subject <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      placeholder="Brief summary of your message"
+                      required
+                      className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
+                    Message <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell us what you'd like help with or what you'd like to see improved..."
+                    rows={4}
+                    required
+                    className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 resize-none transition-all"
+                  />
+                </div>
+              </form>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
-                    Your Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="e.g. Chetan"
-                    required
-                    className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="you@example.com"
-                    required
-                    className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
-                    Topic Category
-                  </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer transition-all"
-                  >
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Study Room Issue">Study Room & Space Code</option>
-                    <option value="Timer & Points">Timer & Points Calculation</option>
-                    <option value="Feature Suggestion">Feature Suggestion</option>
-                    <option value="Bug Report">Bug Report</option>
-                    <option value="Partnership">Partnership & Campus Club</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
-                    Subject <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="Brief summary of your message"
-                    required
-                    className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-700 dark:text-slate-300">
-                  Message <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell us what you'd like help with or what you'd like to see improved..."
-                  rows={5}
-                  required
-                  className="w-full px-4 py-3 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 resize-none transition-all"
-                />
-              </div>
-
+            <div className="pt-4">
               <button
                 type="submit"
+                form="contact-form"
                 disabled={sending}
                 className="w-full py-3.5 px-6 rounded-2xl font-bold text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
               >
@@ -345,24 +350,27 @@ const Contact = () => {
                   </>
                 )}
               </button>
-            </form>
+            </div>
           </div>
 
           {/* Quick Help & Community Info Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 flex flex-col justify-between gap-6">
             
             {/* Quick Resolution Card */}
-            <div className={`rounded-3xl p-6 border ${
+            <div className={`rounded-3xl p-6 sm:p-7 border flex-1 flex flex-col justify-between ${
               darkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200 shadow-md"
             }`}>
-              <div className="flex items-center gap-2 text-blue-500 mb-3">
-                <HelpCircle className="w-5 h-5" />
-                <h3 className="font-bold text-sm sm:text-base">Looking for Quick Answers?</h3>
+              <div>
+                <div className="flex items-center gap-2 text-blue-500 mb-2.5">
+                  <HelpCircle className="w-5 h-5" />
+                  <h3 className="font-bold text-sm sm:text-base">Looking for Quick Answers?</h3>
+                </div>
+                <p className={`text-xs leading-relaxed mb-4 ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  Browse our comprehensive tutorials and frequently asked questions for immediate self-service help.
+                </p>
               </div>
-              <p className={`text-xs leading-relaxed mb-4 ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
-                Browse our comprehensive tutorials and frequently asked questions for immediate self-service help.
-              </p>
-              <div className="space-y-2">
+
+              <div className="space-y-2.5 pt-2">
                 <Link
                   to="/help-center"
                   className="w-full py-2.5 px-3.5 rounded-xl text-xs font-bold bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-all flex items-center justify-between"
@@ -381,23 +389,28 @@ const Contact = () => {
             </div>
 
             {/* Community Card */}
-            <div className={`rounded-3xl p-6 border ${
+            <div className={`rounded-3xl p-6 sm:p-7 border flex-1 flex flex-col justify-between ${
               darkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-200 shadow-md"
             }`}>
-              <div className="flex items-center gap-2 text-indigo-500 mb-3">
-                <MessageSquare className="w-5 h-5" />
-                <h3 className="font-bold text-sm sm:text-base">Join Discord Community</h3>
+              <div>
+                <div className="flex items-center gap-2 text-indigo-500 mb-2.5">
+                  <MessageSquare className="w-5 h-5" />
+                  <h3 className="font-bold text-sm sm:text-base">Join Discord Community</h3>
+                </div>
+                <p className={`text-xs leading-relaxed mb-4 ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  Chat with other students, join virtual co-working voice channels, and request features directly from the founders.
+                </p>
               </div>
-              <p className={`text-xs leading-relaxed mb-4 ${darkMode ? "text-slate-400" : "text-slate-600"}`}>
-                Chat with other students, join virtual co-working voice channels, and request features directly from the founders.
-              </p>
-              <Link
-                to="/community"
-                className="w-full py-2.5 px-3.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all flex items-center justify-center gap-2 shadow-md shadow-indigo-500/20"
-              >
-                <span>Open Community Hub</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </Link>
+
+              <div className="pt-2">
+                <Link
+                  to="/community"
+                  className="w-full py-3 px-3.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all flex items-center justify-center gap-2 shadow-md shadow-indigo-500/20"
+                >
+                  <span>Open Community Hub</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

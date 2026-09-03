@@ -882,7 +882,7 @@ const App = () => {
               onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(139, 92, 246, 0.5), 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'}
               onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)'}
             >
-              {visibleCount >= filteredRows.length ? 'All Rankings Loaded' : `Load More Rankings (${Math.min(visibleCount, filteredRows.length)} of ${filteredRows.length})`}
+              {visibleCount >= filteredRows.length ? 'All Rankings Loaded' : 'Load More Rankings'}
             </button>
           </div>
         </div>
