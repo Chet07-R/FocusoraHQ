@@ -156,11 +156,11 @@ const About = () => {
         <p className={`text-center ${darkMode ? "text-gray-400" : "text-gray-600"} mb-12 max-w-2xl mx-auto`}>
           Passionate individuals working to make productivity accessible to everyone
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-8 max-w-5xl mx-auto">
           {team.map((member, index) => (
             <div
               key={index}
-              className={`${
+              className={`w-full sm:w-[280px] md:w-[290px] ${
                 darkMode ? "bg-gray-800" : "bg-white"
               } rounded-xl p-6 shadow-lg text-center transform hover:-translate-y-2 transition-all duration-300`}
             >
@@ -171,9 +171,11 @@ const About = () => {
               <p className="text-sm text-transparent bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text font-semibold mb-3">
                 {member.role}
               </p>
-              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                {member.bio}
-              </p>
+              {member.bio && (
+                <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  {member.bio}
+                </p>
+              )}
             </div>
           ))}
         </div>
