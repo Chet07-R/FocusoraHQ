@@ -6,7 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
   const [musicPanelOpen, setMusicPanelOpen] = useState(false);
   const { currentRoom, roomData, updatePlaylist, signalPlayback } = useStudyRoom();
-  const { user, userProfile } = useAuth();
+  const { user } = useAuth();
   const { darkMode } = useTheme();
   const [spotifyUrl, setSpotifyUrl] = useState(
     localStorage.getItem("spotify_playlist") ||
@@ -61,23 +61,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
       try {
         await updatePlaylist(newUrl);
         addNotification("🎵 Playlist updated for everyone");
-      } catch (e) {
-        addNotification("❌ Failed to update playlist");
-      }
-    } else {
-      setSpotifyUrl(newUrl);
-      localStorage.setItem("spotify_playlist", newUrl);
-      addNotification("🎵 Music Changed");
-    }
-    setMusicPanelOpen(false);
-  };
-
-  const changeMusicUrl = async (newUrl) => {
-    if (currentRoom) {
-      try {
-        await updatePlaylist(newUrl);
-        addNotification("🎵 Playlist updated for everyone");
-      } catch (e) {
+      } catch {
         addNotification("❌ Failed to update playlist");
       }
     } else {
@@ -90,21 +74,21 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
 
   return (
     <>
-      <div className="w-full mb-8">
-        <div className={`bg-gradient-to-r ${darkMode ? 'from-black/60 via-gray-900/80 to-black/60 text-white border-white/10' : 'from-slate-100/80 via-slate-50/90 to-slate-100/80 text-slate-800 border-slate-200/50'} backdrop-blur-xl border rounded-2xl shadow-lg`}>
-          <div className="px-2 sm:px-4 md:px-6 py-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+      <div className="w-full">
+        <div className={`bg-gradient-to-r ${darkMode ? 'from-black/60 via-gray-900/80 to-black/60 text-white border-white/10' : 'from-slate-100/80 via-slate-50/90 to-slate-100/80 text-slate-800 border-slate-200/50'} backdrop-blur-xl border rounded-xl shadow-sm`}>
+          <div className="px-2.5 sm:px-3.5 py-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-1.5 gap-1.5">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm sm:text-base">Focus Playlist</span>
+                <span className="font-semibold text-xs sm:text-sm">Focus Playlist</span>
               </div>
-              <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 w-full sm:w-auto">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => {
                     setMusicPanelOpen(!musicPanelOpen);
                     if (setBgPanelOpen) setBgPanelOpen(false);
                   }}
-                  className="text-xs sm:text-sm bg-slate-200/50 dark:bg-white/10 hover:bg-slate-300/50 dark:hover:bg-white/20 text-slate-800 dark:text-white px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition cursor-pointer"
+                  className="text-xs bg-slate-200/50 dark:bg-white/10 hover:bg-slate-300/50 dark:hover:bg-white/20 text-slate-800 dark:text-white px-2 py-1 rounded-lg transition cursor-pointer"
                 >
                   Change Music
                 </button>
@@ -113,14 +97,14 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                     <button
                       type="button"
                       onClick={() => signalPlayback('play')}
-                      className="text-xs sm:text-sm bg-emerald-500/80 hover:bg-emerald-500 text-white px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition cursor-pointer"
+                      className="text-xs bg-emerald-500/80 hover:bg-emerald-500 text-white px-2 py-1 rounded-lg transition cursor-pointer"
                     >
                       Play
                     </button>
                     <button
                       type="button"
                       onClick={() => signalPlayback('pause')}
-                      className="text-xs sm:text-sm bg-orange-500/80 hover:bg-orange-500 text-white px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition cursor-pointer"
+                      className="text-xs bg-orange-500/80 hover:bg-orange-500 text-white px-2 py-1 rounded-lg transition cursor-pointer"
                     >
                       Pause
                     </button>
@@ -132,15 +116,15 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                     if (setBgPanelOpen) setBgPanelOpen(!bgPanelOpen);
                     setMusicPanelOpen(false);
                   }}
-                  className="text-xs sm:text-sm bg-slate-200/50 dark:bg-white/10 hover:bg-slate-300/50 dark:hover:bg-white/20 text-slate-800 dark:text-white px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition cursor-pointer"
+                  className="text-xs bg-slate-200/50 dark:bg-white/10 hover:bg-slate-300/50 dark:hover:bg-white/20 text-slate-800 dark:text-white px-2 py-1 rounded-lg transition cursor-pointer"
                 >
                   Ambience
                 </button>
-                <span className="text-[11px] sm:text-sm text-slate-500 dark:text-white/70 ml-auto sm:ml-0">Spotify</span>
+                <span className="text-[11px] text-slate-500 dark:text-white/70 ml-auto sm:ml-0">Spotify</span>
               </div>
             </div>
             {syncPrompt && (
-              <div className="mb-3 px-3 py-2 rounded-lg bg-white/10 text-white flex flex-col sm:flex-row items-center justify-between gap-2">
+              <div className="mb-1.5 px-2.5 py-1 rounded-lg bg-white/10 text-white flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
                 <span>
                   {syncPrompt.type === 'play'
                     ? `${syncPrompt.by} pressed Play — click the player to start.`
@@ -149,7 +133,7 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
                 <button
                   type="button"
                   onClick={() => setSyncPrompt(null)}
-                  className="text-xs bg-white/20 hover:bg-white/30 rounded px-2 py-1 cursor-pointer"
+                  className="text-[10px] bg-white/20 hover:bg-white/30 rounded px-1.5 py-0.5 cursor-pointer"
                 >
                   Dismiss
                 </button>
@@ -157,10 +141,10 @@ const FocusPlaylist = ({ addNotification, bgPanelOpen, setBgPanelOpen }) => {
             )}
             <iframe
               id="spotifyPlayer"
-              style={{ borderRadius: "12px" }}
+              style={{ borderRadius: "8px" }}
               src={spotifyUrl}
               width="100%"
-              className="h-20 sm:h-24 md:h-32"
+              className="h-[80px]"
               frameBorder="0"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               title="Focus Playlist"

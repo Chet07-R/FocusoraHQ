@@ -400,11 +400,12 @@
   }
 
   .ms-workspace--room {
-    grid-template-columns: 1fr 1.4fr 1fr;
-    grid-template-rows: min-content minmax(320px, 1fr);
+    grid-template-columns: 1fr 1.35fr 1fr;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
       "participants notes tasks"
       "chat notes tasks";
+    align-items: stretch;
   }
 }
 
@@ -418,11 +419,12 @@
   }
 
   .ms-workspace--room {
-    grid-template-columns: 1fr 1.4fr 1fr;
-    grid-template-rows: min-content minmax(360px, 1fr);
+    grid-template-columns: 1fr 1.35fr 1fr;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
       "participants notes tasks"
       "chat notes tasks";
+    align-items: stretch;
   }
 }
 
@@ -475,7 +477,9 @@
 }
 
 .ms-workspace--room .ms-workspace__notes {
-  height: auto;
+  height: 100%;
+  align-self: stretch;
+  min-height: 0;
 }
 
 .ms-workspace__notes .ms-panel__body {
@@ -483,18 +487,33 @@
 }
 
 .ms-workspace--room .ms-workspace__notes .ms-panel__body {
-  min-height: 560px;
+  min-height: 0;
+  height: 100%;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-@media (min-width: 1200px) {
-  .ms-workspace--room .ms-workspace__notes .ms-panel__body {
-    min-height: 680px;
-  }
+.ms-workspace--room .ms-workspace__tasks {
+  height: 100%;
+  align-self: stretch;
+  min-height: 0;
+}
+
+.ms-workspace--room .ms-workspace__tasks .ms-panel__body {
+  min-height: 0;
+  height: 100%;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .ms-workspace--room .ms-workspace__participants .ms-panel__body {
-  max-height: 220px;
+  max-height: 130px;
   overflow: auto;
+  min-height: 0;
 }
 
 .ms-workspace--room .ms-workspace__chat .ms-panel__body>.chat-log {
@@ -511,11 +530,16 @@
   min-height: 0;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .ms-workspace--room .ms-workspace__chat {
   align-self: stretch;
-  height: clamp(360px, 55vh, 520px);
+  height: clamp(340px, 48vh, 480px);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
 }
 
 .ms-workspace__quote {
@@ -882,10 +906,10 @@
 
 .ms-sound-panel__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.8rem 1rem 0.7rem;
+  gap: 0.75rem;
+  padding: 0.45rem 0.85rem;
   border-bottom: 1px solid var(--ms-border);
   background: var(--ms-surface-1);
   flex-wrap: wrap;
@@ -893,22 +917,22 @@
 
 .ms-sound-panel__title {
   font-family: var(--ms-font-display);
-  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--ms-text-primary);
   letter-spacing: -0.01em;
 }
 
 .ms-sound-panel__desc {
-  margin-top: 0.2rem;
-  font-size: 0.78rem;
+  margin-top: 0.1rem;
+  font-size: 0.74rem;
   color: var(--ms-text-muted);
   max-width: 70ch;
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
 .ms-sound-panel__body {
-  padding: 0;
+  padding: 0.35rem 0.5rem 0.5rem;
 }
 
 /* ─────────────────────────────────────────

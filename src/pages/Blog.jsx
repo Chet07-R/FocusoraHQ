@@ -25,7 +25,6 @@ const Blog = () => {
   const [submitPending, setSubmitPending] = useState(false);
   const [deletePendingBlogId, setDeletePendingBlogId] = useState('');
   const [submitError, setSubmitError] = useState('');
-  const [submitSuccess, setSubmitSuccess] = useState('');
   const [isBlogModalOpen, setBlogModalOpen] = useState(false);
   const [blogForm, setBlogForm] = useState({
     authorName: '',
@@ -39,7 +38,6 @@ const Blog = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   const showToast = (message, type = 'success') => {
@@ -49,14 +47,6 @@ const Blog = () => {
 
   useEffect(() => {
     document.title = "FocusoraHQ | Productivity & Study Blogs";
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const allArticles = [
@@ -238,7 +228,6 @@ const Blog = () => {
     }
 
     setSubmitError('');
-    setSubmitSuccess('');
     setBlogModalOpen(true);
   };
 
@@ -293,7 +282,6 @@ const Blog = () => {
   const handleCommunitySubmit = async (event) => {
     event.preventDefault();
     setSubmitError('');
-    setSubmitSuccess('');
 
     if (!user) {
       setSubmitError('You must be signed in to add your own blog post.');
@@ -381,7 +369,6 @@ const Blog = () => {
 
     setDeletePendingBlogId(String(blogId));
     setSubmitError('');
-    setSubmitSuccess('');
 
     try {
       await deleteBlogApi(blogId);
@@ -397,49 +384,49 @@ const Blog = () => {
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
       {/* 🚀 Hero Section */}
-      <section className="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 text-white pt-28 pb-24 overflow-hidden border-b border-indigo-950/20">
+      <section className="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 text-white pt-20 sm:pt-24 md:pt-28 pb-8 sm:pb-16 md:pb-24 overflow-hidden border-b border-indigo-950/20">
         {/* Animated Background Gradients */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-blue-500/10 rounded-full filter blur-[120px] animate-pulse"></div>
           <div className="absolute top-1/2 -right-40 w-[500px] h-[500px] bg-purple-500/10 rounded-full filter blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-            <div className="lg:w-3/5 text-left space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold uppercase tracking-wider">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-12">
+            <div className="w-full lg:w-3/5 text-left space-y-3.5 sm:space-y-6">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
                 Productivity & Study Resource
               </div>
-              <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-tight">
-                Supercharge Your <br />
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                Supercharge Your <br className="hidden sm:inline" />
                 <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">Focus & Learning</span>
               </h1>
-              <p className="text-lg lg:text-xl text-slate-300 max-w-xl font-normal leading-relaxed">
+              <p className="text-xs sm:text-base lg:text-lg text-slate-300 max-w-xl font-normal leading-relaxed">
                 Explore actionable systems, expert guides, and scientific study strategies to level up your flow, time management, and mindset.
               </p>
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-row items-center gap-2.5 sm:gap-4 pt-1 sm:pt-2">
                 <a
                   href="#latest-articles"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-8 py-3.5 rounded-full font-bold transition-all duration-300 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 hover:-translate-y-0.5"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-4 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm md:text-base transition-all duration-300 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 active:scale-[0.98] text-center"
                 >
                   Explore Articles
                 </a>
                 <button
                   onClick={openBlogModal}
-                  className="bg-white/10 hover:bg-white/15 text-white border border-white/15 px-8 py-3.5 rounded-full font-bold transition-all duration-300 hover:-translate-y-0.5"
+                  className="bg-white/10 hover:bg-white/15 text-white border border-white/15 px-4 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm md:text-base transition-all duration-300 active:scale-[0.98] text-center"
                 >
                   Share Your Story
                 </button>
               </div>
             </div>
-            <div className="lg:w-2/5 flex justify-center lg:justify-end">
+            <div className="hidden md:flex lg:w-2/5 justify-center lg:justify-end">
               <div className="relative group">
                 {/* Glow ring */}
                 <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-500 opacity-20 blur-xl group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
                 <img
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
                   alt="Productive study workspace"
-                  className="relative w-96 h-96 object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]"
                 />
               </div>
             </div>
@@ -448,50 +435,50 @@ const Blog = () => {
       </section>
 
       {/* 🏆 Featured Section */}
-      <section className="py-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="h-8 w-1 rounded-full bg-blue-600"></span>
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Featured Article</h2>
+      <section className="py-8 sm:py-12 md:py-16 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6 md:mb-8">
+            <span className="h-6 sm:h-8 w-1 rounded-full bg-blue-600"></span>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Featured Article</h2>
           </div>
 
           <div className="max-w-6xl mx-auto">
-            <div className="group bg-gradient-to-br from-indigo-50/50 via-cyan-50/20 to-white dark:from-slate-800/40 dark:via-slate-800/20 dark:to-slate-900/60 rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/5 hover:-translate-y-1.5">
+            <div className="group bg-gradient-to-br from-indigo-50/50 via-cyan-50/20 to-white dark:from-slate-800/40 dark:via-slate-800/20 dark:to-slate-900/60 rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-lg sm:shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/5 hover:-translate-y-1">
               <div className="md:flex">
                 <div className="md:w-1/2 overflow-hidden relative">
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent z-10"></div>
                   <img
                     src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                     alt="Deep work and focus strategies"
-                    className="w-full h-72 md:h-full object-cover featured-article-img"
+                    className="w-full h-48 sm:h-64 md:h-full object-cover featured-article-img"
                   />
-                  <div className="absolute bottom-6 left-6 z-20 md:hidden">
-                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Featured</span>
+                  <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 z-20 md:hidden">
+                    <span className="bg-blue-600 text-white px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wide">Featured</span>
                   </div>
                 </div>
 
-                <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
+                <div className="md:w-1/2 p-4 sm:p-6 md:p-10 lg:p-12 flex flex-col justify-between">
                   <div>
-                    <div className="hidden md:inline-block bg-blue-600/10 text-blue-600 dark:text-blue-400 px-4.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest mb-6">
+                    <div className="hidden md:inline-block bg-blue-600/10 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-widest mb-4">
                       Spotlight
                     </div>
                     <Link to="/blog1">
-                      <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                      <h3 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white leading-snug sm:leading-tight mb-2 sm:mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                         The Ultimate Guide to Deep Work: Transform Your Productivity
                       </h3>
                     </Link>
-                    <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed mb-6">
+                    <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 sm:mb-6 line-clamp-3 md:line-clamp-none">
                       Master the art of sustained focus with proven strategies from top performers. Learn how to eliminate distractions, create optimal environments, and unlock flow states.
                     </p>
                   </div>
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <span className="text-sm font-semibold text-slate-400 dark:text-slate-500">15 min read • Dec 2024</span>
+                  <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <span className="text-xs sm:text-sm font-semibold text-slate-400 dark:text-slate-500">15 min read • Dec 2024</span>
                     <Link
                       to="/blog1"
-                      className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-1.5 sm:gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-300 shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 hover:-translate-y-0.5"
                     >
                       Read Now
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                       </svg>
                     </Link>
@@ -504,19 +491,19 @@ const Blog = () => {
       </section>
 
       {/* 🔍 Category Filters Bar */}
-      <section className="sticky top-[64px] z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 py-4 shadow-sm transition-all duration-300">
-        <div className="container mx-auto px-6">
-          <div className="flex justify-center">
+      <section className="sticky top-[56px] sm:top-[64px] z-30 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 py-2.5 sm:py-3.5 shadow-sm transition-all duration-300">
+        <div className="container mx-auto px-3 sm:px-6">
+          <div className="flex justify-start sm:justify-center">
             {/* Category Scrolling Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none scroll-smooth justify-start sm:justify-center px-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-0.5 scrollbar-none scroll-smooth justify-start sm:justify-center px-1">
               {['All', 'Focus', 'Time Management', 'Organization', 'Goals', 'Habits', 'Energy'].map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95 ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer hover:scale-105 active:scale-95 ${
                     selectedCategory === category
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                      : 'bg-slate-200/70 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                   }`}
                 >
                   {category}
@@ -528,68 +515,68 @@ const Blog = () => {
       </section>
 
       {/* 📚 Articles Grid Section */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-950" id="latest-articles">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-3">
-              <span className="h-8 w-1 rounded-full bg-blue-600"></span>
-              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Latest Guides</h2>
+      <section className="py-8 sm:py-12 md:py-16 bg-slate-50 dark:bg-slate-950" id="latest-articles">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-3 mb-6 sm:mb-8 md:mb-10">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="h-6 sm:h-8 w-1 rounded-full bg-blue-600"></span>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Latest Guides</h2>
             </div>
             {selectedCategory !== 'All' && (
-              <span className="text-sm font-medium text-slate-500">
+              <span className="text-xs sm:text-sm font-medium text-slate-500 ml-3.5 sm:ml-0">
                 Found {filteredArticles.length} guides in {selectedCategory}
               </span>
             )}
           </div>
 
           {articles.length === 0 ? (
-            <div className="text-center py-16 px-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/40 dark:border-slate-800/40 max-w-xl mx-auto shadow-xl hover:shadow-2xl transition-all duration-300">
-              <div className="w-24 h-24 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="h-12 w-12 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center py-12 sm:py-16 px-4 sm:px-6 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/40 dark:border-slate-800/40 max-w-xl mx-auto shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No Guides Found</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-base mb-6 max-w-sm mx-auto">We couldn't find any articles matching your search query or selected category. Try another filter!</p>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">No Guides Found</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm md:text-base mb-6 max-w-sm mx-auto">We couldn't find any articles matching your search query or selected category. Try another filter!</p>
               <button
                 onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
               >
                 Reset Search Filters
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {articles.map((article) => (
                 <article
                   key={article.id}
-                  className="group bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/40 dark:border-slate-800/40 shadow-md premium-blog-card"
+                  className="group bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/40 dark:border-slate-800/40 shadow-sm sm:shadow-md premium-blog-card"
                 >
                   <Link to={article.link}>
-                    <div className="h-48 overflow-hidden relative">
+                    <div className="h-40 sm:h-48 overflow-hidden relative">
                       <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute top-4 left-4 z-10">
-                        <span className={`${categoryColors[article.category] || 'bg-blue-100 text-blue-600'} px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider`}>
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className={`${categoryColors[article.category] || 'bg-blue-100 text-blue-600'} px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider`}>
                           {article.category}
                         </span>
                       </div>
                     </div>
-                    <div className="p-6 space-y-3">
-                      <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-semibold">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="p-4 sm:p-5 md:p-6 space-y-2 sm:space-y-2.5">
+                      <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-semibold">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>{article.readTime}</span>
                       </div>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                         {article.title}
                       </h3>
-                      <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">
+                      <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3">
                         {article.description}
                       </p>
-                      <div className="pt-2 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+                      <div className="pt-1.5 sm:pt-2 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
                         <span>Read Guide</span>
-                        <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
@@ -601,10 +588,10 @@ const Blog = () => {
           )}
 
           {visibleCount < filteredArticles.length && (
-            <div className="text-center mt-12">
+            <div className="text-center mt-8 sm:mt-12">
               <button
                 onClick={loadMoreArticles}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-full font-bold text-base transition-all duration-300 hover:shadow-lg shadow-blue-500/10 cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm md:text-base transition-all duration-300 hover:shadow-lg shadow-blue-500/10 cursor-pointer"
               >
                 Load More Articles
               </button>
@@ -614,21 +601,21 @@ const Blog = () => {
       </section>
 
       {/* 👥 Community Blogs Section */}
-      <section className="py-16 bg-white dark:bg-slate-900 border-t border-b border-slate-100 dark:border-slate-800">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-            <div className="flex items-center gap-3">
-              <span className="h-8 w-1 rounded-full bg-blue-600"></span>
+      <section className="py-8 sm:py-12 md:py-16 bg-white dark:bg-slate-900 border-t border-b border-slate-100 dark:border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 mb-6 sm:mb-10">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="h-6 sm:h-8 w-1 rounded-full bg-blue-600"></span>
               <div>
-                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Community Logs</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Read systems and reflections from the Focusora network.</p>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Community Logs</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5">Read systems and reflections from the Focusora network.</p>
               </div>
             </div>
             <button
               onClick={openBlogModal}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all duration-300 shadow-md shadow-blue-500/10 hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-300 shadow-md shadow-blue-500/10 hover:-translate-y-0.5 w-fit"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
               </svg>
               Share Your Log
@@ -636,15 +623,15 @@ const Blog = () => {
           </div>
 
           {communityLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {[1, 2, 3].map((n) => (
-                <div key={n} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-6 space-y-4 animate-pulse">
-                  <div className="h-48 bg-slate-200 dark:bg-slate-800 rounded-xl w-full" />
+                <div key={n} className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/40 dark:border-slate-800/40 p-4 sm:p-6 space-y-3 sm:space-y-4 animate-pulse">
+                  <div className="h-36 sm:h-48 bg-slate-200 dark:bg-slate-800 rounded-xl w-full" />
                   <div className="space-y-2">
                     <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/4" />
-                    <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-full" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3" />
+                    <div className="h-5 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+                    <div className="h-3.5 bg-slate-200 dark:bg-slate-800 rounded w-full" />
+                    <div className="h-3.5 bg-slate-200 dark:bg-slate-800 rounded w-2/3" />
                   </div>
                 </div>
               ))}
@@ -652,11 +639,11 @@ const Blog = () => {
           )}
 
           {!communityLoading && communityError && (
-            <div className="max-w-lg mx-auto p-6 rounded-2xl border border-red-100 bg-red-50/50 dark:border-red-500/20 dark:bg-red-950/20 text-center">
-              <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-3">{communityError}</p>
+            <div className="max-w-lg mx-auto p-4 sm:p-6 rounded-2xl border border-red-100 bg-red-50/50 dark:border-red-500/20 dark:bg-red-950/20 text-center">
+              <p className="text-xs sm:text-sm font-semibold text-red-600 dark:text-red-400 mb-3">{communityError}</p>
               <button
                 onClick={loadCommunityBlogs}
-                className="bg-blue-600 text-white px-5 py-2 rounded-full text-xs font-bold"
+                className="bg-blue-600 text-white px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs font-bold"
               >
                 Retry Sync
               </button>
@@ -664,17 +651,17 @@ const Blog = () => {
           )}
 
           {!communityLoading && !communityError && filteredCommunityBlogs.length === 0 && (
-            <div className="max-w-xl mx-auto p-10 rounded-3xl border border-slate-200/40 dark:border-slate-800/40 text-center shadow-xl bg-slate-50/50 dark:bg-slate-900/50 hover:shadow-2xl transition-all duration-300">
-              <div className="w-20 h-20 bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="h-10 w-10 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="max-w-xl mx-auto p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-slate-200/40 dark:border-slate-800/40 text-center shadow-lg sm:shadow-xl bg-slate-50/50 dark:bg-slate-900/50 hover:shadow-2xl transition-all duration-300">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-cyan-500/10 to-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="h-8 w-8 sm:h-10 sm:w-10 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Be the first spotlight author</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-base mb-8 max-w-sm mx-auto">Share your workflow, morning setup, or study systems with developers and students worldwide.</p>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-2">Be the first spotlight author</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm md:text-base mb-6 sm:mb-8 max-w-sm mx-auto">Share your workflow, morning setup, or study systems with developers and students worldwide.</p>
               <button
                 onClick={openBlogModal}
-                className="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-600 hover:via-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+                className="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-600 hover:via-blue-700 hover:to-indigo-700 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 cursor-pointer"
               >
                 Publish First Log
               </button>
@@ -682,42 +669,42 @@ const Blog = () => {
           )}
 
           {!communityLoading && !communityError && filteredCommunityBlogs.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {filteredCommunityBlogs.slice(0, 9).map((blog) => (
                 <article
                   key={blog.id || blog._id}
-                  className="group bg-slate-50 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-slate-800/50 shadow-md premium-blog-card flex flex-col h-full"
+                  className="group bg-slate-50 dark:bg-slate-950 rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200/50 dark:border-slate-800/50 shadow-sm sm:shadow-md premium-blog-card flex flex-col h-full"
                 >
                   <Link to={`/blog/community/${blog.id || blog._id}`} className="flex-1 flex flex-col">
-                    <div className="h-44 overflow-hidden relative">
+                    <div className="h-36 sm:h-44 overflow-hidden relative">
                       <img
                         src={blog.coverImage || defaultBlogCoverImage}
                         alt={blog.title}
                         className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                       />
-                      <div className="absolute top-4 left-4 z-10">
-                        <span className="bg-indigo-600 text-white px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                      <div className="absolute top-3 left-3 z-10">
+                        <span className="bg-indigo-600 text-white px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
                           {blog.category || 'Focus'}
                         </span>
                       </div>
                     </div>
-                    <div className="p-6 flex-1 flex flex-col justify-between">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                    <div className="p-4 sm:p-5 md:p-6 flex-1 flex flex-col justify-between">
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 leading-snug">
                           {blog.title}
                         </h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">
+                        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-3">
                           {blog.excerpt}
                         </p>
                       </div>
-                      <div className="pt-4 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500 font-semibold border-t border-slate-200/40 dark:border-slate-800/40 mt-4">
+                      <div className="pt-3 flex items-center justify-between text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-semibold border-t border-slate-200/40 dark:border-slate-800/40 mt-3 sm:mt-4">
                         <span className="flex items-center gap-1">
                           <svg className="w-3.5 h-3.5 text-blue-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
-                          {blog.authorName || 'Focusora Member'}
+                          <span className="truncate max-w-[100px] sm:max-w-none">{blog.authorName || 'Focusora Member'}</span>
                         </span>
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 shrink-0">
                           <svg className="w-3.5 h-3.5 text-indigo-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
@@ -728,7 +715,7 @@ const Blog = () => {
                   </Link>
 
                   {user && String(blog.authorId) === String(user.uid) && (
-                    <div className="p-4 bg-slate-100/50 dark:bg-slate-950/20 border-t border-slate-200/50 dark:border-slate-800/50">
+                    <div className="p-3 sm:p-4 bg-slate-100/50 dark:bg-slate-950/20 border-t border-slate-200/50 dark:border-slate-800/50">
                       <button
                         type="button"
                         onClick={() => handleDeleteCommunityBlog(blog.id || blog._id)}
@@ -747,29 +734,29 @@ const Blog = () => {
       </section>
 
       {/* 🏆 Popular Reads Section */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-950">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center gap-3 mb-10">
-            <span className="h-8 w-1 rounded-full bg-blue-600"></span>
-            <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Most Popular</h2>
+      <section className="py-8 sm:py-12 md:py-16 bg-slate-50 dark:bg-slate-950">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-6 sm:mb-8 md:mb-10">
+            <span className="h-6 sm:h-8 w-1 rounded-full bg-blue-600"></span>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Most Popular</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-5xl mx-auto">
             {/* Pop Card 1 */}
             <Link to="/blog1" className="group block">
-              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/40 dark:border-slate-800/40 shadow-sm premium-blog-card">
-                <div className="flex items-start gap-5">
+              <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200/40 dark:border-slate-800/40 shadow-sm premium-blog-card">
+                <div className="flex items-center sm:items-start gap-3.5 sm:gap-5">
                   <img
                     src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
                     alt="Workplace productivity tips"
-                    className="w-24 h-24 rounded-xl object-cover shadow-sm border border-slate-100 dark:border-slate-800"
+                    className="w-18 h-18 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl object-cover shadow-sm border border-slate-100 dark:border-slate-800 shrink-0"
                   />
-                  <div className="flex-1 space-y-1">
+                  <div className="flex-1 space-y-1 min-w-0">
                     <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Trending</span>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <h3 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate sm:whitespace-normal">
                       How to Eliminate Distractions and Double Focus
                     </h3>
-                    <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+                    <p className="text-slate-500 text-[11px] sm:text-xs line-clamp-2 leading-relaxed">
                       Master deep work loops using proven focus block timings utilized by software architects and top students.
                     </p>
                   </div>
@@ -779,19 +766,19 @@ const Blog = () => {
 
             {/* Pop Card 2 */}
             <Link to="/blog2" className="group block">
-              <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/40 dark:border-slate-800/40 shadow-sm premium-blog-card">
-                <div className="flex items-start gap-5">
+              <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200/40 dark:border-slate-800/40 shadow-sm premium-blog-card">
+                <div className="flex items-center sm:items-start gap-3.5 sm:gap-5">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"
                     alt="Productive workspace"
-                    className="w-24 h-24 rounded-xl object-cover shadow-sm border border-slate-100 dark:border-slate-800"
+                    className="w-18 h-18 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl object-cover shadow-sm border border-slate-100 dark:border-slate-800 shrink-0"
                   />
-                  <div className="flex-1 space-y-1">
+                  <div className="flex-1 space-y-1 min-w-0">
                     <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest">Must Read</span>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <h3 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate sm:whitespace-normal">
                       The 90-Minute Work Block Method
                     </h3>
-                    <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+                    <p className="text-slate-500 text-[11px] sm:text-xs line-clamp-2 leading-relaxed">
                       Optimize your biological ultradian rhythms to maximize productive cycles without triggering cognitive exhaustion.
                     </p>
                   </div>
@@ -803,27 +790,27 @@ const Blog = () => {
       </section>
 
       {/* 🚀 Interactive Footer CTA */}
-      <section className="relative overflow-hidden py-24 bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 text-white text-center">
+      <section className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-950 text-white text-center">
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-32 left-1/4 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] animate-pulse"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10 max-w-3xl space-y-6">
-          <h2 className="text-4xl font-extrabold tracking-tight">Ready to Master Your Attention?</h2>
-          <p className="text-slate-300 text-base max-w-lg mx-auto">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-3xl space-y-4 sm:space-y-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Ready to Master Your Attention?</h2>
+          <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-lg mx-auto">
             Build streaks, sync ambient spaces, and access tailored AI coaching designed to align your learning flow.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 pt-1 sm:pt-2">
             <Link
               to="/signup"
-              className="bg-white text-slate-900 hover:bg-slate-100 px-8 py-3.5 rounded-full font-bold transition-all duration-300 shadow-xl"
+              className="bg-white text-slate-900 hover:bg-slate-100 px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm md:text-base transition-all duration-300 shadow-xl"
             >
               Sign Up Free
             </Link>
             <a
               href="#latest-articles"
-              className="bg-transparent border border-white/25 text-white hover:bg-white/5 px-8 py-3.5 rounded-full font-bold transition-all duration-300"
+              className="bg-transparent border border-white/25 text-white hover:bg-white/5 px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-bold text-xs sm:text-sm md:text-base transition-all duration-300"
             >
               Back to Articles
             </a>
@@ -833,13 +820,13 @@ const Blog = () => {
 
       {/* 📝 Create Blog Modal Popup */}
       {isBlogModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={closeBlogModal}></div>
-          <div className="relative w-full max-w-3xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-slate-900 shadow-2xl max-h-[85vh] overflow-y-auto p-8 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-6">
+          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6 md:p-8 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800 mb-4 sm:mb-6">
               <div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Write Community Log</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Share strategies, workspace designs, or reflections.</p>
+                <h3 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white">Write Community Log</h3>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">Share strategies, workspace designs, or reflections.</p>
               </div>
               <button
                 onClick={closeBlogModal}
@@ -851,9 +838,9 @@ const Blog = () => {
               </button>
             </div>
 
-            <form onSubmit={handleCommunitySubmit} className="space-y-5">
+            <form onSubmit={handleCommunitySubmit} className="space-y-3.5 sm:space-y-5">
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Title</label>
+                <label className="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Title</label>
                 <input
                   type="text"
                   name="title"
@@ -861,18 +848,18 @@ const Blog = () => {
                   value={blogForm.title}
                   onChange={handleCommunityInputChange}
                   placeholder="e.g. My 5:00 AM Study Loop Routine"
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Category</label>
+                  <label className="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Category</label>
                   <select
                     name="category"
                     value={blogForm.category}
                     onChange={handleCommunityInputChange}
-                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   >
                     {Object.keys(categoryColors).map((category) => (
                       <option key={category} value={category}>{category}</option>
@@ -881,21 +868,21 @@ const Blog = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Cover URL (Optional)</label>
+                  <label className="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Cover URL (Optional)</label>
                   <input
                     type="url"
                     name="coverImage"
                     value={blogForm.coverImage}
                     onChange={handleCommunityInputChange}
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Cover File (Optional)</label>
-                <div className="flex items-center gap-3">
+                <label className="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Cover File (Optional)</label>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <input
                     ref={coverImageInputRef}
                     type="file"
@@ -906,12 +893,12 @@ const Blog = () => {
                   />
                   <label
                     htmlFor="file-upload-input"
-                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition-all duration-300 border border-slate-200/50 dark:border-slate-800/50"
+                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs font-bold cursor-pointer transition-all duration-300 border border-slate-200/50 dark:border-slate-800/50"
                   >
                     Choose Cover Image File
                   </label>
-                  <span className="text-xs text-slate-400">
-                    {blogForm.coverImageFile ? blogForm.coverImageFile.name : 'No file selected (2MB max)'}
+                  <span className="text-[11px] sm:text-xs text-slate-400 truncate max-w-[150px] sm:max-w-xs">
+                    {blogForm.coverImageFile ? blogForm.coverImageFile.name : 'No file (2MB max)'}
                   </span>
                   {blogForm.coverImageFile && (
                     <button
@@ -926,7 +913,7 @@ const Blog = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Short Summary</label>
+                <label className="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Short Summary</label>
                 <input
                   type="text"
                   name="excerpt"
@@ -934,45 +921,45 @@ const Blog = () => {
                   value={blogForm.excerpt}
                   onChange={handleCommunityInputChange}
                   placeholder="Summarize the core focus takeaway in 1-2 sentences..."
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">Full Markdown Content</label>
+                <label className="block text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">Full Markdown Content</label>
                 <textarea
                   name="content"
                   required
-                  rows={6}
+                  rows={5}
                   value={blogForm.content}
                   onChange={handleCommunityInputChange}
                   placeholder="Share details, schedules, tips, or setups..."
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
 
               {submitError && (
-                <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200/50 dark:border-red-500/20 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400">
+                <div className="p-2.5 sm:p-3 bg-red-50 dark:bg-red-950/20 border border-red-200/50 dark:border-red-500/20 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400">
                   {submitError}
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-xs text-slate-400 dark:text-slate-500">
-                  Publishing as {user?.displayName || 'Community Member'}
+              <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 truncate max-w-[130px] sm:max-w-none">
+                  By {user?.displayName || 'Member'}
                 </span>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <button
                     type="button"
                     onClick={closeBlogModal}
-                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-5 py-2 rounded-lg text-xs font-bold"
+                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs font-bold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitPending}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md shadow-blue-500/10"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs font-bold shadow-md shadow-blue-500/10"
                   >
                     {submitPending ? 'Publishing...' : 'Publish'}
                   </button>

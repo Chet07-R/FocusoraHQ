@@ -148,6 +148,28 @@ export const StudyRoomProvider = ({ children }) => {
     const timer = setInterval(checkAndCloseIfInactive, 5 * 60 * 1000);
     return () => clearInterval(timer);
   }, [currentRoom, roomData, participants]);
+  const joinRoom = useCallback(async (roomId) => {
+    if (!user) throw new Error('Must be logged in to join a room');
+    
+    setLoading(true);
+    try {
+
+      if (currentRoom) {
+        await leaveStudyRoom(currentRoom, user.uid);
+      }
+
+      await joinStudyRoom(roomId, {
+        userId: user.uid,
+        displayName: user.displayName || userProfile?.displayName || user.email?.split('@')[0] || 'User',
+        photoURL: user.photoURL || null,
+      });
+
+      setCurrentRoom(roomId);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, userProfile, currentRoom]);
+
   const createRoom = useCallback(async (roomConfig) => {
     if (!user) throw new Error('Must be logged in to create a room');
     
@@ -161,7 +183,7 @@ export const StudyRoomProvider = ({ children }) => {
         isPrivate: typeof roomConfig.isPublic === 'boolean' ? !roomConfig.isPublic : roomConfig.isPrivate || false,
         password: roomConfig.password || null,
         creatorId: user.uid,
-        creatorName: user.displayName || 'User',
+        creatorName: user.displayName || userProfile?.displayName || user.email?.split('@')[0] || 'User',
         timer: {
           duration: roomConfig.timerDuration || 25 * 60, // 25 minutes in seconds
           remaining: roomConfig.timerDuration || 25 * 60,
@@ -178,29 +200,7 @@ export const StudyRoomProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
-
-  const joinRoom = useCallback(async (roomId, password = null) => {
-    if (!user) throw new Error('Must be logged in to join a room');
-    
-    setLoading(true);
-    try {
-
-      if (currentRoom) {
-        await leaveStudyRoom(currentRoom, user.uid);
-      }
-
-      await joinStudyRoom(roomId, {
-        userId: user.uid,
-        displayName: user.displayName || 'User',
-        photoURL: user.photoURL || null,
-      });
-
-      setCurrentRoom(roomId);
-    } finally {
-      setLoading(false);
-    }
-  }, [user, currentRoom]);
+  }, [user, userProfile, joinRoom]);
 
   const leaveRoom = useCallback(async () => {
     if (!currentRoom || !user) return;

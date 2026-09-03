@@ -20,7 +20,7 @@ import "./MySpace.css";
 const StudyRoom1 = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const { 
     currentRoom, 
     roomData, 
@@ -202,10 +202,33 @@ const StudyRoom1 = () => {
     setBgPanelOpen(false);
   };
 
+  const isGenericName = (name) => !name || name === "Host" || name === "User" || String(name).trim() === "";
+
+  const extractName = (source) => {
+    if (!source) return null;
+    const val = source?.displayName || source?.name || source?.username || (source?.email ? source.email.split("@")[0] : null);
+    return !isGenericName(val) ? val : null;
+  };
+
+  const hostParticipant = (participants || []).find(
+    (p) => p?.userId && roomData?.creatorId && (p.userId === roomData.creatorId || p.userId === roomData.createdBy)
+  );
+
+  let hostName =
+    extractName(hostParticipant) ||
+    (isCreator ? (extractName(user) || extractName(userProfile)) : null) ||
+    (!isGenericName(roomData?.creatorName) ? roomData.creatorName : null) ||
+    (!isGenericName(roomData?.hostName) ? roomData.hostName : null) ||
+    (!isGenericName(roomData?.createdByName) ? roomData.createdByName : null) ||
+    (participants && participants.length > 0 ? extractName(participants[0]) : null) ||
+    extractName(user) ||
+    extractName(userProfile) ||
+    "Host";
+
   const roomInfo = {
     id: roomData?.id || roomId || "SR-####",
-    name: roomData?.name || "Loading...",
-    host: roomData?.creatorName || "Host",
+    name: roomData?.name || "Focus Space",
+    host: hostName,
     members: participants?.length || 0,
   };
 
@@ -334,13 +357,13 @@ const StudyRoom1 = () => {
               <span className="ms-panel__badge">Live</span>
             </div>
             <div className="ms-panel__body">
-              <div className="p-3">
-                <ul className="space-y-2">
+              <div className="p-2.5 sm:p-3">
+                <ul className="space-y-2 max-h-[105px] overflow-y-auto custom-scrollbar pr-1">
                   {sortedParticipants.map((p, index) => {
                     const isHost = p?.userId && roomData?.creatorId && p.userId === roomData.creatorId;
                     return (
-                    <li key={p.userId} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-white font-medium border border-slate-200/60 dark:border-transparent">
-                      <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-[11px] font-semibold flex items-center justify-center shrink-0">
+                    <li key={p.userId} className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-white font-medium border border-slate-200/60 dark:border-transparent">
+                      <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-semibold flex items-center justify-center shrink-0">
                         {index + 1}
                       </span>
                       <span className="truncate text-xs sm:text-sm font-semibold">{p.displayName || "User"}</span>

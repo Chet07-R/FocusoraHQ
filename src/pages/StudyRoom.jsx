@@ -159,8 +159,14 @@ const StudyRoom = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-cyan-500/10 to-teal-500/10 blur-xl rounded-2xl" />
               <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl p-2 sm:p-3 rounded-2xl shadow-xl border border-white/60 dark:border-white/10 relative transition-all duration-300 hover:shadow-2xl">
                 <img
-                  src="/images/study_room.jpeg"
+                  src="/images/study_room.png"
                   alt="Study Room Illustration"
+                  onError={(e) => {
+                    if (!e.target.dataset.triedJpeg) {
+                      e.target.dataset.triedJpeg = "true";
+                      e.target.src = "/images/study_room.jpeg";
+                    }
+                  }}
                   className="w-full h-auto max-h-56 sm:max-h-72 object-cover rounded-xl shadow-sm"
                   loading="lazy"
                 />
