@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import "./Navbar.css";
@@ -6,8 +7,9 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
-  const { user, userProfile, signOutUser, loading, hadInitialUser } = useAuth();
+  const { user, userProfile, signOutUser, loading } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -276,10 +278,8 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    if (window.confirm('Are you sure you want to log out?')) {
-                      signOutUser();
-                      setProfileOpen(false);
-                    }
+                    setProfileOpen(false);
+                    setShowLogoutModal(true);
                   }}
                   className="w-full text-left menu-item logout-btn flex items-center gap-3 p-3 rounded-xl text-red-600 dark:text-red-400 transition-all group focus:outline-none cursor-pointer"
                 >
@@ -400,6 +400,57 @@ const Navbar = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* 🚪 Custom Glassmorphic Logout Modal (Centered with full screen backdrop blur) */}
+      {showLogoutModal && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md transition-all duration-300">
+          {/* Backdrop Click Dismiss */}
+          <div 
+            className="absolute inset-0 cursor-pointer" 
+            onClick={() => setShowLogoutModal(false)} 
+          />
+
+          {/* Centered Modal Card */}
+          <div className="relative w-full max-w-sm rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8 text-center transform transition-all duration-300 animate-in zoom-in-95">
+            <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 dark:text-red-400 flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-inner">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <path d="M16 17l5-5-5-5" />
+                <path d="M21 12H9" />
+              </svg>
+            </div>
+
+            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+              Log Out of FocusoraHQ?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+              Are you sure you want to end your focus session? Your stats and study progress are securely saved.
+            </p>
+
+            <div className="flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowLogoutModal(false);
+                  await signOutUser();
+                  navigate("/");
+                }}
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold text-xs sm:text-sm shadow-xl shadow-red-500/25 active:scale-95 transition-all cursor-pointer"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </nav>
   );

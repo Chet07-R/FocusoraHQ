@@ -9,7 +9,8 @@ const { env } = require('./config/env');
 const { configurePassport } = require('./config/passport');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 const { assignRequestContext } = require('./middlewares/requestContext');
-const { authRateLimit, apiRateLimitExceptAuth } = require('./middlewares/rateLimit');
+const { authRateLimit, apiRateLimitExceptAuth } = require('./middlewares/rateLimiter');
+const { sqlInjectionSanitizer } = require('./middlewares/sqlInjectionSanitizer');
 
 configurePassport();
 
@@ -58,6 +59,7 @@ app.use(
 );
 app.use(morgan(logFormat));
 app.use(express.json({ limit: '1mb' }));
+app.use(sqlInjectionSanitizer());
 app.use(passport.initialize());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 

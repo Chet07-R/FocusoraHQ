@@ -45,5 +45,7 @@ const apiRateLimitExceptAuth = (req, res, next) => {
 
 module.exports = {
   authRateLimit,
+  apiRateLimit,
   apiRateLimitExceptAuth,
+  rateLimiter: apiRateLimitExceptAuth,
 };
