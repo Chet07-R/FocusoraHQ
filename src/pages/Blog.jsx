@@ -46,7 +46,7 @@ const Blog = () => {
   };
 
   useEffect(() => {
-    document.title = "FocusoraHQ | Productivity & Study Blogs";
+    document.title = "FocusoraHQ";
   }, []);
 
   const allArticles = [

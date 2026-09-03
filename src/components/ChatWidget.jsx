@@ -229,11 +229,8 @@ const ChatWidget = () => {
   const [status, setStatus] = useState({ loading: false, error: "" });
   const [mounted, setMounted] = useState(false);
   const endRef = useRef(null);
-  const pathname = typeof window !== "undefined" ? String(window.location?.pathname || "") : "";
-
   const isLoggedIn = Boolean(user);
   const isGuestAccount = user?.provider === "guest";
-  const accessMode = !isLoggedIn ? "trial" : isGuestAccount ? "guest" : "full";
 
   const getGuestTrialState = () => {
     if (typeof window === "undefined") {
@@ -275,6 +272,14 @@ const ChatWidget = () => {
       clearGuestTrialState();
     }
   }, [isLoggedIn, isGuestAccount]);
+
+  useEffect(() => {
+    const handleOpenBot = () => {
+      setIsOpen(true);
+    };
+    window.addEventListener("openFocusoraBot", handleOpenBot);
+    return () => window.removeEventListener("openFocusoraBot", handleOpenBot);
+  }, []);
 
   const promptLogin = () => {
     setStatus({ loading: false, error: "Your free AI trial ended. Sign in to continue with full access." });

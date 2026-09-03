@@ -67,4 +67,48 @@ const sendVerificationEmail = async ({ to, name, verifyUrl }) => {
   return { sent: true };
 };
 
-module.exports = { sendVerificationEmail, isMailerConfigured };
+const sendContactEmail = async ({ name, email, category, subject, message }) => {
+  const transporter = getTransporter();
+  const mailSubject = `[FocusoraHQ Contact] ${subject || 'New Message'} (${category || 'General'})`;
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#0f172a;max-width:600px;margin:0 auto;padding:20px;border:1px solid #e2e8f0;border-radius:12px">
+      <div style="background:#2563eb;padding:16px 20px;border-radius:8px;color:#ffffff;margin-bottom:20px">
+        <h2 style="margin:0;font-size:20px">New Contact Inquiry from FocusoraHQ</h2>
+      </div>
+      
+      <p style="margin:0 0 12px"><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+      <p style="margin:0 0 12px"><strong>Topic Category:</strong> ${category || 'General Inquiry'}</p>
+      <p style="margin:0 0 12px"><strong>Subject:</strong> ${subject || 'N/A'}</p>
+      
+      <div style="margin:20px 0;padding:16px;background:#f8fafc;border-left:4px solid #2563eb;border-radius:4px">
+        <p style="margin:0 0 8px;font-weight:bold">Message:</p>
+        <p style="margin:0;white-space:pre-wrap;color:#334155">${message}</p>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0" />
+      <p style="font-size:12px;color:#64748b;margin:0">Received via FocusoraHQ Contact Portal.</p>
+    </div>
+  `;
+
+  const text = `New Contact Form Message:\n\nFrom: ${name} (${email})\nCategory: ${category}\nSubject: ${subject}\n\nMessage:\n${message}`;
+
+  if (!transporter) {
+    // eslint-disable-next-line no-console
+    console.log('[Email - Fallback] Contact message for focusorahq@gmail.com:', { name, email, category, subject, message });
+    return { sent: false };
+  }
+
+  await transporter.sendMail({
+    from: env.emailFrom,
+    to: 'focusorahq@gmail.com',
+    replyTo: email,
+    subject: mailSubject,
+    text,
+    html,
+  });
+
+  return { sent: true };
+};
+
+module.exports = { sendVerificationEmail, sendContactEmail, isMailerConfigured };

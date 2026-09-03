@@ -10,6 +10,7 @@ const activityRoutes = require('./activityRoutes');
 const reviewsRoutes = require('./reviewsRoutes');
 const distractionRoutes = require('./distractionRoutes');
 const aiRoutes = require('./aiRoutes');
+const contactRoutes = require('./contactRoutes');
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.use('/reviews', reviewsRoutes);
 router.use('/users/activity', activityRoutes);
 router.use('/distraction', distractionRoutes);
 router.use('/ai', aiRoutes);
+router.use('/contact', contactRoutes);
 
 module.exports = router;
