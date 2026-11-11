@@ -1,0 +1,68 @@
+{
+  "name": "focusorahq-desktop",
+  "version": "1.0.0",
+  "description": "FocusoraHQ Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:frontend": "cd ../frontend && npm run build",
+    "dist": "npm run build:frontend && electron-builder --win",
+    "dist:portable": "npm run build:frontend && electron-builder --win portable",
+    "dist:nsis": "npm run build:frontend && electron-builder --win nsis",
+    "dist:all": "npm run build:frontend && electron-builder --win nsis portable"
+  },
+  "author": "FocusoraHQ",
+  "license": "ISC",
+  "build": {
+    "appId": "com.focusorahq.app",
+    "productName": "FocusoraHQ",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "build/icon.ico",
+      "icon.ico",
+      "../frontend/dist/**/*",
+      "../backend/**/*",
+      "!../backend/node_modules/**/*",
+      "!../backend/uploads/**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powertests,example,examples}"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FocusoraHQ",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.33.5"
+  }
+}

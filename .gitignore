@@ -14,7 +14,6 @@ dist-ssr
 
 /prev
 
-
 # Environment variables
 .env
 .env.local
@@ -78,4 +77,9 @@ ehthumbs.db
 
 # User uploads / uploads folder
 backend/uploads/
-**/uploads/
+**/uploads/
+
+# Electron releases
+electron/release/
+backend/env
+backend/env.*
