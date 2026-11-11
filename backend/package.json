@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "kill-port 5000 && nodemon server.js",
     "start": "node server.js",
-    "test": "echo \"No tests configured yet\""
+    "test": "node --test tests/**/*.test.js"
   },
   "keywords": [],
   "author": "",
